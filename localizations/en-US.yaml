@@ -1,0 +1,33 @@
+name: English
+strings:
+  replying_to: ⬅️ Replying to {user} ({url})
+  delete: Delete
+  delete_no_perms: Only the author or server administrators can delete this message.
+  fix_selector_placeholder: Select embed fixe(s) to disable...
+  settings_saved: Settings saved
+  lang_selector_placeholder: Select a language...
+  settings_embed_footer: Settings are unique to this server
+  disable_fixes: Disable Embed Fixes
+  disable_fixes_desc: Disable specific embed fixes
+  lang: Language
+  lang_desc: Change the language of the bot
+  extract_media_channels: Media Extraction Channels
+  extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
+  disable_fix_channels: Disable Embed Fix Channels
+  disable_fix_channels_desc: Set channels to disable embed fixes in
+  toggle_webhook_reply: Toggle Webhook Reply
+  toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook
+  sauce: Sauce
+  settings_cmd_desc: Change the bot's settings for this server
+  channel_selector_placeholder: Select channel(s)...
+  disable_webhook_reply: Disable webhook reply
+  webhook_reply_disabled: Webhook reply disabled
+  enable_webhook_reply: Enable webhook reply
+  webhook_reply_enabled: Webhook reply enabled
+  setting_param: setting
+  setting_param_desc: Setting to change
+  info_cmd_desc: Get information about the bot
+  info_embed_desc: |
+    This bot is made by [@seria_ati](https://discord.com/users/410036441129943050) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
+    For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
+    To contribute (such as translations), DM me or open a PR on GitHub.

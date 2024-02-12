@@ -1,0 +1,119 @@
+[project]
+requires-python = ">=3.11"
+
+[tool.poetry]
+name = "embed-fixer"
+version = "0.1.0"
+description = "Discord bot that fixes social media embeds"
+authors = ["seriaati <seria.ati@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+discord-py = {extras = ["speed"], version = "^2.3.2"}
+tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
+python-dotenv = "^1.0.1"
+jishaku = "^2.5.2"
+aiofiles = "^23.2.1"
+pyyaml = "^6.0.1"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.2.1"
+git-cliff = "^1.4.0"
+
+[tool.poetry.group.linux]
+optional = true
+
+[tool.poetry.group.linux.dependencies]
+uvloop = "^0.19.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E","W","C90","F","UP","B","SIM","I","N","TCH",
+    "ANN","ASYNC","A","C4","EM","FA","ICN","G",
+    "PIE","T20","ARG","ERA","LOG","PL","TRY"
+]
+ignore = [
+    "E501","ANN401","ANN101","ANN102","ANN003",
+    "PLR0913","PLR2004","PLR0917","PLR6301",
+    "ANN002"
+]
+preview = true
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F403"]
+"playground.*.py" = ["ALL"]
+
+[tool.ruff.lint.flake8-type-checking]
+quote-annotations = true
+
+
+[tool.git-cliff.changelog]
+body = """
+---
+{% if version %}\
+    {% if previous.version %}\
+        # [{{ version | trim_start_matches(pat="v") }}]($REPO/compare/{{ previous.version }}..{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% else %}\
+        # [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% endif %}\
+{% else %}\
+    # [unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ## {{ group | striptags | trim | upper_first }}
+    {% for commit in commits
+    | filter(attribute="scope")
+    | sort(attribute="scope") %}
+        - **({{commit.scope}})**{% if commit.breaking %} [**breaking**]{% endif %} \
+            {{ commit.message }} - ([{{ commit.id | truncate(length=7, end="") }}]($REPO/commit/{{ commit.id }}))
+    {%- endfor -%}
+    {% raw %}\n{% endraw %}\
+    {%- for commit in commits %}
+        {%- if commit.scope -%}
+        {% else -%}
+            - {% if commit.breaking %} [**breaking**]{% endif %}\
+                {{ commit.message }} - ([{{ commit.id | truncate(length=7, end="") }}]($REPO/commit/{{ commit.id }}))
+        {% endif -%}
+    {% endfor -%}
+{% endfor %}\n
+"""
+trim = true
+postprocessors = [
+    { pattern = '\$REPO', replace = "https://github.com/seriaati/embed-fixer" },
+]
+
+[tool.git-cliff.git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+    { message = "^feat", group = "Features" },
+    { message = "^fix", group = "Bug Fixes" },
+    { message = "^doc", group = "Documentation" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactoring" },
+    { message = "^style", group = "Style" },
+    { message = "^revert", group = "Revert" },
+    { message = "^test", group = "Tests" },
+    { message = "^chore\\(ver\\):", skip = true },
+    { message = "^chore", group = "Miscellaneous Chores" },
+    { body = ".*security", group = "Security" },
+]
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = "v[0-9].*"
+topo_order = false
+sort_commits = "oldest"

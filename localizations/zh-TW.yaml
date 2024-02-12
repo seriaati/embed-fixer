@@ -1,0 +1,33 @@
+name: 繁體中文
+strings:
+  replying_to: ⬅️ 回覆 {user} ({url})
+  delete: 刪除
+  delete_no_perms: 只有作者或伺服器管理員可以刪除此訊息。
+  fix_selector_placeholder: 選擇要停用的連結預覽修復...
+  settings_saved: 設定已儲存
+  lang_selector_placeholder: 選擇語言...
+  settings_embed_footer: 每個伺服器的設定都是獨立的
+  disable_fixes: 停用連結預覽修復
+  disable_fixes_desc: 停用特定的連結預覽修復
+  lang: 語言
+  lang_desc: 更改機器人的語言
+  extract_media_channels: 媒體提取頻道
+  extract_media_channels_desc: 在這些頻道中發送的 Twitter/X/Pixiv 鏈接的圖片/影片將被提取
+  disable_fix_channels: 禁用連結預覽修復頻道
+  disable_fix_channels_desc: 設置要在其中禁用連結預覽修復的頻道
+  toggle_webhook_reply: 開關 Webhook 回覆
+  toggle_webhook_reply_desc: 開關回覆 Webhook 時對原始作者的提及
+  sauce: 醬汁
+  settings_cmd_desc: 更改此伺服器的機器人設置
+  channel_selector_placeholder: 選擇頻道...
+  disable_webhook_reply: 禁用 Webhook 回覆
+  webhook_reply_disabled: Webhook 回覆已禁用
+  enable_webhook_reply: 啟用
+  webhook_reply_enabled: Webhook 回覆已啟用
+  setting_param: 設置
+  setting_param_desc: 要更改的設置
+  info_cmd_desc: 獲取有關機器人的信息
+  info_embed_desc: |
+    這個機器人是由 [@seria_ati](https://discord.com/users/410036441129943050) 製作的，並且在 [GitHub](https://github.com/seriaati/embed-fixer) 上是開源的。
+    有關此機器人的問題或問題，請在 Discord 上與我聯繫，或在 GitHub 上提出 Issue。
+    如有意願貢獻（例如翻譯），請與我聯繫，或在 GitHub 上提交 PR。
