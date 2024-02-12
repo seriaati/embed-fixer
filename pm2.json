@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "embed-fixer",
+            "script": "./run.py",
+            "interpreter": "./.venv/bin/python"
+        }
+    ]
+}
