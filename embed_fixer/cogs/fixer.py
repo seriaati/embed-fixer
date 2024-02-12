@@ -157,7 +157,7 @@ class FixerCog(commands.Cog):
                 self.bot.translator.get(
                     await Translator.get_guild_lang(guild),
                     "replying_to",
-                    user=resolved_ref.author.mention,
+                    user=author.mention,
                     url=resolved_ref.jump_url,
                 ),
                 mention_author=False,
