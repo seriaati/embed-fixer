@@ -1,5 +1,6 @@
 import contextlib
 import logging
+import os
 from pathlib import Path
 from typing import TYPE_CHECKING, TypeAlias
 
@@ -74,7 +75,7 @@ class EmbedFixer(commands.AutoShardedBot):
 
         await Tortoise.init(
             {
-                "connections": {"default": "sqlite://embed_fixer.db"},
+                "connections": {"default": os.getenv("DB_URI") or "sqlite://embed_fixer.db"},
                 "apps": {"embed_fixer": {"models": ["embed_fixer.models"]}},
             }
         )
