@@ -154,7 +154,12 @@ class FixerCog(commands.Cog):
         author = guild.get_member_named(message.author.display_name.removesuffix(" (Embed Fixer)"))
         if author is not None:
             await message.reply(
-                f"⬅️ Replying to a webhook of {author.mention} ({resolved_ref.jump_url})",
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(guild),
+                    "replying_to",
+                    user=resolved_ref.author.mention,
+                    url=resolved_ref.jump_url,
+                ),
                 mention_author=False,
             )
 
