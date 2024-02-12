@@ -151,7 +151,7 @@ class FixerCog(commands.Cog):
         if not guild.chunked:
             await guild.chunk()
 
-        author = guild.get_member_named(message.author.display_name)
+        author = guild.get_member_named(message.author.display_name.removesuffix(" (Embed Fixer)"))
         if author is not None:
             await message.reply(
                 f"⬅️ Replying to a webhook of {author.mention} ({resolved_ref.jump_url})",
