@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
+from seria.utils import extract_urls
 
 from ..fixes import FIX_PATTERNS, FIXES
 from ..models import GuildSettings
 from ..translator import Translator
 from ..ui.delete_webhook_msg import DeleteWebhookMsgView
-from ..utils import extract_urls
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
