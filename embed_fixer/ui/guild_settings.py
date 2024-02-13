@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, SelectOption, TextChannel, ui
+from seria.dpy.ui import PaginatorSelect
 
 from ..embed import DefaultEmbed
 from ..fixes import FIXES
@@ -30,23 +31,32 @@ class GuildSettingsView(View):
             lang_selector.placeholder = self.translate("lang_selector_placeholder")
             self.add_item(lang_selector)
 
-        elif setting == "extract_media_channels":
-            extract_media_channel_selector = ExtractMediaChannelSelector(
-                self.guild.text_channels, guild_settings.extract_media_channels
-            )
-            extract_media_channel_selector.placeholder = self.translate(
-                "channel_selector_placeholder"
-            )
-            self.add_item(extract_media_channel_selector)
+        elif setting in {"extract_media_channels", "disable_fix_channels"}:
+            next_page_option = SelectOption(label=self.translate("next_page"), value="next_page")
+            prev_page_option = SelectOption(label=self.translate("prev_page"), value="prev_page")
 
-        elif setting == "disable_fix_channels":
-            disable_fix_channel_selector = DisableFixChannelSelector(
-                self.guild.text_channels, guild_settings.disable_fix_channels
-            )
-            disable_fix_channel_selector.placeholder = self.translate(
-                "channel_selector_placeholder"
-            )
-            self.add_item(disable_fix_channel_selector)
+            if setting == "extract_media_channels":
+                extract_media_channel_selector = ExtractMediaChannelSelector(
+                    self.guild.text_channels,
+                    guild_settings.extract_media_channels,
+                    next_page_option,
+                    prev_page_option,
+                )
+                extract_media_channel_selector.placeholder = self.translate(
+                    "channel_selector_placeholder"
+                )
+                self.add_item(extract_media_channel_selector)
+            else:
+                disable_fix_channel_selector = DisableFixChannelSelector(
+                    self.guild.text_channels,
+                    guild_settings.disable_fix_channels,
+                    next_page_option,
+                    prev_page_option,
+                )
+                disable_fix_channel_selector.placeholder = self.translate(
+                    "channel_selector_placeholder"
+                )
+                self.add_item(disable_fix_channel_selector)
 
         elif setting == "toggle_webhook_reply":
             webhook_reply_toggle = WebhookReplyToggle(guild_settings.disable_webhook_reply)
@@ -102,8 +112,14 @@ class LangSelector(ui.Select[GuildSettingsView]):
         )
 
 
-class ChannelSelector(ui.Select[GuildSettingsView]):
-    def __init__(self, channels: list[TextChannel], current: list[int]) -> None:
+class ChannelSelector(PaginatorSelect[GuildSettingsView]):
+    def __init__(
+        self,
+        channels: list[TextChannel],
+        current: list[int],
+        next_page: SelectOption,
+        prev_page: SelectOption,
+    ) -> None:
         super().__init__(
             options=[
                 SelectOption(
@@ -113,6 +129,8 @@ class ChannelSelector(ui.Select[GuildSettingsView]):
             ],
             min_values=0,
             max_values=len(channels),
+            next_page=next_page,
+            prev_page=prev_page,
         )
 
 
