@@ -45,6 +45,9 @@ class GuildSettingsView(View):
                 extract_media_channel_selector.placeholder = self.translate(
                     "channel_selector_placeholder"
                 )
+                extract_media_channel_selector.max_values = min(
+                    len(extract_media_channel_selector.options), 25
+                )
                 self.add_item(extract_media_channel_selector)
             else:
                 disable_fix_channel_selector = DisableFixChannelSelector(
@@ -55,6 +58,9 @@ class GuildSettingsView(View):
                 )
                 disable_fix_channel_selector.placeholder = self.translate(
                     "channel_selector_placeholder"
+                )
+                disable_fix_channel_selector.max_values = min(
+                    len(disable_fix_channel_selector.options), 25
                 )
                 self.add_item(disable_fix_channel_selector)
 
@@ -128,7 +134,6 @@ class ChannelSelector(PaginatorSelect[GuildSettingsView]):
                 for channel in channels
             ],
             min_values=0,
-            max_values=min(len(channels), 25),
             next_page=next_page,
             prev_page=prev_page,
         )
