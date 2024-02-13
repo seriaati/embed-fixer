@@ -46,7 +46,7 @@ class FixerCog(commands.Cog):
                     continue
 
                 if extract_media:
-                    fix_found = await self._extract_media(medias, url, domain)
+                    fix_found = await self._extract_medias(medias, url, domain)
                     if fix_found:
                         message.content = message.content.replace(url, "")
                         sauces.append(url)
@@ -60,7 +60,7 @@ class FixerCog(commands.Cog):
 
         return fix_found, medias, sauces
 
-    async def _extract_media(self, medias: list[discord.File], url: str, domain: str) -> bool:
+    async def _extract_medias(self, medias: list[discord.File], url: str, domain: str) -> bool:
         image_urls: list[str] = []
         if domain in url and domain == "pixiv.net":
             image_urls = await self._fetch_pixiv_image_urls(url)
