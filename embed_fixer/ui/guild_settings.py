@@ -128,7 +128,7 @@ class ChannelSelector(PaginatorSelect[GuildSettingsView]):
                 for channel in channels
             ],
             min_values=0,
-            max_values=len(channels),
+            max_values=min(len(channels), 25),
             next_page=next_page,
             prev_page=prev_page,
         )
