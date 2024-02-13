@@ -17,6 +17,7 @@ python-dotenv = "^1.0.1"
 jishaku = "^2.5.2"
 aiofiles = "^23.2.1"
 pyyaml = "^6.0.1"
+seria-library = {git = "https://github.com/seriaati/seria-library"}
 
 [tool.poetry.group.dev]
 optional = true
@@ -24,6 +25,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.2.1"
 git-cliff = "^1.4.0"
+pre-commit = "^3.6.1"
 
 [tool.poetry.group.linux]
 optional = true
@@ -57,3 +59,4 @@ preview = true
 "playground.*.py" = ["ALL"]
 
 [tool.ruff.lint.flake8-type-checking]
+quote-annotations = true
