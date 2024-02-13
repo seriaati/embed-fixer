@@ -1,0 +1,74 @@
+name: Update dependencies & pre-commits
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # every Monday at 00:00
+  workflow_dispatch:
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install poetry
+        uses: Gr1N/setup-poetry@v8
+      - name: Install dependencies
+        run: poetry install --with dev
+        shell: bash
+      - name: Check for outdated dependencies before update
+        run: |
+          POETRY_OUTDATED_BEFORE=$(poetry show --outdated)
+          echo "POETRY_OUTDATED_BEFORE<<EOF" >> $GITHUB_OUTPUT
+          echo "$POETRY_OUTDATED_BEFORE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        shell: bash
+        id: outdated_before
+      - name: Update dependencies
+        run: |
+          POETRY_UPDATED=$(poetry update)
+          echo "POETRY_UPDATED<<EOF" >> $GITHUB_OUTPUT
+          echo "$POETRY_UPDATED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        shell: bash
+        id: update
+      - name: Check for outdated dependencies after update
+        run: |
+          POETRY_OUTDATED_AFTER=$(poetry show --outdated)
+          echo "POETRY_OUTDATED_AFTER<<EOF" >> $GITHUB_OUTPUT
+          echo "$POETRY_OUTDATED_AFTER" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        shell: bash
+        id: outdated_after
+      - name: Check for pre-commit updates
+        run: |
+          poetry run pre-commit autoupdate
+        shell: bash
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: "chore(deps): Update dependencies"
+          title: Update dependencies
+          body: |
+            ### Updated dependencies:
+
+            ```bash
+            ${{ steps.update.outputs.POETRY_UPDATED }}
+            ```   
+
+            ### Outdated dependencies _before_ PR:
+
+            ```bash
+            ${{ steps.outdated_before.outputs.POETRY_OUTDATED_BEFORE }}
+            ```
+
+            ### Outdated dependencies _after_ PR:
+
+            ```bash
+            ${{ steps.outdated_after.outputs.POETRY_OUTDATED_AFTER }}
+            ```
+          branch: poetry-update
+          labels: dependencies
