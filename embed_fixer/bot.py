@@ -75,7 +75,11 @@ class EmbedFixer(commands.AutoShardedBot):
 
         await Tortoise.init(
             {
-                "connections": {"default": os.getenv("DB_URI") or "sqlite://embed_fixer.db"},
+                "connections": {
+                    "default": os.getenv("DB_URI")
+                    if self.env == "prod"
+                    else "sqlite://embed_fixer.db"
+                },
                 "apps": {"embed_fixer": {"models": ["embed_fixer.models"]}},
             }
         )
