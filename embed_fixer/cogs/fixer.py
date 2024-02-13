@@ -1,4 +1,5 @@
 import io
+import logging
 import re
 from typing import TYPE_CHECKING
 
@@ -13,6 +14,8 @@ from ..ui.delete_webhook_msg import DeleteWebhookMsgView
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
+
+LOGGER_ = logging.getLogger(__name__)
 
 
 class FixerCog(commands.Cog):
@@ -168,7 +171,11 @@ class FixerCog(commands.Cog):
         if message.author.bot or message.guild is None:
             return
 
-        guild_settings = await GuildSettings.get(id=message.guild.id)
+        guild_settings = await GuildSettings.get_or_none(id=message.guild.id)
+        if guild_settings is None:
+            LOGGER_.warning("GuildSettings not found for guild %r", message.guild)
+            return
+
         if message.channel.id in guild_settings.disable_fix_channels:
             return
 
