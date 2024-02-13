@@ -1,13 +1,14 @@
 import asyncio
 import contextlib
+import logging
 import os
 
 import aiohttp
 import discord
 from dotenv import load_dotenv
+from seria.logging import setup_logging
 
 from embed_fixer.bot import EmbedFixer
-from embed_fixer.logging import setup_logging
 
 load_dotenv()
 env = os.environ["ENV"]
@@ -22,7 +23,7 @@ async def main() -> None:
             await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(env):
+with setup_logging(logging.INFO, ()):
     try:
         import uvloop  # type: ignore
     except ImportError:
