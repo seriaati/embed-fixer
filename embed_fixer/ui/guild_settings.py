@@ -14,6 +14,9 @@ if TYPE_CHECKING:
 
 
 class GuildSettingsView(View):
+    async def interaction_check(self, i: "INTERACTION") -> bool:
+        return i.user.id == self.author.id
+
     async def start(self, setting: str) -> None:
         await super().start()
 

@@ -24,19 +24,6 @@ class DeleteWebhookMsgView(View):
             sauce_btn.label = self.translate("sauce")
             self.add_item(sauce_btn)
 
-    async def interaction_check(self, i: "INTERACTION") -> bool:
-        if isinstance(i.user, Member):
-            perms = i.user.guild_permissions
-            if perms.manage_messages:
-                check = True
-        check = await super().interaction_check(i)
-
-        if not check:
-            await i.response.send_message(
-                embed=DefaultEmbed(title=self.translate("delete_no_perms")), ephemeral=True
-            )
-        return check
-
 
 class DeleteMsgBtn(ui.Button[DeleteWebhookMsgView]):
     def __init__(self) -> None:
@@ -45,6 +32,13 @@ class DeleteMsgBtn(ui.Button[DeleteWebhookMsgView]):
     async def callback(self, i: "INTERACTION") -> None:
         if i.guild is None or self.view is None or i.message is None:
             return
+
+        if i.user.id != self.view.author.id or (
+            isinstance(i.user, Member) and not i.user.guild_permissions.manage_messages
+        ):
+            return await i.response.send_message(
+                embed=DefaultEmbed(title=self.view.translate("delete_no_perms")), ephemeral=True
+            )
 
         await i.response.defer()
         await i.message.delete()

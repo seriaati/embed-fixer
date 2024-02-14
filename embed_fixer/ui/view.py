@@ -5,7 +5,6 @@ import discord
 from discord import ui
 
 if TYPE_CHECKING:
-    from ..bot import INTERACTION
     from ..translator import Translator
 
 
@@ -18,7 +17,7 @@ class View(ui.View):
     ) -> None:
         super().__init__()
 
-        self._author = author
+        self.author = author
         self.message: discord.Message | None = None
         self.guild = guild
         self.translator = translator
@@ -40,6 +39,3 @@ class View(ui.View):
 
         with contextlib.suppress(discord.NotFound):
             await self.message.edit(view=self)
-
-    async def interaction_check(self, i: "INTERACTION") -> bool:
-        return i.user.id == self._author.id
