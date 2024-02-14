@@ -18,6 +18,7 @@ jishaku = "^2.5.2"
 aiofiles = "^23.2.1"
 pyyaml = "^6.0.1"
 seria-library = {git = "https://github.com/seriaati/seria-library"}
+async-lru = "^2.0.4"
 
 [tool.poetry.group.dev]
 optional = true
