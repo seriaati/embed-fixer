@@ -14,6 +14,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Update dependencies & pre-commits
-        uses: seriaati/update-deps
+        uses: seriaati/update-deps@main
       - name: Create release
-        uses: seriaati/create-release
+        uses: seriaati/create-release@main
