@@ -43,7 +43,11 @@ When you reply to a webhook, it replies to the webhook, not the original author.
 
 ## Media Extracting
 This feature currently only supports Twitter, X, and Pixiv. When you send a pixiv artwork link into channel(s) with this feature on, the bot resend all of the images/videos in the link in a nice gallery-like layout.  
-![image](https://github.com/seriaati/embed-fixer/assets/61446626/443fce84-f51f-451f-99b0-63f0164d98a0)
+
+![image](https://github.com/seriaati/embed-fixer/assets/61446626/443fce84-f51f-451f-99b0-63f0164d98a0)  
+
+> [!NOTE]
+> If the link is sent in a NSFW channel then the extracted media will be spoilered automatically.
 
 ## Very Customizable
 *All settings are unique to the server*  
