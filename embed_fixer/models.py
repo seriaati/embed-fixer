@@ -1,3 +1,4 @@
+from attr import dataclass
 from tortoise import fields
 from tortoise.models import Model
 
@@ -12,3 +13,9 @@ class GuildSettings(Model):
 
     class Meta:
         table = "guild_settings"
+
+
+@dataclass
+class PixivArtworkInfo:
+    tags: list[str]
+    image_urls: list[str]
