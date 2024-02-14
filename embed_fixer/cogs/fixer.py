@@ -55,7 +55,9 @@ class FixerCog(commands.Cog):
                     ):
                         break
 
-                if extract_media and (medias_ := await self._extract_medias(domain, url)):
+                if extract_media and (
+                    medias_ := await self._extract_medias(domain, url, spoiler=channel_is_nsfw)
+                ):
                     fix_found = True
                     medias.extend(medias_)
                     message.content = message.content.replace(url, "")
@@ -69,7 +71,9 @@ class FixerCog(commands.Cog):
 
         return fix_found, medias, sauces
 
-    async def _extract_medias(self, domain: str, url: str) -> list[discord.File]:
+    async def _extract_medias(
+        self, domain: str, url: str, *, spoiler: bool = False
+    ) -> list[discord.File]:
         image_urls: list[str] = []
 
         if domain == "pixiv.net":
@@ -78,7 +82,9 @@ class FixerCog(commands.Cog):
         elif domain in {"twitter.com", "x.com"}:
             image_urls = await self._fetch_twitter_media_urls(url)
 
-        medias_ = [await self._download_media(image_url) for image_url in image_urls]
+        medias_ = [
+            await self._download_media(image_url, spoiler=spoiler) for image_url in image_urls
+        ]
         return [media for media in medias_ if media is not None]
 
     async def _send_fixes(
@@ -160,13 +166,13 @@ class FixerCog(commands.Cog):
                 return []
             return [media["url"] for media in medias["all"] if media["type"] in {"photo", "video"}]
 
-    async def _download_media(self, url: str) -> discord.File | None:
+    async def _download_media(self, url: str, spoiler: bool = False) -> discord.File | None:
         async with self.bot.session.get(url) as response:
             if response.status != 200:
                 return None
             data = await response.read()
             filename = url.split("/")[-1].split("?")[0]
-            return discord.File(io.BytesIO(data), filename=filename)
+            return discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
 
     async def _reply_to_webhook(
         self, message: discord.Message, resolved_ref: discord.Message
