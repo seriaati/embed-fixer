@@ -36,7 +36,7 @@ class FixerCog(commands.Cog):
         urls = extract_urls(message.content)
 
         for url in urls:
-            for pattern in FIX_PATTERNS.values():
+            for pattern in FIX_PATTERNS:
                 if re.match(pattern, url) is not None:
                     break
             else:
