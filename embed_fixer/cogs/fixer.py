@@ -8,7 +8,7 @@ from discord.ext import commands
 from seria.utils import extract_urls
 
 from ..fixes import FIX_PATTERNS, FIXES
-from ..models import GuildSettings
+from ..models import GuildSettings, PixivArtworkInfo
 from ..translator import Translator
 from ..ui.delete_webhook_msg import DeleteWebhookMsgView
 
@@ -32,6 +32,7 @@ class FixerCog(commands.Cog):
         medias: list[discord.File] = []
         sauces: list[str] = []
 
+        channel_is_nsfw = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
         urls = extract_urls(message.content)
 
         for url in urls:
@@ -42,35 +43,46 @@ class FixerCog(commands.Cog):
                 continue
 
             for domain, fix in FIXES.items():
-                if domain in disabled_fixes:
+                if domain in disabled_fixes or domain not in url:
                     continue
 
-                if extract_media:
-                    fix_found = await self._extract_medias(medias, url, domain)
-                    if fix_found:
-                        message.content = message.content.replace(url, "")
-                        sauces.append(url)
-                        break
+                if domain == "pixiv.net":
+                    artwork_info = await self._fetch_pixiv_artwork_info(url)
+                    if (
+                        artwork_info is not None
+                        and "#R-18" in artwork_info.tags
+                        and not channel_is_nsfw
+                    ):
+                        message.content = message.content.replace(url, f"[R-18] <{url}>")
+                        continue
 
-                if domain in url:
+                if extract_media and (medias_ := await self._extract_medias(domain, url)):
                     fix_found = True
-                    fixed_url = url.replace(domain, fix)
-                    message.content = message.content.replace(url, fixed_url)
+                    medias.extend(medias_)
+                    message.content = message.content.replace(url, "")
+                    sauces.append(url)
                     break
+
+                fix_found = True
+                fixed_url = url.replace(domain, fix)
+                message.content = message.content.replace(url, fixed_url)
+                break
 
         return fix_found, medias, sauces
 
-    async def _extract_medias(self, medias: list[discord.File], url: str, domain: str) -> bool:
+    async def _extract_medias(self, domain: str, url: str) -> list[discord.File]:
         image_urls: list[str] = []
-        if domain in url and domain == "pixiv.net":
-            image_urls = await self._fetch_pixiv_image_urls(url)
-        elif domain in url and domain in {"twitter.com", "x.com"}:
+
+        if domain == "pixiv.net":
+            artwork_info = await self._fetch_pixiv_artwork_info(url)
+            if artwork_info is None or "#R-18" in artwork_info.tags:
+                return []
+            image_urls = artwork_info.image_urls
+        elif domain in {"twitter.com", "x.com"}:
             image_urls = await self._fetch_twitter_media_urls(url)
 
-        fix_found = bool(image_urls)
-        medias.extend([await self._download_media(image_url) for image_url in image_urls])
-
-        return fix_found
+        medias_ = [await self._download_media(image_url) for image_url in image_urls]
+        return [media for media in medias_ if media is not None]
 
     async def _send_fixes(
         self, message: discord.Message, medias: list[discord.File], sauces: list[str]
@@ -105,25 +117,34 @@ class FixerCog(commands.Cog):
                 message.content, tts=message.tts, files=files, view=view
             )
 
-        if message.reference is not None and isinstance(
-            resolved_ref := message.reference.resolved, discord.Message
+        if (
+            message.reference is not None
+            and isinstance(resolved_ref := message.reference.resolved, discord.Message)
+            and message.guild is not None
         ):
-            await fixed_message.reply(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(message.guild),
-                    "replying_to",
-                    user=resolved_ref.author.mention,
-                    url=resolved_ref.jump_url,
-                ),
-                mention_author=False,
+            author = message.guild.get_member_named(
+                resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
             )
+            if author:
+                await fixed_message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(message.guild),
+                        "replying_to",
+                        user=author.mention,
+                        url=resolved_ref.jump_url,
+                    ),
+                    mention_author=False,
+                )
 
-    async def _fetch_pixiv_image_urls(self, url: str) -> list[str]:
+    async def _fetch_pixiv_artwork_info(self, url: str) -> PixivArtworkInfo | None:
         artwork_id = url.split("/")[-1]
         api_url = f"https://phixiv.net/api/info?id={artwork_id}"
         async with self.bot.session.get(api_url) as response:
+            if response.status != 200:
+                return None
+
             data = await response.json()
-            return data["image_proxy_urls"]
+        return PixivArtworkInfo(tags=data["tags"], image_urls=data["image_proxy_urls"])
 
     async def _fetch_twitter_media_urls(self, url: str) -> list[str]:
         if "twitter.com" in url:
@@ -132,6 +153,9 @@ class FixerCog(commands.Cog):
             api_url = url.replace("x.com", "api.fxtwitter.com")
 
         async with self.bot.session.get(api_url) as response:
+            if response.status != 200:
+                return []
+
             data = await response.json()
             tweet = data["tweet"]
             medias = tweet.get("media")
@@ -139,8 +163,10 @@ class FixerCog(commands.Cog):
                 return []
             return [media["url"] for media in medias["all"] if media["type"] in {"photo", "video"}]
 
-    async def _download_media(self, url: str) -> discord.File:
+    async def _download_media(self, url: str) -> discord.File | None:
         async with self.bot.session.get(url) as response:
+            if response.status != 200:
+                return None
             data = await response.read()
             return discord.File(io.BytesIO(data), filename=url.split("/")[-1])
 
@@ -154,7 +180,9 @@ class FixerCog(commands.Cog):
         if not guild.chunked:
             await guild.chunk()
 
-        author = guild.get_member_named(message.author.display_name.removesuffix(" (Embed Fixer)"))
+        author = guild.get_member_named(
+            resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
+        )
         if author is not None:
             await message.reply(
                 self.bot.translator.get(
