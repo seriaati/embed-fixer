@@ -53,8 +53,7 @@ class FixerCog(commands.Cog):
                         and "#R-18" in artwork_info.tags
                         and not channel_is_nsfw
                     ):
-                        message.content = message.content.replace(url, f"[R-18] <{url}>")
-                        continue
+                        break
 
                 if extract_media and (medias_ := await self._extract_medias(domain, url)):
                     fix_found = True
@@ -75,9 +74,7 @@ class FixerCog(commands.Cog):
 
         if domain == "pixiv.net":
             artwork_info = await self._fetch_pixiv_artwork_info(url)
-            if artwork_info is None or "#R-18" in artwork_info.tags:
-                return []
-            image_urls = artwork_info.image_urls
+            image_urls = artwork_info.image_urls if artwork_info is not None else []
         elif domain in {"twitter.com", "x.com"}:
             image_urls = await self._fetch_twitter_media_urls(url)
 
