@@ -121,6 +121,33 @@ yarl = ">=1.0,<2.0"
 speedups = ["Brotli", "aiodns", "brotlicffi"]
 
 [[package]]
+name = "aiohttp-client-cache"
+version = "0.11.0"
+description = "Persistent cache for aiohttp requests"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "aiohttp_client_cache-0.11.0-py3-none-any.whl", hash = "sha256:5b6217bc26a7b3f5f939809b63a66b67658b660809cd38869d7d45066a26d079"},
+    {file = "aiohttp_client_cache-0.11.0.tar.gz", hash = "sha256:0766fff4eda05498c7525374a587810dcc2ccb7b256809dde52ae8790a8453eb"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.8,<4.0"
+aiosqlite = {version = ">=0.16", optional = true, markers = "extra == \"all\" or extra == \"filesystem\" or extra == \"sqlite\""}
+attrs = ">=21.2"
+itsdangerous = ">=2.0"
+url-normalize = ">=1.4,<2.0"
+
+[package.extras]
+all = ["aioboto3 (>=9.0)", "aiobotocore (>=2.0)", "aiofiles (>=0.6.0)", "aiosqlite (>=0.16)", "motor (>=3.1)", "redis (>=4.2)"]
+docs = ["furo (>=2023.8,<2024.0)", "linkify-it-py (>=2.0)", "markdown-it-py (>=2.2)", "myst-parser (>=2.0)", "python-forge (>=18.6,<19.0)", "sphinx (==7.1.2)", "sphinx-autodoc-typehints (>=1.23,<2.0)", "sphinx-automodapi (>=0.15)", "sphinx-copybutton (>=0.3,<0.4)", "sphinx-inline-tabs (>=2023.4)", "sphinxcontrib-apidoc (>=0.3)"]
+dynamodb = ["aioboto3 (>=9.0)", "aiobotocore (>=2.0)"]
+filesystem = ["aiofiles (>=0.6.0)", "aiosqlite (>=0.16)"]
+mongodb = ["motor (>=3.1)"]
+redis = ["redis (>=4.2)"]
+sqlite = ["aiosqlite (>=0.16)"]
+
+[[package]]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
@@ -162,17 +189,6 @@ files = [
 [package.dependencies]
 six = ">=1.6.1,<2.0"
 wheel = ">=0.23.0,<1.0"
-
-[[package]]
-name = "async-lru"
-version = "2.0.4"
-description = "Simple LRU cache for asyncio"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "async-lru-2.0.4.tar.gz", hash = "sha256:b8a59a5df60805ff63220b2a0c5b5393da5521b113cd5465a44eb037d81a5627"},
-    {file = "async_lru-2.0.4-py3-none-any.whl", hash = "sha256:ff02944ce3c288c5be660c42dbcca0742b32c3b279d6dceda655190240b99224"},
-]
 
 [[package]]
 name = "async-timeout"
@@ -670,6 +686,17 @@ python-versions = ">=3.6.2,<4.0"
 files = [
     {file = "iso8601-1.1.0-py3-none-any.whl", hash = "sha256:8400e90141bf792bce2634df533dc57e3bee19ea120a87bebcd3da89a58ad73f"},
     {file = "iso8601-1.1.0.tar.gz", hash = "sha256:32811e7b81deee2063ea6d2e94f8819a86d1f3811e49d23623a41fa832bef03f"},
+]
+
+[[package]]
+name = "itsdangerous"
+version = "2.1.2"
+description = "Safely pass data to untrusted environments and back."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "itsdangerous-2.1.2-py3-none-any.whl", hash = "sha256:2c2349112351b88699d8d4b6b075022c0808887cb7ad10069318a8b0bc88db44"},
+    {file = "itsdangerous-2.1.2.tar.gz", hash = "sha256:5dbbc68b317e5e42f327f9021763545dc3fc3bfe22e6deb96aaf1fc38874156a"},
 ]
 
 [[package]]
@@ -1189,6 +1216,20 @@ files = [
 ]
 
 [[package]]
+name = "url-normalize"
+version = "1.4.3"
+description = "URL normalization for Python"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+files = [
+    {file = "url-normalize-1.4.3.tar.gz", hash = "sha256:d23d3a070ac52a67b83a1c59a0e68f8608d1cd538783b401bc9de2c0fac999b2"},
+    {file = "url_normalize-1.4.3-py2.py3-none-any.whl", hash = "sha256:ec3c301f04e5bb676d333a7fa162fa977ad2ca04b7e652bfc9fac4e405728eed"},
+]
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 name = "uvloop"
 version = "0.19.0"
 description = "Fast implementation of asyncio event loop on top of libuv"
@@ -1372,4 +1413,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a598fc1292553ef57681a53de67ef27630b9e5b310fbfedfd6a58005b3cd99a6"
+content-hash = "1e7adc15e93a9abb9aaf0f25392ef0c695936c3c5ba195da9f6f06b998f5283a"

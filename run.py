@@ -3,8 +3,9 @@ import contextlib
 import logging
 import os
 
-import aiohttp
 import discord
+from aiohttp_client_cache.backends.sqlite import SQLiteBackend
+from aiohttp_client_cache.session import CachedSession
 from dotenv import load_dotenv
 from seria.logging import setup_logging
 
@@ -18,7 +19,9 @@ discord.VoiceClient.warn_nacl = False
 
 
 async def main() -> None:
-    async with aiohttp.ClientSession() as session, EmbedFixer(session=session, env=env) as bot:
+    async with CachedSession(cache=SQLiteBackend(expire_after=60 * 60)) as session, EmbedFixer(
+        session=session, env=env
+    ) as bot:
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             await bot.start(os.environ["DISCORD_TOKEN"])
 
