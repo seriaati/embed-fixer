@@ -165,7 +165,8 @@ class FixerCog(commands.Cog):
             if response.status != 200:
                 return None
             data = await response.read()
-            return discord.File(io.BytesIO(data), filename=url.split("/")[-1])
+            filename = url.split("/")[-1].split("?")[0]
+            return discord.File(io.BytesIO(data), filename=filename)
 
     async def _reply_to_webhook(
         self, message: discord.Message, resolved_ref: discord.Message
