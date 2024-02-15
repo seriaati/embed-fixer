@@ -33,11 +33,12 @@ class FixerCog(commands.Cog):
         sauces: list[str] = []
 
         channel_is_nsfw = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
-        urls = extract_urls(message.content)
+        urls = extract_urls(message.content, clean=False)
 
         for url in urls:
+            clean_url_ = clean_url(url)
             for pattern in FIX_PATTERNS:
-                if re.match(pattern, url) is not None:
+                if re.match(pattern, clean_url_) is not None:
                     break
             else:
                 continue
@@ -47,7 +48,7 @@ class FixerCog(commands.Cog):
                     continue
 
                 if domain == "pixiv.net":
-                    artwork_info = await self._fetch_pixiv_artwork_info(url)
+                    artwork_info = await self._fetch_pixiv_artwork_info(clean_url_)
                     if (
                         artwork_info is not None
                         and "#R-18" in artwork_info.tags
@@ -56,16 +57,18 @@ class FixerCog(commands.Cog):
                         break
 
                 if extract_media and (
-                    medias_ := await self._extract_medias(domain, url, spoiler=channel_is_nsfw)
+                    medias_ := await self._extract_medias(
+                        domain, clean_url_, spoiler=channel_is_nsfw
+                    )
                 ):
                     fix_found = True
                     medias.extend(medias_)
                     message.content = message.content.replace(url, "")
-                    sauces.append(url)
+                    sauces.append(clean_url_)
                     break
 
                 fix_found = True
-                fixed_url = url.replace(domain, fix)
+                fixed_url = clean_url_.replace(domain, fix)
                 message.content = message.content.replace(url, fixed_url)
                 break
 
@@ -140,7 +143,7 @@ class FixerCog(commands.Cog):
                 )
 
     async def _fetch_pixiv_artwork_info(self, url: str) -> PixivArtworkInfo | None:
-        artwork_id = clean_url(url).split("/")[-1]
+        artwork_id = url.split("/")[-1]
         api_url = f"https://phixiv.net/api/info?id={artwork_id}"
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
