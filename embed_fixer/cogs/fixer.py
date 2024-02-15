@@ -128,7 +128,7 @@ class FixerCog(commands.Cog):
 
             if isinstance(message.channel, discord.TextChannel):
                 webhook = await self._get_or_create_webhook(message)
-                fixed_message = await self._send_webhook(message, webhook)
+                fixed_message = await self._send_webhook(message, webhook, view=view)
             else:
                 fixed_message = await message.channel.send(
                     message.content, tts=message.tts, view=view
