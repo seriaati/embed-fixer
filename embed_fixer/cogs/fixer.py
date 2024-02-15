@@ -104,7 +104,7 @@ class FixerCog(commands.Cog):
         if files:
             chunked_files = split_list_to_chunks(files, 10)
 
-            for i, chunk in enumerate(chunked_files):
+            for chunk in chunked_files:
                 view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
                 await view.start(sauces=sauces)
 
@@ -115,12 +115,13 @@ class FixerCog(commands.Cog):
                     )
                 else:
                     fixed_message = await message.channel.send(
-                        message.content if i == 0 else "",
+                        message.content,
                         tts=message.tts,
                         files=chunk,
                         view=view,
                     )
 
+                message.content = ""
                 view.message = fixed_message
         else:
             view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
@@ -144,15 +145,14 @@ class FixerCog(commands.Cog):
             author = message.guild.get_member_named(
                 resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
             )
-            if author:
+            if author is not None:
                 await fixed_message.reply(
                     self.bot.translator.get(
                         await Translator.get_guild_lang(message.guild),
                         "replying_to",
                         user=author.mention,
                         url=resolved_ref.jump_url,
-                    ),
-                    mention_author=False,
+                    )
                 )
 
     async def _send_webhook(
