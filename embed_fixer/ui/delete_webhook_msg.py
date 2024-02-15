@@ -46,16 +46,5 @@ class DeleteMsgBtn(ui.Button[DeleteWebhookMsgView]):
 
 class SauceBtn(ui.Button[DeleteWebhookMsgView]):
     def __init__(self, urls: list[str]) -> None:
-        super().__init__()
+        super().__init__(url=urls[0])
         self.urls = urls
-
-    async def callback(self, i: "INTERACTION") -> None:
-        if self.view is None:
-            return
-
-        await i.response.send_message(
-            embed=DefaultEmbed(
-                title=self.view.translate("sauce"), description="\n".join(self.urls)
-            ),
-            ephemeral=True,
-        )
