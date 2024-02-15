@@ -22,7 +22,7 @@ class GuildSettingsView(View):
 
         if self.guild is None:
             return
-        guild_settings = await GuildSettings.get(id=self.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
 
         if setting == "disable_fixes":
             fix_selector = FixSelector(guild_settings.disabled_fixes)
@@ -92,7 +92,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
         if i.guild is None or self.view is None:
             return
 
-        guild_settings = await GuildSettings.get(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disabled_fixes = self.values
         await guild_settings.save()
         await i.response.send_message(
@@ -113,7 +113,7 @@ class LangSelector(ui.Select[GuildSettingsView]):
         if i.guild is None or self.view is None:
             return
 
-        guild_settings = await GuildSettings.get(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.lang = self.values[0]
         await guild_settings.save()
         await i.response.send_message(
@@ -147,7 +147,7 @@ class ExtractMediaChannelSelector(ChannelSelector):
         if i.guild is None or self.view is None:
             return
 
-        guild_settings = await GuildSettings.get(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.extract_media_channels = [int(channel_id) for channel_id in self.values]
         await guild_settings.save()
         await i.response.send_message(
@@ -160,7 +160,7 @@ class DisableFixChannelSelector(ChannelSelector):
         if i.guild is None or self.view is None:
             return
 
-        guild_settings = await GuildSettings.get(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disable_fix_channels = [int(channel_id) for channel_id in self.values]
         await guild_settings.save()
         await i.response.send_message(
@@ -185,7 +185,7 @@ class WebhookReplyToggle(ui.Button[GuildSettingsView]):
         if i.guild is None or self.view is None:
             return
 
-        guild_settings = await GuildSettings.get(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disable_webhook_reply = not guild_settings.disable_webhook_reply
         await guild_settings.save()
 

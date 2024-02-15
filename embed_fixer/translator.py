@@ -44,7 +44,7 @@ class Translator:
     async def get_guild_lang(guild: "discord.Guild | None") -> str:
         lang = "en-US"
         if guild is not None:
-            guild_settings = await GuildSettings.get(id=guild.id)
+            guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)
             lang = guild_settings.lang or guild.preferred_locale.value
         return lang
 

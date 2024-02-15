@@ -1,7 +1,7 @@
 import io
 import logging
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import discord
 from discord.ext import commands
@@ -101,29 +101,37 @@ class FixerCog(commands.Cog):
             message.content += f"\n\n||{sauces_str}||"
             sauces.clear()
 
-        chunked_files = split_list_to_chunks(files, 10)
+        if files:
+            chunked_files = split_list_to_chunks(files, 10)
 
-        for i, chunk in enumerate(chunked_files):
+            for i, chunk in enumerate(chunked_files):
+                view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
+                await view.start(sauces=sauces)
+
+                if isinstance(message.channel, discord.TextChannel):
+                    webhook = await self._get_or_create_webhook(message)
+                    fixed_message = await self._send_webhook(
+                        message, webhook, files=chunk, view=view
+                    )
+                else:
+                    fixed_message = await message.channel.send(
+                        message.content if i == 0 else "",
+                        tts=message.tts,
+                        files=chunk,
+                        view=view,
+                    )
+
+                view.message = fixed_message
+        else:
             view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
             await view.start(sauces=sauces)
 
             if isinstance(message.channel, discord.TextChannel):
                 webhook = await self._get_or_create_webhook(message)
-                fixed_message = await webhook.send(
-                    message.content if i == 0 else "",
-                    username=f"{message.author.display_name} (Embed Fixer)",
-                    avatar_url=message.author.display_avatar.url,
-                    tts=message.tts,
-                    files=chunk,
-                    view=view,
-                    wait=True,
-                )
+                fixed_message = await self._send_webhook(message, webhook)
             else:
                 fixed_message = await message.channel.send(
-                    message.content if i == 0 else "",
-                    tts=message.tts,
-                    files=chunk,
-                    view=view,
+                    message.content, tts=message.tts, view=view
                 )
 
             view.message = fixed_message
@@ -146,6 +154,18 @@ class FixerCog(commands.Cog):
                     ),
                     mention_author=False,
                 )
+
+    async def _send_webhook(
+        self, message: discord.Message, webhook: discord.Webhook, **kwargs: Any
+    ) -> discord.Message:
+        return await webhook.send(
+            message.content,
+            username=f"{message.author.display_name} (Embed Fixer)",
+            avatar_url=message.author.display_avatar.url,
+            tts=message.tts,
+            wait=True,
+            **kwargs,
+        )
 
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
         assert isinstance(message.channel, discord.TextChannel)
@@ -223,11 +243,7 @@ class FixerCog(commands.Cog):
         if message.author.bot or message.guild is None:
             return
 
-        guild_settings = await GuildSettings.get_or_none(id=message.guild.id)
-        if guild_settings is None:
-            LOGGER_.warning("GuildSettings not found for guild %r", message.guild)
-            return
-
+        guild_settings, _ = await GuildSettings.get_or_create(id=message.guild.id)
         if message.channel.id in guild_settings.disable_fix_channels:
             return
 
