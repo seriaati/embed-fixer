@@ -99,6 +99,11 @@ class FixerCog(commands.Cog):
         view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
         view.message = message
         await view.start(sauces=sauces)
+        if len(sauces) > 1:
+            sauces_str = "\n".join(f"<{sauce}>" for sauce in sauces)
+            message.content += f"\n\n||{sauces_str}||"
+            sauces.clear()
+        await view.start(sauces=sauces if len(sauces) == 1 else [])
 
         if isinstance(message.channel, discord.TextChannel):
             webhooks = await message.channel.webhooks()
