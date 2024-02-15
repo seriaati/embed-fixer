@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from seria.utils import extract_urls
+from seria.utils import clean_url, extract_urls
 
 from ..fixes import FIX_PATTERNS, FIXES
 from ..models import GuildSettings, PixivArtworkInfo
@@ -140,7 +140,7 @@ class FixerCog(commands.Cog):
                 )
 
     async def _fetch_pixiv_artwork_info(self, url: str) -> PixivArtworkInfo | None:
-        artwork_id = url.split("/")[-1]
+        artwork_id = clean_url(url).split("/")[-1]
         api_url = f"https://phixiv.net/api/info?id={artwork_id}"
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
