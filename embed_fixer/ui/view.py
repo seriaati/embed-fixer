@@ -15,7 +15,7 @@ class View(ui.View):
         guild: discord.Guild | None,
         translator: "Translator",
     ) -> None:
-        super().__init__()
+        super().__init__(timeout=60 * 60)  # 1 hour
 
         self.author = author
         self.message: discord.Message | None = None
@@ -34,7 +34,7 @@ class View(ui.View):
             return
 
         for child in self.children:
-            if isinstance(child, (ui.Button | ui.Select)):
+            if isinstance(child, ui.Select) or (isinstance(child, ui.Button) and child.url is None):
                 child.disabled = True
 
         with contextlib.suppress(discord.NotFound):

@@ -97,8 +97,6 @@ class FixerCog(commands.Cog):
         files.extend(medias)
 
         view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
-        view.message = message
-        await view.start(sauces=sauces)
         if len(sauces) > 1:
             sauces_str = "\n".join(f"<{sauce}>" for sauce in sauces)
             message.content += f"\n\n||{sauces_str}||"
@@ -127,6 +125,7 @@ class FixerCog(commands.Cog):
             fixed_message = await message.channel.send(
                 message.content, tts=message.tts, files=files, view=view
             )
+        view.message = fixed_message
 
         if (
             message.reference is not None
