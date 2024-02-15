@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from seria.utils import clean_url, extract_urls
+from seria.utils import clean_url, extract_urls, split_list_to_chunks
 
 from ..fixes import FIX_PATTERNS, FIXES
 from ..models import GuildSettings, PixivArtworkInfo
@@ -96,36 +96,37 @@ class FixerCog(commands.Cog):
         files = [await a.to_file() for a in message.attachments]
         files.extend(medias)
 
-        view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
         if len(sauces) > 1:
             sauces_str = "\n".join(f"<{sauce}>" for sauce in sauces)
             message.content += f"\n\n||{sauces_str}||"
             sauces.clear()
-        await view.start(sauces=sauces if len(sauces) == 1 else [])
 
-        if isinstance(message.channel, discord.TextChannel):
-            webhooks = await message.channel.webhooks()
-            webhook_name = "Embed Fixer"
-            webhook = discord.utils.get(webhooks, name=webhook_name)
-            if webhook is None:
-                webhook = await message.channel.create_webhook(
-                    name=webhook_name, avatar=await self.bot.user.display_avatar.read()
+        chunked_files = split_list_to_chunks(files, 10)
+
+        for i, chunk in enumerate(chunked_files):
+            view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
+            await view.start(sauces=sauces)
+
+            if isinstance(message.channel, discord.TextChannel):
+                webhook = await self._get_or_create_webhook(message)
+                fixed_message = await webhook.send(
+                    message.content if i == 0 else "",
+                    username=f"{message.author.display_name} (Embed Fixer)",
+                    avatar_url=message.author.display_avatar.url,
+                    tts=message.tts,
+                    files=chunk,
+                    view=view,
+                    wait=True,
+                )
+            else:
+                fixed_message = await message.channel.send(
+                    message.content if i == 0 else "",
+                    tts=message.tts,
+                    files=chunk,
+                    view=view,
                 )
 
-            fixed_message = await webhook.send(
-                message.content,
-                username=f"{message.author.display_name} (Embed Fixer)",
-                avatar_url=message.author.display_avatar.url,
-                tts=message.tts,
-                files=files,
-                view=view,
-                wait=True,
-            )
-        else:
-            fixed_message = await message.channel.send(
-                message.content, tts=message.tts, files=files, view=view
-            )
-        view.message = fixed_message
+            view.message = fixed_message
 
         if (
             message.reference is not None
@@ -145,6 +146,18 @@ class FixerCog(commands.Cog):
                     ),
                     mention_author=False,
                 )
+
+    async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
+        assert isinstance(message.channel, discord.TextChannel)
+        webhooks = await message.channel.webhooks()
+        webhook_name = "Embed Fixer"
+        webhook = discord.utils.get(webhooks, name=webhook_name)
+        if webhook is None:
+            webhook = await message.channel.create_webhook(
+                name=webhook_name, avatar=await self.bot.user.display_avatar.read()
+            )
+
+        return webhook
 
     async def _fetch_pixiv_artwork_info(self, url: str) -> PixivArtworkInfo | None:
         artwork_id = url.split("/")[-1]
