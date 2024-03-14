@@ -26,7 +26,7 @@ async def main() -> None:
             await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(logging.INFO, ()):
+with setup_logging(logging.INFO):
     try:
         import uvloop  # type: ignore
     except ImportError:
