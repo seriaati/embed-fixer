@@ -33,7 +33,7 @@ class DeleteMsgBtn(ui.Button[DeleteWebhookMsgView]):
         if i.guild is None or self.view is None or i.message is None:
             return
 
-        if i.user.id != self.view.author.id or (
+        if i.user.id != self.view.author.id and (
             isinstance(i.user, Member) and not i.user.guild_permissions.manage_messages
         ):
             return await i.response.send_message(
