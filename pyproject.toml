@@ -3,7 +3,7 @@ requires-python = ">=3.11"
 
 [tool.poetry]
 name = "embed-fixer"
-version = "1.2.2"
+version = "1.2.3"
 description = "Discord bot that fixes social media embeds"
 authors = ["seriaati <seria.ati@gmail.com>"]
 license = "GPL-3.0"
