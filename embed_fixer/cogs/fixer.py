@@ -169,7 +169,7 @@ class FixerCog(commands.Cog):
             )
         except discord.HTTPException:
             LOGGER_.exception("Failed to send webhook message")
-            await message.channel.send(
+            return await message.channel.send(
                 message.content,
                 tts=message.tts,
                 **kwargs,
