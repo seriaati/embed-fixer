@@ -158,14 +158,22 @@ class FixerCog(commands.Cog):
     async def _send_webhook(
         self, message: discord.Message, webhook: discord.Webhook, **kwargs: Any
     ) -> discord.Message:
-        return await webhook.send(
-            message.content,
-            username=f"{message.author.display_name} (Embed Fixer)",
-            avatar_url=message.author.display_avatar.url,
-            tts=message.tts,
-            wait=True,
-            **kwargs,
-        )
+        try:
+            return await webhook.send(
+                message.content,
+                username=f"{message.author.display_name} (Embed Fixer)",
+                avatar_url=message.author.display_avatar.url,
+                tts=message.tts,
+                wait=True,
+                **kwargs,
+            )
+        except discord.HTTPException:
+            LOGGER_.exception("Failed to send webhook message")
+            await message.channel.send(
+                message.content,
+                tts=message.tts,
+                **kwargs,
+            )
 
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
         assert isinstance(message.channel, discord.TextChannel)
