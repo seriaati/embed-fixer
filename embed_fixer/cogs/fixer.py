@@ -235,7 +235,7 @@ class FixerCog(commands.Cog):
         author = guild.get_member_named(
             resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
         )
-        if author is not None:
+        if author is not None and not author.bot:
             await message.reply(
                 self.bot.translator.get(
                     await Translator.get_guild_lang(guild),
