@@ -5,6 +5,7 @@ FIX_PATTERNS = (
     r"https://www.tiktok.com/(t/\w+|@[\w.]+/video/\d+)",
     r"https://www.reddit.com/r/[\w]+/comments/[\w]+/[\w]+",
     r"https://www.instagram.com/(p|reels?)/[\w]+",
+    r"https://www.furaffinity.net/view/\d+",
 )
 FIXES = {
     "twitter.com": "fxtwitter.com",
@@ -13,4 +14,5 @@ FIXES = {
     "tiktok.com": "tiktxk.com",
     "reddit.com": "rxddit.com",
     "instagram.com": "ddinstagram.com",
+    "furaffinity.net": "xfuraffinity.net",
 }
