@@ -1,3 +1,4 @@
+import asyncio
 import io
 import logging
 import re
@@ -78,6 +79,7 @@ class FixerCog(commands.Cog):
         self, domain: str, url: str, *, spoiler: bool = False
     ) -> list[discord.File]:
         image_urls: list[str] = []
+        result: list[discord.File] = []
 
         if domain == "pixiv.net":
             artwork_info = await self._fetch_pixiv_artwork_info(url)
@@ -85,10 +87,11 @@ class FixerCog(commands.Cog):
         elif domain in {"twitter.com", "x.com"}:
             image_urls = await self._fetch_twitter_media_urls(url)
 
-        medias_ = [
-            await self._download_media(image_url, spoiler=spoiler) for image_url in image_urls
-        ]
-        return [media for media in medias_ if media is not None]
+        async with asyncio.TaskGroup() as tg:
+            for image_url in image_urls:
+                tg.create_task(self._download_media(image_url, result, spoiler=spoiler))
+
+        return result
 
     async def _send_fixes(
         self, message: discord.Message, medias: list[discord.File], sauces: list[str]
@@ -214,13 +217,15 @@ class FixerCog(commands.Cog):
                 return []
             return [media["url"] for media in medias["all"] if media["type"] in {"photo", "video"}]
 
-    async def _download_media(self, url: str, spoiler: bool = False) -> discord.File | None:
+    async def _download_media(
+        self, url: str, result: list[discord.File], *, spoiler: bool = False
+    ) -> None:
         async with self.bot.session.get(url) as response:
             if response.status != 200:
                 return None
             data = await response.read()
             filename = url.split("/")[-1].split("?")[0]
-            return discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
+            result.append(discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler))
 
     async def _reply_to_webhook(
         self, message: discord.Message, resolved_ref: discord.Message
