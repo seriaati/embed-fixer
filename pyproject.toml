@@ -26,7 +26,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.1"
-ruff = "^0.2.1"
+ruff = "^0.4.0"
 
 [tool.poetry.group.linux]
 optional = true
