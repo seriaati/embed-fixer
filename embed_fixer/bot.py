@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 LOGGER_ = logging.getLogger(__name__)
 
-__all__ = ("EmbedFixer", "INTERACTION")
+__all__ = ("INTERACTION", "EmbedFixer")
 
 INTERACTION: TypeAlias = discord.Interaction["EmbedFixer"]
 
