@@ -19,9 +19,10 @@ discord.VoiceClient.warn_nacl = False
 
 
 async def main() -> None:
-    async with CachedSession(cache=SQLiteBackend(expire_after=60 * 60)) as session, EmbedFixer(
-        session=session, env=env
-    ) as bot:
+    async with (
+        CachedSession(cache=SQLiteBackend(expire_after=60 * 60)) as session,
+        EmbedFixer(session=session, env=env) as bot,
+    ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             await bot.start(os.environ["DISCORD_TOKEN"])
 
