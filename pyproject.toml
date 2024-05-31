@@ -18,8 +18,8 @@ jishaku = "^2.5.2"
 python = "^3.11"
 python-dotenv = "^1.0.1"
 pyyaml = "^6.0.1"
-seria-library = {git = "https://github.com/seriaati/seria-library"}
-tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
+tortoise-orm = {extras = ["asyncpg"], version = "^0.21.0"}
+seria-library = "^1.4.0"
 
 [tool.poetry.group.dev]
 optional = true

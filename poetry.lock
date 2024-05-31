@@ -1232,24 +1232,20 @@ name = "seria-library"
 version = "1.4.0"
 description = "Seria's library (of code)"
 optional = false
-python-versions = "^3.11"
-files = []
-develop = false
+python-versions = "<4.0,>=3.11"
+files = [
+    {file = "seria_library-1.4.0-py3-none-any.whl", hash = "sha256:41b7d02422c959fb8b26e66a11be65f59869b3df17e1127ce740572f2553a8ba"},
+    {file = "seria_library-1.4.0.tar.gz", hash = "sha256:6b439a3dee6713148fd25ab68dc0835d93b7d4009e104a06852272737ce197cd"},
+]
 
 [package.dependencies]
-aiofiles = "^23.2.1"
-discord-py = {version = "^2.3.2", extras = ["speed"]}
-jishaku = "^2.5.2"
-orjson = "^3.9.13"
-python-dotenv = "^1.0.1"
-pyyaml = "^6.0.1"
-tortoise-orm = {version = "^0.20.0", extras = ["asyncpg"]}
-
-[package.source]
-type = "git"
-url = "https://github.com/seriaati/seria-library"
-reference = "HEAD"
-resolved_reference = "c927873a9ff465a7f08f955e703f8fcd1af102d9"
+aiofiles = ">=23.2.1,<24.0.0"
+discord-py = {version = ">=2.3.2,<3.0.0", extras = ["speed"]}
+jishaku = ">=2.5.2,<3.0.0"
+orjson = ">=3.9.13,<4.0.0"
+python-dotenv = ">=1.0.1,<2.0.0"
+pyyaml = ">=6.0.1,<7.0.0"
+tortoise-orm = {version = ">=0.21.0,<0.22.0", extras = ["asyncpg"]}
 
 [[package]]
 name = "setuptools"
@@ -1279,13 +1275,13 @@ files = [
 
 [[package]]
 name = "tortoise-orm"
-version = "0.20.1"
+version = "0.21.2"
 description = "Easy async ORM for python, built with relations in mind"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "tortoise_orm-0.20.1-py3-none-any.whl", hash = "sha256:bf88bc1ba7495a8827565c071efba0a89c4b5f83ff1c16be3c837a4e6b672c21"},
-    {file = "tortoise_orm-0.20.1.tar.gz", hash = "sha256:c896c90a90d1213b822ac0d607b61659ad5fcd5ff72698a8ba2d9efbad9932f3"},
+    {file = "tortoise_orm-0.21.2-py3-none-any.whl", hash = "sha256:5601e64de439b29140e033948a43d4d7d4447bb05a6247510824bdc94224e345"},
+    {file = "tortoise_orm-0.21.2.tar.gz", hash = "sha256:376f29ca097a7825b59c2ea22169c6e4f5888e2ca4520818f9cca642204dd819"},
 ]
 
 [package.dependencies]
@@ -1513,4 +1509,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0dd730eea3aea7c8760c98ba09fe24f9ae637ad48916943604f91ed57877de4e"
+content-hash = "b6bbf242337ccab5884ba1ac48dc5d5a51701341f218b060d5a1204dbd4754d6"
