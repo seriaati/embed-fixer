@@ -1,0 +1,51 @@
+line-length = 100
+
+[lint]
+ignore = [
+  "E501",
+  "ANN401",
+  "ANN101",
+  "ANN102",
+  "PLR0913",
+  "PLR2004",
+  "PLR0917",
+  "PLR6301",
+  "ANN002",
+  "ERA001",
+  "RUF100",
+]
+preview = true
+select = [
+  "E",
+  "W",
+  "C90",
+  "F",
+  "UP",
+  "B",
+  "SIM",
+  "I",
+  "N",
+  "TCH",
+  "ANN",
+  "ASYNC",
+  "A",
+  "C4",
+  "EM",
+  "FA",
+  "ICN",
+  "G",
+  "PIE",
+  "T20",
+  "ARG",
+  "ERA",
+  "LOG",
+  "PL",
+  "TRY",
+  "RUF",
+]
+
+[lint.flake8-type-checking]
+quote-annotations = true
+
+[lint.pydocstyle]
+convention = "google"
