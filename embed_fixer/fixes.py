@@ -11,7 +11,7 @@ FIXES = {
     "twitter.com": "fxtwitter.com",
     "x.com": "fixupx.com",
     "pixiv.net": "phixiv.net",
-    "tiktok.com": "tiktxk.com",
+    "tiktok.com": "vxtiktok.com",
     "reddit.com": "rxddit.com",
     "instagram.com": "ddinstagram.com",
     "furaffinity.net": "xfuraffinity.net",
