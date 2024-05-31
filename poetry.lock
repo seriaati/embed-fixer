@@ -1226,23 +1226,19 @@ files = [
 
 [[package]]
 name = "seria-library"
-version = "1.4.0"
+version = "1.5.1"
 description = "Seria's library (of code)"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "seria_library-1.4.0-py3-none-any.whl", hash = "sha256:41b7d02422c959fb8b26e66a11be65f59869b3df17e1127ce740572f2553a8ba"},
-    {file = "seria_library-1.4.0.tar.gz", hash = "sha256:6b439a3dee6713148fd25ab68dc0835d93b7d4009e104a06852272737ce197cd"},
+    {file = "seria_library-1.5.1-py3-none-any.whl", hash = "sha256:85ce3af2d80c726df27400d6711b0967a4fcb4a989eb692c52b99048f57fe2bc"},
+    {file = "seria_library-1.5.1.tar.gz", hash = "sha256:550ad4cc18d86f347faea836e82a29738c3e36cb18ed39455abfbcedbf659c48"},
 ]
 
-[package.dependencies]
-aiofiles = ">=23.2.1,<24.0.0"
-discord-py = {version = ">=2.3.2,<3.0.0", extras = ["speed"]}
-jishaku = ">=2.5.2,<3.0.0"
-orjson = ">=3.9.13,<4.0.0"
-python-dotenv = ">=1.0.1,<2.0.0"
-pyyaml = ">=6.0.1,<7.0.0"
-tortoise-orm = {version = ">=0.21.0,<0.22.0", extras = ["asyncpg"]}
+[package.extras]
+all = ["aiofiles (>=23.2.1,<24.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
+files = ["aiofiles (>=23.2.1,<24.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
+tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 
 [[package]]
 name = "six"
