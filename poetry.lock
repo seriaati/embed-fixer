@@ -628,25 +628,6 @@ files = [
 ]
 
 [[package]]
-name = "git-cliff"
-version = "1.4.0"
-description = "A highly customizable changelog generator ⛰️"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "git_cliff-1.4.0-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:b1408332be882362ee611f365511518b44ebc8450f722321fd26162d81df6218"},
-    {file = "git_cliff-1.4.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:89722c96e537ed02d8af85edae392ca01a1fb188bbde656f1af011eef5031428"},
-    {file = "git_cliff-1.4.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b0aad535897a6a0249b4595b6cb6630cb56a9e04f44440cf8cb0a9f3598690df"},
-    {file = "git_cliff-1.4.0-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:3c3058975f35c5693ba72b944345c9f37943ec015dfc93c751fca866d948e44f"},
-    {file = "git_cliff-1.4.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:631f703eae716365667a8c1d4b5e58198ad14d057286d489b7512651cfee24e7"},
-    {file = "git_cliff-1.4.0-py3-none-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:5f6634d0b7c62aab43465e5ce6c602c7f1e6d70c5812be7cd7e48ebca5b1b206"},
-    {file = "git_cliff-1.4.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:20ced3617883593cb57b30695ddad1dcf12958db0bd7557065e336cebefa0ae4"},
-    {file = "git_cliff-1.4.0-py3-none-win32.whl", hash = "sha256:23661916a0aa3fed96fec4b28efb85b57a7bc87f1c5c9747b59a96a99d9e31b7"},
-    {file = "git_cliff-1.4.0-py3-none-win_amd64.whl", hash = "sha256:ad4bd16e99b960f30c4fb7c3f72e3baad380bc5a76e0b5f54273f9bf9d1d625a"},
-    {file = "git_cliff-1.4.0.tar.gz", hash = "sha256:a15612135d058a56c55c973a235f870237af3478053dd6fb1923a376ccc529be"},
-]
-
-[[package]]
 name = "identify"
 version = "2.5.36"
 description = "File identification library for Python"
@@ -1532,4 +1513,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1e7adc15e93a9abb9aaf0f25392ef0c695936c3c5ba195da9f6f06b998f5283a"
+content-hash = "0dd730eea3aea7c8760c98ba09fe24f9ae637ad48916943604f91ed57877de4e"
