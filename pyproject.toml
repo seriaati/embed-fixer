@@ -1,32 +1,33 @@
 [project]
+name = "embed-fixer"
 requires-python = ">=3.11"
 
 [tool.poetry]
-name = "embed-fixer"
-version = "1.2.4"
-description = "Discord bot that fixes social media embeds"
 authors = ["seriaati <seria.ati@gmail.com>"]
+description = "Discord bot that fixes social media embeds"
 license = "GPL-3.0"
+name = "embed-fixer"
 readme = "README.md"
+version = "1.2.4"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-discord-py = {extras = ["speed"], version = "^2.3.2"}
-tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
-python-dotenv = "^1.0.1"
-jishaku = "^2.5.2"
 aiofiles = "^23.2.1"
+aiohttp-client-cache = {extras = ["sqlite"], version = "^0.11.0"}
+discord-py = {extras = ["speed"], version = "^2.3.2"}
+jishaku = "^2.5.2"
+python = "^3.11"
+python-dotenv = "^1.0.1"
 pyyaml = "^6.0.1"
 seria-library = {git = "https://github.com/seriaati/seria-library"}
-aiohttp-client-cache = {extras = ["sqlite"], version = "^0.11.0"}
+tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.2.1"
 git-cliff = "^1.4.0"
 pre-commit = "^3.6.1"
+ruff = "^0.2.1"
 
 [tool.poetry.group.linux]
 optional = true
@@ -35,29 +36,5 @@ optional = true
 uvloop = "^0.19.0"
 
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
-[tool.ruff]
-line-length = 100
-
-[tool.ruff.lint]
-select = [
-    "E","W","C90","F","UP","B","SIM","I","N","TCH",
-    "ANN","ASYNC","A","C4","EM","FA","ICN","G",
-    "PIE","T20","ARG","ERA","LOG","PL","TRY"
-]
-ignore = [
-    "E501","ANN401","ANN101","ANN102","ANN003",
-    "PLR0913","PLR2004","PLR0917","PLR6301",
-    "ANN002"
-]
-preview = true
-
-[tool.ruff.lint.per-file-ignores]
-"**/__init__.py" = ["F403"]
-"playground.*.py" = ["ALL"]
-
-[tool.ruff.lint.flake8-type-checking]
-quote-annotations = true
+requires = ["poetry-core"]
