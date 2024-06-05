@@ -27,7 +27,8 @@ Fixings are currently available for:
 - Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
 - Instagram with [instafix](https://github.com/Wikidepia/InstaFix)
 - Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit)
-- Tiktok wtih [tiktxk](https://github.com/Britmoji/tiktxk)
+- Tiktok wtih [vxtiktok](https://github.com/dylanpdx/vxtiktok)
+- Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a "Delete" button that only you and/or users with "Manage Messages" permission can click on to delete the message.  
 
