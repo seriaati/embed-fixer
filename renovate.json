@@ -3,5 +3,7 @@
   "dependencyDashboard": false,
   "extends": [
     "config:recommended"
-  ]
+  ],
+  "automerge": true,
+  "automergeStrategy": "squash",
 }
