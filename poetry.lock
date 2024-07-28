@@ -1227,18 +1227,19 @@ files = [
 
 [[package]]
 name = "seria-library"
-version = "1.5.2"
+version = "1.5.3"
 description = "Seria's library (of code)"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "seria_library-1.5.2-py3-none-any.whl", hash = "sha256:9ec53b467aefa1d48e1858eed5f3c0fcaf5f3c81c6dbf786a2ef8a201ceb4b38"},
-    {file = "seria_library-1.5.2.tar.gz", hash = "sha256:6a3b8fcf5a8dc01842ae8607743fc36acffee1e30b7b7744fe6e85f5d50be9ed"},
+    {file = "seria_library-1.5.3-py3-none-any.whl", hash = "sha256:4d2651cada4b9a26a54ffcff01d99c9e4bcd0b53b4930bbe14ad5e21673f0015"},
+    {file = "seria_library-1.5.3.tar.gz", hash = "sha256:57c437f8e3612c9c1e8ae5acc92aea70bf4886772918345077252d436b0f4b6a"},
 ]
 
 [package.extras]
 all = ["aiofiles (>=24.0.0,<25.0.0)", "discord-py (>=2.3.2,<3.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)", "tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
-files = ["aiofiles (>=24.0.0,<25.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
+dpy = ["discord-py (>=2.3.2,<3.0.0)"]
+files = ["aiofiles (>=24.0.0,<25.0.0)", "aiohttp (>=3.9.5,<4.0.0)", "orjson (>=3.9.13,<4.0.0)", "pyyaml (>=6.0.1,<7.0.0)"]
 tortoise = ["tortoise-orm[asyncpg] (>=0.21.0,<0.22.0)"]
 
 [[package]]
