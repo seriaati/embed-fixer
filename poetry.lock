@@ -1227,13 +1227,13 @@ files = [
 
 [[package]]
 name = "seria-library"
-version = "1.5.3"
+version = "1.5.4"
 description = "Seria's library (of code)"
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "seria_library-1.5.3-py3-none-any.whl", hash = "sha256:4d2651cada4b9a26a54ffcff01d99c9e4bcd0b53b4930bbe14ad5e21673f0015"},
-    {file = "seria_library-1.5.3.tar.gz", hash = "sha256:57c437f8e3612c9c1e8ae5acc92aea70bf4886772918345077252d436b0f4b6a"},
+    {file = "seria_library-1.5.4-py3-none-any.whl", hash = "sha256:cf3cca0174707d12578b4d752f94dc5a34d4ffc6a5eb68ed32f30ca082e6f2ae"},
+    {file = "seria_library-1.5.4.tar.gz", hash = "sha256:a1a4b9d31646c4f877574f967897cd553036d38b78f536a7b04ce2532c3c9217"},
 ]
 
 [package.extras]
