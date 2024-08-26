@@ -270,11 +270,12 @@ class FixerCog(commands.Cog):
             await self._send_fixes(message, medias, sauces)
             await message.delete()
         elif (
-            message.reference is not None
+            message.reference is not None  # noqa: PLR0916
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and resolved_ref.webhook_id is not None
             and not message.author.bot
             and message.channel.id not in guild_settings.disable_fix_channels
+            and not guild_settings.disable_webhook_reply
         ):
             await self._reply_to_webhook(message, resolved_ref)
 
