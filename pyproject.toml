@@ -1,39 +1,35 @@
 [project]
-name = "embed-fixer"
-requires-python = ">=3.11"
+authors = [
+  {author = "seriaati", email = "seria.ati@gmail.com"},
+]
 
-[tool.poetry]
-authors = ["seriaati <seria.ati@gmail.com>"]
+dependencies = [
+  "aiofiles>=24.1.0",
+  "aiohttp-client-cache[sqlite]>=0.11.0",
+  "discord-py[speed]>=2.4.0",
+  "jishaku>=2.5.2",
+  "python-dotenv>=1.0.1",
+  "pyyaml>=6.0.2",
+  "tortoise-orm[asyncpg]>=0.21.6",
+  "seria-library>=1.5.4",
+]
 description = "Discord bot that fixes social media embeds"
-license = "GPL-3.0"
+license = "GPL-3.0-only"
 name = "embed-fixer"
 readme = "README.md"
+requires-python = ">=3.11"
 version = "1.2.4"
 
-[tool.poetry.dependencies]
-aiofiles = "^24.0.0"
-aiohttp-client-cache = {extras = ["sqlite"], version = "^0.11.0"}
-discord-py = {extras = ["speed"], version = "^2.3.2"}
-jishaku = "^2.5.2"
-python = "^3.11"
-python-dotenv = "^1.0.1"
-pyyaml = "^6.0.1"
-tortoise-orm = {extras = ["asyncpg"], version = "^0.21.0"}
-seria-library = "^1.4.0"
+[project.optional-dependencies]
+linux = [
+  "uvloop",
+]
 
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^3.6.1"
-ruff = "^0.6.0"
-
-[tool.poetry.group.linux]
-optional = true
-
-[tool.poetry.group.linux.dependencies]
-uvloop = "^0.20.0"
+[tool.uv]
+dev-dependencies = [
+  "ruff>=0.6.2",
+]
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core"]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
