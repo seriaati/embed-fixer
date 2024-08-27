@@ -346,11 +346,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "seria-library" },
     { name = "tortoise-orm", extra = ["asyncpg"] },
-]
-
-[package.optional-dependencies]
-linux = [
-    { name = "uvloop" },
+    { name = "uvloop", marker = "platform_system == 'Linux'" },
 ]
 
 [package.dev-dependencies]
@@ -368,7 +364,7 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "seria-library", specifier = ">=1.5.4" },
     { name = "tortoise-orm", extras = ["asyncpg"], specifier = ">=0.21.6" },
-    { name = "uvloop", marker = "extra == 'linux'" },
+    { name = "uvloop", marker = "platform_system == 'Linux'", specifier = ">=0.20.0" },
 ]
 
 [package.metadata.requires-dev]

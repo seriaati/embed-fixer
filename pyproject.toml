@@ -2,7 +2,6 @@
 authors = [
   {author = "seriaati", email = "seria.ati@gmail.com"},
 ]
-
 dependencies = [
   "aiofiles>=24.1.0",
   "aiohttp-client-cache[sqlite]>=0.11.0",
@@ -12,6 +11,7 @@ dependencies = [
   "pyyaml>=6.0.2",
   "tortoise-orm[asyncpg]>=0.21.6",
   "seria-library>=1.5.4",
+  "uvloop>=0.20.0; platform_system == 'Linux'",
 ]
 description = "Discord bot that fixes social media embeds"
 license = "GPL-3.0-only"
@@ -19,11 +19,6 @@ name = "embed-fixer"
 readme = "README.md"
 requires-python = ">=3.11"
 version = "1.2.4"
-
-[project.optional-dependencies]
-linux = [
-  "uvloop",
-]
 
 [tool.uv]
 dev-dependencies = [
@@ -33,3 +28,6 @@ dev-dependencies = [
 [build-system]
 build-backend = "hatchling.build"
 requires = ["hatchling"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["embed_fixer"]
