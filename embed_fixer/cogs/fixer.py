@@ -17,7 +17,7 @@ from ..translator import Translator
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
-DELETE_MSG_EMOJI: Final[str] = "<:delete_message:1278557435090698345>"
+DELETE_MSG_EMOJI: Final[str] = "❌"
 
 
 class FixerCog(commands.Cog):
@@ -26,10 +26,7 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
-        if (
-            payload.user_id == self.bot.user.id
-            or f"<:{payload.emoji.name}:{payload.emoji.id}>" != DELETE_MSG_EMOJI
-        ):
+        if payload.user_id == self.bot.user.id or payload.emoji.name != DELETE_MSG_EMOJI:
             return
 
         channel = self.bot.get_channel(payload.channel_id)
