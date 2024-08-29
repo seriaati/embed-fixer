@@ -1,7 +1,7 @@
 import asyncio
 import io
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final
 
 import discord
 from discord.ext import commands
@@ -11,15 +11,42 @@ from seria.utils import clean_url, extract_urls, split_list_to_chunks
 from ..fixes import FIX_PATTERNS, FIXES
 from ..models import GuildSettings, PixivArtworkInfo
 from ..translator import Translator
-from ..ui.delete_webhook_msg import DeleteWebhookMsgView
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
+
+DELETE_MSG_EMOJI: Final[str] = "<:delete_message:1278557435090698345>"
 
 
 class FixerCog(commands.Cog):
     def __init__(self, bot: "EmbedFixer") -> None:
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        if (
+            payload.user_id == self.bot.user.id
+            or f"<:{payload.emoji.name}:{payload.emoji.id}>" != DELETE_MSG_EMOJI
+        ):
+            return
+
+        channel = self.bot.get_channel(payload.channel_id)
+        if not isinstance(channel, discord.TextChannel | discord.Thread):
+            return
+
+        message = await channel.fetch_message(payload.message_id)
+
+        guild = message.guild
+        if guild is None:
+            return
+        if not guild.chunked:
+            await guild.chunk()
+
+        author = guild.get_member_named(message.author.display_name.removesuffix(" (Embed Fixer)"))
+        if author is None:
+            return
+        if payload.user_id == author.id:
+            await message.delete()
 
     async def _find_fixes(
         self,
@@ -104,39 +131,43 @@ class FixerCog(commands.Cog):
 
         if files:
             chunked_files = split_list_to_chunks(files, 10)
+            guild_lang = await Translator.get_guild_lang(message.guild)
 
             for chunk in chunked_files:
-                view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
-                await view.start(sauces=sauces)
+                kwargs: dict[str, Any] = {}
+                if sauces:
+                    view = discord.ui.View()
+                    view.add_item(
+                        discord.ui.Button(
+                            url=sauces[0],
+                            label=self.bot.translator.get(guild_lang, "sauce"),
+                        )
+                    )
+                    kwargs["view"] = view
 
                 if isinstance(message.channel, discord.TextChannel):
                     webhook = await self._get_or_create_webhook(message)
                     fixed_message = await self._send_webhook(
-                        message, webhook, files=chunk, view=view
+                        message, webhook, files=chunk, **kwargs
                     )
                 else:
                     fixed_message = await message.channel.send(
                         message.content,
                         tts=message.tts,
                         files=chunk,
-                        view=view,
+                        **kwargs,
                     )
 
                 message.content = ""
-                view.message = fixed_message
+                await fixed_message.add_reaction(DELETE_MSG_EMOJI)
         else:
-            view = DeleteWebhookMsgView(message.author, message.guild, self.bot.translator)
-            await view.start(sauces=sauces)
-
             if isinstance(message.channel, discord.TextChannel):
                 webhook = await self._get_or_create_webhook(message)
-                fixed_message = await self._send_webhook(message, webhook, view=view)
+                fixed_message = await self._send_webhook(message, webhook)
             else:
-                fixed_message = await message.channel.send(
-                    message.content, tts=message.tts, view=view
-                )
+                fixed_message = await message.channel.send(message.content, tts=message.tts)
 
-            view.message = fixed_message
+            await fixed_message.add_reaction(DELETE_MSG_EMOJI)
 
         if (
             message.reference is not None

@@ -26,6 +26,7 @@ intents = discord.Intents(
     emojis=True,
     messages=True,
     message_content=True,
+    reactions=True
 )
 allowed_mentions = discord.AllowedMentions(
     users=True,
