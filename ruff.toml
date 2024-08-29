@@ -50,3 +50,6 @@ quote-annotations = true
 
 [lint.pydocstyle]
 convention = "google"
+
+[lint.isort]
+required-imports = ["from __future__ import annotations"]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from attr import dataclass
 from tortoise import fields
 from tortoise.models import Model

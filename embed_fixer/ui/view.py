@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 from typing import TYPE_CHECKING, Any
 
@@ -13,7 +15,7 @@ class View(ui.View):
         self,
         author: discord.Member | discord.User,
         guild: discord.Guild | None,
-        translator: "Translator",
+        translator: Translator,
     ) -> None:
         super().__init__(timeout=60 * 60)  # 1 hour
 

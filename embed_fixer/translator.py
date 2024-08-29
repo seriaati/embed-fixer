@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -12,15 +14,15 @@ if TYPE_CHECKING:
 
 
 class AppCommandTranslator(app_commands.Translator):
-    def __init__(self, translator: "Translator") -> None:
+    def __init__(self, translator: Translator) -> None:
         super().__init__()
         self.translator = translator
 
     async def translate(
         self,
         string: app_commands.locale_str,
-        locale: "discord.Locale",
-        _: "discord.app_commands.TranslationContextTypes",
+        locale: discord.Locale,
+        _: discord.app_commands.TranslationContextTypes,
     ) -> str:
         try:
             return self.translator.get(locale.value, string.message)
@@ -41,7 +43,7 @@ class Translator:
         return self._localization_names
 
     @staticmethod
-    async def get_guild_lang(guild: "discord.Guild | None") -> str:
+    async def get_guild_lang(guild: discord.Guild | None) -> str:
         lang = "en-US"
         if guild is not None:
             guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)

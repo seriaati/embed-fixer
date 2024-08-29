@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import os
 from pathlib import Path
@@ -21,12 +23,7 @@ __all__ = ("INTERACTION", "EmbedFixer")
 INTERACTION: TypeAlias = discord.Interaction["EmbedFixer"]
 
 intents = discord.Intents(
-    guilds=True,
-    members=True,
-    emojis=True,
-    messages=True,
-    message_content=True,
-    reactions=True
+    guilds=True, members=True, emojis=True, messages=True, message_content=True, reactions=True
 )
 allowed_mentions = discord.AllowedMentions(
     users=True,
@@ -40,7 +37,7 @@ class EmbedFixer(commands.AutoShardedBot):
     def __init__(
         self,
         *,
-        session: "ClientSession",
+        session: ClientSession,
         env: str,
     ) -> None:
         super().__init__(

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import io
 import re
@@ -19,7 +21,7 @@ DELETE_MSG_EMOJI: Final[str] = "<:delete_message:1278557435090698345>"
 
 
 class FixerCog(commands.Cog):
-    def __init__(self, bot: "EmbedFixer") -> None:
+    def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
@@ -309,5 +311,5 @@ class FixerCog(commands.Cog):
             await self._reply_to_webhook(message, resolved_ref)
 
 
-async def setup(bot: "EmbedFixer") -> None:
+async def setup(bot: EmbedFixer) -> None:
     await bot.add_cog(FixerCog(bot))

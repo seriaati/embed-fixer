@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 FIX_PATTERNS = (
     r"https://twitter.com/[a-zA-Z0-9_]+/status/\d+",
     r"https://x.com/[a-zA-Z0-9_]+/status/\d+",

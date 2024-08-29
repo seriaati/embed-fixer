@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import app_commands
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class SettingsCog(commands.Cog):
-    def __init__(self, bot: "EmbedFixer") -> None:
+    def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
 
     @app_commands.guild_only()
@@ -37,7 +39,7 @@ class SettingsCog(commands.Cog):
     @app_commands.rename(setting=locale_str("setting_param"))
     @app_commands.describe(setting=locale_str("setting_param_desc"))
     @app_commands.command(name="settings", description=locale_str("settings_cmd_desc"))
-    async def settings(self, i: "INTERACTION", setting: str) -> None:
+    async def settings(self, i: INTERACTION, setting: str) -> None:
         lang = await self.bot.translator.get_guild_lang(i.guild)
         embed = DefaultEmbed(
             title=self.bot.translator.get(lang, setting),
@@ -52,5 +54,5 @@ class SettingsCog(commands.Cog):
         view.message = await i.original_response()
 
 
-async def setup(bot: "EmbedFixer") -> None:
+async def setup(bot: EmbedFixer) -> None:
     await bot.add_cog(SettingsCog(bot))

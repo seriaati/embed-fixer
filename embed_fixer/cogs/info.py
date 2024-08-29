@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import app_commands
@@ -13,11 +15,11 @@ if TYPE_CHECKING:
 
 
 class InfoCog(commands.Cog):
-    def __init__(self, bot: "EmbedFixer") -> None:
+    def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
 
     @app_commands.command(name="info", description=locale_str("info_cmd_desc"))
-    async def settings(self, i: "INTERACTION") -> None:
+    async def settings(self, i: INTERACTION) -> None:
         lang = await self.bot.translator.get_guild_lang(i.guild)
         embed = DefaultEmbed(
             title="Embed Fixer", description=self.bot.translator.get(lang, "info_embed_desc")
@@ -26,5 +28,5 @@ class InfoCog(commands.Cog):
         await i.response.send_message(embed=embed)
 
 
-async def setup(bot: "EmbedFixer") -> None:
+async def setup(bot: EmbedFixer) -> None:
     await bot.add_cog(InfoCog(bot))

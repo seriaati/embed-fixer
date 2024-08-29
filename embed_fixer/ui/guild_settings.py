@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from discord import ButtonStyle, SelectOption, TextChannel, ui
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class GuildSettingsView(View):
-    async def interaction_check(self, i: "INTERACTION") -> bool:
+    async def interaction_check(self, i: INTERACTION) -> bool:
         return i.user.id == self.author.id
 
     async def start(self, setting: str) -> None:
@@ -88,7 +90,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
             max_values=len(FIXES),
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -101,7 +103,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
 
 
 class LangSelector(ui.Select[GuildSettingsView]):
-    def __init__(self, translator: "Translator", current: str) -> None:
+    def __init__(self, translator: Translator, current: str) -> None:
         super().__init__(
             options=[
                 SelectOption(label=lang_name, value=lang, default=lang == current)
@@ -109,7 +111,7 @@ class LangSelector(ui.Select[GuildSettingsView]):
             ]
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -143,7 +145,7 @@ class ChannelSelector(PaginatorSelect[GuildSettingsView]):
 
 
 class ExtractMediaChannelSelector(ChannelSelector):
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -156,7 +158,7 @@ class ExtractMediaChannelSelector(ChannelSelector):
 
 
 class DisableFixChannelSelector(ChannelSelector):
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -181,7 +183,7 @@ class WebhookReplyToggle(ui.Button[GuildSettingsView]):
             "enable_webhook_reply" if self.current else "disable_webhook_reply"
         )
 
-    async def callback(self, i: "INTERACTION") -> None:
+    async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
