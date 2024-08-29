@@ -25,10 +25,3 @@ version = "1.2.6"
 dev-dependencies = [
   "ruff>=0.6.2",
 ]
-
-[build-system]
-build-backend = "hatchling.build"
-requires = ["hatchling"]
-
-[tool.hatch.build.targets.wheel]
-packages = ["embed_fixer"]
