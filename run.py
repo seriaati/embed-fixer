@@ -2,20 +2,26 @@ import asyncio
 import contextlib
 import logging
 import os
+import sys
 
 import discord
 from aiohttp_client_cache.backends.sqlite import SQLiteBackend
 from aiohttp_client_cache.session import CachedSession
 from dotenv import load_dotenv
-from seria.logging import setup_logging
+from loguru import logger
 
 from embed_fixer.bot import EmbedFixer
+from embed_fixer.logging import InterceptHandler
 
 load_dotenv()
 env = os.environ["ENV"]
 
-# Disables PyNaCl warning
-discord.VoiceClient.warn_nacl = False
+
+def setup_logger() -> None:
+    logger.remove()
+    logger.add(sys.stderr, level="INFO" if env == "prod" else "DEBUG")
+    logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
+    logger.add("embed_fixer.log", level="DEBUG", rotation="1 week", retention="2 weeks")
 
 
 async def main() -> None:
@@ -27,9 +33,12 @@ async def main() -> None:
             await bot.start(os.environ["DISCORD_TOKEN"])
 
 
-with setup_logging(logging.INFO):
+if __name__ == "__main__":
+    discord.VoiceClient.warn_nacl = False
+    setup_logger()
+
     try:
-        import uvloop  # type: ignore
+        import uvloop  # pyright: ignore [reportMissingImports]
     except ImportError:
         asyncio.run(main())
     else:

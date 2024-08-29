@@ -1,11 +1,11 @@
 import asyncio
 import io
-import logging
 import re
 from typing import TYPE_CHECKING, Any
 
 import discord
 from discord.ext import commands
+from loguru import logger
 from seria.utils import clean_url, extract_urls, split_list_to_chunks
 
 from ..fixes import FIX_PATTERNS, FIXES
@@ -15,8 +15,6 @@ from ..ui.delete_webhook_msg import DeleteWebhookMsgView
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
-
-LOGGER_ = logging.getLogger(__name__)
 
 
 class FixerCog(commands.Cog):
@@ -170,8 +168,8 @@ class FixerCog(commands.Cog):
                 wait=True,
                 **kwargs,
             )
-        except discord.HTTPException:
-            LOGGER_.exception("Failed to send webhook message")
+        except Exception:
+            logger.exception("Failed to send webhook message")
             return await message.channel.send(
                 message.content,
                 tts=message.tts,

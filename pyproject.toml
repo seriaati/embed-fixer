@@ -12,6 +12,7 @@ dependencies = [
   "seria-library>=1.5.4",
   "uvloop>=0.20.0; platform_system == 'Linux'",
   "discord-py>=2.4.0",
+  "loguru>=0.7.2",
 ]
 description = "Discord bot that fixes social media embeds"
 license = "GPL-3.0-only"

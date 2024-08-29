@@ -246,6 +246,7 @@ dependencies = [
     { name = "aiohttp-client-cache", extra = ["sqlite"] },
     { name = "discord-py" },
     { name = "jishaku" },
+    { name = "loguru" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "seria-library" },
@@ -264,6 +265,7 @@ requires-dist = [
     { name = "aiohttp-client-cache", extras = ["sqlite"], specifier = ">=0.11.0" },
     { name = "discord-py", specifier = ">=2.4.0" },
     { name = "jishaku", specifier = ">=2.5.2" },
+    { name = "loguru", specifier = ">=0.7.2" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "seria-library", specifier = ">=1.5.4" },
@@ -364,6 +366,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/be/88/23d3c9f3f475b7721c7845a59fa9b947ea423987d48db6a7ebe7583b7b2c/jishaku-2.5.2.tar.gz", hash = "sha256:56d38c333036e37481df5e3c9e81d6033b5097738f0d171a81e2752124f0df5c", size = 69186 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d8/e7/29d36891f8c1cc6c0b6cb12472494218af991252939a2bdf70dd8d9f7247/jishaku-2.5.2-py3-none-any.whl", hash = "sha256:87f34942ee44865f5ce08e36723b7c74a313d8a13a4db8a6b7cc12618cc3496c", size = 76664 },
+]
+
+[[package]]
+name = "loguru"
+version = "0.7.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "win32-setctime", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9e/30/d87a423766b24db416a46e9335b9602b054a72b96a88a241f2b09b560fa8/loguru-0.7.2.tar.gz", hash = "sha256:e671a53522515f34fd406340ee968cb9ecafbc4b36c679da03c18fd8d0bd51ac", size = 145103 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/03/0a/4f6fed21aa246c6b49b561ca55facacc2a44b87d65b8b92362a8e99ba202/loguru-0.7.2-py3-none-any.whl", hash = "sha256:003d71e3d3ed35f0f8984898359d65b79e5b21943f78af86aa5491210429b8eb", size = 62549 },
 ]
 
 [[package]]
@@ -640,6 +655,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b7/a0/95e9e962c5fd9da11c1e28aa4c0d8210ab277b1ada951d2aee336b505813/wheel-0.44.0.tar.gz", hash = "sha256:a29c3f2817e95ab89aa4660681ad547c0e9547f20e75b0562fe7723c9a2a9d49", size = 100733 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1b/d1/9babe2ccaecff775992753d8686970b1e2755d21c8a63be73aba7a4e7d77/wheel-0.44.0-py3-none-any.whl", hash = "sha256:2376a90c98cc337d18623527a97c31797bd02bad0033d41547043a1cbfbe448f", size = 67059 },
+]
+
+[[package]]
+name = "win32-setctime"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/dd/f95a13d2b235a28d613ba23ebad55191514550debb968b46aab99f2e3a30/win32_setctime-1.1.0.tar.gz", hash = "sha256:15cf5750465118d6929ae4de4eb46e8edae9a5634350c01ba582df868e932cb2", size = 3676 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0a/e6/a7d828fef907843b2a5773ebff47fb79ac0c1c88d60c0ca9530ee941e248/win32_setctime-1.1.0-py3-none-any.whl", hash = "sha256:231db239e959c2fe7eb1d7dc129f11172354f98361c4fa2d6d2d7e278baa8aad", size = 3604 },
 ]
 
 [[package]]

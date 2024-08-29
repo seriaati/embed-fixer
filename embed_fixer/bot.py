@@ -1,11 +1,11 @@
 import contextlib
-import logging
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, TypeAlias
 
 import discord
 from discord.ext import commands
+from loguru import logger
 from tortoise import Tortoise
 from tortoise.exceptions import IntegrityError
 
@@ -15,7 +15,6 @@ from .translator import AppCommandTranslator, Translator
 if TYPE_CHECKING:
     from aiohttp import ClientSession
 
-LOGGER_ = logging.getLogger(__name__)
 
 __all__ = ("INTERACTION", "EmbedFixer")
 
@@ -64,9 +63,9 @@ class EmbedFixer(commands.AutoShardedBot):
             cog_name = Path(filepath).stem
             try:
                 await self.load_extension(f"embed_fixer.cogs.{cog_name}")
-                LOGGER_.info("Loaded cog %r", cog_name)
+                logger.info(f"Loaded cog {cog_name}")
             except Exception:
-                LOGGER_.exception("Failed to load cog %r", cog_name)
+                logger.exception(f"Failed to load cog {cog_name}")
 
         await self.load_extension("jishaku")
 
@@ -86,11 +85,11 @@ class EmbedFixer(commands.AutoShardedBot):
         await Tortoise.generate_schemas()
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
-        LOGGER_.info("Joined guild %r", guild)
+        logger.info(f"Joined guild {guild.name} ({guild.id})")
         with contextlib.suppress(IntegrityError):
             await GuildSettings.create(id=guild.id)
 
     async def close(self) -> None:
-        LOGGER_.info("Bot shutting down...")
+        logger.info("Bot shutting down...")
         await Tortoise.close_connections()
         await super().close()
