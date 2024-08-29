@@ -9,15 +9,18 @@
 ![Discord](https://img.shields.io/discord/1000727526194298910?label=Support%20Server&color=5865F2)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-# [Invite the bot](https://discord.com/api/oauth2/authorize?client_id=770144963735453696&permissions=275414805504&scope=bot+applications.commands)
+# Embed Fixer
+
+[**Bot invitation link**](https://discord.com/oauth2/authorize?client_id=770144963735453696)
 
 As we know, social media embeds on Discord are bad:  
 
 - Pixiv embeds don't show the full artwork
-- Twitter sometimes doesn't even embed
-- Instagram doesn't show the videdo
+- X/Twitter sometimes doesn't even embed
+- Instagram doesn't show the image/video
 - Reddit doesn't show the full thread
-- Tiktok doesn't play the video.
+- Tiktok doesn't show the video
+<!-- - Twitch doesn't show the clip -->
   
 Worry no more, this Discord bot fixes all of those issues.
 
@@ -33,6 +36,7 @@ Fixings are currently available for:
 - Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit)
 - Tiktok wtih [vxtiktok](https://github.com/dylanpdx/vxtiktok)
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
+<!-- - Twitch clips with fxtwitch -->
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a "Delete" button that only you and/or users with "Manage Messages" permission can click on to delete the message.  
 
@@ -69,7 +73,7 @@ Below are settings you can change with the `/settings` command:
   
 ![image](https://github.com/seriaati/embed-fixer/assets/61446626/b0bf6f0a-c3e6-42ca-b726-7fe989f29898)
 
-# To Contribute
+# Questions, Issues, Feedback, Contributions
 
-For questions or issues with this bot, DM me on Discord or open an issue on GitHub.  
-To contribute (such as translations), DM me or open a PR on GitHub.  
+Whether you want a new fix to be added, to request a new feature, to report a bug, or to contribute to translations. You can do so by creating an issue or a pull request.  
+If GitHub is not your type, you can find me on [Discord](https://discord.com/invite/b22kMKuwbS), my username is @seria_ati.
