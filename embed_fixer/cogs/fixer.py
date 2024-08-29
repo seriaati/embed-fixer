@@ -181,7 +181,7 @@ class FixerCog(commands.Cog):
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
         assert isinstance(message.channel, discord.TextChannel)
         webhooks = await message.channel.webhooks()
-        webhook_name = "Embed Fixer"
+        webhook_name = self.bot.user.name
         webhook = discord.utils.get(webhooks, name=webhook_name)
         if webhook is None:
             webhook = await message.channel.create_webhook(
