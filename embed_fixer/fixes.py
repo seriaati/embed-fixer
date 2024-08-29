@@ -9,8 +9,8 @@ FIX_PATTERNS = (
     r"https://www.reddit.com/r/[\w]+/comments/[\w]+/[\w]+",
     r"https://www.instagram.com/(p|reels?)/[\w]+",
     r"https://www.furaffinity.net/view/\d+",
-    r"https://m.twitch.tv/clips/[\w]+",
-    r"https://clips.twitch.tv/[\w]+",
+    # r"https://m.twitch.tv/clips/[\w]+",
+    # r"https://clips.twitch.tv/[\w]+",
 )
 FIXES = {
     "twitter.com": "fxtwitter.com",
@@ -20,6 +20,6 @@ FIXES = {
     "reddit.com": "rxddit.com",
     "instagram.com": "ddinstagram.com",
     "furaffinity.net": "xfuraffinity.net",
-    "clips.twitch.tv": "clips.fxtwitch.tv",
-    "m.twitch.tv/clips": "clips.fxtwitch.tv",
+    # "clips.twitch.tv": "clips.fxtwitch.tv",
+    # "m.twitch.tv/clips": "clips.fxtwitch.tv",
 }
