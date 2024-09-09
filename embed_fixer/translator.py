@@ -53,7 +53,7 @@ class Translator:
     async def load(self) -> None:
         # open all files in ./localizations/*.yaml
         for file in Path("./localizations").rglob("*.yaml"):
-            async with aiofiles.open(file, mode="r", encoding="utf-8") as f:
+            async with aiofiles.open(file, encoding="utf-8") as f:
                 data = yaml.safe_load(await f.read())
                 self._localizations[file.stem] = data["strings"]
                 self._localization_names[file.stem] = data["name"]
