@@ -23,7 +23,7 @@ __all__ = ("INTERACTION", "EmbedFixer")
 INTERACTION: TypeAlias = discord.Interaction["EmbedFixer"]
 
 intents = discord.Intents(
-    guilds=True, members=True, emojis=True, messages=True, message_content=True, reactions=True
+    guilds=True, emojis=True, messages=True, message_content=True, reactions=True
 )
 allowed_mentions = discord.AllowedMentions(
     users=True,

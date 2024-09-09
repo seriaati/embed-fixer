@@ -38,10 +38,11 @@ class FixerCog(commands.Cog):
         guild = message.guild
         if guild is None:
             return
-        if not guild.chunked:
-            await guild.chunk()
 
-        author = guild.get_member_named(message.author.display_name.removesuffix(" (Embed Fixer)"))
+        author = (
+            await guild.query_members(message.author.display_name.removesuffix(" (Embed Fixer)"))
+        )[0]
+
         if author is None:
             return
         if payload.user_id == author.id:
@@ -262,12 +263,12 @@ class FixerCog(commands.Cog):
         if guild is None:
             return
 
-        if not guild.chunked:
-            await guild.chunk()
+        author = (
+            await guild.query_members(
+                resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
+            )
+        )[0]
 
-        author = guild.get_member_named(
-            resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
-        )
         if author is not None and not author.bot:
             await message.reply(
                 self.bot.translator.get(
