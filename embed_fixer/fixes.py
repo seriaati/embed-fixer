@@ -6,6 +6,7 @@ FIX_PATTERNS = (
     r"https://www.pixiv.net(/[a-zA-Z]+)?/artworks/\d+",
     r"https://www.tiktok.com/(t/\w+|@[\w.]+/video/\d+)",
     r"https://vm.tiktok.com/\w+",
+    r"https://vt.tiktok.com/\w+",
     r"https://www.reddit.com/r/[\w]+/comments/[\w]+/[\w]+",
     r"https://www.instagram.com/(p|reels?)/[\w]+",
     r"https://www.furaffinity.net/view/\d+",
