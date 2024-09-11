@@ -21,6 +21,6 @@ FIXES = {
     "reddit.com": "rxddit.com",
     "instagram.com": "ddinstagram.com",
     "furaffinity.net": "xfuraffinity.net",
-    "clips.twitch.tv": "fxtwitch.seriaati.xyz/clip",
-    "m.twitch.tv": "fxtwitch.seriaati.xyz",
+    "clips.twitch.tv": "fxtwitch.seria.moe/clip",
+    "m.twitch.tv": "fxtwitch.seria.moe",
 }
