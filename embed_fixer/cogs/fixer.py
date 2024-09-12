@@ -235,6 +235,14 @@ class FixerCog(commands.Cog):
         else:
             api_url = url.replace("x.com", "api.fxtwitter.com")
 
+        media_type = {"photo", "video"}
+        media_index = None
+
+        if "photo" in api_url or "video" in api_url:
+            media_type = {api_url.split("/")[-2]}
+            media_index = int(api_url.split("/")[-1]) - 1
+            api_url = "/".join(api_url.split("/")[:-2])
+
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
                 return []
@@ -244,7 +252,11 @@ class FixerCog(commands.Cog):
             medias = tweet.get("media")
             if medias is None:
                 return []
-            return [media["url"] for media in medias["all"] if media["type"] in {"photo", "video"}]
+
+            urls = [media["url"] for media in medias["all"] if media["type"] in media_type]
+            if media_index is not None:
+                return [urls[media_index]]
+            return urls
 
     async def _download_media(
         self, url: str, result: list[discord.File], *, spoiler: bool = False

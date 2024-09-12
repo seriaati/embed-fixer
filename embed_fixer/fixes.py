@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 FIX_PATTERNS = (
-    r"https://twitter.com/[a-zA-Z0-9_]+/status/\d+",
-    r"https://x.com/[a-zA-Z0-9_]+/status/\d+",
+    r"https://twitter.com/[a-zA-Z0-9_]+/status/\d+(/photo|video/\d+)?",
+    r"https://x.com/[a-zA-Z0-9_]+/status/\d+(/photo|video/\d+)?",
     r"https://www.pixiv.net(/[a-zA-Z]+)?/artworks/\d+",
     r"https://www.tiktok.com/(t/\w+|@[\w.]+/video/\d+)",
     r"https://vm.tiktok.com/\w+",
