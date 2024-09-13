@@ -24,6 +24,14 @@ class FixerCog(commands.Cog):
     def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
 
+    @staticmethod
+    def _get_filesize(fp: io.BufferedIOBase) -> int:
+        original_pos = fp.tell()
+        fp.seek(0, io.SEEK_END)
+        size = fp.tell()
+        fp.seek(original_pos)
+        return size
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         if payload.user_id == self.bot.user.id or payload.emoji.name != DELETE_MSG_EMOJI:
@@ -51,8 +59,10 @@ class FixerCog(commands.Cog):
     async def _find_fixes(
         self,
         message: discord.Message,
+        *,
         disabled_fixes: list[str],
         extract_media: bool,
+        filesize_limit: int,
     ) -> tuple[bool, list[discord.File], list[str]]:
         fix_found = False
         medias: list[discord.File] = []
@@ -87,11 +97,12 @@ class FixerCog(commands.Cog):
                         domain, clean_url_, spoiler=channel_is_nsfw
                     )
                 ):
-                    fix_found = True
-                    medias.extend(medias_)
-                    message.content = message.content.replace(url, "")
-                    sauces.append(clean_url_)
-                    break
+                    medias.extend(m for m in medias_ if self._get_filesize(m.fp) < filesize_limit)
+                    if medias:
+                        fix_found = True
+                        message.content = message.content.replace(url, "")
+                        sauces.append(clean_url_)
+                        break
 
                 fix_found = True
                 fixed_url = clean_url_.replace(domain, fix)
@@ -309,8 +320,9 @@ class FixerCog(commands.Cog):
 
         fix_found, medias, sauces = await self._find_fixes(
             message,
-            guild_settings.disabled_fixes,
-            message.channel.id in guild_settings.extract_media_channels,
+            disabled_fixes=guild_settings.disabled_fixes,
+            extract_media=message.channel.id in guild_settings.extract_media_channels,
+            filesize_limit=message.guild.filesize_limit,
         )
 
         if fix_found:
