@@ -103,20 +103,22 @@ class FixerCog(commands.Cog):
     async def _extract_medias(
         self, domain: str, url: str, *, spoiler: bool = False
     ) -> list[discord.File]:
-        image_urls: list[str] = []
-        result: list[discord.File] = []
+        media_urls: list[str] = []
+        files: list[discord.File] = []
 
         if domain == "pixiv.net":
             artwork_info = await self._fetch_pixiv_artwork_info(url)
-            image_urls = artwork_info.image_urls if artwork_info is not None else []
+            media_urls = artwork_info.image_urls if artwork_info is not None else []
         elif domain in {"twitter.com", "x.com"}:
-            image_urls = await self._fetch_twitter_media_urls(url)
+            media_urls = await self._fetch_twitter_media_urls(url)
+        elif domain == "www.iwara.tv":
+            media_urls = await self._fetch_iwara_video_urls(url)
 
         async with asyncio.TaskGroup() as tg:
-            for image_url in image_urls:
-                tg.create_task(self._download_media(image_url, result, spoiler=spoiler))
+            for image_url in media_urls:
+                tg.create_task(self._download_media(image_url, files, spoiler=spoiler))
 
-        return result
+        return files
 
     async def _send_fixes(
         self, message: discord.Message, medias: list[discord.File], sauces: list[str]
@@ -257,6 +259,10 @@ class FixerCog(commands.Cog):
             if media_index is not None:
                 return [urls[media_index]]
             return urls
+
+    async def _fetch_iwara_video_urls(self, url: str) -> list[str]:
+        video_id = url.split("/")[-2]
+        return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
 
     async def _download_media(
         self, url: str, result: list[discord.File], *, spoiler: bool = False
