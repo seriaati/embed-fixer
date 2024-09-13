@@ -21,7 +21,7 @@ As we know, social media embeds on Discord are bad:
 - Reddit doesn't show the full thread
 - Tiktok doesn't show the video
 - Twitch clip embeds don't play the clips
-- And more...
+- And so on...
   
 Worry no more, this Discord bot fixes all of those issues.
 
@@ -40,9 +40,10 @@ Fixings are currently available for:
 - Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
 - Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
 
-If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a "Delete" button that only you and/or users with "Manage Messages" permission can click on to delete the message.  
+If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message.
 
-![image](https://github.com/seriaati/embed-fixer/assets/61446626/caf322dc-ffcf-4f9c-a041-75a0da55b957)  
+![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)  
+
 
 > [!NOTE]
 > If the link is sent in a non-NSFW channel AND is from Pixiv AND the artwork contains the "#R-18" tag, the Embed Fixer will **NOT** fix the embed as this will show the NSFW image.
