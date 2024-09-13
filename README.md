@@ -21,7 +21,7 @@ As we know, social media embeds on Discord are bad:
 - Reddit doesn't show the full thread
 - Tiktok doesn't show the video
 - Twitch clip embeds don't play the clips
-- And more...
+- And so on...
   
 Worry no more, this Discord bot fixes all of those issues.
 
