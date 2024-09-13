@@ -94,7 +94,7 @@ class FixerCog(commands.Cog):
 
                 if extract_media and (
                     medias_ := await self._extract_medias(
-                        domain, clean_url_, spoiler=channel_is_nsfw
+                        domain, clean_url_, spoiler=channel_is_nsfw, filesize_limit=filesize_limit
                     )
                 ):
                     medias.extend(m for m in medias_ if self._get_filesize(m.fp) < filesize_limit)
@@ -112,7 +112,7 @@ class FixerCog(commands.Cog):
         return fix_found, medias, sauces
 
     async def _extract_medias(
-        self, domain: str, url: str, *, spoiler: bool = False
+        self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
     ) -> list[discord.File]:
         media_urls: list[str] = []
         files: list[discord.File] = []
@@ -127,7 +127,11 @@ class FixerCog(commands.Cog):
 
         async with asyncio.TaskGroup() as tg:
             for image_url in media_urls:
-                tg.create_task(self._download_media(image_url, files, spoiler=spoiler))
+                tg.create_task(
+                    self._download_media(
+                        image_url, files, spoiler=spoiler, filesize_limit=filesize_limit
+                    )
+                )
 
         return files
 
@@ -276,13 +280,24 @@ class FixerCog(commands.Cog):
         return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
 
     async def _download_media(
-        self, url: str, result: list[discord.File], *, spoiler: bool = False
+        self, url: str, result: list[discord.File], *, spoiler: bool = False, filesize_limit: int
     ) -> None:
         async with self.bot.session.get(url) as response:
             if response.status != 200:
                 return None
+
+            content_length = response.headers.get("Content-Length")
+            if content_length is not None and int(content_length) > filesize_limit:
+                return None
+
             data = await response.read()
-            filename = url.split("/")[-1].split("?")[0]
+
+            media_type = response.headers.get("Content-Type")
+            if media_type:
+                filename = f"{url.split('/')[-1]}.{media_type.split('/')[-1]}"
+            else:
+                filename = url.split("/")[-1]
+
             result.append(discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler))
 
     async def _reply_to_webhook(
