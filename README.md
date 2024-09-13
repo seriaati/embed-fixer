@@ -21,6 +21,7 @@ As we know, social media embeds on Discord are bad:
 - Reddit doesn't show the full thread
 - Tiktok doesn't show the video
 - Twitch clip embeds don't play the clips
+- And more...
   
 Worry no more, this Discord bot fixes all of those issues.
 
@@ -37,6 +38,7 @@ Fixings are currently available for:
 - Tiktok wtih [vxtiktok](https://github.com/dylanpdx/vxtiktok)
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
 - Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
+- Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a "Delete" button that only you and/or users with "Manage Messages" permission can click on to delete the message.  
 
