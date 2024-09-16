@@ -8,6 +8,7 @@ FIX_PATTERNS = (
     r"https://vm.tiktok.com/\w+",
     r"https://vt.tiktok.com/\w+",
     r"https://www.reddit.com/r/[\w]+/comments/[\w]+/[\w]+",
+    r"https://www.reddit.com/r/[\w]+/s/[\w]+",
     r"https://www.instagram.com/(p|reels?)/[\w]+",
     r"https://www.furaffinity.net/view/\d+",
     r"https://m.twitch.tv/clip/[\w]+",
