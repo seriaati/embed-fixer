@@ -1,6 +1,6 @@
 [project]
 authors = [
-  {author = "seriaati", email = "seria.ati@gmail.com"},
+  {name = "seriaati", email = "seria.ati@gmail.com"},
 ]
 dependencies = [
   "aiofiles>=24.1.0",
