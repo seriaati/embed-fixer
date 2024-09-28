@@ -14,6 +14,7 @@ FIX_PATTERNS = (
     r"https://m.twitch.tv/clip/[\w]+",
     r"https://clips.twitch.tv/[\w]+",
     r"https://www.iwara.tv/video/[\w]+/[\w]+",
+    r"https://www.twitch.tv/[\w]+/clip/[\w]+"
 )
 FIXES = {
     "twitter.com": "fxtwitter.com",
@@ -26,4 +27,5 @@ FIXES = {
     "clips.twitch.tv": "fxtwitch.seria.moe/clip",
     "m.twitch.tv": "fxtwitch.seria.moe",
     "www.iwara.tv": "fxiwara.seria.moe",
+    "www.twitch.tv": "fxtwitch.seria.moe"
 }

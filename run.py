@@ -23,7 +23,7 @@ def setup_logger() -> None:
     logger.remove()
     logger.add(sys.stderr, level="INFO" if env == "prod" else "DEBUG")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
-    logger.add("embed_fixer.log", level="DEBUG", rotation="1 week", retention="2 weeks")
+    logger.add("logs/embed_fixer.log", level="DEBUG", rotation="1 week", retention="2 weeks")
 
 
 async def main() -> None:
