@@ -35,12 +35,12 @@ class AppCommandTranslator(app_commands.Translator):
 
 class Translator:
     def __init__(self) -> None:
-        self._localizations: dict[str, dict[str, str]] = {}
-        self._localization_names: dict[str, str] = {}
+        self._l10n: dict[str, dict[str, str]] = {}
+        self._l10n_names: dict[str, str] = {}
 
     @property
     def langs(self) -> dict[str, str]:
-        return self._localization_names
+        return self._l10n_names
 
     @staticmethod
     async def get_guild_lang(guild: discord.Guild | None) -> str:
@@ -51,14 +51,14 @@ class Translator:
         return lang
 
     async def load(self) -> None:
-        # open all files in ./localizations/*.yaml
-        for file in Path("./localizations").rglob("*.yaml"):
+        # open all files in ./l10n/*.yaml
+        for file in Path("./l10n").rglob("*.yaml"):
             async with aiofiles.open(file, encoding="utf-8") as f:
                 data = yaml.safe_load(await f.read())
-                self._localizations[file.stem] = data["strings"]
-                self._localization_names[file.stem] = data["name"]
+                self._l10n[file.stem] = data["strings"]
+                self._l10n_names[file.stem] = data["name"]
 
     def get(self, lang: str, key: str, **kwargs: Any) -> str:
-        if lang not in self._localizations:
+        if lang not in self._l10n:
             lang = "en-US"
-        return self._localizations[lang][key].format(**kwargs)
+        return self._l10n[lang][key].format(**kwargs)
