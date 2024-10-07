@@ -25,12 +25,7 @@ INTERACTION: TypeAlias = discord.Interaction["EmbedFixer"]
 intents = discord.Intents(
     guilds=True, emojis=True, messages=True, message_content=True, reactions=True
 )
-allowed_mentions = discord.AllowedMentions(
-    users=True,
-    everyone=False,
-    roles=False,
-    replied_user=False,
-)
+allowed_mentions = discord.AllowedMentions(everyone=False)
 
 
 class EmbedFixer(commands.AutoShardedBot):
