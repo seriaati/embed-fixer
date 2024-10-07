@@ -1,7 +1,5 @@
 [project]
-authors = [
-  {name = "seriaati", email = "seria.ati@gmail.com"},
-]
+authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
 dependencies = [
   "aiofiles>=24.1.0",
   "aiohttp-client-cache[sqlite]>=0.11.0",
@@ -15,7 +13,7 @@ dependencies = [
   "loguru>=0.7.2",
 ]
 description = "Discord bot that fixes social media embeds"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 name = "embed-fixer"
 readme = "README.md"
 requires-python = ">=3.11"
