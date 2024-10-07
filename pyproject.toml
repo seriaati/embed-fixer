@@ -1,8 +1,8 @@
 [project]
 authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
 dependencies = [
+  "aiohttp-client-cache>=0.12.3",
   "aiofiles>=24.1.0",
-  "aiohttp-client-cache[sqlite]>=0.11.0",
   "jishaku>=2.5.2",
   "python-dotenv>=1.0.1",
   "pyyaml>=6.0.2",
