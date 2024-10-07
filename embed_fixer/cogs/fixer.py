@@ -42,6 +42,8 @@ class FixerCog(commands.Cog):
             return
 
         message = await channel.fetch_message(payload.message_id)
+        if " (Embed Fixer)" not in message.author.display_name:
+            return
 
         guild = message.guild
         if guild is None:
