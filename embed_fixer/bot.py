@@ -29,12 +29,7 @@ allowed_mentions = discord.AllowedMentions(everyone=False)
 
 
 class EmbedFixer(commands.AutoShardedBot):
-    def __init__(
-        self,
-        *,
-        session: ClientSession,
-        env: str,
-    ) -> None:
+    def __init__(self, *, session: ClientSession, env: str) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
             intents=intents,

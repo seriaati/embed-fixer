@@ -158,8 +158,7 @@ class FixerCog(commands.Cog):
                     view = discord.ui.View()
                     view.add_item(
                         discord.ui.Button(
-                            url=sauces[0],
-                            label=self.bot.translator.get(guild_lang, "sauce"),
+                            url=sauces[0], label=self.bot.translator.get(guild_lang, "sauce")
                         )
                     )
                     kwargs["view"] = view
@@ -171,10 +170,7 @@ class FixerCog(commands.Cog):
                     )
                 else:
                     fixed_message = await message.channel.send(
-                        message.content,
-                        tts=message.tts,
-                        files=chunk,
-                        **kwargs,
+                        message.content, tts=message.tts, files=chunk, **kwargs
                     )
 
                 message.content = ""
@@ -220,11 +216,7 @@ class FixerCog(commands.Cog):
             )
         except Exception:
             logger.exception("Failed to send webhook message")
-            return await message.channel.send(
-                message.content,
-                tts=message.tts,
-                **kwargs,
-            )
+            return await message.channel.send(message.content, tts=message.tts, **kwargs)
 
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
         assert isinstance(message.channel, discord.TextChannel)
