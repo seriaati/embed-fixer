@@ -53,3 +53,7 @@ convention = "google"
 
 [lint.isort]
 required-imports = ["from __future__ import annotations"]
+split-on-trailing-comma = false
+
+[format]
+skip-magic-trailing-comma = true
