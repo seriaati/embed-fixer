@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
 
-__all__ = ("Interaction", "EmbedFixer")
+__all__ = ("EmbedFixer", "Interaction")
 
 Interaction: TypeAlias = discord.Interaction["EmbedFixer"]
 
