@@ -18,3 +18,13 @@ name = "embed-fixer"
 readme = "README.md"
 requires-python = ">=3.11"
 version = "1.3.2"
+
+[tool.pyright]
+enableTypeIgnoreComments = false
+reportIncompatibleMethodOverride = false
+reportIncompatibleVariableOverride = false
+reportUnnecessaryComparison = true
+reportUnnecessaryContains = true
+reportUnnecessaryIsInstance = true
+reportUnnecessaryTypeIgnoreComment = true
+typeCheckingMode = "standard"
