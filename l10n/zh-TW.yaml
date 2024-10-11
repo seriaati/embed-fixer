@@ -15,6 +15,8 @@ strings:
   extract_media_channels_desc: 在這些頻道中發送的 Twitter/X/Pixiv 鏈接的圖片/影片將被提取
   disable_fix_channels: 禁用連結預覽修復頻道
   disable_fix_channels_desc: 設置要在其中禁用連結預覽修復的頻道
+  disable_image_spoilers: 在 NSFW 頻道中禁用自動模糊
+  disable_image_spoilers_desc: 對於媒體提取功能，在這裡選擇的 NSFW 頻道內的媒體將不會被自動模糊
   toggle_webhook_reply: 開關 Webhook 回覆
   toggle_webhook_reply_desc: 開關回覆 Webhook 時對原始作者的提及
   sauce: 醬汁
@@ -31,5 +33,3 @@ strings:
     這個機器人是由 [@seria_ati](https://discord.com/users/410036441129943050) 製作的，並且在 [GitHub](https://github.com/seriaati/embed-fixer) 上是開源的。
     有關此機器人的問題或問題，請在 Discord 上與我聯繫，或在 GitHub 上提出 Issue。
     如有意願貢獻（例如翻譯），請與我聯繫，或在 GitHub 上提交 PR。
-  next_page: 下一頁
-  prev_page: 上一頁

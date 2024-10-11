@@ -63,6 +63,7 @@ class FixerCog(commands.Cog):
         message: discord.Message,
         *,
         disabled_fixes: list[str],
+        disable_image_spoilers: list[int],
         extract_media: bool,
         filesize_limit: int,
     ) -> tuple[bool, list[discord.File], list[str]]:
@@ -96,7 +97,11 @@ class FixerCog(commands.Cog):
 
                 if extract_media and (
                     medias_ := await self._extract_medias(
-                        domain, clean_url_, spoiler=channel_is_nsfw, filesize_limit=filesize_limit
+                        domain,
+                        clean_url_,
+                        spoiler=channel_is_nsfw
+                        and message.channel.id not in disable_image_spoilers,
+                        filesize_limit=filesize_limit,
                     )
                 ):
                     medias.extend(m for m in medias_ if self._get_filesize(m.fp) < filesize_limit)
@@ -148,6 +153,8 @@ class FixerCog(commands.Cog):
             message.content += f"\n\n||{sauces_str}||"
             sauces.clear()
 
+        fixed_message = None
+
         if files:
             chunked_files = split_list_to_chunks(files, 10)
             guild_lang = await Translator.get_guild_lang(message.guild)
@@ -192,7 +199,7 @@ class FixerCog(commands.Cog):
             author = message.guild.get_member_named(
                 resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
             )
-            if author is not None:
+            if author is not None and fixed_message is not None:
                 await fixed_message.reply(
                     self.bot.translator.get(
                         await Translator.get_guild_lang(message.guild),
@@ -332,6 +339,7 @@ class FixerCog(commands.Cog):
             disabled_fixes=guild_settings.disabled_fixes,
             extract_media=message.channel.id in guild_settings.extract_media_channels,
             filesize_limit=message.guild.filesize_limit,
+            disable_image_spoilers=guild_settings.disable_image_spoilers,
         )
 
         if fix_found:

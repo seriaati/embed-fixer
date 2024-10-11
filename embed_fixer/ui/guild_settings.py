@@ -74,6 +74,18 @@ class GuildSettingsView(View):
             webhook_reply_toggle.set_style(self)
             self.add_item(webhook_reply_toggle)
 
+        elif setting == "disable_image_spoilers":
+            disable_image_spoilers_selector = DisableImageSpoilersSelector(
+                [
+                    SelectDefaultValue(id=channel_id, type=SelectDefaultValueType.channel)
+                    for channel_id in guild_settings.disable_image_spoilers
+                ]
+            )
+            disable_image_spoilers_selector.placeholder = self.translate(
+                "channel_selector_placeholder"
+            )
+            self.add_item(disable_image_spoilers_selector)
+
 
 class FixSelector(ui.Select[GuildSettingsView]):
     def __init__(self, current: list[str]) -> None:
@@ -180,3 +192,16 @@ class WebhookReplyToggle(ToggleButton):
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
         await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
+
+
+class DisableImageSpoilersSelector(ChannelSelect):
+    async def callback(self, i: INTERACTION) -> None:
+        if i.guild is None or self.view is None:
+            return
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
+        guild_settings.disable_image_spoilers = [channel.id for channel in self.values]
+        await guild_settings.save(update_fields=("disable_image_spoilers",))
+        await i.response.send_message(
+            embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
+        )

@@ -15,6 +15,8 @@ strings:
   extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
   disable_fix_channels: Disable Embed Fix Channels
   disable_fix_channels_desc: Set channels to disable embed fixes in
+  disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
+  disable_image_spoilers_desc: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered
   toggle_webhook_reply: Toggle Webhook Reply
   toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook
   sauce: Sauce
@@ -31,5 +33,3 @@ strings:
     This bot is made by [@seria_ati](https://discord.com/users/410036441129943050) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
     For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
     To contribute (such as translations), DM me or open a PR on GitHub.
-  next_page: Next Page
-  prev_page: Previous Page

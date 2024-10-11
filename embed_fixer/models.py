@@ -13,6 +13,7 @@ class GuildSettings(Model):
     disabled_fixes: fields.Field[list[str]] = fields.JSONField(default=[])
     disable_fix_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     extract_media_channels: fields.Field[list[int]] = fields.JSONField(default=[])
+    disable_image_spoilers: fields.Field[list[int]] = fields.JSONField(default=[])
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
 
     class Meta:
