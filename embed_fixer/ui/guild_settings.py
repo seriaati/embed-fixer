@@ -93,7 +93,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
 
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disabled_fixes = self.values
-        await guild_settings.save()
+        await guild_settings.save(update_fields=("disabled_fixes",))
         await i.response.send_message(
             embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
         )
@@ -114,7 +114,7 @@ class LangSelector(ui.Select[GuildSettingsView]):
 
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.lang = self.values[0]
-        await guild_settings.save()
+        await guild_settings.save(update_fields=("lang",))
         await i.response.send_message(
             embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
         )
@@ -178,7 +178,7 @@ class WebhookReplyToggle(ui.Button[GuildSettingsView]):
 
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disable_webhook_reply = not guild_settings.disable_webhook_reply
-        await guild_settings.save()
+        await guild_settings.save(update_fields=("disable_webhook_reply",))
 
         self.current = guild_settings.disable_webhook_reply
         self._set_style()
