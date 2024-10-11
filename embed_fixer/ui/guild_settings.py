@@ -2,8 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, SelectOption, TextChannel, ui
-from seria.dpy.ui import PaginatorSelect
+from discord import (
+    ButtonStyle,
+    ChannelType,
+    SelectDefaultValue,
+    SelectDefaultValueType,
+    SelectOption,
+    ui,
+)
 
 from ..embed import DefaultEmbed
 from ..fixes import FIXES
@@ -37,35 +43,26 @@ class GuildSettingsView(View):
             self.add_item(lang_selector)
 
         elif setting in {"extract_media_channels", "disable_fix_channels"}:
-            next_page_option = SelectOption(label=self.translate("next_page"), value="next_page")
-            prev_page_option = SelectOption(label=self.translate("prev_page"), value="prev_page")
-
             if setting == "extract_media_channels":
                 extract_media_channel_selector = ExtractMediaChannelSelector(
-                    self.guild.text_channels,
-                    guild_settings.extract_media_channels,
-                    next_page_option,
-                    prev_page_option,
+                    [
+                        SelectDefaultValue(id=channel_id, type=SelectDefaultValueType.channel)
+                        for channel_id in guild_settings.extract_media_channels
+                    ]
                 )
                 extract_media_channel_selector.placeholder = self.translate(
                     "channel_selector_placeholder"
                 )
-                extract_media_channel_selector.max_values = min(
-                    len(extract_media_channel_selector.options), 25
-                )
                 self.add_item(extract_media_channel_selector)
             else:
                 disable_fix_channel_selector = DisableFixChannelSelector(
-                    self.guild.text_channels,
-                    guild_settings.disable_fix_channels,
-                    next_page_option,
-                    prev_page_option,
+                    [
+                        SelectDefaultValue(id=channel_id, type=SelectDefaultValueType.channel)
+                        for channel_id in guild_settings.disable_fix_channels
+                    ]
                 )
                 disable_fix_channel_selector.placeholder = self.translate(
                     "channel_selector_placeholder"
-                )
-                disable_fix_channel_selector.max_values = min(
-                    len(disable_fix_channel_selector.options), 25
                 )
                 self.add_item(disable_fix_channel_selector)
 
@@ -123,48 +120,40 @@ class LangSelector(ui.Select[GuildSettingsView]):
         )
 
 
-class ChannelSelector(PaginatorSelect[GuildSettingsView]):
-    def __init__(
-        self,
-        channels: list[TextChannel],
-        current: list[int],
-        next_page: SelectOption,
-        prev_page: SelectOption,
-    ) -> None:
+class ChannelSelect(ui.ChannelSelect):
+    def __init__(self, default_values: list[SelectDefaultValue]) -> None:
         super().__init__(
-            options=[
-                SelectOption(
-                    label=channel.name, value=str(channel.id), default=channel.id in current
-                )
-                for channel in channels
+            default_values=default_values,
+            max_values=25,
+            channel_types=[
+                ct
+                for ct in ChannelType
+                if ct not in {ChannelType.category, ChannelType.group}
             ],
-            min_values=0,
-            next_page=next_page,
-            prev_page=prev_page,
         )
 
 
-class ExtractMediaChannelSelector(ChannelSelector):
+class ExtractMediaChannelSelector(ChannelSelect):
     async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.extract_media_channels = [int(channel_id) for channel_id in self.values]
-        await guild_settings.save()
+        guild_settings.extract_media_channels = [channel.id for channel in self.values]
+        await guild_settings.save(update_fields=("extract_media_channels",))
         await i.response.send_message(
             embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
         )
 
 
-class DisableFixChannelSelector(ChannelSelector):
+class DisableFixChannelSelector(ChannelSelect):
     async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.disable_fix_channels = [int(channel_id) for channel_id in self.values]
-        await guild_settings.save()
+        guild_settings.disable_fix_channels = [channel.id for channel in self.values]
+        await guild_settings.save(update_fields=("disable_fix_channels",))
         await i.response.send_message(
             embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
         )

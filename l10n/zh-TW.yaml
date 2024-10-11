@@ -6,7 +6,7 @@ strings:
   fix_selector_placeholder: 選擇要停用的連結預覽修復...
   settings_saved: 設定已儲存
   lang_selector_placeholder: 選擇語言...
-  settings_embed_footer: 每個伺服器的設定都是獨立的
+  settings_embed_footer: "每個伺服器的設定都是獨立的\n在下拉選單中輸入文字以搜尋頻道"
   disable_fixes: 停用連結預覽修復
   disable_fixes_desc: 停用特定的連結預覽修復
   lang: 語言

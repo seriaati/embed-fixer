@@ -6,7 +6,7 @@ strings:
   fix_selector_placeholder: Select embed fixe(s) to disable...
   settings_saved: Settings saved
   lang_selector_placeholder: Select a language...
-  settings_embed_footer: Settings are unique to this server
+  settings_embed_footer: "Settings are unique to this server\nType in the dropdown menu to search for channels"
   disable_fixes: Disable Embed Fixes
   disable_fixes_desc: Disable specific embed fixes
   lang: Language
