@@ -125,9 +125,7 @@ class ChannelSelect(ui.ChannelSelect):
             default_values=default_values,
             max_values=25,
             channel_types=[
-                ct
-                for ct in ChannelType
-                if ct not in {ChannelType.category, ChannelType.group}
+                ct for ct in ChannelType if ct not in {ChannelType.category, ChannelType.group}
             ],
         )
 
