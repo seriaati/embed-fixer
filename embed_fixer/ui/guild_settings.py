@@ -67,12 +67,11 @@ class GuildSettingsView(View):
                 self.add_item(disable_fix_channel_selector)
 
         elif setting == "toggle_webhook_reply":
-            webhook_reply_toggle = WebhookReplyToggle(guild_settings.disable_webhook_reply)
-            webhook_reply_toggle.label = self.translate(
-                "enable_webhook_reply"
-                if guild_settings.disable_webhook_reply
-                else "disable_webhook_reply"
+            webhook_reply_toggle = WebhookReplyToggle(
+                current_toggle=guild_settings.disable_webhook_reply,
+                labels={True: "enable_webhook_reply", False: "disable_webhook_reply"},
             )
+            webhook_reply_toggle.set_style(self)
             self.add_item(webhook_reply_toggle)
 
 
@@ -159,19 +158,18 @@ class DisableFixChannelSelector(ChannelSelect):
         )
 
 
-class WebhookReplyToggle(ui.Button[GuildSettingsView]):
-    def __init__(self, current: bool) -> None:
-        super().__init__(style=ButtonStyle.green if current else ButtonStyle.red)
-        self.current = current
+class ToggleButton(ui.Button[GuildSettingsView]):
+    def __init__(self, *, current_toggle: bool, labels: dict[bool, str]) -> None:
+        super().__init__(style=ButtonStyle.green if current_toggle else ButtonStyle.red)
+        self.current_toggle = current_toggle
+        self.labels = labels
 
-    def _set_style(self) -> None:
-        if self.view is None:
-            return
-        self.style = ButtonStyle.green if self.current else ButtonStyle.red
-        self.label = self.view.translate(
-            "enable_webhook_reply" if self.current else "disable_webhook_reply"
-        )
+    def set_style(self, view: View) -> None:
+        self.style = ButtonStyle.green if self.current_toggle else ButtonStyle.red
+        self.label = view.translate(self.labels[self.current_toggle])
 
+
+class WebhookReplyToggle(ToggleButton):
     async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
@@ -180,7 +178,7 @@ class WebhookReplyToggle(ui.Button[GuildSettingsView]):
         guild_settings.disable_webhook_reply = not guild_settings.disable_webhook_reply
         await guild_settings.save(update_fields=("disable_webhook_reply",))
 
-        self.current = guild_settings.disable_webhook_reply
-        self._set_style()
+        self.current_toggle = guild_settings.disable_webhook_reply
+        self.set_style(self.view)
         await i.response.edit_message(view=self.view)
         await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
