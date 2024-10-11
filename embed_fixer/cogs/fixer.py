@@ -122,7 +122,8 @@ class FixerCog(commands.Cog):
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
     ) -> list[discord.File]:
         media_urls: list[str] = []
-        files: list[discord.File] = []
+        files: dict[str, discord.File] = {}
+        result: list[discord.File] = []
 
         if domain == "pixiv.net":
             artwork_info = await self._fetch_pixiv_artwork_info(url)
@@ -140,7 +141,11 @@ class FixerCog(commands.Cog):
                     )
                 )
 
-        return files
+        for url_ in media_urls:
+            if (file := files.get(url_)) is not None:
+                result.append(file)
+
+        return result
 
     async def _send_fixes(
         self, message: discord.Message, medias: list[discord.File], sauces: list[str]
@@ -281,7 +286,12 @@ class FixerCog(commands.Cog):
         return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
 
     async def _download_media(
-        self, url: str, result: list[discord.File], *, spoiler: bool = False, filesize_limit: int
+        self,
+        url: str,
+        result: dict[str, discord.File],
+        *,
+        spoiler: bool = False,
+        filesize_limit: int,
     ) -> None:
         async with self.bot.session.get(url) as response:
             if response.status != 200:
@@ -295,11 +305,11 @@ class FixerCog(commands.Cog):
 
             media_type = response.headers.get("Content-Type")
             if media_type:
-                filename = f"{url.split('/')[-1]}.{media_type.split('/')[-1]}"
+                filename = f"{url.split('/')[-1].split('.')[0]}.{media_type.split('/')[-1]}"
             else:
                 filename = url.split("/")[-1]
 
-            result.append(discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler))
+            result[url] = discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
 
     async def _reply_to_webhook(
         self, message: discord.Message, resolved_ref: discord.Message
