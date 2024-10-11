@@ -6,7 +6,7 @@ strings:
   fix_selector_placeholder: Select embed fixe(s) to disable...
   settings_saved: Settings saved
   lang_selector_placeholder: Select a language...
-  settings_embed_footer: "Settings are unique to this server\nType in the dropdown menu to search for channels"
+  settings_embed_footer: "Settings are unique to this server\nType in the dropdown to search for channels\nSelecting a channel that is already selected will remove it"
   disable_fixes: Disable Embed Fixes
   disable_fixes_desc: Disable specific embed fixes
   lang: Language
@@ -33,3 +33,4 @@ strings:
     This bot is made by [@seria_ati](https://discord.com/users/410036441129943050) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
     For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
     To contribute (such as translations), DM me or open a PR on GitHub.
+  selected_channels: Selected channels

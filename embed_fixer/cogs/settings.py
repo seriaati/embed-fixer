@@ -6,7 +6,6 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..embed import DefaultEmbed
 from ..ui.guild_settings import GuildSettingsView
 
 if TYPE_CHECKING:
@@ -43,18 +42,8 @@ class SettingsCog(commands.Cog):
     @app_commands.describe(setting=locale_str("setting_param_desc"))
     @app_commands.command(name="settings", description=locale_str("settings_cmd_desc"))
     async def settings(self, i: INTERACTION, setting: str) -> None:
-        lang = await self.bot.translator.get_guild_lang(i.guild)
-        embed = DefaultEmbed(
-            title=self.bot.translator.get(lang, setting),
-            description=self.bot.translator.get(lang, f"{setting}_desc"),
-        )
-        embed.set_footer(text=self.bot.translator.get(lang, "settings_embed_footer"))
-
         view = GuildSettingsView(i.user, i.guild, self.bot.translator)
-        await view.start(setting)
-
-        await i.response.send_message(embed=embed, view=view)
-        view.message = await i.original_response()
+        await view.start(i, setting=setting)
 
 
 async def setup(bot: EmbedFixer) -> None:

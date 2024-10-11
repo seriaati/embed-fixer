@@ -2,14 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import (
-    ButtonStyle,
-    ChannelType,
-    SelectDefaultValue,
-    SelectDefaultValueType,
-    SelectOption,
-    ui,
-)
+from discord import ButtonStyle, ChannelType, Embed, SelectOption, ui
 
 from ..embed import DefaultEmbed
 from ..fixes import FIXES
@@ -25,8 +18,20 @@ class GuildSettingsView(View):
     async def interaction_check(self, i: INTERACTION) -> bool:
         return i.user.id == self.author.id
 
-    async def start(self, setting: str) -> None:
+    def add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
+        embed.clear_fields()
+        return embed.add_field(
+            name=self.translate("selected_channels"),
+            value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids]),
+        )
+
+    async def start(self, i: INTERACTION, *, setting: str) -> None:
         await super().start()
+
+        embed = DefaultEmbed(
+            title=self.translate(setting), description=self.translate(f"{setting}_desc")
+        )
+        embed.set_footer(text=self.translate("settings_embed_footer"))
 
         if self.guild is None:
             return
@@ -42,29 +47,29 @@ class GuildSettingsView(View):
             lang_selector.placeholder = self.translate("lang_selector_placeholder")
             self.add_item(lang_selector)
 
-        elif setting in {"extract_media_channels", "disable_fix_channels"}:
-            if setting == "extract_media_channels":
-                extract_media_channel_selector = ExtractMediaChannelSelector(
-                    [
-                        SelectDefaultValue(id=channel_id, type=SelectDefaultValueType.channel)
-                        for channel_id in guild_settings.extract_media_channels
-                    ]
-                )
-                extract_media_channel_selector.placeholder = self.translate(
-                    "channel_selector_placeholder"
-                )
-                self.add_item(extract_media_channel_selector)
-            else:
-                disable_fix_channel_selector = DisableFixChannelSelector(
-                    [
-                        SelectDefaultValue(id=channel_id, type=SelectDefaultValueType.channel)
-                        for channel_id in guild_settings.disable_fix_channels
-                    ]
-                )
-                disable_fix_channel_selector.placeholder = self.translate(
-                    "channel_selector_placeholder"
-                )
-                self.add_item(disable_fix_channel_selector)
+        elif setting == "extract_media_channels":
+            extract_media_channel_selector = ChannelSelect("extract_media_channels")
+            extract_media_channel_selector.placeholder = self.translate(
+                "channel_selector_placeholder"
+            )
+            self.add_item(extract_media_channel_selector)
+            embed = self.add_selected_channels_field(embed, guild_settings.extract_media_channels)
+
+        elif setting == "disable_fix_channels":
+            disable_fix_channel_selector = ChannelSelect("disable_fix_channels")
+            disable_fix_channel_selector.placeholder = self.translate(
+                "channel_selector_placeholder"
+            )
+            self.add_item(disable_fix_channel_selector)
+            embed = self.add_selected_channels_field(embed, guild_settings.disable_fix_channels)
+
+        elif setting == "disable_image_spoilers":
+            disable_image_spoilers_selector = ChannelSelect("disable_image_spoilers")
+            disable_image_spoilers_selector.placeholder = self.translate(
+                "channel_selector_placeholder"
+            )
+            self.add_item(disable_image_spoilers_selector)
+            embed = self.add_selected_channels_field(embed, guild_settings.disable_image_spoilers)
 
         elif setting == "toggle_webhook_reply":
             webhook_reply_toggle = WebhookReplyToggle(
@@ -74,17 +79,8 @@ class GuildSettingsView(View):
             webhook_reply_toggle.set_style(self)
             self.add_item(webhook_reply_toggle)
 
-        elif setting == "disable_image_spoilers":
-            disable_image_spoilers_selector = DisableImageSpoilersSelector(
-                [
-                    SelectDefaultValue(id=channel_id, type=SelectDefaultValueType.channel)
-                    for channel_id in guild_settings.disable_image_spoilers
-                ]
-            )
-            disable_image_spoilers_selector.placeholder = self.translate(
-                "channel_selector_placeholder"
-            )
-            self.add_item(disable_image_spoilers_selector)
+        await i.response.send_message(embed=embed, view=self)
+        self.message = await i.original_response()
 
 
 class FixSelector(ui.Select[GuildSettingsView]):
@@ -131,41 +127,37 @@ class LangSelector(ui.Select[GuildSettingsView]):
         )
 
 
-class ChannelSelect(ui.ChannelSelect):
-    def __init__(self, default_values: list[SelectDefaultValue]) -> None:
+class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
+    def __init__(self, attr_name: str) -> None:
         super().__init__(
-            default_values=default_values,
+            min_values=0,
             max_values=25,
             channel_types=[
                 ct for ct in ChannelType if ct not in {ChannelType.category, ChannelType.group}
             ],
         )
+        self.attr_name = attr_name
 
-
-class ExtractMediaChannelSelector(ChannelSelect):
     async def callback(self, i: INTERACTION) -> None:
         if i.guild is None or self.view is None:
             return
 
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.extract_media_channels = [channel.id for channel in self.values]
-        await guild_settings.save(update_fields=("extract_media_channels",))
-        await i.response.send_message(
-            embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
-        )
+        channel_ids = [channel.id for channel in self.values]
+        current_channel_ids: list[int] = getattr(guild_settings, self.attr_name)
 
+        for channel_id in channel_ids:
+            if channel_id in current_channel_ids:
+                current_channel_ids.remove(channel_id)
+            else:
+                current_channel_ids.append(channel_id)
 
-class DisableFixChannelSelector(ChannelSelect):
-    async def callback(self, i: INTERACTION) -> None:
-        if i.guild is None or self.view is None:
-            return
+        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
+        embed = self.view.add_selected_channels_field(embed, current_channel_ids)
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.disable_fix_channels = [channel.id for channel in self.values]
-        await guild_settings.save(update_fields=("disable_fix_channels",))
-        await i.response.send_message(
-            embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
-        )
+        await guild_settings.save(update_fields=(self.attr_name,))
+        await i.response.edit_message(embed=embed, view=None)
+        await i.edit_original_response(view=self.view)
 
 
 class ToggleButton(ui.Button[GuildSettingsView]):
@@ -192,16 +184,3 @@ class WebhookReplyToggle(ToggleButton):
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
         await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
-
-
-class DisableImageSpoilersSelector(ChannelSelect):
-    async def callback(self, i: INTERACTION) -> None:
-        if i.guild is None or self.view is None:
-            return
-
-        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.disable_image_spoilers = [channel.id for channel in self.values]
-        await guild_settings.save(update_fields=("disable_image_spoilers",))
-        await i.response.send_message(
-            embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
-        )
