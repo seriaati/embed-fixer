@@ -11,7 +11,7 @@ from ..ui.guild_settings import GuildSettingsView
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
-    from ..bot import INTERACTION
+    from ..bot import Interaction
 
 
 class SettingsCog(commands.Cog):
@@ -41,7 +41,7 @@ class SettingsCog(commands.Cog):
     @app_commands.rename(setting=locale_str("setting_param"))
     @app_commands.describe(setting=locale_str("setting_param_desc"))
     @app_commands.command(name="settings", description=locale_str("settings_cmd_desc"))
-    async def settings(self, i: INTERACTION, setting: str) -> None:
+    async def settings(self, i: Interaction, setting: str) -> None:
         view = GuildSettingsView(i.user, i.guild, self.bot.translator)
         await view.start(i, setting=setting)
 

@@ -11,7 +11,7 @@ from ..embed import DefaultEmbed
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
-    from ..bot import INTERACTION
+    from ..bot import Interaction
 
 
 class InfoCog(commands.Cog):
@@ -19,7 +19,7 @@ class InfoCog(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="info", description=locale_str("info_cmd_desc"))
-    async def settings(self, i: INTERACTION) -> None:
+    async def settings(self, i: Interaction) -> None:
         lang = await self.bot.translator.get_guild_lang(i.guild)
         embed = DefaultEmbed(
             title="Embed Fixer", description=self.bot.translator.get(lang, "info_embed_desc")

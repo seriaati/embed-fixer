@@ -10,12 +10,12 @@ from ..models import GuildSettings
 from .view import View
 
 if TYPE_CHECKING:
-    from ..bot import INTERACTION
+    from ..bot import Interaction
     from ..translator import Translator
 
 
 class GuildSettingsView(View):
-    async def interaction_check(self, i: INTERACTION) -> bool:
+    async def interaction_check(self, i: Interaction) -> bool:
         return i.user.id == self.author.id
 
     def add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
@@ -25,7 +25,7 @@ class GuildSettingsView(View):
             value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids]),
         )
 
-    async def start(self, i: INTERACTION, *, setting: str) -> None:
+    async def start(self, i: Interaction, *, setting: str) -> None:
         await super().start()
 
         embed = DefaultEmbed(
@@ -94,7 +94,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
             max_values=len(FIXES),
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -115,7 +115,7 @@ class LangSelector(ui.Select[GuildSettingsView]):
             ]
         )
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -138,7 +138,7 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
         )
         self.attr_name = attr_name
 
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if i.guild is None or self.view is None:
             return
 
@@ -172,7 +172,7 @@ class ToggleButton(ui.Button[GuildSettingsView]):
 
 
 class WebhookReplyToggle(ToggleButton):
-    async def callback(self, i: INTERACTION) -> None:
+    async def callback(self, i: Interaction) -> None:
         if i.guild is None or self.view is None:
             return
 

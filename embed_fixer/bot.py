@@ -18,9 +18,9 @@ if TYPE_CHECKING:
     from aiohttp import ClientSession
 
 
-__all__ = ("INTERACTION", "EmbedFixer")
+__all__ = ("Interaction", "EmbedFixer")
 
-INTERACTION: TypeAlias = discord.Interaction["EmbedFixer"]
+Interaction: TypeAlias = discord.Interaction["EmbedFixer"]
 
 intents = discord.Intents(
     guilds=True, emojis=True, messages=True, message_content=True, reactions=True
