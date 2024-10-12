@@ -42,6 +42,8 @@ class SettingsCog(commands.Cog):
     @app_commands.describe(setting=locale_str("setting_param_desc"))
     @app_commands.command(name="settings", description=locale_str("settings_cmd_desc"))
     async def settings(self, i: Interaction, setting: str) -> None:
+        if i.guild is None:
+            return
         view = GuildSettingsView(i.user, i.guild, self.bot.translator)
         await view.start(i, setting=setting)
 

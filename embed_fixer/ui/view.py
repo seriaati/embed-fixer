@@ -12,10 +12,7 @@ if TYPE_CHECKING:
 
 class View(ui.View):
     def __init__(
-        self,
-        author: discord.Member | discord.User,
-        guild: discord.Guild | None,
-        translator: Translator,
+        self, author: discord.Member | discord.User, guild: discord.Guild, translator: Translator
     ) -> None:
         super().__init__(timeout=60 * 60)  # 1 hour
 

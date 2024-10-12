@@ -10,6 +10,8 @@ from ..models import GuildSettings
 from .view import View
 
 if TYPE_CHECKING:
+    from discord.abc import GuildChannel
+
     from ..bot import Interaction
     from ..translator import Translator
 
@@ -33,8 +35,6 @@ class GuildSettingsView(View):
         )
         embed.set_footer(text=self.translate("settings_embed_footer"))
 
-        if self.guild is None:
-            return
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
 
         if setting == "disable_fixes":
@@ -116,10 +116,9 @@ class LangSelector(ui.Select[GuildSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if i.guild is None or self.view is None:
-            return
+        assert self.view is not None
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         guild_settings.lang = self.values[0]
         await guild_settings.save(update_fields=("lang",))
         await i.response.send_message(
@@ -139,10 +138,9 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
         self.attr_name = attr_name
 
     async def callback(self, i: Interaction) -> None:
-        if i.guild is None or self.view is None:
-            return
+        assert self.view is not None
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         channel_ids = [channel.id for channel in self.values]
         current_channel_ids: list[int] = getattr(guild_settings, self.attr_name)
 
@@ -173,10 +171,9 @@ class ToggleButton(ui.Button[GuildSettingsView]):
 
 class WebhookReplyToggle(ToggleButton):
     async def callback(self, i: Interaction) -> None:
-        if i.guild is None or self.view is None:
-            return
+        assert self.view is not None
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         guild_settings.disable_webhook_reply = not guild_settings.disable_webhook_reply
         await guild_settings.save(update_fields=("disable_webhook_reply",))
 
