@@ -20,6 +20,21 @@ class GuildSettingsView(View):
     async def interaction_check(self, i: Interaction) -> bool:
         return i.user.id == self.author.id
 
+    async def remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
+        guild_channel_ids = [channel.id for channel in self.guild.channels]
+        for attr_name in (
+            "extract_media_channels",
+            "disable_fix_channels",
+            "disable_image_spoilers",
+        ):
+            channel_ids: list[int] = getattr(guild_settings, attr_name)
+            valid_channel_ids = [
+                channel_id for channel_id in channel_ids if channel_id in guild_channel_ids
+            ]
+            setattr(guild_settings, attr_name, valid_channel_ids)
+
+        await guild_settings.save()
+
     def add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
         embed.clear_fields()
         return embed.add_field(
@@ -36,6 +51,7 @@ class GuildSettingsView(View):
         embed.set_footer(text=self.translate("settings_embed_footer"))
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
+        await self.remove_invalid_channels(guild_settings)
 
         if setting == "disable_fixes":
             fix_selector = FixSelector(guild_settings.disabled_fixes)
