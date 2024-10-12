@@ -36,10 +36,19 @@ class GuildSettingsView(View):
         await guild_settings.save()
 
     def add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
+        channels: list[GuildChannel] = []
+        for _, category_channels in self.guild.by_category():
+            channels.extend(category_channels)
+
+        channel_ids_: list[int] = []
+        for channel in channels:
+            if channel.id in channel_ids:
+                channel_ids_.append(channel.id)
+
         embed.clear_fields()
         return embed.add_field(
             name=self.translate("selected_channels"),
-            value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids]),
+            value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids_]),
         )
 
     async def start(self, i: Interaction, *, setting: str) -> None:
