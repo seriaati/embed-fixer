@@ -258,11 +258,11 @@ class FixerCog(commands.Cog):
         else:
             api_url = url.replace("x.com", "api.fxtwitter.com")
 
-        media_type = {"photo", "video"}
+        allowed_media_types = {"photo", "video", "gif"}
         media_index = None
 
         if "photo" in api_url or "video" in api_url:
-            media_type = {api_url.split("/")[-2]}
+            allowed_media_types = {api_url.split("/")[-2]}
             media_index = int(api_url.split("/")[-1]) - 1
             api_url = "/".join(api_url.split("/")[:-2])
 
@@ -276,7 +276,7 @@ class FixerCog(commands.Cog):
             if medias is None:
                 return []
 
-            urls = [media["url"] for media in medias["all"] if media["type"] in media_type]
+            urls = [media["url"] for media in medias["all"] if media["type"] in allowed_media_types]
             if media_index is not None:
                 return [urls[media_index]]
             return urls
