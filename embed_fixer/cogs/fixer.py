@@ -297,12 +297,27 @@ class FixerCog(commands.Cog):
             urls: list[str] = []
             post = data["posts"][0]
             embed = post.get("embed")
+
             if embed is None:
                 return []
 
-            images = embed.get("images")
-            if images is not None:
+            # Image
+            if (images := embed.get("images")) is not None:
                 urls.extend(image["fullsize"] for image in images)
+
+            # Video
+            if (
+                (cid := embed.get("cid")) is not None
+                and (author := post.get("author")) is not None
+                and (did := author.get("did"))
+            ):
+                urls.append(
+                    f"https://bsky.social/xrpc/com.atproto.sync.getBlob?cid={cid}&did={did}"
+                )
+
+            # External GIF
+            if (external := (embed.get("external"))) and (uri := external.get("uri")):
+                urls.append(uri)
 
             return urls
 
