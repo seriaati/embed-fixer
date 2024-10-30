@@ -155,3 +155,4 @@ cython_debug/
 *.db-wal
 *.sqlite
 .vscode/
+test.py

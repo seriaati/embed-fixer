@@ -51,6 +51,9 @@ quote-annotations = true
 [lint.pydocstyle]
 convention = "google"
 
+[lint.per-file-ignores]
+"test.py" = ["ALL"]
+
 [lint.isort]
 required-imports = ["from __future__ import annotations"]
 split-on-trailing-comma = false
