@@ -132,6 +132,8 @@ class FixerCog(commands.Cog):
             media_urls = await self._fetch_twitter_media_urls(url)
         elif domain == "www.iwara.tv":
             media_urls = await self._fetch_iwara_video_urls(url)
+        elif domain == "bsky.app":
+            media_urls = await self._fetch_bluesky_media_urls(url)
 
         async with asyncio.TaskGroup() as tg:
             for image_url in media_urls:
@@ -279,6 +281,29 @@ class FixerCog(commands.Cog):
             urls = [media["url"] for media in medias["all"] if media["type"] in allowed_media_types]
             if media_index is not None:
                 return [urls[media_index]]
+            return urls
+
+    async def _fetch_bluesky_media_urls(self, url: str) -> list[str]:
+        api_url = url.replace("bsky.app", "bskyx.app") + "/json"
+
+        async with self.bot.session.get(api_url) as response:
+            if response.status != 200:
+                return []
+
+            data = await response.json()
+            if not data["posts"]:
+                return []
+
+            urls: list[str] = []
+            post = data["posts"][0]
+            embed = post.get("embed")
+            if embed is None:
+                return []
+
+            images = embed.get("images")
+            if images is not None:
+                urls.extend(image["fullsize"] for image in images)
+
             return urls
 
     async def _fetch_iwara_video_urls(self, url: str) -> list[str]:
