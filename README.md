@@ -39,11 +39,11 @@ Fixings are currently available for:
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
 - Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
 - Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
+- Bluesky with [VixBluesky](https://github.com/Rapougnac/VixBluesky)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message.
 
 ![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)  
-
 
 > [!NOTE]
 > If the link is sent in a non-NSFW channel AND is from Pixiv AND the artwork contains the "#R-18" tag, the Embed Fixer will **NOT** fix the embed as this will show the NSFW image.
