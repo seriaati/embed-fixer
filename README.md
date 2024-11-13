@@ -104,3 +104,16 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=Your
 
 - `DISCORD_TOKEN`: your Discord bot token
 - `DB_URI`: defaults to `sqlite:///data/embed_fixer.db`, available to customize the database location
+
+## Local
+
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+1. Clone the repository
+1. Create a `.env` file:
+
+   ```env
+   DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk
+   ENV=dev
+   ```
+
+1. `uv run run.py`
