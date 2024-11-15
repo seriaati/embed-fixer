@@ -80,3 +80,40 @@ Below are settings you can change with the `/settings` command:
 
 Whether you want a new fix to be added, to request a new feature, to report a bug, or to contribute to translations. You can do so by creating an issue or a pull request.  
 If GitHub is not your type, you can find me on [Discord](https://discord.com/invite/b22kMKuwbS), my username is @seria_ati.
+
+# Self Hosting
+
+1. Create a [Discord application](https://discord.com/developers/applications)
+1. On the **Bot** page, generate a token and save it for later
+1. Enable **Message Content Intent**
+1. Run the application with your bot token as the `DISCORD_TOKEN` environment variable
+1. Invite your bot with the invite link in the logs
+
+## Docker
+
+```sh
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk ghcr.io/seriaati/embed-fixer:latest
+```
+
+### Volumes
+
+- `/app/logs`: the logfiles produced by the program
+- `/data`: the default location for the `embed_fixer.db` SQLite database file
+
+### Environment Variables
+
+- `DISCORD_TOKEN`: your Discord bot token
+- `DB_URI`: defaults to `sqlite:///data/embed_fixer.db`, available to customize the database location
+
+## Local
+
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+1. Clone the repository
+1. Create a `.env` file:
+
+   ```env
+   DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk
+   ENV=dev
+   ```
+
+1. `uv run run.py`

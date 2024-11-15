@@ -26,6 +26,15 @@ intents = discord.Intents(
     guilds=True, emojis=True, messages=True, message_content=True, reactions=True
 )
 allowed_mentions = discord.AllowedMentions(everyone=False)
+permissions = discord.Permissions(
+    manage_webhooks=True,
+    view_channel=True,
+    send_messages=True,
+    send_messages_in_threads=True,
+    manage_messages=True,
+    embed_links=True,
+    add_reactions=True,
+)
 
 
 class EmbedFixer(commands.AutoShardedBot):
@@ -59,6 +68,8 @@ class EmbedFixer(commands.AutoShardedBot):
 
         await self.translator.load()
         await self.tree.set_translator(AppCommandTranslator(self.translator))
+
+        logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
 
         await Tortoise.init(
             {
