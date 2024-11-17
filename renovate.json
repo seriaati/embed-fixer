@@ -2,5 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>seriaati/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "description": "Disable Dockerfile tag updates",
+      "matchFileNames": [
+        "Dockerfile"
+      ],
+      "enabled": false
+    }
   ]
 }
