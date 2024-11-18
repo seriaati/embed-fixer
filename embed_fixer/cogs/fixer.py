@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import io
 import re
 from typing import TYPE_CHECKING, Any, Final
 
+import aiohttp
 import discord
 from discord.ext import commands
 from loguru import logger
@@ -349,24 +351,22 @@ class FixerCog(commands.Cog):
         return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
 
     async def _download_media(
-        self,
-        url: str,
-        result: dict[str, discord.File],
-        *,
-        spoiler: bool = False,
-        filesize_limit: int,
+        self, url: str, result: dict[str, discord.File], *, spoiler: bool, filesize_limit: int
     ) -> None:
-        async with self.bot.session.get(url) as response:
-            if response.status != 200:
-                return None
+        timeout = aiohttp.ClientTimeout(total=10)
+        with contextlib.suppress(Exception):
+            async with self.bot.session.get(url, timeout=timeout) as resp:
+                if resp.status != 200:
+                    return None
 
-            content_length = response.headers.get("Content-Length")
-            if content_length is not None and int(content_length) > filesize_limit:
-                return None
+                content_length = resp.headers.get("Content-Length")
+                if content_length is not None and int(content_length) > filesize_limit:
+                    return None
 
-            data = await response.read()
+                data = await resp.read()
 
-            media_type = response.headers.get("Content-Type")
+                media_type = resp.headers.get("Content-Type")
+
             if media_type:
                 filename = f"{url.split('/')[-1].split('.')[0]}.{media_type.split('/')[-1]}"
             else:
