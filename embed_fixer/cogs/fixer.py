@@ -134,6 +134,8 @@ class FixerCog(commands.Cog):
             media_urls = await self._fetch_iwara_video_urls(url)
         elif domain == "bsky.app":
             media_urls = await self._fetch_bluesky_media_urls(url)
+        elif domain == "kemono.su":
+            media_urls = await self._fetch_kemono_media_urls(url)
 
         async with asyncio.TaskGroup() as tg:
             for image_url in media_urls:
@@ -320,6 +322,27 @@ class FixerCog(commands.Cog):
                 urls.append(uri)
 
             return urls
+
+    async def _fetch_kemono_media_urls(self, url: str) -> list[str]:
+        urls: list[str] = []
+        api_url = url.replace("kemono.su", "kemono.su/api/v1")
+
+        async with self.bot.session.get(api_url) as resp:
+            data = await resp.json()
+
+        if "attachments" not in data:
+            return urls
+
+        attachments: list[dict[str, str]] = data["attachments"]
+        for attachment in attachments:
+            if attachment["name"].endswith(".mp4"):
+                urls.append(f"https://n1.kemono.su/data{attachment['path']}")
+            elif attachment["name"].endswith((".jpg", ".jpeg", ".png")):
+                urls.append(f"https://img.kemono.su/thumbnail/data{attachment['path']}")
+            elif attachment["name"].endswith(".gif"):
+                urls.append(f"https://n3.kemono.su/data{attachment['path']}?f={attachment['name']}")
+
+        return urls
 
     async def _fetch_iwara_video_urls(self, url: str) -> list[str]:
         video_id = url.split("/")[-2]

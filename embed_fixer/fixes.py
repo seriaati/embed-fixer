@@ -16,6 +16,7 @@ FIX_PATTERNS = (
     r"https://(www.)?iwara.tv/video/[\w]+/[\w]+",
     r"https://(www.)?twitch.tv/[\w]+/clip/[\w]+",
     r"https://(www.)?bsky.app/profile/[\w.]+/post/[\w]+",
+    r"https://(www.)?kemono.su/[a-zA-Z0-9_]+/user/[\w]+/post/[\w]+",
 )
 FIXES = {
     "twitter.com": "fxtwitter.com",
@@ -30,4 +31,5 @@ FIXES = {
     "www.iwara.tv": "fxiwara.seria.moe",
     "www.twitch.tv": "fxtwitch.seria.moe",
     "bsky.app": "bskyx.app",
+    "kemono.su": "kemono.su",
 }
