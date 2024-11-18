@@ -51,20 +51,27 @@ If your message contains link(s) that are of any of the social medias above, it 
 ## Webhook Replying
 
 When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.  
-![image](https://github.com/seriaati/embed-fixer/assets/61446626/e7db4d9d-817d-4fba-95bb-a058c094a95d)
+![image](https://iili.io/2RPjJ0Q.png)
 
 ## Media Extracting
 
-This feature currently only supports Twitter, X, and Pixiv. When you send a pixiv artwork link into channel(s) with this feature on, the bot resend all of the images/videos in the link in a nice gallery-like layout.  
+The following platforms are supported:  
 
-![image](https://github.com/seriaati/embed-fixer/assets/61446626/443fce84-f51f-451f-99b0-63f0164d98a0)  
+- Twitter/X
+- Pixiv
+- Iwara
+- Kemono
+
+When you send a link that is from one of the platforms above in channel(s) with this feature on, the bot resends all of the images/videos in the link in a nice gallery-like layout.  
+
+![image](https://iili.io/2RPwDMb.png)  
 
 > [!NOTE]
 > If the link is sent in a NSFW channel then the extracted media will be spoilered automatically.
 
 ## Very Customizable
 
-*All settings are unique to the server*  
+*All settings are unique to each server*  
   
 Below are settings you can change with the `/settings` command:  
 
@@ -72,9 +79,8 @@ Below are settings you can change with the `/settings` command:
 - Language: Change language of the bot
 - Media extraction channels: Channels to enable the media extraction feature mentioned above
 - Disable embed fix channels: Channels to disable embed fixing
-- Toggle webhook reply: Toggle the webhook reply feature mentioned above  
-  
-![image](https://github.com/seriaati/embed-fixer/assets/61446626/b0bf6f0a-c3e6-42ca-b726-7fe989f29898)
+- Disable webhook reply: Disable the webhook reply feature mentioned above  
+- Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels
 
 # Questions, Issues, Feedback, Contributions
 
