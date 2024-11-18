@@ -34,6 +34,18 @@ class FixerCog(commands.Cog):
         fp.seek(original_pos)
         return size
 
+    @staticmethod
+    async def _get_original_author(
+        message: discord.Message, guild: discord.Guild
+    ) -> discord.Member | None:
+        authors = await guild.query_members(
+            message.author.display_name.removesuffix(" (Embed Fixer)")
+        )
+        if not authors:
+            return None
+
+        return authors[0]
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         if payload.user_id == self.bot.user.id or payload.emoji.name != DELETE_MSG_EMOJI:
@@ -51,9 +63,7 @@ class FixerCog(commands.Cog):
         if guild is None:
             return
 
-        author = (
-            await guild.query_members(message.author.display_name.removesuffix(" (Embed Fixer)"))
-        )[0]
+        author = await self._get_original_author(message, guild)
 
         if author is None:
             return
@@ -381,12 +391,7 @@ class FixerCog(commands.Cog):
         if guild is None:
             return
 
-        author = (
-            await guild.query_members(
-                resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
-            )
-        )[0]
-
+        author = await self._get_original_author(resolved_ref, guild)
         if author is not None and not author.bot:
             await message.reply(
                 self.bot.translator.get(
