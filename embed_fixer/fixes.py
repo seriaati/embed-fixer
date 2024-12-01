@@ -24,7 +24,7 @@ FIXES = {
     "pixiv.net": "phixiv.net",
     "tiktok.com": "vxtiktok.com",
     "reddit.com": "rxddit.com",
-    "instagram.com": "ddinstagram.com",
+    "instagram.com": "instagramez.com",
     "furaffinity.net": "xfuraffinity.net",
     "clips.twitch.tv": "fxtwitch.seria.moe/clip",
     "m.twitch.tv": "fxtwitch.seria.moe",

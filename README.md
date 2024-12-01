@@ -33,7 +33,7 @@ Fixings are currently available for:
 
 - Pixiv with [phixiv](https://github.com/HazelTheWitch/phixiv)
 - Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
-- Instagram with [instafix](https://github.com/Wikidepia/InstaFix)
+- Instagram with ~~[instafix](https://github.com/Wikidepia/InstaFix)~~ [InstagramEZ](https://embedez.com/) (Not open sourced but a lot more stable)
 - Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit)
 - Tiktok wtih [vxtiktok](https://github.com/dylanpdx/vxtiktok)
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
