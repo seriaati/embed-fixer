@@ -10,6 +10,7 @@ FIX_PATTERNS = (
     r"https://(www.)?reddit.com/r/[\w]+/comments/[\w]+/[\w]+",
     r"https://(www.)?reddit.com/r/[\w]+/s/[\w]+",
     r"https://(www.)?instagram.com/(p|reels?)/[\w]+",
+    r"https://(www.)?instagram.com/share/(p|reel?)/[\w]+",
     r"https://(www.)?furaffinity.net/view/\d+",
     r"https://m.twitch.tv/clip/[\w]+",
     r"https://clips.twitch.tv/[\w]+",
