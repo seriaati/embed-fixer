@@ -11,6 +11,8 @@ from loguru import logger
 from tortoise import Tortoise
 from tortoise.exceptions import IntegrityError
 
+from embed_fixer.db_config import TORTOISE_CONFIG
+
 from .models import GuildSettings
 from .translator import AppCommandTranslator, Translator
 
@@ -71,16 +73,7 @@ class EmbedFixer(commands.AutoShardedBot):
 
         logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
 
-        await Tortoise.init(
-            {
-                "connections": {
-                    "default": os.getenv("DB_URI")
-                    if self.env == "prod"
-                    else "sqlite://embed_fixer.db"
-                },
-                "apps": {"embed_fixer": {"models": ["embed_fixer.models"]}},
-            }
-        )
+        await Tortoise.init(TORTOISE_CONFIG)
         await Tortoise.generate_schemas()
 
     async def on_guild_join(self, guild: discord.Guild) -> None:

@@ -11,6 +11,7 @@ dependencies = [
   "uvloop>=0.20.0; platform_system == 'Linux'",
   "discord-py>=2.4.0",
   "loguru>=0.7.2",
+  "aerich>=0.8.0",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }
@@ -28,3 +29,8 @@ reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
 typeCheckingMode = "standard"
+
+[tool.aerich]
+tortoise_orm = "embed_fixer.db_config.TORTOISE_CONFIG"
+location = "./migrations"
+src_folder = "./."
