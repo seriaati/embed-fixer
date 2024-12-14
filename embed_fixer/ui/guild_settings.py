@@ -104,6 +104,14 @@ class GuildSettingsView(View):
             webhook_reply_toggle.set_style(self)
             self.add_item(webhook_reply_toggle)
 
+        elif setting == "toggle_delete_reaction":
+            delete_reaction_toggle = DisableDeleteReaction(
+                current_toggle=guild_settings.disable_delete_reaction,
+                labels={True: "enable_delete_reaction", False: "disable_delete_reaction"},
+            )
+            delete_reaction_toggle.set_style(self)
+            self.add_item(delete_reaction_toggle)
+
         await i.response.send_message(embed=embed, view=self)
         self.message = await i.original_response()
 
@@ -203,6 +211,20 @@ class WebhookReplyToggle(ToggleButton):
         await guild_settings.save(update_fields=("disable_webhook_reply",))
 
         self.current_toggle = guild_settings.disable_webhook_reply
+        self.set_style(self.view)
+        await i.response.edit_message(view=self.view)
+        await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
+
+
+class DisableDeleteReaction(ToggleButton):
+    async def callback(self, i: Interaction) -> None:
+        assert self.view is not None
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
+        guild_settings.disable_delete_reaction = not guild_settings.disable_delete_reaction
+        await guild_settings.save(update_fields=("disable_delete_reaction",))
+
+        self.current_toggle = guild_settings.disable_delete_reaction
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
         await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)

@@ -34,3 +34,7 @@ strings:
     For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
     To contribute (such as translations), DM me or open a PR on GitHub.
   selected_channels: Selected channels
+  enable_delete_reaction: Enable delete reaction
+  disable_delete_reaction: Disable delete reaction
+  toggle_delete_reaction: Toggle Delete Reaction
+  toggle_delete_reaction_desc: Add a emoji reaction to messages to delete them

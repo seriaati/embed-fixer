@@ -36,6 +36,9 @@ class SettingsCog(commands.Cog):
             app_commands.Choice(
                 name=locale_str("disable_image_spoilers"), value="disable_image_spoilers"
             ),
+            app_commands.Choice(
+                name=locale_str("toggle_delete_reaction"), value="toggle_delete_reaction"
+            ),
         ]
     )
     @app_commands.rename(setting=locale_str("setting_param"))

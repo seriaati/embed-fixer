@@ -34,3 +34,7 @@ strings:
     有關此機器人的問題或問題，請在 Discord 上與我聯繫，或在 GitHub 上提出 Issue。
     如有意願貢獻（例如翻譯），請與我聯繫，或在 GitHub 上提交 PR。
   selected_channels: 已選擇的頻道
+  enable_delete_reaction: 啟用刪除訊息反應
+  disable_delete_reaction: 禁用刪除訊息反應
+  toggle_delete_reaction: 開關刪除訊息反應
+  toggle_delete_reaction_desc: 在訊息上添加表情符號反應, 用於刪除訊息
