@@ -5,8 +5,6 @@ target-version = "py311"
 ignore = [
   "E501",
   "ANN401",
-  "ANN101",
-  "ANN102",
   "PLR0913",
   "PLR2004",
   "PLR0917",
