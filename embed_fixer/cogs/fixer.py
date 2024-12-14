@@ -164,7 +164,12 @@ class FixerCog(commands.Cog):
         return result
 
     async def _send_fixes(
-        self, message: discord.Message, medias: list[discord.File], sauces: list[str]
+        self,
+        message: discord.Message,
+        medias: list[discord.File],
+        sauces: list[str],
+        *,
+        disable_delete_reaction: bool,
     ) -> None:
         files = [await a.to_file() for a in message.attachments]
         files.extend(medias)
@@ -174,61 +179,78 @@ class FixerCog(commands.Cog):
             message.content += f"\n\n||{sauces_str}||"
             sauces.clear()
 
-        fixed_message = None
-
         if files:
-            chunked_files = split_list_to_chunks(files, 10)
-            guild_lang = await Translator.get_guild_lang(message.guild)
-
-            for chunk in chunked_files:
-                kwargs: dict[str, Any] = {}
-                if sauces:
-                    view = discord.ui.View()
-                    view.add_item(
-                        discord.ui.Button(
-                            url=sauces[0], label=self.bot.translator.get(guild_lang, "sauce")
-                        )
-                    )
-                    kwargs["view"] = view
-
-                if isinstance(message.channel, discord.TextChannel):
-                    webhook = await self._get_or_create_webhook(message)
-                    fixed_message = await self._send_webhook(
-                        message, webhook, files=chunk, **kwargs
-                    )
-                else:
-                    fixed_message = await message.channel.send(
-                        message.content, tts=message.tts, files=chunk, **kwargs
-                    )
-
-                message.content = ""
-                await fixed_message.add_reaction(DELETE_MSG_EMOJI)
+            await self._send_files(message, files, sauces, disable_delete_reaction)
         else:
-            if isinstance(message.channel, discord.TextChannel):
-                webhook = await self._get_or_create_webhook(message)
-                fixed_message = await self._send_webhook(message, webhook)
-            else:
-                fixed_message = await message.channel.send(message.content, tts=message.tts)
-
-            await fixed_message.add_reaction(DELETE_MSG_EMOJI)
+            await self._send_message(message, disable_delete_reaction)
 
         if (
             message.reference is not None
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and message.guild is not None
         ):
-            author = message.guild.get_member_named(
-                resolved_ref.author.display_name.removesuffix(" (Embed Fixer)")
-            )
-            if author is not None and fixed_message is not None:
-                await fixed_message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(message.guild),
-                        "replying_to",
-                        user=author.mention,
-                        url=resolved_ref.jump_url,
+            await self._reply_to_resolved_message(message, resolved_ref)
+
+    async def _send_files(
+        self,
+        message: discord.Message,
+        files: list[discord.File],
+        sauces: list[str],
+        disable_delete_reaction: bool,
+    ) -> None:
+        chunked_files = split_list_to_chunks(files, 10)
+        guild_lang = await Translator.get_guild_lang(message.guild)
+
+        for chunk in chunked_files:
+            kwargs: dict[str, Any] = {}
+            if sauces:
+                view = discord.ui.View()
+                view.add_item(
+                    discord.ui.Button(
+                        url=sauces[0], label=self.bot.translator.get(guild_lang, "sauce")
                     )
                 )
+                kwargs["view"] = view
+
+            if isinstance(message.channel, discord.TextChannel):
+                webhook = await self._get_or_create_webhook(message)
+                fixed_message = await self._send_webhook(message, webhook, files=chunk, **kwargs)
+            else:
+                fixed_message = await message.channel.send(
+                    message.content, tts=message.tts, files=chunk, **kwargs
+                )
+
+            message.content = ""
+
+            if not disable_delete_reaction:
+                await fixed_message.add_reaction(DELETE_MSG_EMOJI)
+
+    async def _send_message(self, message: discord.Message, disable_delete_reaction: bool) -> None:
+        if isinstance(message.channel, discord.TextChannel):
+            webhook = await self._get_or_create_webhook(message)
+            fixed_message = await self._send_webhook(message, webhook)
+        else:
+            fixed_message = await message.channel.send(message.content, tts=message.tts)
+
+        if not disable_delete_reaction:
+            await fixed_message.add_reaction(DELETE_MSG_EMOJI)
+
+    async def _reply_to_resolved_message(
+        self, message: discord.Message, resolved_ref: discord.Message
+    ) -> None:
+        if message.guild is None:
+            return
+
+        author = await self._get_original_author(resolved_ref, message.guild)
+        if author is not None:
+            await message.reply(
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(message.guild),
+                    "replying_to",
+                    user=author.mention,
+                    url=resolved_ref.jump_url,
+                )
+            )
 
     async def _send_webhook(
         self, message: discord.Message, webhook: discord.Webhook, **kwargs: Any
@@ -247,7 +269,10 @@ class FixerCog(commands.Cog):
             return await message.channel.send(message.content, tts=message.tts, **kwargs)
 
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
-        assert isinstance(message.channel, discord.TextChannel)
+        if not isinstance(message.channel, discord.TextChannel):
+            msg = "Only text channels are supported for webhook creation"
+            raise TypeError(msg)
+
         webhooks = await message.channel.webhooks()
         webhook_name = self.bot.user.name
         webhook = discord.utils.get(webhooks, name=webhook_name)
@@ -421,7 +446,12 @@ class FixerCog(commands.Cog):
         )
 
         if fix_found:
-            await self._send_fixes(message, medias, sauces)
+            await self._send_fixes(
+                message,
+                medias,
+                sauces,
+                disable_delete_reaction=guild_settings.disable_delete_reaction,
+            )
             await message.delete()
         elif (
             message.reference is not None  # noqa: PLR0916
