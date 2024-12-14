@@ -51,6 +51,7 @@ convention = "google"
 
 [lint.per-file-ignores]
 "test.py" = ["ALL"]
+"migrations/*.py" = ["ALL"]
 
 [lint.isort]
 required-imports = ["from __future__ import annotations"]
