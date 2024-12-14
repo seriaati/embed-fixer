@@ -95,6 +95,16 @@ If GitHub is not your type, you can find me on [Discord](https://discord.com/inv
 1. Run the application with your bot token as the `DISCORD_TOKEN` environment variable
 1. Invite your bot with the invite link in the logs
 
+## Syncing Commands
+
+The command prefix is the bot's mention by default. For example, if your bot's name is `Embed Fixer`, the prefix would be `@Embed Fixer`.  
+Run `@Embed Fixer sync` to sync the commands.
+
+## Database Migrations
+
+Changes to the database schema can be found in `/migrations/embed_fixer`.  
+To apply the changes, run `aerich upgrade` (only supports PostgreSQL).
+
 ## Docker
 
 ```sh
