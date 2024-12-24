@@ -180,16 +180,17 @@ class FixerCog(commands.Cog):
             sauces.clear()
 
         if files:
-            await self._send_files(message, files, sauces, disable_delete_reaction)
+            fix_message = await self._send_files(message, files, sauces, disable_delete_reaction)
         else:
-            await self._send_message(message, disable_delete_reaction)
+            fix_message = await self._send_message(message, disable_delete_reaction)
 
         if (
             message.reference is not None
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and message.guild is not None
+            and fix_message is not None
         ):
-            await self._reply_to_resolved_message(message, resolved_ref)
+            await self._reply_to_resolved_message(fix_message, resolved_ref)
 
     async def _send_files(
         self,
@@ -197,9 +198,10 @@ class FixerCog(commands.Cog):
         files: list[discord.File],
         sauces: list[str],
         disable_delete_reaction: bool,
-    ) -> None:
+    ) -> discord.Message | None:
         chunked_files = split_list_to_chunks(files, 10)
         guild_lang = await Translator.get_guild_lang(message.guild)
+        fixed_message = None
 
         for chunk in chunked_files:
             kwargs: dict[str, Any] = {}
@@ -225,7 +227,11 @@ class FixerCog(commands.Cog):
             if not disable_delete_reaction:
                 await fixed_message.add_reaction(DELETE_MSG_EMOJI)
 
-    async def _send_message(self, message: discord.Message, disable_delete_reaction: bool) -> None:
+        return fixed_message
+
+    async def _send_message(
+        self, message: discord.Message, disable_delete_reaction: bool
+    ) -> discord.Message:
         if isinstance(message.channel, discord.TextChannel):
             webhook = await self._get_or_create_webhook(message)
             fixed_message = await self._send_webhook(message, webhook)
@@ -234,6 +240,8 @@ class FixerCog(commands.Cog):
 
         if not disable_delete_reaction:
             await fixed_message.add_reaction(DELETE_MSG_EMOJI)
+
+        return fixed_message
 
     async def _reply_to_resolved_message(
         self, message: discord.Message, resolved_ref: discord.Message
