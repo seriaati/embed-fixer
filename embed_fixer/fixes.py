@@ -31,6 +31,6 @@ FIXES = {
     "m.twitch.tv": "fxtwitch.seria.moe",
     "www.iwara.tv": "fxiwara.seria.moe",
     "www.twitch.tv": "fxtwitch.seria.moe",
-    "bsky.app": "bskyx.app",
+    "bsky.app": "bskx.app",
     "kemono.su": "kemono.su",
 }
