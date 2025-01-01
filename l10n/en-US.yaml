@@ -6,7 +6,7 @@ strings:
   fix_selector_placeholder: Select embed fixe(s) to disable...
   settings_saved: Settings saved
   lang_selector_placeholder: Select a language...
-  settings_embed_footer: "Settings are unique to this server\nType in the dropdown to search for channels\nSelecting a channel that is already selected will remove it"
+  settings_embed_footer: "Settings are unique to this server; Type in the dropdown to search for channels; Selecting a channel that is already selected will remove it"
   disable_fixes: Disable Embed Fixes
   disable_fixes_desc: Disable specific embed fixes
   lang: Language
@@ -38,3 +38,5 @@ strings:
   disable_delete_reaction: Disable delete reaction
   toggle_delete_reaction: Toggle Delete Reaction
   toggle_delete_reaction_desc: Add a emoji reaction to messages to delete them
+  show_post_content_channels: Show Post Content Channels
+  show_post_content_channels_desc: If media extraction is enabled, channels selected here will show the content of the post

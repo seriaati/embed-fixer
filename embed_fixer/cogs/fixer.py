@@ -3,14 +3,15 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import io
+import itertools
 import re
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any, Final, NamedTuple
 
 import aiohttp
 import discord
 from discord.ext import commands
 from loguru import logger
-from seria.utils import clean_url, extract_urls, split_list_to_chunks
+from seria.utils import clean_url, extract_urls
 
 from ..fixes import FIX_PATTERNS, FIXES
 from ..models import GuildSettings, PixivArtworkInfo
@@ -20,6 +21,13 @@ if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
 DELETE_MSG_EMOJI: Final[str] = "❌"
+
+
+class FindFixResult(NamedTuple):
+    fix_found: bool
+    medias: list[discord.File]
+    sauces: list[str]
+    content: str
 
 
 class FixerCog(commands.Cog):
@@ -78,10 +86,11 @@ class FixerCog(commands.Cog):
         disable_image_spoilers: list[int],
         extract_media: bool,
         filesize_limit: int,
-    ) -> tuple[bool, list[discord.File], list[str]]:
+    ) -> FindFixResult:
         fix_found = False
         medias: list[discord.File] = []
         sauces: list[str] = []
+        content = ""
 
         channel_is_nsfw = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
         urls = extract_urls(message.content, clean=False)
@@ -107,15 +116,14 @@ class FixerCog(commands.Cog):
                     ):
                         break
 
-                if extract_media and (
-                    medias_ := await self._extract_medias(
+                if extract_media:
+                    medias_, content = await self._extract_medias(
                         domain,
                         clean_url_,
                         spoiler=channel_is_nsfw
                         and message.channel.id not in disable_image_spoilers,
                         filesize_limit=filesize_limit,
                     )
-                ):
                     medias.extend(m for m in medias_ if self._get_filesize(m.fp) < filesize_limit)
                     if medias:
                         fix_found = True
@@ -128,24 +136,26 @@ class FixerCog(commands.Cog):
                 message.content = message.content.replace(url, fixed_url)
                 break
 
-        return fix_found, medias, sauces
+        return FindFixResult(fix_found, medias, sauces, content)
 
     async def _extract_medias(
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
-    ) -> list[discord.File]:
+    ) -> tuple[list[discord.File], str]:
         media_urls: list[str] = []
         files: dict[str, discord.File] = {}
         result: list[discord.File] = []
+        content = ""
 
         if domain == "pixiv.net":
             artwork_info = await self._fetch_pixiv_artwork_info(url)
+            content = artwork_info.description if artwork_info is not None else ""
             media_urls = artwork_info.image_urls if artwork_info is not None else []
         elif domain in {"twitter.com", "x.com"}:
-            media_urls = await self._fetch_twitter_media_urls(url)
+            media_urls, content = await self._fetch_twitter_media_urls(url)
         elif domain == "www.iwara.tv":
             media_urls = await self._fetch_iwara_video_urls(url)
         elif domain == "bsky.app":
-            media_urls = await self._fetch_bluesky_media_urls(url)
+            media_urls, content = await self._fetch_bluesky_media_urls(url)
         elif domain == "kemono.su":
             media_urls = await self._fetch_kemono_media_urls(url)
 
@@ -161,16 +171,17 @@ class FixerCog(commands.Cog):
             if (file := files.get(url_)) is not None:
                 result.append(file)
 
-        return result
+        return result, content
 
     async def _send_fixes(
         self,
         message: discord.Message,
-        medias: list[discord.File],
-        sauces: list[str],
+        result: FindFixResult,
         *,
         disable_delete_reaction: bool,
+        show_post_content: bool,
     ) -> None:
+        medias, sauces = result.medias, result.sauces
         files = [await a.to_file() for a in message.attachments]
         files.extend(medias)
 
@@ -179,8 +190,13 @@ class FixerCog(commands.Cog):
             message.content += f"\n\n||{sauces_str}||"
             sauces.clear()
 
+        if result.content and show_post_content:
+            message.content += f"\n{result.content}"
+
         if files:
-            fix_message = await self._send_files(message, files, sauces, disable_delete_reaction)
+            fix_message = await self._send_files(
+                message, files, sauces, disable_delete_reaction=disable_delete_reaction
+            )
         else:
             fix_message = await self._send_message(message, disable_delete_reaction)
 
@@ -197,13 +213,13 @@ class FixerCog(commands.Cog):
         message: discord.Message,
         files: list[discord.File],
         sauces: list[str],
+        *,
         disable_delete_reaction: bool,
     ) -> discord.Message | None:
-        chunked_files = split_list_to_chunks(files, 10)
         guild_lang = await Translator.get_guild_lang(message.guild)
         fixed_message = None
 
-        for chunk in chunked_files:
+        for chunk in itertools.batched(files, 10):
             kwargs: dict[str, Any] = {}
             if sauces:
                 view = discord.ui.View()
@@ -299,9 +315,17 @@ class FixerCog(commands.Cog):
                 return None
 
             data = await response.json()
-        return PixivArtworkInfo(tags=data["tags"], image_urls=data["image_proxy_urls"])
 
-    async def _fetch_twitter_media_urls(self, url: str) -> list[str]:
+        if "image_proxy_urls" not in data:
+            return None
+
+        return PixivArtworkInfo(
+            tags=data.get("tags", []),
+            image_urls=data["image_proxy_urls"],
+            description=data.get("description", ""),
+        )
+
+    async def _fetch_twitter_media_urls(self, url: str) -> tuple[list[str], str]:
         if "twitter.com" in url:
             api_url = url.replace("twitter.com", "api.fxtwitter.com")
         else:
@@ -317,36 +341,37 @@ class FixerCog(commands.Cog):
 
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
-                return []
+                return [], ""
 
             data = await response.json()
             tweet = data["tweet"]
             medias = tweet.get("media")
             if medias is None:
-                return []
+                return [], ""
 
+            description = tweet.get("text", "")
             urls = [media["url"] for media in medias["all"] if media["type"] in allowed_media_types]
             if media_index is not None:
-                return [urls[media_index]]
-            return urls
+                return [urls[media_index]], description
+            return urls, description
 
-    async def _fetch_bluesky_media_urls(self, url: str) -> list[str]:
+    async def _fetch_bluesky_media_urls(self, url: str) -> tuple[list[str], str]:
         api_url = url.replace("bsky.app", "bskx.app") + "/json"
 
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
-                return []
+                return [], ""
 
             data = await response.json()
             if not data["posts"]:
-                return []
+                return [], ""
 
             urls: list[str] = []
             post = data["posts"][0]
             embed = post.get("embed")
 
             if embed is None:
-                return []
+                return [], ""
 
             # Image
             if (images := embed.get("images")) is not None:
@@ -366,7 +391,7 @@ class FixerCog(commands.Cog):
             if (external := (embed.get("external"))) and (uri := external.get("uri")):
                 urls.append(uri)
 
-            return urls
+            return urls, post.get("text", "")
 
     async def _fetch_kemono_media_urls(self, url: str) -> list[str]:
         urls: list[str] = []
@@ -445,7 +470,7 @@ class FixerCog(commands.Cog):
         if message.channel.id in guild_settings.disable_fix_channels:
             return
 
-        fix_found, medias, sauces = await self._find_fixes(
+        result = await self._find_fixes(
             message,
             disabled_fixes=guild_settings.disabled_fixes,
             extract_media=message.channel.id in guild_settings.extract_media_channels,
@@ -453,12 +478,12 @@ class FixerCog(commands.Cog):
             disable_image_spoilers=guild_settings.disable_image_spoilers,
         )
 
-        if fix_found:
+        if result.fix_found:
             await self._send_fixes(
                 message,
-                medias,
-                sauces,
+                result,
                 disable_delete_reaction=guild_settings.disable_delete_reaction,
+                show_post_content=message.channel.id in guild_settings.show_post_content_channels,
             )
             await message.delete()
         elif (

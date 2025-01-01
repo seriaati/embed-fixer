@@ -14,6 +14,7 @@ class GuildSettings(Model):
     disable_fix_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     extract_media_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     disable_image_spoilers: fields.Field[list[int]] = fields.JSONField(default=[])
+    show_post_content_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     disable_delete_reaction = fields.BooleanField(default=False)
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
 
@@ -25,3 +26,4 @@ class GuildSettings(Model):
 class PixivArtworkInfo:
     tags: list[str]
     image_urls: list[str]
+    description: str

@@ -73,44 +73,45 @@ class GuildSettingsView(View):
             self.add_item(lang_selector)
 
         elif setting == "extract_media_channels":
-            extract_media_channel_selector = ChannelSelect("extract_media_channels")
-            extract_media_channel_selector.placeholder = self.translate(
-                "channel_selector_placeholder"
-            )
-            self.add_item(extract_media_channel_selector)
+            selector = ChannelSelect("extract_media_channels")
+            selector.placeholder = self.translate("channel_selector_placeholder")
+            self.add_item(selector)
             embed = self.add_selected_channels_field(embed, guild_settings.extract_media_channels)
 
         elif setting == "disable_fix_channels":
-            disable_fix_channel_selector = ChannelSelect("disable_fix_channels")
-            disable_fix_channel_selector.placeholder = self.translate(
-                "channel_selector_placeholder"
-            )
-            self.add_item(disable_fix_channel_selector)
+            selector = ChannelSelect("disable_fix_channels")
+            selector.placeholder = self.translate("channel_selector_placeholder")
+            self.add_item(selector)
             embed = self.add_selected_channels_field(embed, guild_settings.disable_fix_channels)
 
         elif setting == "disable_image_spoilers":
-            disable_image_spoilers_selector = ChannelSelect("disable_image_spoilers")
-            disable_image_spoilers_selector.placeholder = self.translate(
-                "channel_selector_placeholder"
-            )
-            self.add_item(disable_image_spoilers_selector)
+            selector = ChannelSelect("disable_image_spoilers")
+            selector.placeholder = self.translate("channel_selector_placeholder")
+            self.add_item(selector)
             embed = self.add_selected_channels_field(embed, guild_settings.disable_image_spoilers)
 
         elif setting == "toggle_webhook_reply":
-            webhook_reply_toggle = WebhookReplyToggle(
+            toggle_btn = WebhookReplyToggle(
                 current_toggle=guild_settings.disable_webhook_reply,
                 labels={True: "enable_webhook_reply", False: "disable_webhook_reply"},
             )
-            webhook_reply_toggle.set_style(self)
-            self.add_item(webhook_reply_toggle)
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
 
         elif setting == "toggle_delete_reaction":
-            delete_reaction_toggle = DisableDeleteReaction(
+            toggle_btn = DisableDeleteReaction(
                 current_toggle=guild_settings.disable_delete_reaction,
                 labels={True: "enable_delete_reaction", False: "disable_delete_reaction"},
             )
-            delete_reaction_toggle.set_style(self)
-            self.add_item(delete_reaction_toggle)
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
+        elif setting == "show_post_content_channels":
+            selector = ChannelSelect("show_post_content_channels")
+            selector.placeholder = self.translate("channel_selector_placeholder")
+            self.add_item(selector)
+            embed = self.add_selected_channels_field(
+                embed, guild_settings.show_post_content_channels
+            )
 
         await i.response.send_message(embed=embed, view=self)
         self.message = await i.original_response()

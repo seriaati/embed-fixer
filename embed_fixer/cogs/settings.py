@@ -39,6 +39,9 @@ class SettingsCog(commands.Cog):
             app_commands.Choice(
                 name=locale_str("toggle_delete_reaction"), value="toggle_delete_reaction"
             ),
+            app_commands.Choice(
+                name=locale_str("show_post_content_channels"), value="show_post_content_channels"
+            ),
         ]
     )
     @app_commands.rename(setting=locale_str("setting_param"))

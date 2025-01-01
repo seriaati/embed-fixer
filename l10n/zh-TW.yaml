@@ -38,3 +38,5 @@ strings:
   disable_delete_reaction: 禁用刪除訊息反應
   toggle_delete_reaction: 開關刪除訊息反應
   toggle_delete_reaction_desc: 在訊息上添加表情符號反應, 用於刪除訊息
+  show_post_content_channels: 顯示貼文內容頻道
+  show_post_content_channels_desc: 如果媒體提取已啟用，則在此處選擇的頻道將顯示貼文的內容
