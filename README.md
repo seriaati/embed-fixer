@@ -103,7 +103,7 @@ Run `@Embed Fixer sync` to sync the commands.
 ## Database Migrations
 
 Changes to the database schema can be found in `/migrations/embed_fixer`.  
-To apply the changes, run `aerich upgrade` (only supports PostgreSQL).
+To apply the changes, run `aerich upgrade` (only supports PostgreSQL; for other databases like SQLite, you need to migrate manually).
 
 ## Docker
 
