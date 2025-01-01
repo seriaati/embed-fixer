@@ -331,7 +331,7 @@ class FixerCog(commands.Cog):
             return urls
 
     async def _fetch_bluesky_media_urls(self, url: str) -> list[str]:
-        api_url = url.replace("bsky.app", "bskyx.app") + "/json"
+        api_url = url.replace("bsky.app", "bskx.app") + "/json"
 
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
