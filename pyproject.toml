@@ -12,6 +12,7 @@ dependencies = [
   "discord-py>=2.4.0",
   "loguru>=0.7.2",
   "aerich>=0.8.0",
+  "pydantic>=2.10.4",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }

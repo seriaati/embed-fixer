@@ -5,7 +5,7 @@ import contextlib
 import io
 import itertools
 import re
-from typing import TYPE_CHECKING, Any, Final, NamedTuple
+from typing import TYPE_CHECKING, Any, Final
 
 import aiohttp
 import discord
@@ -14,20 +14,20 @@ from loguru import logger
 from seria.utils import clean_url, extract_urls
 
 from ..fixes import FIX_PATTERNS, FIXES
-from ..models import GuildSettings, PixivArtworkInfo
+from ..models import (
+    BlueskyPostInfo,
+    FindFixResult,
+    GuildSettings,
+    PixivArtworkInfo,
+    PostExtractionResult,
+    TwitterPostInfo,
+)
 from ..translator import Translator
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
 DELETE_MSG_EMOJI: Final[str] = "❌"
-
-
-class FindFixResult(NamedTuple):
-    fix_found: bool
-    medias: list[discord.File]
-    sauces: list[str]
-    content: str
 
 
 class FixerCog(commands.Cog):
@@ -91,6 +91,7 @@ class FixerCog(commands.Cog):
         medias: list[discord.File] = []
         sauces: list[str] = []
         content = ""
+        author_md = ""
 
         channel_is_nsfw = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
         urls = extract_urls(message.content, clean=False)
@@ -117,14 +118,18 @@ class FixerCog(commands.Cog):
                         break
 
                 if extract_media:
-                    medias_, content = await self._extract_medias(
+                    result = await self._extract_post_info(
                         domain,
                         clean_url_,
                         spoiler=channel_is_nsfw
                         and message.channel.id not in disable_image_spoilers,
                         filesize_limit=filesize_limit,
                     )
-                    medias.extend(m for m in medias_ if self._get_filesize(m.fp) < filesize_limit)
+                    content = result.content
+                    author_md = result.author_md
+                    medias.extend(
+                        m for m in result.files if self._get_filesize(m.fp) < filesize_limit
+                    )
                     if medias:
                         fix_found = True
                         message.content = message.content.replace(url, "")
@@ -136,26 +141,34 @@ class FixerCog(commands.Cog):
                 message.content = message.content.replace(url, fixed_url)
                 break
 
-        return FindFixResult(fix_found, medias, sauces, content)
+        return FindFixResult(
+            fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md
+        )
 
-    async def _extract_medias(
+    async def _extract_post_info(
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
-    ) -> tuple[list[discord.File], str]:
+    ) -> PostExtractionResult:
         media_urls: list[str] = []
         files: dict[str, discord.File] = {}
         result: list[discord.File] = []
         content = ""
 
+        info = None
+
         if domain == "pixiv.net":
-            artwork_info = await self._fetch_pixiv_artwork_info(url)
-            content = artwork_info.description if artwork_info is not None else ""
-            media_urls = artwork_info.image_urls if artwork_info is not None else []
+            info = await self._fetch_pixiv_artwork_info(url)
+            content = info.description if info is not None else ""
+            media_urls = info.image_urls if info is not None else []
         elif domain in {"twitter.com", "x.com"}:
-            media_urls, content = await self._fetch_twitter_media_urls(url)
+            info = await self._fetch_twitter_post_info(url)
+            content = info.content if info is not None else ""
+            media_urls = info.media_urls if info is not None else []
         elif domain == "www.iwara.tv":
             media_urls = await self._fetch_iwara_video_urls(url)
         elif domain == "bsky.app":
-            media_urls, content = await self._fetch_bluesky_media_urls(url)
+            info = await self._fetch_bluesky_post_info(url)
+            content = info.content if info is not None else ""
+            media_urls = info.media_urls if info is not None else []
         elif domain == "kemono.su":
             media_urls = await self._fetch_kemono_media_urls(url)
 
@@ -171,7 +184,11 @@ class FixerCog(commands.Cog):
             if (file := files.get(url_)) is not None:
                 result.append(file)
 
-        return result, content
+        return PostExtractionResult(
+            files=result,
+            content=content[:2000],
+            author_md=info.author_md if info is not None else "",
+        )
 
     async def _send_fixes(
         self,
@@ -185,13 +202,16 @@ class FixerCog(commands.Cog):
         files = [await a.to_file() for a in message.attachments]
         files.extend(medias)
 
+        if show_post_content:
+            if result.author_md:
+                message.content += f"\n-# {result.author_md}"
+            if result.content:
+                message.content += f"\n{result.content}"
+
         if len(sauces) > 1:
             sauces_str = "\n".join(f"<{sauce}>" for sauce in sauces)
-            message.content += f"\n\n||{sauces_str}||"
+            message.content += f"\n||{sauces_str}||"
             sauces.clear()
-
-        if result.content and show_post_content:
-            message.content += f"\n{result.content}"
 
         if files:
             fix_message = await self._send_files(
@@ -323,9 +343,11 @@ class FixerCog(commands.Cog):
             tags=data.get("tags", []),
             image_urls=data["image_proxy_urls"],
             description=data.get("description", ""),
+            author_name=data.get("author_name", ""),
+            author_id=data.get("author_id", ""),
         )
 
-    async def _fetch_twitter_media_urls(self, url: str) -> tuple[list[str], str]:
+    async def _fetch_twitter_post_info(self, url: str) -> TwitterPostInfo | None:
         if "twitter.com" in url:
             api_url = url.replace("twitter.com", "api.fxtwitter.com")
         else:
@@ -341,37 +363,44 @@ class FixerCog(commands.Cog):
 
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
-                return [], ""
+                return None
 
             data = await response.json()
             tweet = data["tweet"]
             medias = tweet.get("media")
-            if medias is None:
-                return [], ""
+            author = tweet.get("author")
+            if medias is None or author is None:
+                return None
 
-            description = tweet.get("text", "")
             urls = [media["url"] for media in medias["all"] if media["type"] in allowed_media_types]
-            if media_index is not None:
-                return [urls[media_index]], description
-            return urls, description
+            media_urls = (
+                [urls[media_index]] if media_index is not None and len(urls) > media_index else urls
+            )
+            return TwitterPostInfo(
+                media_urls=media_urls,
+                content=tweet.get("text", ""),
+                author_name=author.get("name", ""),
+                author_handle=author.get("screen_name", ""),
+            )
 
-    async def _fetch_bluesky_media_urls(self, url: str) -> tuple[list[str], str]:
+    async def _fetch_bluesky_post_info(self, url: str) -> BlueskyPostInfo | None:
         api_url = url.replace("bsky.app", "bskx.app") + "/json"
 
         async with self.bot.session.get(api_url) as response:
             if response.status != 200:
-                return [], ""
+                return None
 
             data = await response.json()
             if not data["posts"]:
-                return [], ""
+                return None
 
             urls: list[str] = []
             post = data["posts"][0]
             embed = post.get("embed")
+            author = post.get("author")
 
-            if embed is None:
-                return [], ""
+            if embed is None or author is None:
+                return None
 
             # Image
             if (images := embed.get("images")) is not None:
@@ -391,7 +420,12 @@ class FixerCog(commands.Cog):
             if (external := (embed.get("external"))) and (uri := external.get("uri")):
                 urls.append(uri)
 
-            return urls, post.get("text", "")
+            return BlueskyPostInfo(
+                media_urls=urls,
+                content=post.get("text", ""),
+                author_name=author.get("displayName", ""),
+                author_handle=author.get("handle", ""),
+            )
 
     async def _fetch_kemono_media_urls(self, url: str) -> list[str]:
         urls: list[str] = []
