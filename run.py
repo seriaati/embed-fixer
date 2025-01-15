@@ -6,10 +6,10 @@ import logging
 import os
 import sys
 
+import aiohttp
 import discord
-from aiohttp_client_cache.backends.sqlite import SQLiteBackend
-from aiohttp_client_cache.session import CachedSession
 from dotenv import load_dotenv
+from fake_useragent import UserAgent
 from loguru import logger
 
 from embed_fixer.bot import EmbedFixer
@@ -17,6 +17,7 @@ from embed_fixer.logging import InterceptHandler
 
 load_dotenv()
 env = os.environ["ENV"]
+ua = UserAgent()
 
 
 def setup_logger() -> None:
@@ -28,7 +29,7 @@ def setup_logger() -> None:
 
 async def main() -> None:
     async with (
-        CachedSession(cache=SQLiteBackend(expire_after=60 * 60)) as session,
+        aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
         EmbedFixer(session=session, env=env) as bot,
     ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):

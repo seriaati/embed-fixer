@@ -1,7 +1,6 @@
 [project]
 authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
 dependencies = [
-  "aiohttp-client-cache>=0.12.3",
   "aiofiles>=24.1.0",
   "jishaku>=2.5.2",
   "python-dotenv>=1.0.1",
@@ -13,6 +12,7 @@ dependencies = [
   "loguru>=0.7.2",
   "aerich>=0.8.0",
   "pydantic>=2.10.4",
+  "fake-useragent>=2.0.3",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }
