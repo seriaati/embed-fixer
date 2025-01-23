@@ -61,6 +61,8 @@ The following platforms are supported:
 - Pixiv
 - Iwara
 - Kemono
+- Bluesky
+- Tiktok
 
 When you send a link that is from one of the platforms above in channel(s) with this feature on, the bot resends all of the images/videos in the link in a nice gallery-like layout.  
 

@@ -171,6 +171,8 @@ class FixerCog(commands.Cog):
             media_urls = info.media_urls if info is not None else []
         elif domain == "kemono.su":
             media_urls = await self._fetch_kemono_media_urls(url)
+        elif domain == "tiktok.com":
+            media_urls = await self._fetch_tiktok_video_urls(url)
 
         async with asyncio.TaskGroup() as tg:
             for image_url in media_urls:
@@ -451,6 +453,10 @@ class FixerCog(commands.Cog):
     async def _fetch_iwara_video_urls(self, url: str) -> list[str]:
         video_id = url.split("/")[-2]
         return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
+
+    async def _fetch_tiktok_video_urls(self, url: str) -> list[str]:
+        video_id = url.split("/")[-1]
+        return [f"https://fxtiktok-rewrite.dargy.workers.dev/generate/video/{video_id}"]
 
     async def _download_media(
         self, url: str, result: dict[str, discord.File], *, spoiler: bool, filesize_limit: int
