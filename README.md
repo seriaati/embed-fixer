@@ -40,6 +40,7 @@ Fixings are currently available for:
 - Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
 - Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
 - Bluesky with [VixBluesky](https://github.com/Rapougnac/VixBluesky)
+- Facebook reels with [fxfacebook](https://github.com/seriaati/fxfacebook)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message.
 
