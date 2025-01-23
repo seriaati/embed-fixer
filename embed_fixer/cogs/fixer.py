@@ -97,7 +97,7 @@ class FixerCog(commands.Cog):
         urls = extract_urls(message.content, clean=False)
 
         for url in urls:
-            clean_url_ = clean_url(url)
+            clean_url_ = clean_url(url).replace("www.", "")
             for pattern in FIX_PATTERNS:
                 if re.match(pattern, clean_url_) is not None:
                     break
@@ -163,7 +163,7 @@ class FixerCog(commands.Cog):
             info = await self._fetch_twitter_post_info(url)
             content = info.content if info is not None else ""
             media_urls = info.media_urls if info is not None else []
-        elif domain == "www.iwara.tv":
+        elif domain == "iwara.tv":
             media_urls = await self._fetch_iwara_video_urls(url)
         elif domain == "bsky.app":
             info = await self._fetch_bluesky_post_info(url)
