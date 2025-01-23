@@ -35,7 +35,7 @@ Fixings are currently available for:
 - Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
 - Instagram with fxinstagram (made by me, but closed source because the implementation is sketchy)
 - Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit)
-- Tiktok wtih [vxtiktok](https://github.com/dylanpdx/vxtiktok)
+- Tiktok wtih [fxtiktok](https://github.com/okdargy/fxtiktok)
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
 - Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
 - Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
