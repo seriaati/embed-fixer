@@ -191,11 +191,11 @@ wheels = [
 
 [[package]]
 name = "attrs"
-version = "24.3.0"
+version = "25.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/48/c8/6260f8ccc11f0917360fc0da435c5c9c7504e3db174d5a12a1494887b045/attrs-24.3.0.tar.gz", hash = "sha256:8f5c07333d543103541ba7be0e2ce16eeee8130cb0b3f9238ab904ce1e85baff", size = 805984 }
+sdist = { url = "https://files.pythonhosted.org/packages/49/7c/fdf464bcc51d23881d110abd74b512a42b3d5d376a55a831b44c603ae17f/attrs-25.1.0.tar.gz", hash = "sha256:1c97078a80c814273a76b2a298a932eb681c87415c11dee0a6921de7f1b02c3e", size = 810562 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/aa/ab0f7891a01eeb2d2e338ae8fecbe57fcebea1a24dbb64d45801bfab481d/attrs-24.3.0-py3-none-any.whl", hash = "sha256:ac96cd038792094f438ad1f6ff80837353805ac950cd2aa0e0625ef19850c308", size = 63397 },
+    { url = "https://files.pythonhosted.org/packages/fc/30/d4986a882011f9df997a55e6becd864812ccfcd821d64aac8570ee39f719/attrs-25.1.0-py3-none-any.whl", hash = "sha256:c75a69e28a550a7e93789579c22aa26b0f5b83b75dc4e08fe092980051e1090a", size = 63152 },
 ]
 
 [[package]]
@@ -517,16 +517,16 @@ wheels = [
 
 [[package]]
 name = "pydantic"
-version = "2.10.5"
+version = "2.10.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
     { name = "pydantic-core" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6a/c7/ca334c2ef6f2e046b1144fe4bb2a5da8a4c574e7f2ebf7e16b34a6a2fa92/pydantic-2.10.5.tar.gz", hash = "sha256:278b38dbbaec562011d659ee05f63346951b3a248a6f3642e1bc68894ea2b4ff", size = 761287 }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/ae/d5220c5c52b158b1de7ca89fc5edb72f304a70a4c540c84c8844bf4008de/pydantic-2.10.6.tar.gz", hash = "sha256:ca5daa827cce33de7a42be142548b0096bf05a7e7b365aebfa5f8eeec7128236", size = 761681 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/26/82663c79010b28eddf29dcdd0ea723439535fa917fce5905885c0e9ba562/pydantic-2.10.5-py3-none-any.whl", hash = "sha256:4dd4e322dbe55472cb7ca7e73f4b63574eecccf2835ffa2af9021ce113c83c53", size = 431426 },
+    { url = "https://files.pythonhosted.org/packages/f4/3c/8cc1cc84deffa6e25d2d0c688ebb80635dfdbf1dbea3e30c541c8cf4d860/pydantic-2.10.6-py3-none-any.whl", hash = "sha256:427d664bf0b8a2b34ff5dd0f5a18df00591adcee7198fbd71981054cef37b584", size = 431696 },
 ]
 
 [[package]]
@@ -584,11 +584,11 @@ wheels = [
 
 [[package]]
 name = "pypika-tortoise"
-version = "0.3.2"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f2/6f/d7bfc44f9d8d68e33866688f7ce9ba0785b485e4dec1590ae0a6ba73b5e2/pypika_tortoise-0.3.2.tar.gz", hash = "sha256:f5d508e2ef00255e52ec6ac79ef889e10dbab328f218c55cd134c4d02ff9f6f4", size = 40445 }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/7b/74dce3354d81988f1d69b689f20b28c3e92f2dcc0c46975bdafd3eb37b18/pypika_tortoise-0.5.0.tar.gz", hash = "sha256:ed0f56761868dc222c03e477578638590b972280b03c7c45cd93345b18b61f58", size = 39701 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/8f/85ae29998186957487b9bab089e382e812b8104ed9da47d7815ba04d57bd/pypika_tortoise-0.3.2-py3-none-any.whl", hash = "sha256:c5c52bc4473fe6f3db36cf659340750246ec5dd0f980d04ae7811430e299c3a2", size = 50832 },
+    { url = "https://files.pythonhosted.org/packages/36/bc/830cfe07a84a9ff75d2ae96696b933744b7f20ef40ad69b002b8cf9265e3/pypika_tortoise-0.5.0-py3-none-any.whl", hash = "sha256:dbdc47eb52ce17407b05ce9f8560ce93b856d7b28beb01971d956b017846691f", size = 45915 },
 ]
 
 [[package]]
@@ -673,7 +673,7 @@ wheels = [
 
 [[package]]
 name = "tortoise-orm"
-version = "0.23.0"
+version = "0.24.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiosqlite" },
@@ -681,9 +681,9 @@ dependencies = [
     { name = "pypika-tortoise" },
     { name = "pytz" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1b/6e/c23d788524750d84c75864eac0176f57c07a5316b36cc467d2914a109bef/tortoise_orm-0.23.0.tar.gz", hash = "sha256:f25d431ef4fb521a84edad582f4b9c53dccc5abf6cfbc6f228cbece5a13952fa", size = 146712 }
+sdist = { url = "https://files.pythonhosted.org/packages/64/81/973b629f8a70fc928343f4f8be6121023b6c6f0ee0ae45695955db82af47/tortoise_orm-0.24.0.tar.gz", hash = "sha256:ae0704a93ea27931724fc899e57268c8081afce3b32b110b00037ec206553e7d", size = 143958 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/95/74/0f3388be6fe88254a02ccefccc1391a54a15fb3b56b9710f9560ef8838a4/tortoise_orm-0.23.0-py3-none-any.whl", hash = "sha256:deaabed1619ea8aab6213508dff025571a701b7f34ee534473d7bb7661aa9f4f", size = 184162 },
+    { url = "https://files.pythonhosted.org/packages/96/88/313395d3ae15f24b18496c4f8077404ee0336eea2a9c648466c406f053b3/tortoise_orm-0.24.0-py3-none-any.whl", hash = "sha256:ee3b72b226767293b24c5c4906ae5f027d7cc84496cd503352c918564b4fd687", size = 164094 },
 ]
 
 [package.optional-dependencies]
