@@ -84,6 +84,7 @@ Below are settings you can change with the `/settings` command:
 - Disable embed fix channels: Channels to disable embed fixing
 - Disable webhook reply: Disable the webhook reply feature mentioned above  
 - Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels
+- Show post content: For channels with media extraction enabled, channels with this feature on will also show the content and author of the post along with the media.
 
 # Questions, Issues, Feedback, Contributions
 
