@@ -63,7 +63,14 @@ class FixerCog(commands.Cog):
         if not isinstance(channel, discord.TextChannel | discord.Thread):
             return
 
-        message = await channel.fetch_message(payload.message_id)
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except discord.Forbidden:
+            logger.warning(
+                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)!r}"
+            )
+            return
+
         if " (Embed Fixer)" not in message.author.display_name:
             return
 
