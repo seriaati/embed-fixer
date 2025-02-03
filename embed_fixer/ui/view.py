@@ -14,7 +14,7 @@ class View(ui.View):
     def __init__(
         self, author: discord.Member | discord.User, guild: discord.Guild, translator: Translator
     ) -> None:
-        super().__init__(timeout=60 * 60)  # 1 hour
+        super().__init__(timeout=600)
 
         self.author = author
         self.message: discord.Message | None = None
