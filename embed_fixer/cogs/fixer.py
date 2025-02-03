@@ -76,7 +76,15 @@ class FixerCog(commands.Cog):
         if author is None:
             return
         if payload.user_id == author.id:
-            await message.delete()
+            try:
+                await message.delete()
+            except discord.Forbidden:
+                logger.warning(f"Failed to delete message in {channel!r} in {guild!r}")
+                await message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                    )
+                )
 
     async def _find_fixes(
         self,
@@ -506,15 +514,17 @@ class FixerCog(commands.Cog):
         if message.author.bot or message.guild is None:
             return
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=message.guild.id)
-        if message.channel.id in guild_settings.disable_fix_channels:
+        channel, guild, author = message.channel, message.guild, message.author
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)
+        if channel.id in guild_settings.disable_fix_channels:
             return
 
         result = await self._find_fixes(
             message,
             disabled_fixes=guild_settings.disabled_fixes,
-            extract_media=message.channel.id in guild_settings.extract_media_channels,
-            filesize_limit=message.guild.filesize_limit,
+            extract_media=channel.id in guild_settings.extract_media_channels,
+            filesize_limit=guild.filesize_limit,
             disable_image_spoilers=guild_settings.disable_image_spoilers,
         )
 
@@ -523,15 +533,25 @@ class FixerCog(commands.Cog):
                 message,
                 result,
                 disable_delete_reaction=guild_settings.disable_delete_reaction,
-                show_post_content=message.channel.id in guild_settings.show_post_content_channels,
+                show_post_content=channel.id in guild_settings.show_post_content_channels,
             )
-            await message.delete()
+            try:
+                await message.delete()
+            except discord.Forbidden:
+                logger.warning(
+                    f"Failed to delete message in {channel!r} in {guild!r}"
+                )
+                await message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                    )
+                )
         elif (
             message.reference is not None  # noqa: PLR0916
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and resolved_ref.webhook_id is not None
-            and not message.author.bot
-            and message.channel.id not in guild_settings.disable_fix_channels
+            and not author.bot
+            and channel.id not in guild_settings.disable_fix_channels
             and not guild_settings.disable_webhook_reply
         ):
             await self._reply_to_webhook(message, resolved_ref)

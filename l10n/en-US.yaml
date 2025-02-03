@@ -40,3 +40,4 @@ strings:
   toggle_delete_reaction_desc: Add a emoji reaction to messages to delete them
   show_post_content_channels: Show Post Content Channels
   show_post_content_channels_desc: If media extraction is enabled, channels selected here will show the content of the post
+  no_perms_to_delete_msg: The bot is missing permission to delete messages
