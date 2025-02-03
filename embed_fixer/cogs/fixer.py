@@ -262,6 +262,8 @@ class FixerCog(commands.Cog):
 
             if isinstance(message.channel, discord.TextChannel):
                 webhook = await self._get_or_create_webhook(message)
+                if webhook is None:
+                    return None
                 fixed_message = await self._send_webhook(message, webhook, files=chunk, **kwargs)
             else:
                 fixed_message = await message.channel.send(
@@ -277,9 +279,11 @@ class FixerCog(commands.Cog):
 
     async def _send_message(
         self, message: discord.Message, disable_delete_reaction: bool
-    ) -> discord.Message:
+    ) -> discord.Message | None:
         if isinstance(message.channel, discord.TextChannel):
             webhook = await self._get_or_create_webhook(message)
+            if webhook is None:
+                return None
             fixed_message = await self._send_webhook(message, webhook)
         else:
             fixed_message = await message.channel.send(message.content, tts=message.tts)
@@ -322,12 +326,21 @@ class FixerCog(commands.Cog):
             logger.exception("Failed to send webhook message")
             return await message.channel.send(message.content, tts=message.tts, **kwargs)
 
-    async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook:
+    async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook | None:
         if not isinstance(message.channel, discord.TextChannel):
             msg = "Only text channels are supported for webhook creation"
             raise TypeError(msg)
 
-        webhooks = await message.channel.webhooks()
+        try:
+            webhooks = await message.channel.webhooks()
+        except discord.Forbidden:
+            await message.channel.send(
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(message.guild), "no_perms_to_manage_webhooks"
+                )
+            )
+            return None
+
         webhook_name = self.bot.user.name
         webhook = discord.utils.get(webhooks, name=webhook_name)
         if webhook is None:
@@ -538,9 +551,7 @@ class FixerCog(commands.Cog):
             try:
                 await message.delete()
             except discord.Forbidden:
-                logger.warning(
-                    f"Failed to delete message in {channel!r} in {guild!r}"
-                )
+                logger.warning(f"Failed to delete message in {channel!r} in {guild!r}")
                 await message.reply(
                     self.bot.translator.get(
                         await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
