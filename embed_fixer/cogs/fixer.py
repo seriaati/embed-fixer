@@ -67,7 +67,7 @@ class FixerCog(commands.Cog):
             message = await channel.fetch_message(payload.message_id)
         except discord.Forbidden:
             logger.warning(
-                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)!r}"
+                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
             )
             return
 
