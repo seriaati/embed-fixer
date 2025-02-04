@@ -72,8 +72,14 @@ class BlueskyPostInfo:
 
 
 @dataclass(kw_only=True)
+class Media:
+    url: str
+    file: discord.File | None = None
+
+
+@dataclass(kw_only=True)
 class PostExtractionResult:
-    files: list[discord.File]
+    medias: list[Media]
     content: str
     author_md: str
 
@@ -81,7 +87,7 @@ class PostExtractionResult:
 @dataclass(kw_only=True)
 class FindFixResult:
     fix_found: bool
-    medias: list[discord.File]
+    medias: list[Media]
     sauces: list[str]
     content: str
     author_md: str

@@ -18,6 +18,7 @@ from ..models import (
     BlueskyPostInfo,
     FindFixResult,
     GuildSettings,
+    Media,
     PixivArtworkInfo,
     PostExtractionResult,
     TwitterPostInfo,
@@ -103,7 +104,7 @@ class FixerCog(commands.Cog):
         filesize_limit: int,
     ) -> FindFixResult:
         fix_found = False
-        medias: list[discord.File] = []
+        medias: list[Media] = []
         sauces: list[str] = []
         content = ""
         author_md = ""
@@ -142,9 +143,14 @@ class FixerCog(commands.Cog):
                     )
                     content = result.content
                     author_md = result.author_md
-                    medias.extend(
-                        m for m in result.files if self._get_filesize(m.fp) < filesize_limit
-                    )
+
+                    for media in result.medias:
+                        too_large = (
+                            media.file is not None
+                            and self._get_filesize(media.file.fp) > filesize_limit
+                        )
+                        medias.append(Media(url=media.url) if too_large else media)
+
                     if medias:
                         fix_found = True
                         message.content = message.content.replace(url, "")
@@ -164,8 +170,8 @@ class FixerCog(commands.Cog):
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
     ) -> PostExtractionResult:
         media_urls: list[str] = []
-        files: dict[str, discord.File] = {}
-        result: list[discord.File] = []
+        downloaded_files: dict[str, discord.File] = {}
+        medias: list[Media] = []
         content = ""
 
         info = None
@@ -193,16 +199,16 @@ class FixerCog(commands.Cog):
             for image_url in media_urls:
                 tg.create_task(
                     self._download_media(
-                        image_url, files, spoiler=spoiler, filesize_limit=filesize_limit
+                        image_url, downloaded_files, spoiler=spoiler, filesize_limit=filesize_limit
                     )
                 )
 
-        for url_ in media_urls:
-            if (file := files.get(url_)) is not None:
-                result.append(file)
+        for media_url in media_urls:
+            file_ = downloaded_files.get(media_url)
+            medias.append(Media(url=media_url, file=file_))
 
         return PostExtractionResult(
-            files=result,
+            medias=medias,
             content=content[:2000],
             author_md=info.author_md if info is not None else "",
         )
@@ -216,8 +222,7 @@ class FixerCog(commands.Cog):
         show_post_content: bool,
     ) -> None:
         medias, sauces = result.medias, result.sauces
-        files = [await a.to_file() for a in message.attachments]
-        files.extend(medias)
+        medias.extend([Media(url=a.url, file=await a.to_file()) for a in message.attachments])
 
         if show_post_content:
             if result.author_md:
@@ -230,9 +235,9 @@ class FixerCog(commands.Cog):
             message.content += f"\n||{sauces_str}||"
             sauces.clear()
 
-        if files:
+        if medias:
             fix_message = await self._send_files(
-                message, files, sauces, disable_delete_reaction=disable_delete_reaction
+                message, medias, sauces, disable_delete_reaction=disable_delete_reaction
             )
         else:
             fix_message = await self._send_message(message, disable_delete_reaction)
@@ -248,7 +253,7 @@ class FixerCog(commands.Cog):
     async def _send_files(
         self,
         message: discord.Message,
-        files: list[discord.File],
+        medias: list[Media],
         sauces: list[str],
         *,
         disable_delete_reaction: bool,
@@ -256,7 +261,7 @@ class FixerCog(commands.Cog):
         guild_lang = await Translator.get_guild_lang(message.guild)
         fixed_message = None
 
-        for chunk in itertools.batched(files, 10):
+        for chunk in itertools.batched(medias, 10):
             kwargs: dict[str, Any] = {}
             if sauces:
                 view = discord.ui.View()
@@ -267,14 +272,21 @@ class FixerCog(commands.Cog):
                 )
                 kwargs["view"] = view
 
+            files: list[discord.File] = []
+            for media in chunk:
+                if media.file is not None:
+                    files.append(media.file)
+                else:
+                    message.content += f"\n||{media.url}||"
+
             if isinstance(message.channel, discord.TextChannel):
                 webhook = await self._get_or_create_webhook(message)
                 if webhook is None:
                     return None
-                fixed_message = await self._send_webhook(message, webhook, files=chunk, **kwargs)
+                fixed_message = await self._send_webhook(message, webhook, files=files, **kwargs)
             else:
                 fixed_message = await message.channel.send(
-                    message.content, tts=message.tts, files=chunk, **kwargs
+                    message.content, tts=message.tts, files=files, **kwargs
                 )
 
             message.content = ""
