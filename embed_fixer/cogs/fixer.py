@@ -103,6 +103,8 @@ class FixerCog(commands.Cog):
         extract_media: bool,
         filesize_limit: int,
     ) -> FindFixResult:
+        channel_id = message.channel.id
+
         fix_found = False
         medias: list[Media] = []
         sauces: list[str] = []
@@ -114,42 +116,32 @@ class FixerCog(commands.Cog):
 
         for url in urls:
             clean_url_ = clean_url(url).replace("www.", "")
-            for pattern in FIX_PATTERNS:
-                if re.match(pattern, clean_url_) is not None:
-                    break
-            else:
+            if not any(re.match(pattern, clean_url_) for pattern in FIX_PATTERNS):
                 continue
 
             for domain, fix in FIXES.items():
                 if domain in disabled_fixes or domain not in url:
                     continue
 
-                if domain == "pixiv.net":
-                    artwork_info = await self._fetch_pixiv_artwork_info(clean_url_)
-                    if (
-                        artwork_info is not None
-                        and "#R-18" in artwork_info.tags
-                        and not channel_is_nsfw
-                    ):
-                        break
+                if domain == "pixiv.net" and not await self._is_valid_pixiv_url(
+                    clean_url_, channel_is_nsfw
+                ):
+                    break
 
                 if extract_media:
                     result = await self._extract_post_info(
                         domain,
-                        clean_url_,
-                        spoiler=channel_is_nsfw
-                        and message.channel.id not in disable_image_spoilers,
+                        url,
+                        spoiler=channel_is_nsfw and channel_id not in disable_image_spoilers,
                         filesize_limit=filesize_limit,
                     )
-                    content = result.content
-                    author_md = result.author_md
-
-                    for media in result.medias:
-                        too_large = (
-                            media.file is not None
-                            and self._get_filesize(media.file.fp) > filesize_limit
-                        )
-                        medias.append(Media(url=media.url) if too_large else media)
+                    medias = [
+                        Media(url=media.url)
+                        if (media.file and self._get_filesize(media.file.fp) > filesize_limit)
+                        else media
+                        for media in result.medias
+                    ]
+                    content, author_md = result.content, result.author_md
 
                     if medias:
                         fix_found = True
@@ -158,13 +150,16 @@ class FixerCog(commands.Cog):
                         break
 
                 fix_found = True
-                fixed_url = clean_url_.replace(domain, fix)
-                message.content = message.content.replace(url, fixed_url)
+                message.content = message.content.replace(url, clean_url_.replace(domain, fix))
                 break
 
         return FindFixResult(
             fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md
         )
+
+    async def _is_valid_pixiv_url(self, url: str, channel_is_nsfw: bool) -> bool:
+        artwork_info = await self._fetch_pixiv_artwork_info(url)
+        return not (artwork_info and "#R-18" in artwork_info.tags and not channel_is_nsfw)
 
     async def _extract_post_info(
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
