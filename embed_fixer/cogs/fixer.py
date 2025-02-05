@@ -338,7 +338,12 @@ class FixerCog(commands.Cog):
             )
         except Exception:
             logger.exception("Failed to send webhook message")
-            return await message.channel.send(message.content, tts=message.tts, **kwargs)
+            await message.channel.send(
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
+                )
+            )
+            raise
 
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook | None:
         if not isinstance(message.channel, discord.TextChannel):

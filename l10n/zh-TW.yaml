@@ -42,3 +42,4 @@ strings:
   show_post_content_channels_desc: 如果媒體提取已啟用，則在此處選擇的頻道將顯示貼文的內容
   no_perms_to_delete_msg: 機器人缺少刪除訊息的權限
   no_perms_to_manage_webhooks: 機器人缺少管理 Webhook 的權限
+  failed_to_send_webhook: 發送 Webhook 失敗
