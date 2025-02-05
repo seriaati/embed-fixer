@@ -13,6 +13,7 @@ dependencies = [
   "aerich>=0.8.0",
   "pydantic>=2.10.4",
   "fake-useragent>=2.0.3",
+  "aiohttp-client-cache[sqlite]>=0.12.4",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }

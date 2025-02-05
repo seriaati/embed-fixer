@@ -6,8 +6,9 @@ import logging
 import os
 import sys
 
-import aiohttp
 import discord
+from aiohttp_client_cache.backends.sqlite import SQLiteBackend
+from aiohttp_client_cache.session import CachedSession
 from dotenv import load_dotenv
 from fake_useragent import UserAgent
 from loguru import logger
@@ -29,7 +30,9 @@ def setup_logger() -> None:
 
 async def main() -> None:
     async with (
-        aiohttp.ClientSession(headers={"User-Agent": ua.random}) as session,
+        CachedSession(
+            cache=SQLiteBackend(expire_after=60 * 30), headers={"User-Agent": ua.random}
+        ) as session,
         EmbedFixer(session=session, env=env) as bot,
     ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
