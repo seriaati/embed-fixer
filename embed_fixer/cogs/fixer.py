@@ -342,8 +342,7 @@ class FixerCog(commands.Cog):
 
     async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook | None:
         if not isinstance(message.channel, discord.TextChannel):
-            msg = "Only text channels are supported for webhook creation"
-            raise TypeError(msg)
+            return None
 
         try:
             webhooks = await message.channel.webhooks()
