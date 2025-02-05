@@ -26,6 +26,8 @@ from ..models import (
 from ..translator import Translator
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from embed_fixer.bot import EmbedFixer
 
 DELETE_MSG_EMOJI: Final[str] = "❌"
@@ -235,7 +237,9 @@ class FixerCog(commands.Cog):
                 message, medias, sauces, disable_delete_reaction=disable_delete_reaction
             )
         else:
-            fix_message = await self._send_message(message, disable_delete_reaction)
+            fix_message = await self._send_message(
+                message, disable_delete_reaction=disable_delete_reaction
+            )
 
         if (
             message.reference is not None
@@ -253,12 +257,16 @@ class FixerCog(commands.Cog):
         *,
         disable_delete_reaction: bool,
     ) -> discord.Message | None:
-        guild_lang = await Translator.get_guild_lang(message.guild)
-        fixed_message = None
+        """Send multiple files in batches of 10."""
+        guild_lang: str | None = None
+        fix_message = None
 
         for chunk in itertools.batched(medias, 10):
             kwargs: dict[str, Any] = {}
             if sauces:
+                if guild_lang is None:
+                    guild_lang = await Translator.get_guild_lang(message.guild)
+
                 view = discord.ui.View()
                 view.add_item(
                     discord.ui.Button(
@@ -272,40 +280,49 @@ class FixerCog(commands.Cog):
                 if media.file is not None:
                     files.append(media.file)
                 else:
-                    message.content += f"\n||{media.url}||"
+                    message.content += f"\n{media.url}"
 
-            if isinstance(message.channel, discord.TextChannel):
-                webhook = await self._get_or_create_webhook(message)
-                if webhook is None:
-                    return None
-                fixed_message = await self._send_webhook(message, webhook, files=files, **kwargs)
-            else:
-                fixed_message = await message.channel.send(
-                    message.content, tts=message.tts, files=files, **kwargs
-                )
+            fix_message = await self._send_message(
+                message, disable_delete_reaction=disable_delete_reaction, medias=chunk, **kwargs
+            )
 
             message.content = ""
 
-            if not disable_delete_reaction:
-                await fixed_message.add_reaction(DELETE_MSG_EMOJI)
-
-        return fixed_message
+        return fix_message
 
     async def _send_message(
-        self, message: discord.Message, disable_delete_reaction: bool
-    ) -> discord.Message | None:
-        if isinstance(message.channel, discord.TextChannel):
-            webhook = await self._get_or_create_webhook(message)
-            if webhook is None:
-                return None
-            fixed_message = await self._send_webhook(message, webhook)
-        else:
-            fixed_message = await message.channel.send(message.content, tts=message.tts)
+        self,
+        message: discord.Message,
+        *,
+        disable_delete_reaction: bool,
+        medias: Sequence[Media] | None = None,
+        **kwargs: Any,
+    ) -> discord.Message:
+        """Send a message with a webhook if possible, otherwise send a regular message."""
+        webhook = await self._get_or_create_webhook(message)
+        medias = medias or []
+        files = [media.file for media in medias if media.file is not None]
+
+        try:
+            if webhook is not None:
+                fix_message = await self._send_webhook(message, webhook, files=files, **kwargs)
+            else:
+                fix_message = await message.channel.send(
+                    message.content, tts=message.tts, files=files, **kwargs
+                )
+        except discord.HTTPException as e:
+            if e.code != 40005:
+                raise
+
+            message.content += "\n".join(media.url for media in medias)
+            fix_message = await self._send_message(
+                message, disable_delete_reaction=disable_delete_reaction, **kwargs
+            )
 
         if not disable_delete_reaction:
-            await fixed_message.add_reaction(DELETE_MSG_EMOJI)
+            await fix_message.add_reaction(DELETE_MSG_EMOJI)
 
-        return fixed_message
+        return fix_message
 
     async def _reply_to_resolved_message(
         self, message: discord.Message, resolved_ref: discord.Message
@@ -325,8 +342,13 @@ class FixerCog(commands.Cog):
             )
 
     async def _send_webhook(
-        self, message: discord.Message, webhook: discord.Webhook, **kwargs: Any
+        self,
+        message: discord.Message,
+        webhook: discord.Webhook,
+        files: list[discord.File] | None = None,
+        **kwargs: Any,
     ) -> discord.Message:
+        files = files or []
         try:
             return await webhook.send(
                 message.content,
@@ -334,8 +356,11 @@ class FixerCog(commands.Cog):
                 avatar_url=message.author.display_avatar.url,
                 tts=message.tts,
                 wait=True,
+                files=files,
                 **kwargs,
             )
+        except discord.HTTPException:
+            raise
         except Exception:
             logger.exception("Failed to send webhook message")
             await message.channel.send(
