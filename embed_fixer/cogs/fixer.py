@@ -513,7 +513,10 @@ class FixerCog(commands.Cog):
         return urls
 
     async def _fetch_iwara_video_urls(self, url: str) -> list[str]:
-        video_id = url.split("/")[-2]
+        match = re.search(r"/video/([a-zA-Z0-9]+)/", url)
+        video_id = match.group(1) if match else None
+        if video_id is None:
+            return []
         return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
 
     async def _download_media(
