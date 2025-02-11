@@ -137,12 +137,12 @@ class FixerCog(commands.Cog):
                         spoiler=channel_is_nsfw and channel_id not in disable_image_spoilers,
                         filesize_limit=filesize_limit,
                     )
-                    medias = [
+                    medias.extend(
                         Media(url=media.url)
                         if (media.file and self._get_filesize(media.file.fp) > filesize_limit)
                         else media
                         for media in result.medias
-                    ]
+                    )
                     content, author_md = result.content, result.author_md
 
                     if medias:
