@@ -239,13 +239,16 @@ class FixerCog(commands.Cog):
                 message, disable_delete_reaction=disable_delete_reaction
             )
 
+        # If the message was originally replying to another message, and this message
+        # was deleted for a fix, reply to the fixed message while mentioning the reply target.
         if (
             message.reference is not None
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and message.guild is not None
             and fix_message is not None
+            and not message.author.bot
         ):
-            await self._reply_to_resolved_message(fix_message, resolved_ref)
+            await self._handle_reply(fix_message, resolved_ref)
 
     async def _send_files(
         self,
@@ -321,23 +324,6 @@ class FixerCog(commands.Cog):
             await fix_message.add_reaction(DELETE_MSG_EMOJI)
 
         return fix_message
-
-    async def _reply_to_resolved_message(
-        self, message: discord.Message, resolved_ref: discord.Message
-    ) -> None:
-        if message.guild is None:
-            return
-
-        author = await self._get_original_author(resolved_ref, message.guild)
-        if author is not None:
-            await message.reply(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(message.guild),
-                    "replying_to",
-                    user=author.mention,
-                    url=resolved_ref.jump_url,
-                )
-            )
 
     async def _send_webhook(
         self,
@@ -543,24 +529,25 @@ class FixerCog(commands.Cog):
 
             result[url] = discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
 
-    async def _reply_to_webhook(
-        self, message: discord.Message, resolved_ref: discord.Message
-    ) -> None:
+    async def _handle_reply(self, message: discord.Message, resolved_ref: discord.Message) -> None:
         guild = message.guild
         if guild is None:
             return
 
         author = await self._get_original_author(resolved_ref, guild)
-        if author is not None and not author.bot:
-            await message.reply(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(guild),
-                    "replying_to",
-                    user=author.mention,
-                    url=resolved_ref.jump_url,
-                ),
-                mention_author=False,
-            )
+        # Can't find author or author is a bot
+        if author is None or author.bot:
+            return
+
+        await message.reply(
+            self.bot.translator.get(
+                await Translator.get_guild_lang(guild),
+                "replying_to",
+                user=author.mention,
+                url=resolved_ref.jump_url,
+            ),
+            mention_author=False,
+        )
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
@@ -597,15 +584,17 @@ class FixerCog(commands.Cog):
                         await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
                     )
                 )
+
+        # If the message is replying to a webhook message, mention the original author
+        # of the webhook.
         elif (
             message.reference is not None  # noqa: PLR0916
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and resolved_ref.webhook_id is not None
             and not author.bot
-            and channel.id not in guild_settings.disable_fix_channels
             and not guild_settings.disable_webhook_reply
         ):
-            await self._reply_to_webhook(message, resolved_ref)
+            await self._handle_reply(message, resolved_ref)
 
 
 async def setup(bot: EmbedFixer) -> None:
