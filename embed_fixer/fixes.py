@@ -20,6 +20,7 @@ FIX_PATTERNS = (
     r"https://(www.)?kemono.su/[a-zA-Z0-9_]+/user/[\w]+/post/[\w]+",
     r"https://(www.)?facebook.com/share/r/[\w]+",
     r"https://(www.)?facebook.com/reel/\d+",
+    r"https://(www.)?bilibili.com/video/[\w]+",
 )
 FIXES = {
     "twitter.com": "fxtwitter.com",
@@ -36,4 +37,5 @@ FIXES = {
     "bsky.app": "bskx.app",
     "kemono.su": "kemono.su",
     "facebook.com": "fxfb.seria.moe",
+    "bilibili.com": "fxbilibili.seria.moe",
 }
