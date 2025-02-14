@@ -97,13 +97,7 @@ class FixerCog(commands.Cog):
                 )
 
     async def _find_fixes(
-        self,
-        message: discord.Message,
-        *,
-        disabled_fixes: list[str],
-        disable_image_spoilers: list[int],
-        extract_media: bool,
-        filesize_limit: int,
+        self, message: discord.Message, *, settings: GuildSettings, filesize_limit: int
     ) -> FindFixResult:
         channel_id = message.channel.id
 
@@ -122,7 +116,7 @@ class FixerCog(commands.Cog):
                 continue
 
             for domain, fix in FIXES.items():
-                if domain in disabled_fixes or domain not in url:
+                if domain in settings.disabled_fixes or domain not in url:
                     continue
 
                 if domain == "pixiv.net" and not await self._is_valid_pixiv_url(
@@ -130,11 +124,12 @@ class FixerCog(commands.Cog):
                 ):
                     break
 
-                if extract_media:
+                if channel_id in settings.extract_media_channels:
                     result = await self._extract_post_info(
                         domain,
                         url,
-                        spoiler=channel_is_nsfw and channel_id not in disable_image_spoilers,
+                        spoiler=channel_is_nsfw
+                        and channel_id not in settings.disable_image_spoilers,
                         filesize_limit=filesize_limit,
                     )
                     medias.extend(
@@ -561,11 +556,7 @@ class FixerCog(commands.Cog):
             return
 
         result = await self._find_fixes(
-            message,
-            disabled_fixes=guild_settings.disabled_fixes,
-            extract_media=channel.id in guild_settings.extract_media_channels,
-            filesize_limit=guild.filesize_limit,
-            disable_image_spoilers=guild_settings.disable_image_spoilers,
+            message, settings=guild_settings, filesize_limit=guild.filesize_limit
         )
 
         if result.fix_found:
