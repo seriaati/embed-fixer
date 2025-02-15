@@ -43,6 +43,6 @@ strings:
   no_perms_to_manage_webhooks: 機器人缺少管理 Webhook 的權限
   failed_to_send_webhook: 發送 Webhook 失敗
   use_vxreddit: 使用 vxreddit 修復 Reddit 嵌入
-  use_vxreddit_desc: vxreddit 支持嵌入更多影片的音頻。如果此選項被禁用，將使用 fxreedit。
+  use_vxreddit_desc: "[vxreddit](<https://github.com/dylanpdx/vxReddit>) 支持嵌入更多影片的音頻。如果此選項被禁用，將使用 [fxreddit](<https://github.com/MinnDevelopment/fxreddit>)。"
   enable_vxreddit: 啟用 vxreddit
   disable_vxreddit: 禁用 vxreddit
