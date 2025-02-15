@@ -141,12 +141,10 @@ class FixSelector(ui.Select[GuildSettingsView]):
         if i.guild is None or self.view is None:
             return
 
+        await i.response.defer()
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disabled_fixes = self.values
         await guild_settings.save(update_fields=("disabled_fixes",))
-        await i.response.send_message(
-            embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
-        )
 
 
 class LangSelector(ui.Select[GuildSettingsView]):
@@ -161,12 +159,10 @@ class LangSelector(ui.Select[GuildSettingsView]):
     async def callback(self, i: Interaction) -> None:
         assert self.view is not None
 
+        await i.response.defer()
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         guild_settings.lang = self.values[0]
         await guild_settings.save(update_fields=("lang",))
-        await i.response.send_message(
-            embed=DefaultEmbed(title=self.view.translate("settings_saved")), ephemeral=True
-        )
 
 
 class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
@@ -223,7 +219,6 @@ class WebhookReplyToggle(ToggleButton):
         self.current_toggle = guild_settings.disable_webhook_reply
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
-        await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
 
 
 class DisableDeleteReaction(ToggleButton):
@@ -237,7 +232,6 @@ class DisableDeleteReaction(ToggleButton):
         self.current_toggle = guild_settings.disable_delete_reaction
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
-        await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
 
 
 class UseVxreddit(ToggleButton):
@@ -255,4 +249,3 @@ class UseVxreddit(ToggleButton):
         self.current_toggle = guild_settings.use_vxreddit
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
-        await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
