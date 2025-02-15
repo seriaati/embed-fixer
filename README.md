@@ -34,7 +34,7 @@ Fixings are currently available for:
 - Pixiv with [phixiv](https://github.com/HazelTheWitch/phixiv)
 - Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
 - Instagram with fxinstagram (made by me, but closed source because the implementation is sketchy)
-- Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit)
+- Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit) or [vxreddit](https://github.com/dylanpdx/vxReddit)
 - Tiktok wtih [fxtiktok](https://github.com/okdargy/fxtiktok)
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
 - Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
