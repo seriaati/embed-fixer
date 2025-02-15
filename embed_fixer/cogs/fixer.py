@@ -147,7 +147,8 @@ class FixerCog(commands.Cog):
                         break
 
                 fix_found = True
-                message.content = message.content.replace(url, clean_url_.replace(domain, fix))
+                fix_ = "vxreddit.com" if domain == "reddit.com" and settings.use_vxreddit else fix
+                message.content = message.content.replace(url, clean_url_.replace(domain, fix_))
                 break
 
         return FindFixResult(

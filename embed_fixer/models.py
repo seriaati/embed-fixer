@@ -25,6 +25,7 @@ class GuildSettings(Model):
     show_post_content_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     disable_delete_reaction = fields.BooleanField(default=False)
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
+    use_vxreddit = fields.BooleanField(default=False)
 
     class Meta:
         table = "guild_settings"

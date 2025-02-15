@@ -13,6 +13,18 @@ if TYPE_CHECKING:
 
     from ..bot import Interaction
 
+SETTINGS = (
+    "disable_fixes",
+    "lang",
+    "extract_media_channels",
+    "disable_fix_channels",
+    "toggle_webhook_reply",
+    "disable_image_spoilers",
+    "toggle_delete_reaction",
+    "show_post_content_channels",
+    "use_vxreddit",
+)
+
 
 class SettingsCog(commands.Cog):
     def __init__(self, bot: EmbedFixer) -> None:
@@ -22,26 +34,7 @@ class SettingsCog(commands.Cog):
     @app_commands.default_permissions()
     @app_commands.choices(
         setting=[
-            app_commands.Choice(name=locale_str("disable_fixes"), value="disable_fixes"),
-            app_commands.Choice(name=locale_str("lang"), value="lang"),
-            app_commands.Choice(
-                name=locale_str("extract_media_channels"), value="extract_media_channels"
-            ),
-            app_commands.Choice(
-                name=locale_str("disable_fix_channels"), value="disable_fix_channels"
-            ),
-            app_commands.Choice(
-                name=locale_str("toggle_webhook_reply"), value="toggle_webhook_reply"
-            ),
-            app_commands.Choice(
-                name=locale_str("disable_image_spoilers"), value="disable_image_spoilers"
-            ),
-            app_commands.Choice(
-                name=locale_str("toggle_delete_reaction"), value="toggle_delete_reaction"
-            ),
-            app_commands.Choice(
-                name=locale_str("show_post_content_channels"), value="show_post_content_channels"
-            ),
+            app_commands.Choice(name=locale_str(setting), value=setting) for setting in SETTINGS
         ]
     )
     @app_commands.rename(setting=locale_str("setting_param"))

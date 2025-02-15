@@ -43,3 +43,7 @@ strings:
   no_perms_to_delete_msg: The bot is missing permission to delete messages
   no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
   failed_to_send_webhook: Failed to send webhook
+  use_vxreddit: Use vxreddit to fix Reddit embeds
+  use_vxreddit_desc: vxreddit supports embedding audio for more videos. If disabled, fxreedit is used.
+  enable_vxreddit: Enable vxreddit
+  disable_vxreddit: Disable vxreddit

@@ -105,6 +105,7 @@ class GuildSettingsView(View):
             )
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
+
         elif setting == "show_post_content_channels":
             selector = ChannelSelect("show_post_content_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
@@ -112,6 +113,14 @@ class GuildSettingsView(View):
             embed = self.add_selected_channels_field(
                 embed, guild_settings.show_post_content_channels
             )
+
+        elif setting == "use_vxreddit":
+            toggle_btn = UseVxreddit(
+                current_toggle=guild_settings.use_vxreddit,
+                labels={True: "disable_vxreddit", False: "enable_vxreddit"},
+            )
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
 
         await i.response.send_message(embed=embed, view=self)
         self.message = await i.original_response()
@@ -226,6 +235,24 @@ class DisableDeleteReaction(ToggleButton):
         await guild_settings.save(update_fields=("disable_delete_reaction",))
 
         self.current_toggle = guild_settings.disable_delete_reaction
+        self.set_style(self.view)
+        await i.response.edit_message(view=self.view)
+        await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
+
+
+class UseVxreddit(ToggleButton):
+    def set_style(self, view: View) -> None:
+        self.style = ButtonStyle.red if self.current_toggle else ButtonStyle.green
+        self.label = view.translate(self.labels[self.current_toggle])
+
+    async def callback(self, i: Interaction) -> None:
+        assert self.view is not None
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
+        guild_settings.use_vxreddit = not guild_settings.use_vxreddit
+        await guild_settings.save(update_fields=("use_vxreddit",))
+
+        self.current_toggle = guild_settings.use_vxreddit
         self.set_style(self.view)
         await i.response.edit_message(view=self.view)
         await i.followup.send(self.view.translate("settings_saved"), ephemeral=True)
