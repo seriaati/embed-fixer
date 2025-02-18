@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
     from embed_fixer.bot import EmbedFixer
 
-DELETE_MSG_EMOJI: Final[str] = "❌"
+USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 
 
 class FixerCog(commands.Cog):
@@ -74,7 +74,7 @@ class FixerCog(commands.Cog):
             )
             return
 
-        if " (Embed Fixer)" not in message.author.display_name:
+        if USERNAME_SUFFIX not in message.author.display_name:
             return
 
         guild = message.guild
@@ -332,7 +332,7 @@ class FixerCog(commands.Cog):
         try:
             return await webhook.send(
                 message.content,
-                username=f"{message.author.display_name} (Embed Fixer)",
+                username=f"{message.author.display_name}{USERNAME_SUFFIX}",
                 avatar_url=message.author.display_avatar.url,
                 tts=message.tts,
                 wait=True,
