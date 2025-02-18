@@ -16,11 +16,11 @@
 As we know, social media embeds on Discord are bad:  
 
 - Pixiv embeds don't show the full artwork
-- X/Twitter sometimes doesn't even embed
+- X/Twitter sometimes doesn't embed
 - Instagram doesn't show the image/video
-- Reddit doesn't show the full thread
+- Reddit doesn't show the images
 - Tiktok doesn't show the video
-- Twitch clip embeds don't play the clips
+- Twitch clip doesn't play the clips
 - And so on...
   
 Worry no more, this Discord bot fixes all of those issues.
