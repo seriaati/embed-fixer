@@ -50,7 +50,7 @@ class FixerCog(commands.Cog):
         message: discord.Message, guild: discord.Guild
     ) -> discord.Member | None:
         authors = await guild.query_members(
-            message.author.display_name.removesuffix(" (Embed Fixer)")
+            message.author.display_name.removesuffix(USERNAME_SUFFIX), limit=1
         )
         if not authors:
             return None
