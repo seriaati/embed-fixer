@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
+PIXIV_R18_TAG: Final[str] = "#R-18"
 
 
 class FixerCog(commands.Cog):
@@ -123,8 +124,10 @@ class FixerCog(commands.Cog):
                 if domain in settings.disabled_fixes or domain not in url:
                     continue
 
-                if domain == "pixiv.net" and not await self._is_valid_pixiv_url(
-                    clean_url_, channel_is_nsfw
+                if (
+                    domain == "pixiv.net"
+                    and not channel_is_nsfw
+                    and await self._artwork_is_nsfw(url)
                 ):
                     break
 
@@ -159,9 +162,11 @@ class FixerCog(commands.Cog):
             fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md
         )
 
-    async def _is_valid_pixiv_url(self, url: str, channel_is_nsfw: bool) -> bool:
+    async def _artwork_is_nsfw(self, url: str) -> bool:
         artwork_info = await self._fetch_pixiv_artwork_info(url)
-        return not (artwork_info and "#R-18" in artwork_info.tags and not channel_is_nsfw)
+        if artwork_info is None:
+            return False
+        return PIXIV_R18_TAG in artwork_info.tags
 
     async def _extract_post_info(
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
