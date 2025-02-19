@@ -1,5 +1,5 @@
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 
 [lint]
 ignore = [
@@ -12,6 +12,7 @@ ignore = [
   "ANN002",
   "ERA001",
   "RUF100",
+  "B903",
 ]
 preview = true
 select = [

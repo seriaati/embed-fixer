@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import contextlib
 from pathlib import Path
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 __all__ = ("EmbedFixer", "Interaction")
 
-Interaction: TypeAlias = discord.Interaction["EmbedFixer"]
+type Interaction = discord.Interaction[EmbedFixer]
 
 intents = discord.Intents(
     guilds=True, emojis=True, messages=True, message_content=True, reactions=True
