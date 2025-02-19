@@ -26,6 +26,7 @@ class GuildSettings(Model):
     disable_delete_reaction = fields.BooleanField(default=False)
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
     use_vxreddit = fields.BooleanField(default=False)
+    delete_msg_emoji = fields.CharField(max_length=100, default="❌")
 
     class Meta:
         table = "guild_settings"

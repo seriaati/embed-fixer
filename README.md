@@ -44,7 +44,7 @@ Fixings are currently available for:
 - Bilibili videos with [fxBilibili](https://github.com/seriaati/fxBilibili)
 - Tumblr with [fxtumblr](https://github.com/knuxify/fxtumblr)
 
-If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message.
+If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
 
 ![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)  
 
@@ -87,6 +87,8 @@ Below are settings you can change with the `/settings` command:
 - Disable webhook reply: Disable the webhook reply feature mentioned above  
 - Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels
 - Show post content: For channels with media extraction enabled, channels with this feature on will also show the content and author of the post along with the media.
+- Use vxreddit: Use vxreddit to fix Reddit embeds instead of fxreddit.
+- Change delete message emoji: Change the reaction emoji used to delete the webhook messages, defaults to ❌.
 
 # Questions, Issues, Feedback, Contributions
 

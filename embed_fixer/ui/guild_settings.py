@@ -18,6 +18,25 @@ if TYPE_CHECKING:
     from embed_fixer.translator import Translator
 
 
+class DeleteMsgEmojiModal(Modal):
+    emoji = ui.TextInput(label="emoji", max_length=100)
+
+    def __init__(self, guild: Guild, translator: Translator, *, settings: GuildSettings) -> None:
+        super().__init__(guild, translator, title="delete_msg_emoji")
+
+        self.emoji.label = self.translate(self.emoji.label)
+        self.emoji.default = settings.delete_msg_emoji
+
+    async def on_submit(self, i: Interaction) -> None:
+        emoji = self.emoji.value
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
+        guild_settings.delete_msg_emoji = emoji
+        await guild_settings.save(update_fields=("delete_msg_emoji",))
+
+        await i.response.send_message(
+            content=self.translate("emoji_changed", emoji=emoji), ephemeral=True
+        )
 
 
 class GuildSettingsView(View):

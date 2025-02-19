@@ -46,3 +46,6 @@ strings:
   use_vxreddit_desc: "[vxreddit](<https://github.com/dylanpdx/vxReddit>) supports embedding audio for more videos. If disabled, [fxreedit](<https://github.com/MinnDevelopment/fxreddit>) is used."
   enable_vxreddit: Enable vxreddit
   disable_vxreddit: Disable vxreddit
+  delete_msg_emoji: Emoji used for deleting messages
+  emoji: Emoji
+  emoji_changed: Emoji used for deleting messages has been changed to {emoji}

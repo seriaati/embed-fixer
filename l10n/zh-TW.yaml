@@ -46,3 +46,6 @@ strings:
   use_vxreddit_desc: "[vxreddit](<https://github.com/dylanpdx/vxReddit>) 支持嵌入更多影片的音頻。如果此選項被禁用，將使用 [fxreddit](<https://github.com/MinnDevelopment/fxreddit>)。"
   enable_vxreddit: 啟用 vxreddit
   disable_vxreddit: 禁用 vxreddit
+  delete_msg_emoji: 用於刪除訊息的表情符號
+  emoji: 表情符號
+  emoji_changed: 用於刪除訊息的表情符號已更改為 {emoji}

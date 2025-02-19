@@ -6,9 +6,9 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..ui.guild_settings import GuildSettingsView
 from embed_fixer.models import GuildSettings
 from embed_fixer.settings import Setting
+from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer, Interaction
@@ -31,6 +31,14 @@ class SettingsCog(commands.Cog):
     async def settings(self, i: Interaction, setting: Setting) -> None:
         if i.guild is None:
             return
+
+        if setting is Setting.DELETE_MSG_EMOJI:
+            settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
+            await i.response.send_modal(
+                DeleteMsgEmojiModal(i.guild, self.bot.translator, settings=settings)
+            )
+            return
+
         view = GuildSettingsView(i.user, i.guild, self.bot.translator)
         await view.start(i, setting=setting)
 

@@ -58,8 +58,12 @@ class FixerCog(commands.Cog):
         return authors[0]
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
-        if payload.user_id == self.bot.user.id or payload.emoji.name != DELETE_MSG_EMOJI:
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
+        if payload.guild_id is None:
+            return
+
+        settings, _ = await GuildSettings.get_or_create(id=payload.guild_id)
+        if payload.user_id == self.bot.user.id or payload.emoji.name != settings.delete_msg_emoji:
             return
 
         channel = self.bot.get_channel(payload.channel_id)
@@ -82,9 +86,9 @@ class FixerCog(commands.Cog):
             return
 
         author = await self._get_original_author(message, guild)
-
         if author is None:
             return
+
         if payload.user_id == author.id:
             try:
                 await message.delete()
@@ -210,6 +214,7 @@ class FixerCog(commands.Cog):
         result: FindFixResult,
         *,
         disable_delete_reaction: bool,
+        delete_msg_emoji: str,
         show_post_content: bool,
     ) -> None:
         medias, sauces = result.medias, result.sauces
@@ -228,11 +233,17 @@ class FixerCog(commands.Cog):
 
         if medias:
             fix_message = await self._send_files(
-                message, medias, sauces, disable_delete_reaction=disable_delete_reaction
+                message,
+                medias,
+                sauces,
+                disable_delete_reaction=disable_delete_reaction,
+                delete_msg_emoji=delete_msg_emoji,
             )
         else:
             fix_message = await self._send_message(
-                message, disable_delete_reaction=disable_delete_reaction
+                message,
+                disable_delete_reaction=disable_delete_reaction,
+                delete_msg_emoji=delete_msg_emoji,
             )
 
         # If the message was originally replying to another message, and this message
@@ -252,6 +263,7 @@ class FixerCog(commands.Cog):
         medias: list[Media],
         sauces: list[str],
         *,
+        delete_msg_emoji: str,
         disable_delete_reaction: bool,
     ) -> discord.Message | None:
         """Send multiple files in batches of 10."""
@@ -280,7 +292,11 @@ class FixerCog(commands.Cog):
                     message.content += f"\n{media.url}"
 
             fix_message = await self._send_message(
-                message, disable_delete_reaction=disable_delete_reaction, medias=chunk, **kwargs
+                message,
+                disable_delete_reaction=disable_delete_reaction,
+                delete_msg_emoji=delete_msg_emoji,
+                medias=chunk,
+                **kwargs,
             )
 
             message.content = ""
@@ -292,6 +308,7 @@ class FixerCog(commands.Cog):
         message: discord.Message,
         *,
         disable_delete_reaction: bool,
+        delete_msg_emoji: str,
         medias: Sequence[Media] | None = None,
         **kwargs: Any,
     ) -> discord.Message:
@@ -317,7 +334,7 @@ class FixerCog(commands.Cog):
             )
 
         if not disable_delete_reaction:
-            await fix_message.add_reaction(DELETE_MSG_EMOJI)
+            await fix_message.add_reaction(delete_msg_emoji)
 
         return fix_message
 
@@ -566,6 +583,7 @@ class FixerCog(commands.Cog):
                 result,
                 disable_delete_reaction=guild_settings.disable_delete_reaction,
                 show_post_content=channel.id in guild_settings.show_post_content_channels,
+                delete_msg_emoji=guild_settings.delete_msg_emoji,
             )
             try:
                 await message.delete()
