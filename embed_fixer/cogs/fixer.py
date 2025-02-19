@@ -11,7 +11,7 @@ import aiohttp
 import discord
 from discord.ext import commands
 from loguru import logger
-from seria.utils import clean_url, extract_urls
+from seria.utils import clean_url
 
 from ..fixes import FIX_PATTERNS, FIXES
 from ..models import (
@@ -32,6 +32,13 @@ if TYPE_CHECKING:
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 PIXIV_R18_TAG: Final[str] = "#R-18"
+
+
+def extract_urls(text: str) -> list[str]:
+    return re.findall(
+        r"(?<!\$)http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+",
+        text,
+    )
 
 
 class FixerCog(commands.Cog):
@@ -113,7 +120,7 @@ class FixerCog(commands.Cog):
         author_md = ""
 
         channel_is_nsfw = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
-        urls = extract_urls(message.content, clean=False)
+        urls = extract_urls(message.content)
 
         for url in urls:
             clean_url_ = clean_url(url).replace("www.", "")
