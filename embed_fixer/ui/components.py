@@ -38,3 +38,16 @@ class View(ui.View):
 
         with contextlib.suppress(discord.NotFound):
             await self.message.edit(view=self)
+
+
+class Modal(ui.Modal):
+    def __init__(self, guild: discord.Guild, translator: Translator, *, title: str) -> None:
+        super().__init__(title=title, timeout=600)
+
+        self.guild = guild
+        self.translator = translator
+        self.lang = guild.preferred_locale.value if guild else "en-US"
+        self.title = self.translate(title)
+
+    def translate(self, key: str, **kwargs: Any) -> str:
+        return self.translator.get(self.lang, key, **kwargs)
