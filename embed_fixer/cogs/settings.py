@@ -7,23 +7,11 @@ from discord.app_commands import locale_str
 from discord.ext import commands
 
 from ..ui.guild_settings import GuildSettingsView
+from embed_fixer.models import GuildSettings
+from embed_fixer.settings import Setting
 
 if TYPE_CHECKING:
-    from embed_fixer.bot import EmbedFixer
-
-    from ..bot import Interaction
-
-SETTINGS = (
-    "disable_fixes",
-    "lang",
-    "extract_media_channels",
-    "disable_fix_channels",
-    "toggle_webhook_reply",
-    "disable_image_spoilers",
-    "toggle_delete_reaction",
-    "show_post_content_channels",
-    "use_vxreddit",
-)
+    from embed_fixer.bot import EmbedFixer, Interaction
 
 
 class SettingsCog(commands.Cog):
@@ -34,13 +22,13 @@ class SettingsCog(commands.Cog):
     @app_commands.default_permissions()
     @app_commands.choices(
         setting=[
-            app_commands.Choice(name=locale_str(setting), value=setting) for setting in SETTINGS
+            app_commands.Choice(name=locale_str(setting), value=setting) for setting in Setting
         ]
     )
     @app_commands.rename(setting=locale_str("setting_param"))
     @app_commands.describe(setting=locale_str("setting_param_desc"))
     @app_commands.command(name="settings", description=locale_str("settings_cmd_desc"))
-    async def settings(self, i: Interaction, setting: str) -> None:
+    async def settings(self, i: Interaction, setting: Setting) -> None:
         if i.guild is None:
             return
         view = GuildSettingsView(i.user, i.guild, self.bot.translator)

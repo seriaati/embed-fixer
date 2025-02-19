@@ -2,18 +2,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from discord import ButtonStyle, ChannelType, Embed, SelectOption, ui
+from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, ui
 
-from ..embed import DefaultEmbed
-from ..fixes import FIXES
-from ..models import GuildSettings
-from .view import View
+from embed_fixer.embed import DefaultEmbed
+from embed_fixer.fixes import FIXES
+from embed_fixer.models import GuildSettings
+from embed_fixer.settings import Setting
+
+from .components import Modal, View
 
 if TYPE_CHECKING:
     from discord.abc import GuildChannel
 
-    from ..bot import Interaction
-    from ..translator import Translator
+    from embed_fixer.bot import Interaction
+    from embed_fixer.translator import Translator
+
+
 
 
 class GuildSettingsView(View):
@@ -51,7 +55,7 @@ class GuildSettingsView(View):
             value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids_]),
         )
 
-    async def start(self, i: Interaction, *, setting: str) -> None:
+    async def start(self, i: Interaction, *, setting: Setting) -> None:
         await super().start()
 
         embed = DefaultEmbed(
@@ -62,35 +66,35 @@ class GuildSettingsView(View):
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
         await self.remove_invalid_channels(guild_settings)
 
-        if setting == "disable_fixes":
+        if setting is Setting.DISABLE_FIXES:
             fix_selector = FixSelector(guild_settings.disabled_fixes)
             fix_selector.placeholder = self.translate("fix_selector_placeholder")
             self.add_item(fix_selector)
 
-        elif setting == "lang":
+        elif setting is Setting.LANG:
             lang_selector = LangSelector(self.translator, self.lang)
             lang_selector.placeholder = self.translate("lang_selector_placeholder")
             self.add_item(lang_selector)
 
-        elif setting == "extract_media_channels":
+        elif setting is Setting.EXTRACT_MEDIA_CHANNELS:
             selector = ChannelSelect("extract_media_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             embed = self.add_selected_channels_field(embed, guild_settings.extract_media_channels)
 
-        elif setting == "disable_fix_channels":
+        elif setting is Setting.DISABLE_FIX_CHANNELS:
             selector = ChannelSelect("disable_fix_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             embed = self.add_selected_channels_field(embed, guild_settings.disable_fix_channels)
 
-        elif setting == "disable_image_spoilers":
+        elif setting is Setting.DISABLE_IMAGE_SPOILERS:
             selector = ChannelSelect("disable_image_spoilers")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             embed = self.add_selected_channels_field(embed, guild_settings.disable_image_spoilers)
 
-        elif setting == "toggle_webhook_reply":
+        elif setting is Setting.TOGGLE_WEBHOOK_REPLY:
             toggle_btn = WebhookReplyToggle(
                 current_toggle=guild_settings.disable_webhook_reply,
                 labels={True: "enable_webhook_reply", False: "disable_webhook_reply"},
@@ -98,7 +102,7 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
-        elif setting == "toggle_delete_reaction":
+        elif setting is Setting.TOGGLE_DELETE_REACTION:
             toggle_btn = DisableDeleteReaction(
                 current_toggle=guild_settings.disable_delete_reaction,
                 labels={True: "enable_delete_reaction", False: "disable_delete_reaction"},
@@ -106,7 +110,7 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
-        elif setting == "show_post_content_channels":
+        elif setting is Setting.SHOW_POST_CONTENT_CHANNELS:
             selector = ChannelSelect("show_post_content_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
@@ -114,7 +118,7 @@ class GuildSettingsView(View):
                 embed, guild_settings.show_post_content_channels
             )
 
-        elif setting == "use_vxreddit":
+        elif setting is Setting.USE_VXREDDIT:
             toggle_btn = UseVxreddit(
                 current_toggle=guild_settings.use_vxreddit,
                 labels={True: "disable_vxreddit", False: "enable_vxreddit"},
