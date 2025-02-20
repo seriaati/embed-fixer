@@ -47,7 +47,7 @@ class FixerCog(commands.Cog):
             return
 
         settings, _ = await GuildSettings.get_or_create(id=payload.guild_id)
-        if payload.user_id == self.bot.user.id or payload.emoji.name != settings.delete_msg_emoji:
+        if payload.user_id == self.bot.user.id or str(payload.emoji) != settings.delete_msg_emoji:
             return
 
         channel = self.bot.get_channel(payload.channel_id)
@@ -310,7 +310,14 @@ class FixerCog(commands.Cog):
             )
 
         if not disable_delete_reaction:
-            await fix_message.add_reaction(delete_msg_emoji)
+            try:
+                await fix_message.add_reaction(delete_msg_emoji)
+            except discord.HTTPException as e:
+                if e.code != 10014:
+                    raise
+                logger.warning(
+                    f"Failed to add {delete_msg_emoji!r} reaction to message {message!r}"
+                )
 
         return fix_message
 
