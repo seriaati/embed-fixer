@@ -92,7 +92,7 @@ Below are settings you can change with the `/settings` command:
 - Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels
 - Show post content: For channels with media extraction enabled, channels with this feature on will also show the content and author of the post along with the media.
 - Use vxreddit: Use vxreddit to fix Reddit embeds instead of fxreddit.
-- Change delete message emoji: Change the reaction emoji used to delete the webhook messages, defaults to ❌.
+- Change delete message emoji: Change the reaction emoji used to delete the webhook messages, defaults to ❌. You can set custom emojis too, like `<:emoji:123456789012345678>`
 
 # Questions, Issues, Feedback, Contributions
 
