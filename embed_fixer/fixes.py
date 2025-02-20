@@ -21,6 +21,7 @@ FIX_PATTERNS = (
     r"https://(www.)?facebook.com/share/r/[\w]+",
     r"https://(www.)?facebook.com/reel/\d+",
     r"https://(www.|m.)?bilibili.com/video/[\w]+",
+    r"https://(www.)?b23.tv/[\w]+",
     r"https://(www.)?tumblr.com/[a-zA-Z0-9_-]+/[0-9]+/[a-zA-Z0-9_-]+",
 )
 FIXES = {
@@ -38,6 +39,7 @@ FIXES = {
     "bsky.app": "bskx.app",
     "kemono.su": "kemono.su",
     "facebook.com": "fxfb.seria.moe",
+    "b23.tv": "fxbilibili.seria.moe/b23",
     "m.bilibili.com": "fxbilibili.seria.moe",
     "bilibili.com": "fxbilibili.seria.moe",
     "tumblr.com": "tpmblr.com",
