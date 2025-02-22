@@ -23,6 +23,8 @@ FIX_PATTERNS = (
     r"https://(www.|m.)?bilibili.com/video/[\w]+",
     r"https://(www.)?b23.tv/[\w]+",
     r"https://(www.)?tumblr.com/[a-zA-Z0-9_-]+/[0-9]+/[a-zA-Z0-9_-]+",
+    r"https://(www.)?threads.net/@[\w.]+",
+    r"https://(www.)?threads.net/@[\w.]+/post/[\w]+",
 )
 FIXES = {
     "twitter.com": "fxtwitter.com",
@@ -43,4 +45,5 @@ FIXES = {
     "m.bilibili.com": "fxbilibili.seria.moe",
     "bilibili.com": "fxbilibili.seria.moe",
     "tumblr.com": "tpmblr.com",
+    "threads.net": "fixthreads.net",
 }
