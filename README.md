@@ -33,7 +33,7 @@ Fixings are currently available for:
 
 - Pixiv with [phixiv](https://github.com/HazelTheWitch/phixiv)
 - Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
-- Instagram with fxinstagram (made by me, but closed source because the implementation is sketchy)
+- Instagram with fxinstagram (made by me, closed source because the implementation is sketchy)
 - Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit) or [vxreddit](https://github.com/dylanpdx/vxReddit)
 - Tiktok wtih [fxtiktok](https://github.com/okdargy/fxtiktok)
 - Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
@@ -43,6 +43,7 @@ Fixings are currently available for:
 - Facebook reels with [fxfacebook](https://github.com/seriaati/fxfacebook)
 - Bilibili videos with [fxBilibili](https://github.com/seriaati/fxBilibili)
 - Tumblr with [fxtumblr](https://github.com/knuxify/fxtumblr)
+- Threads with [fixthreads](https://github.com/milanmdev/fixthreads)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
 
