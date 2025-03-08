@@ -148,3 +148,34 @@ class PostInfoFetcher:  # noqa: B903
         if video_id is None:
             return []
         return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
+
+    @staticmethod
+    def _extract_bvid(url: str) -> str | None:
+        match = re.search(r"https://(?:www.|m.)?bilibili.com/video/([\w]+)", url)
+        return match.group(1) if match else None
+
+    async def bilibili(self, url: str) -> list[str]:
+        shortened = re.search(r"b23.tv/(\w+)", url)
+        if shortened:
+            async with self.session.get(url) as resp:
+                url = str(resp.url)
+
+        bvid = self._extract_bvid(url)
+        if bvid is None:
+            return []
+
+        async with self.session.get(
+            f"https://api.injahow.cn/bparse/?bv={bvid}&q=64&otype=json"
+        ) as resp:
+            if resp.status != 200:
+                return []
+
+            try:
+                data = await resp.json()
+            except Exception:
+                return []
+
+            if "url" not in data:
+                return []
+
+            return [data["url"]]
