@@ -1,9 +1,8 @@
-name: Create Release
+name: Biweekly Release
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 0 1,15 * *'
   workflow_dispatch:
 
 jobs:
@@ -14,6 +13,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Update version number
+        uses: seriaati/update-ver-num@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Create release
         uses: seriaati/create-release@main
