@@ -1,8 +1,7 @@
 name: Create Release
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   create-release:
@@ -12,6 +11,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Update version number
+        uses: seriaati/update-ver-num@main
         
       - name: Create release
         uses: seriaati/create-release@main
