@@ -207,8 +207,29 @@ class FixerCog(commands.Cog):
             message.content += f"\n||{sauces_str}||"
             sauces.clear()
 
+        # If the message was originally replying to another message, and this message
+        # was deleted for a fix, add the reply to the new message.
+        if (
+            message.reference is not None
+            and isinstance(resolved_ref := message.reference.resolved, discord.Message)
+            and message.guild is not None
+        ):
+            if resolved_ref.webhook_id is not None:
+                author = await self._get_original_author(resolved_ref, message.guild)
+                user = author.mention if author is not None else resolved_ref.author.display_name
+            else:
+                user = resolved_ref.author.mention
+
+            replying_to = self.bot.translator.get(
+                await Translator.get_guild_lang(message.guild),
+                "replying_to",
+                user=user,
+                url=resolved_ref.jump_url,
+            )
+            message.content = f"{replying_to}\n{message.content}"
+
         if medias:
-            fix_message = await self._send_files(
+            await self._send_files(
                 message,
                 medias,
                 sauces,
@@ -216,22 +237,11 @@ class FixerCog(commands.Cog):
                 delete_msg_emoji=delete_msg_emoji,
             )
         else:
-            fix_message = await self._send_message(
+            await self._send_message(
                 message,
                 disable_delete_reaction=disable_delete_reaction,
                 delete_msg_emoji=delete_msg_emoji,
             )
-
-        # If the message was originally replying to another message, and this message
-        # was deleted for a fix, reply to the fixed message while mentioning the reply target.
-        if (
-            message.reference is not None
-            and isinstance(resolved_ref := message.reference.resolved, discord.Message)
-            and message.guild is not None
-            and fix_message is not None
-            and not message.author.bot
-        ):
-            await self._handle_reply(fix_message, resolved_ref)
 
     async def _send_files(
         self,
@@ -425,6 +435,8 @@ class FixerCog(commands.Cog):
                         await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
                     )
                 )
+            except discord.NotFound:
+                pass
 
         # If the message is replying to a webhook message, mention the original author
         # of the webhook.
