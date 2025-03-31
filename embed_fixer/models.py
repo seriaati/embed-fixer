@@ -9,7 +9,7 @@ from pydantic import BaseModel, field_validator
 from tortoise import fields
 from tortoise.models import Model
 
-from embed_fixer.utils.general import remove_html_tags
+from embed_fixer.utils.misc import remove_html_tags
 
 if TYPE_CHECKING:
     import discord

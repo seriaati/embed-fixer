@@ -14,7 +14,7 @@ from embed_fixer.models import FindFixResult, GuildSettings, Media, PostExtracti
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
-from embed_fixer.utils.general import extract_urls, get_filesize
+from embed_fixer.utils.misc import extract_urls, get_filesize
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
