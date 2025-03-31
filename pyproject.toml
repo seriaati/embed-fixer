@@ -6,7 +6,6 @@ dependencies = [
   "python-dotenv>=1.0.1",
   "pyyaml>=6.0.2",
   "tortoise-orm[asyncpg]>=0.21.6",
-  "seria-library>=1.5.4",
   "uvloop>=0.20.0; platform_system == 'Linux'",
   "discord-py>=2.4.0",
   "loguru>=0.7.2",
