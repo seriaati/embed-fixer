@@ -13,7 +13,13 @@ from embed_fixer.models import FindFixResult, GuildSettings, Media, PostExtracti
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
-from embed_fixer.utils.misc import extract_urls, get_filesize, remove_query_params
+from embed_fixer.utils.misc import (
+    domain_in_url,
+    extract_urls,
+    get_filesize,
+    remove_query_params,
+    replace_domain,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -98,12 +104,12 @@ class FixerCog(commands.Cog):
         urls = extract_urls(message.content)
 
         for url in urls:
-            clean_url_ = remove_query_params(url).replace("www.", "")
-            if not any(re.match(pattern, clean_url_) for pattern in FIX_PATTERNS):
+            clean_url = remove_query_params(url).replace("www.", "")
+            if not any(re.match(pattern, clean_url) for pattern in FIX_PATTERNS):
                 continue
 
             for domain, fix in FIXES.items():
-                if domain in settings.disabled_fixes or domain not in url:
+                if domain in settings.disabled_fixes or not domain_in_url(clean_url, domain):
                     continue
 
                 if (
@@ -132,12 +138,14 @@ class FixerCog(commands.Cog):
                     if medias:
                         fix_found = True
                         message.content = message.content.replace(url, "")
-                        sauces.append(clean_url_)
+                        sauces.append(clean_url)
                         break
 
                 fix_found = True
                 fix_ = "vxreddit.com" if domain == "reddit.com" and settings.use_vxreddit else fix
-                message.content = message.content.replace(url, clean_url_.replace(domain, fix_))
+                message.content = message.content.replace(
+                    url, replace_domain(clean_url, domain, fix_)
+                )
                 break
 
         return FindFixResult(

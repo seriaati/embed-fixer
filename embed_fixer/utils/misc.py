@@ -38,3 +38,18 @@ def remove_query_params(url: str) -> str:
             parsed_url.fragment,
         )
     )
+
+
+def domain_in_url(url: str, domain: str) -> bool:
+    parsed_url = urlparse(url)
+    return parsed_url.netloc == domain or parsed_url.netloc.endswith(f".{domain}")
+
+
+def replace_domain(url: str, old_domain: str, new_domain: str) -> str:
+    parsed_url = urlparse(url)
+    if parsed_url.netloc == old_domain:
+        new_netloc = new_domain
+        new_url = parsed_url._replace(netloc=new_netloc)
+        return urlunparse(new_url)
+
+    return url
