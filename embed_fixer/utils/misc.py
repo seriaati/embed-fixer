@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import re
+from urllib.parse import urlparse, urlunparse
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -23,3 +24,17 @@ def get_filesize(fp: io.BufferedIOBase) -> int:
     size = fp.tell()
     fp.seek(original_pos)
     return size
+
+
+def remove_query_params(url: str) -> str:
+    parsed_url = urlparse(url)
+    return urlunparse(
+        (
+            parsed_url.scheme,
+            parsed_url.netloc,
+            parsed_url.path,
+            parsed_url.params,
+            "",
+            parsed_url.fragment,
+        )
+    )

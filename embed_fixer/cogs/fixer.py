@@ -7,14 +7,13 @@ from typing import TYPE_CHECKING, Any, Final
 import discord
 from discord.ext import commands
 from loguru import logger
-from seria.utils import clean_url
 
 from embed_fixer.fixes import FIX_PATTERNS, FIXES
 from embed_fixer.models import FindFixResult, GuildSettings, Media, PostExtractionResult
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
-from embed_fixer.utils.misc import extract_urls, get_filesize
+from embed_fixer.utils.misc import extract_urls, get_filesize, remove_query_params
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -99,7 +98,7 @@ class FixerCog(commands.Cog):
         urls = extract_urls(message.content)
 
         for url in urls:
-            clean_url_ = clean_url(url).replace("www.", "")
+            clean_url_ = remove_query_params(url).replace("www.", "")
             if not any(re.match(pattern, clean_url_) for pattern in FIX_PATTERNS):
                 continue
 
