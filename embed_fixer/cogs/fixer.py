@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 import re
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
 
 import discord
@@ -9,7 +10,7 @@ from discord.ext import commands
 from loguru import logger
 
 from embed_fixer.fixes import FIX_PATTERNS, FIXES
-from embed_fixer.models import FindFixResult, GuildSettings, Media, PostExtractionResult
+from embed_fixer.models import GuildSettings
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
@@ -27,6 +28,28 @@ if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
+
+
+@dataclass(kw_only=True)
+class Media:
+    url: str
+    file: discord.File | None = None
+
+
+@dataclass(kw_only=True)
+class PostExtractionResult:
+    medias: list[Media]
+    content: str
+    author_md: str
+
+
+@dataclass(kw_only=True)
+class FindFixResult:
+    fix_found: bool
+    medias: list[Media]
+    sauces: list[str]
+    content: str
+    author_md: str
 
 
 class FixerCog(commands.Cog):
