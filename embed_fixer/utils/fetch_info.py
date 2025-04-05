@@ -35,7 +35,7 @@ class PostInfoFetcher:  # noqa: B903
             author_id=data.get("author_id", ""),
         )
 
-    async def is_artwork_nsfw(self, url: str) -> bool:
+    async def artwork_is_nsfw(self, url: str) -> bool:
         artwork_info = await self.pixiv(url)
         if artwork_info is None:
             return False

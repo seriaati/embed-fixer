@@ -115,7 +115,7 @@ class FixerCog(commands.Cog):
                 if (
                     domain == "pixiv.net"
                     and not channel_is_nsfw
-                    and await self.fetch_info.is_artwork_nsfw(url)
+                    and await self.fetch_info.artwork_is_nsfw(url)
                 ):
                     break
 
