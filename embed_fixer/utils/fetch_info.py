@@ -3,20 +3,60 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Final
 
-from embed_fixer.models import BlueskyPostInfo, PixivArtworkInfo, TwitterPostInfo
+from pydantic import BaseModel, Field, field_validator
+
+from embed_fixer.utils.misc import remove_html_tags, replace_domain
 
 if TYPE_CHECKING:
+    import datetime
+
     import aiohttp
 
 PIXIV_R18_TAG: Final[str] = "#R-18"
+TWITTER_MEDIA_TYPES = {"photo", "video", "gif"}
 
 
 class PostInfoFetcher:  # noqa: B903
     def __init__(self, session: aiohttp.ClientSession) -> None:
         self.session = session
 
-    async def pixiv(self, url: str) -> PixivArtworkInfo | None:
-        artwork_id = url.split("/")[-1]
+    @staticmethod
+    def _extract_pixiv_id(url: str) -> str | None:
+        match = re.search(r"pixiv.net(?:/[^/]+)?/artworks/(\d+)", url)
+        return match.group(1) if match else None
+
+    @staticmethod
+    def _extract_twitter_details(url: str) -> tuple[str, str] | None:
+        match = re.search(r"(twitter|x).com/([^/]+)/status/(\d+)", url)
+        if match:
+            return match.group(1), match.group(2)
+        return None
+
+    @staticmethod
+    def _extract_tweet_photo_index(url: str) -> int | None:
+        match = re.search(r"/photo/(\d+)$", url)
+        return int(match.group(1)) - 1 if match else None
+
+    @staticmethod
+    def _extract_iwara_id(url: str) -> str | None:
+        match = re.search(r"iwara.tv/video/([a-zA-Z0-9]+)", url)
+        return match.group(1) if match else None
+
+    @staticmethod
+    def _extract_b23_slug(url: str) -> str | None:
+        match = re.search(r"b23.tv/([\w]+)", url)
+        return match.group(1) if match else None
+
+    @staticmethod
+    def _extract_bilibili_id(url: str) -> str | None:
+        match = re.search(r"bilibili.com/video/([\w]+)", url)
+        return match.group(1) if match else None
+
+    async def pixiv(self, url: str) -> PixivArtwork | None:
+        artwork_id = self._extract_pixiv_id(url)
+        if artwork_id is None:
+            return None
+
         api_url = f"https://phixiv.net/api/info?id={artwork_id}"
         async with self.session.get(api_url) as response:
             if response.status != 200:
@@ -24,106 +64,57 @@ class PostInfoFetcher:  # noqa: B903
 
             data = await response.json()
 
-        if "image_proxy_urls" not in data:
-            return None
+        return PixivArtwork(**data)
 
-        return PixivArtworkInfo(
-            tags=data.get("tags", []),
-            image_urls=data["image_proxy_urls"],
-            description=data.get("description", ""),
-            author_name=data.get("author_name", ""),
-            author_id=data.get("author_id", ""),
-        )
-
-    async def artwork_is_nsfw(self, url: str) -> bool:
+    async def pixiv_is_nsfw(self, url: str) -> bool:
         artwork_info = await self.pixiv(url)
         if artwork_info is None:
             return False
         return PIXIV_R18_TAG in artwork_info.tags
 
-    async def twitter(self, url: str) -> TwitterPostInfo | None:
-        if "twitter.com" in url:
-            api_url = url.replace("twitter.com", "api.fxtwitter.com")
-        else:
-            api_url = url.replace("x.com", "api.fxtwitter.com")
+    async def twitter(self, url: str) -> TwitterPost | None:
+        ids = self._extract_twitter_details(url)
+        if ids is None:
+            return None
 
-        allowed_media_types = {"photo", "video", "gif"}
-        media_index = None
-
-        if "photo" in api_url or "video" in api_url:
-            allowed_media_types = {api_url.split("/")[-2]}
-            media_index = int(api_url.split("/")[-1]) - 1
-            api_url = "/".join(api_url.split("/")[:-2])
+        handle, tweet_id = ids
+        api_url = f"https://api.fxtwitter.com/{handle}/status/{tweet_id}"
 
         async with self.session.get(api_url) as response:
             if response.status != 200:
                 return None
 
             data = await response.json()
-            tweet = data["tweet"]
-            medias = tweet.get("media")
-            author = tweet.get("author")
-            if medias is None or author is None:
-                return None
 
-            urls = [media["url"] for media in medias["all"] if media["type"] in allowed_media_types]
-            media_urls = (
-                [urls[media_index]] if media_index is not None and len(urls) > media_index else urls
-            )
-            return TwitterPostInfo(
-                media_urls=media_urls,
-                content=tweet.get("text", ""),
-                author_name=author.get("name", ""),
-                author_handle=author.get("screen_name", ""),
-            )
+        tweet = data.get("tweet")
+        if tweet is None:
+            return None
 
-    async def bluesky(self, url: str) -> BlueskyPostInfo | None:
-        api_url = url.replace("bsky.app", "bskx.app") + "/json"
+        tweet = TwitterPost(**tweet)
+        media_index = self._extract_tweet_photo_index(url)
+        if media_index is not None and len(tweet.medias) > media_index:
+            tweet.medias = [tweet.medias[media_index]]
+
+        return tweet
+
+    async def bluesky(self, url: str) -> BskyPost | None:
+        api_url = replace_domain(url, "bsky.app", "bskx.app") + "/json"
 
         async with self.session.get(api_url) as response:
             if response.status != 200:
                 return None
 
             data = await response.json()
-            if not data["posts"]:
-                return None
 
-            urls: list[str] = []
-            post = data["posts"][0]
-            embed = post.get("embed")
-            author = post.get("author")
+        if not data.get("posts"):
+            return None
+        post = data["posts"][0]
 
-            if embed is None or author is None:
-                return None
-
-            # Image
-            if (images := embed.get("images")) is not None:
-                urls.extend(image["fullsize"] for image in images)
-
-            # Video
-            if (
-                (cid := embed.get("cid")) is not None
-                and (author := post.get("author")) is not None
-                and (did := author.get("did"))
-            ):
-                urls.append(
-                    f"https://bsky.social/xrpc/com.atproto.sync.getBlob?cid={cid}&did={did}"
-                )
-
-            # External GIF
-            if (external := (embed.get("external"))) and (uri := external.get("uri")):
-                urls.append(uri)
-
-            return BlueskyPostInfo(
-                media_urls=urls,
-                content=post.get("text", ""),
-                author_name=author.get("displayName", ""),
-                author_handle=author.get("handle", ""),
-            )
+        return BskyPost(**post)
 
     async def kemono(self, url: str) -> list[str]:
         urls: list[str] = []
-        api_url = url.replace("kemono.su", "kemono.su/api/v1")
+        api_url = replace_domain(url, "kemono.su", "kemono.su/api/v1")
 
         async with self.session.get(api_url) as resp:
             data = await resp.json()
@@ -142,40 +133,132 @@ class PostInfoFetcher:  # noqa: B903
 
         return urls
 
-    async def iwara(self, url: str) -> list[str]:
-        match = re.search(r"/video/([a-zA-Z0-9]+)/", url)
-        video_id = match.group(1) if match else None
-        if video_id is None:
-            return []
-        return [f"https://fxiwara.seria.moe/dl/{video_id}/360"]
+    def bilibili(self, url: str) -> list[str]:
+        b23_id = self._extract_b23_slug(url)
+        if b23_id is not None:
+            return [f"https://fxbilibili.seria.moe/dl/b23/{b23_id}"]
 
-    @staticmethod
-    def _extract_bvid(url: str) -> str | None:
-        match = re.search(r"https://(?:www.|m.)?bilibili.com/video/([\w]+)", url)
-        return match.group(1) if match else None
-
-    async def bilibili(self, url: str) -> list[str]:
-        shortened = re.search(r"b23.tv/(\w+)", url)
-        if shortened:
-            async with self.session.get(url) as resp:
-                url = str(resp.url)
-
-        bvid = self._extract_bvid(url)
+        bvid = self._extract_bilibili_id(url)
         if bvid is None:
             return []
 
-        async with self.session.get(
-            f"https://api.injahow.cn/bparse/?bv={bvid}&q=64&otype=json"
-        ) as resp:
-            if resp.status != 200:
-                return []
+        return [f"https://fxbilibili.seria.moe/dl/{bvid}"]
 
-            try:
-                data = await resp.json()
-            except Exception:
-                return []
 
-            if "url" not in data:
-                return []
+class PixivArtwork(BaseModel):
+    image_urls: list[str] = Field(alias="image_proxy_urls", default_factory=list)
+    title: str
+    ai_generated: bool
+    description: str
+    tags: list[str]
+    url: str
+    author_name: str
+    author_id: str
+    is_ugoira: bool
+    created_at: datetime.datetime = Field(alias="create_date")
+    profile_image_url: str = Field(alias="user_profile_image_urls")
 
-            return [data["url"]]
+    @field_validator("description", mode="after")
+    @classmethod
+    def __format_description(cls, v: str) -> str:
+        return remove_html_tags(v.replace("  ", "\n"))
+
+    @property
+    def author_md(self) -> str:
+        return f"[{self.author_name}](<https://www.pixiv.net/users/{self.author_id}>)"
+
+
+class TwitterPostMedia(BaseModel):
+    type: str
+    url: str
+    width: int
+    height: int
+
+
+class TwitterPostAuthor(BaseModel):
+    id: str
+    name: str
+    handle: str = Field(alias="screen_name")
+
+    avatar_url: str
+    banner_url: str
+    url: str
+
+
+class TwitterPost(BaseModel):
+    medias: list[TwitterPostMedia]
+    author: TwitterPostAuthor
+    text: str
+
+    @field_validator("medias", mode="after")
+    @classmethod
+    def __format_medias(cls, v: list[TwitterPostMedia]) -> list[TwitterPostMedia]:
+        return [media for media in v if media.type in TWITTER_MEDIA_TYPES]
+
+    @property
+    def author_md(self) -> str:
+        return f"[{self.author.name} (@{self.author.handle})](<{self.author.url}>)"
+
+
+class BskyPostAuthor(BaseModel):
+    did: str
+    handle: str
+    name: str = Field(alias="displayName")
+    avatar_url: str = Field(alias="avatar")
+
+
+class BskyPostEmbedImage(BaseModel):
+    fullsize: str
+    thumbnail: str
+
+
+class BskyPostEmbedExternal(BaseModel):
+    uri: str
+
+
+class BskyPostEmbed(BaseModel):
+    images: list[BskyPostEmbedImage] = Field(default_factory=list)
+    cid: str | None = None
+    external: BskyPostEmbedExternal | None = None
+
+
+class BskyPostRecord(BaseModel):
+    text: str = ""
+
+
+class BskyPost(BaseModel):
+    cid: str
+    author: BskyPostAuthor
+    embed: BskyPostEmbed | None = None
+    record: BskyPostRecord
+
+    @property
+    def author_md(self) -> str:
+        return f"[{self.author.name} (@{self.author.handle})](<https://bsky.app/profile/{self.author.handle}>)"
+
+    @property
+    def video_url(self) -> str | None:
+        if self.embed is None or self.embed.cid is None:
+            return None
+
+        return f"https://bsky.social/xrpc/com.atproto.sync.getBlob?cid={self.embed.cid}&did={self.author.did}"
+
+    @property
+    def media_urls(self) -> list[str]:
+        urls: list[str] = []
+
+        if self.embed is None:
+            return urls
+
+        # Image
+        urls.extend(image.fullsize for image in self.embed.images)
+
+        # Video
+        if self.video_url is not None:
+            urls.append(self.video_url)
+
+        # External GIF
+        if (external := (self.embed.external)) and (uri := external.uri):
+            urls.append(uri)
+
+        return urls

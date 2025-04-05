@@ -5,11 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from attr import dataclass
-from pydantic import BaseModel, field_validator
 from tortoise import fields
 from tortoise.models import Model
-
-from embed_fixer.utils.misc import remove_html_tags
 
 if TYPE_CHECKING:
     import discord
@@ -30,47 +27,6 @@ class GuildSettings(Model):
 
     class Meta:
         table = "guild_settings"
-
-
-class PixivArtworkInfo(BaseModel):
-    tags: list[str]
-    image_urls: list[str]
-    description: str
-    author_name: str
-    author_id: str
-
-    @field_validator("description", mode="after")
-    @classmethod
-    def __format_description(cls, v: str) -> str:
-        return remove_html_tags(v.replace("  ", "\n"))
-
-    @property
-    def author_md(self) -> str:
-        return f"[{self.author_name}](<https://www.pixiv.net/users/{self.author_id}>)"
-
-
-@dataclass(kw_only=True)
-class TwitterPostInfo:
-    media_urls: list[str]
-    content: str
-    author_name: str
-    author_handle: str
-
-    @property
-    def author_md(self) -> str:
-        return f"[{self.author_name} (@{self.author_handle})](<https://twitter.com/{self.author_handle}>)"
-
-
-@dataclass(kw_only=True)
-class BlueskyPostInfo:
-    media_urls: list[str]
-    content: str
-    author_name: str
-    author_handle: str
-
-    @property
-    def author_md(self) -> str:
-        return f"[{self.author_name} (@{self.author_handle})](<https://bsky.app/profile/{self.author_handle}>)"
 
 
 @dataclass(kw_only=True)

@@ -115,7 +115,7 @@ class FixerCog(commands.Cog):
                 if (
                     domain == "pixiv.net"
                     and not channel_is_nsfw
-                    and await self.fetch_info.artwork_is_nsfw(url)
+                    and await self.fetch_info.pixiv_is_nsfw(url)
                 ):
                     break
 
@@ -156,39 +156,38 @@ class FixerCog(commands.Cog):
         self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
     ) -> PostExtractionResult:
         media_urls: list[str] = []
-        medias: list[Media] = []
         content = ""
 
         info = None
 
         if domain == "pixiv.net":
             info = await self.fetch_info.pixiv(url)
-            content = info.description if info is not None else ""
-            media_urls = info.image_urls if info is not None else []
+            content = "" if info is None else info.description
+            media_urls = [] if info is None else info.image_urls
         elif domain in {"twitter.com", "x.com"}:
             info = await self.fetch_info.twitter(url)
-            content = info.content if info is not None else ""
-            media_urls = info.media_urls if info is not None else []
-        elif domain == "iwara.tv":
-            media_urls = await self.fetch_info.iwara(url)
+            content = "" if info is None else info.text
+            media_urls = [] if info is None else [media.url for media in info.medias]
         elif domain == "bsky.app":
             info = await self.fetch_info.bluesky(url)
-            content = info.content if info is not None else ""
-            media_urls = info.media_urls if info is not None else []
+            content = "" if info is None else info.record.text
+            media_urls = [] if info is None else info.media_urls
         elif domain == "kemono.su":
             media_urls = await self.fetch_info.kemono(url)
+        elif domain == "bilibili.com":
+            media_urls = self.fetch_info.bilibili(url)
 
         downloader = MediaDownloader(self.bot.session, media_urls=media_urls)
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
+
+        medias: list[Media] = []
 
         for media_url in media_urls:
             file_ = downloader.files.get(media_url)
             medias.append(Media(url=media_url, file=file_))
 
         return PostExtractionResult(
-            medias=medias,
-            content=content[:2000],
-            author_md=info.author_md if info is not None else "",
+            medias=medias, content=content[:2000], author_md="" if info is None else info.author_md
         )
 
     async def _send_fixes(
