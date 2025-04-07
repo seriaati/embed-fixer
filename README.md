@@ -34,22 +34,20 @@ Worry no more, this Discord bot fixes all of those issues.
 
 Fixings are currently available for:  
 
-- X/Twitter
-- Pixiv
-- TikTok
-- Reddit
-- Instagram
-- FurAffinity
-- Twitch clips
-- Iwara
-- Bluesky
-- Kemono
-- Facebook reels (unstable)
-- Bilibili
-- Tumblr
-- Threads
-
-The fix providers can be found in [`fixes.py`](https://github.com/seriaati/embed-fixer/blob/main/embed_fixer/fixes.py).
+- X/Twitter: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
+- Pixiv: [Phixiv](https://github.com/thelaao/phixiv)
+- TikTok: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)
+- Reddit: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)
+- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://github.com/seriaati/embedez)
+- FurAffinity: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
+- Twitch clips: [fxtwitch](https://github.com/seriaati/fxtwitch)
+- Iwara: [fxiwara](https://github.com/seriaati/fxiwara)
+- Bluesky: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
+- Kemono: Media extraction only, no embed fixing
+- Facebook: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)
+- Bilibili: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)
+- Tumblr: [fxtumblr](https://github.com/knuxify/fxtumblr)
+- Threads: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
 
