@@ -119,10 +119,11 @@ class PostInfoFetcher:  # noqa: B903
         async with self.session.get(api_url) as resp:
             data = await resp.json()
 
-        if "attachments" not in data:
-            return urls
+        try:
+            attachments: list[dict[str, str]] = data["post"]["attachments"]
+        except KeyError:
+            return []
 
-        attachments: list[dict[str, str]] = data["attachments"]
         for attachment in attachments:
             if attachment["name"].endswith(".mp4"):
                 urls.append(f"https://n1.kemono.su/data{attachment['path']}")
