@@ -1,22 +1,22 @@
 from __future__ import annotations
 
+import datetime
 import re
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
+from loguru import logger
 from pydantic import BaseModel, Field, field_validator
 
 from embed_fixer.utils.misc import remove_html_tags, replace_domain
 
 if TYPE_CHECKING:
-    import datetime
-
     import aiohttp
 
 PIXIV_R18_TAG: Final[str] = "#R-18"
 TWITTER_MEDIA_TYPES = {"photo", "video", "gif"}
 
 
-class PostInfoFetcher:  # noqa: B903
+class PostInfoFetcher:
     def __init__(self, session: aiohttp.ClientSession) -> None:
         self.session = session
 
@@ -27,7 +27,8 @@ class PostInfoFetcher:  # noqa: B903
 
     @staticmethod
     def _extract_twitter_details(url: str) -> tuple[str, str] | None:
-        match = re.search(r"(twitter|x).com/([^/]+)/status/(\d+)", url)
+        match = re.search(r"(?:twitter|x).com/([^/]+)/status/(\d+)", url)
+
         if match:
             return match.group(1), match.group(2)
         return None
@@ -74,11 +75,15 @@ class PostInfoFetcher:  # noqa: B903
 
     async def twitter(self, url: str) -> TwitterPost | None:
         ids = self._extract_twitter_details(url)
+        logger.debug(f"Extracted Twitter IDs: {ids}")
+
         if ids is None:
             return None
 
         handle, tweet_id = ids
         api_url = f"https://api.fxtwitter.com/{handle}/status/{tweet_id}"
+
+        logger.debug(f"Fetching Twitter post from URL: {api_url}")
 
         async with self.session.get(api_url) as response:
             if response.status != 200:
@@ -99,6 +104,8 @@ class PostInfoFetcher:  # noqa: B903
 
     async def bluesky(self, url: str) -> BskyPost | None:
         api_url = replace_domain(url, "bsky.app", "bskx.app") + "/json"
+
+        logger.debug(f"Fetching Bluesky post from URL: {api_url}")
 
         async with self.session.get(api_url) as response:
             if response.status != 200:
@@ -157,7 +164,7 @@ class PixivArtwork(BaseModel):
     author_id: str
     is_ugoira: bool
     created_at: datetime.datetime = Field(alias="create_date")
-    profile_image_url: str = Field(alias="user_profile_image_urls")
+    profile_image_url: str
 
     @field_validator("description", mode="after")
     @classmethod
@@ -187,9 +194,14 @@ class TwitterPostAuthor(BaseModel):
 
 
 class TwitterPost(BaseModel):
-    medias: list[TwitterPostMedia]
+    medias: list[TwitterPostMedia] = Field(alias="media", default_factory=list)
     author: TwitterPostAuthor
     text: str
+
+    @field_validator("medias", mode="before")
+    @classmethod
+    def __unnest_medias(cls, v: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:
+        return v.get("all", [])
 
     @field_validator("medias", mode="after")
     @classmethod
@@ -210,7 +222,7 @@ class BskyPostAuthor(BaseModel):
 
 class BskyPostEmbedImage(BaseModel):
     fullsize: str
-    thumbnail: str
+    thumbnail: str = Field(alias="thumb")
 
 
 class BskyPostEmbedExternal(BaseModel):
