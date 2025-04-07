@@ -64,8 +64,7 @@ class GuildSettingsView(View):
             msg = "Domain ID is not set."
             raise ValueError(msg)
 
-        current = await GuildFixMethod.get_or_none(guild_id=self.guild.id, domain_id=self.domain_id)
-        return current
+        return await GuildFixMethod.get_or_none(guild_id=self.guild.id, domain_id=self.domain_id)
 
     async def _get_domain_embed(self) -> DefaultEmbed:
         if self.domain_id is None:
@@ -83,11 +82,9 @@ class GuildSettingsView(View):
                 raise ValueError(msg)
 
         service_str = fix.name if fix.repo_url is None else f"[{fix.name}]({fix.repo_url})"
-        embed = DefaultEmbed(
+        return DefaultEmbed(
             title=domain.name, description=self.translate("using_fix_service", service=service_str)
         )
-
-        return embed
 
     async def _remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
         guild_channel_ids = [channel.id for channel in self.guild.channels]
@@ -109,10 +106,7 @@ class GuildSettingsView(View):
         for _, category_channels in self.guild.by_category():
             channels.extend(category_channels)
 
-        channel_ids_: list[int] = []
-        for channel in channels:
-            if channel.id in channel_ids:
-                channel_ids_.append(channel.id)
+        channel_ids_: list[int] = [channel.id for channel in channels if channel.id in channel_ids]
 
         embed.clear_fields()
         return embed.add_field(

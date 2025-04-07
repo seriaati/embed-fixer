@@ -517,7 +517,7 @@ class FixerCog(commands.Cog):
         # If the message is replying to a webhook message, mention the original author
         # of the webhook.
         elif (
-            message.reference is not None  # noqa: PLR0916
+            message.reference is not None
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and resolved_ref.webhook_id is not None
             and not author.bot

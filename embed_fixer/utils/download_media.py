@@ -24,18 +24,18 @@ class MediaDownloader:
         try:
             async with self.session.get(url, timeout=timeout) as resp:
                 if resp.status != 200:
-                    return None
+                    return
 
                 content_length = resp.headers.get("Content-Length")
                 if content_length is not None and int(content_length) > filesize_limit:
-                    return None
+                    return
 
                 data = await resp.read()
 
                 media_type = resp.headers.get("Content-Type")
         except Exception:
             logger.exception(f"Failed to download media {url}")
-            return None
+            return
 
         if media_type:
             filename = f"{url.split('/')[-1].split('.')[0]}.{media_type.split('/')[-1]}"
