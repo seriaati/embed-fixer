@@ -13,6 +13,9 @@
 
 [**Bot invitation link**](https://discord.com/oauth2/authorize?client_id=770144963735453696)
 
+Available as both a user and server app.  
+When installed as a user app, you can right click a message to fix its embed or extract its media.  
+
 As we know, social media embeds on Discord are bad:  
 
 - Pixiv embeds don't show the full artwork
@@ -53,7 +56,7 @@ If your message contains link(s) that are of any of the social medias above, it 
 ![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)
 
 > [!TIP]
-> Embed fixing can be disabled for a specific link by adding `$` at the beginning of the link. For example, `$https://twitter.com/...` will not be fixed.
+> You can disable embed fixing for a specific link by adding `$` at the beginning of the link. For example, `$https://twitter.com/...` will not be fixed.
 
 ### About Pixiv Embed Fixing
 
@@ -79,7 +82,7 @@ When you send a link that is from one of the platforms above in channel(s) with 
 ![image](https://iili.io/2RPwDMb.png)  
 
 > [!NOTE]
-> If the link is sent in a NSFW channel then the extracted media will be spoilered automatically.
+> If the link is sent in a NSFW channel then the extracted media will be spoilered automatically (changeable).
 
 ## Very Customizable
 

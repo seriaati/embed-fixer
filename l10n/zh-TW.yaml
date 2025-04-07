@@ -48,3 +48,6 @@ strings:
   choose_fix_service: 選擇連結預覽修復服務
   choose_fix_service_desc: 選擇用於不同網站的連結預覽修復服務
   using_fix_service: 正在使用 {service}
+  fix_embed: 修復連結預覽
+  extract_medias: 提取媒體
+  no_fixes_found: 找不到此訊息的連結預覽修復/媒體

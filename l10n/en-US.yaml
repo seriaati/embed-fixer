@@ -48,3 +48,6 @@ strings:
   choose_fix_service: Choose embed fix service
   choose_fix_service_desc: Choose the embed fix service to use for different websites
   using_fix_service: Using {service}
+  fix_embed: Fix Embed
+  extract_medias: Extract Medias
+  no_fixes_found: No fixes/medias found for this message

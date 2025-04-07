@@ -36,6 +36,10 @@ permissions = discord.Permissions(
     embed_links=True,
     add_reactions=True,
 )
+allowed_installs = discord.app_commands.AppInstallationType(guild=True, user=True)
+allowed_contexts = discord.app_commands.AppCommandContext(
+    guild=True, dm_channel=True, private_channel=True
+)
 
 
 class EmbedFixer(commands.AutoShardedBot):
@@ -49,6 +53,8 @@ class EmbedFixer(commands.AutoShardedBot):
             chunk_guilds_at_startup=False,
             max_messages=None,
             member_cache_flags=discord.MemberCacheFlags.none(),
+            allowed_installs=allowed_installs,
+            allowed_contexts=allowed_contexts,
         )
 
         self.session = session

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 
@@ -19,7 +20,7 @@ from embed_fixer.utils.misc import extract_urls, get_filesize, remove_query_para
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from embed_fixer.bot import EmbedFixer
+    from embed_fixer.bot import EmbedFixer, Interaction
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 
@@ -50,6 +51,22 @@ class FixerCog(commands.Cog):
     def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
         self.fetch_info = PostInfoFetcher(self.bot.session)
+        self.fix_embed_ctx = app_commands.ContextMenu(
+            name=app_commands.locale_str("fix_embed"), callback=self.fix_embed
+        )
+        self.extract_medias_ctx = app_commands.ContextMenu(
+            name=app_commands.locale_str("extract_medias"), callback=self.extract_medias
+        )
+
+    async def cog_load(self) -> None:
+        self.bot.tree.add_command(self.fix_embed_ctx)
+        self.bot.tree.add_command(self.extract_medias_ctx)
+
+    async def cog_unload(self) -> None:
+        self.bot.tree.remove_command(self.fix_embed_ctx.name, type=self.fix_embed_ctx.type)
+        self.bot.tree.remove_command(
+            self.extract_medias_ctx.name, type=self.extract_medias_ctx.type
+        )
 
     @staticmethod
     async def _get_original_author(
@@ -64,12 +81,16 @@ class FixerCog(commands.Cog):
         return authors[0]
 
     @staticmethod
-    async def _determine_fix_method(settings: GuildSettings, domain: Domain) -> FixMethod | None:
+    async def _determine_fix_method(
+        settings: GuildSettings | None, domain: Domain
+    ) -> FixMethod | None:
         if not domain.fix_methods:
             return None
 
-        guild_fix_method = await GuildFixMethod.get_or_none(
-            guild_id=settings.id, domain_id=domain.id
+        guild_fix_method = (
+            None
+            if settings is None
+            else await GuildFixMethod.get_or_none(guild_id=settings.id, domain_id=domain.id)
         )
         if guild_fix_method is None:
             fix_method = domain.default_fix_method
@@ -79,7 +100,7 @@ class FixerCog(commands.Cog):
             )
             if fix_method is None:
                 logger.warning(
-                    f"Fix {guild_fix_method.fix_id} not found for {domain.name} in guild {settings.id}"
+                    f"Fix {guild_fix_method.fix_id} not found for {domain.name} in guild {'Unknown' if settings is None else settings.id}"
                 )
                 fix_method = domain.default_fix_method
 
@@ -87,13 +108,13 @@ class FixerCog(commands.Cog):
 
     @staticmethod
     def _get_matching_domain_website(
-        settings: GuildSettings, clean_url: str
+        settings: GuildSettings | None, clean_url: str
     ) -> tuple[Domain | None, Website | None]:
         domain: Domain | None = None
         website: Website | None = None
 
         for d in DOMAINS:
-            if d.id in settings.disabled_domains:
+            if settings is not None and d.id in settings.disabled_domains:
                 continue
 
             for w in d.websites:
@@ -109,7 +130,13 @@ class FixerCog(commands.Cog):
         return domain, website
 
     async def _find_fixes(
-        self, message: discord.Message, *, settings: GuildSettings, filesize_limit: int
+        self,
+        message: discord.Message,
+        *,
+        settings: GuildSettings | None,
+        filesize_limit: int | None,
+        extract_media: bool = False,
+        is_ctx_menu: bool = False,
     ) -> FindFixResult:
         channel_id = message.channel.id
 
@@ -119,7 +146,9 @@ class FixerCog(commands.Cog):
         content = ""
         author_md = ""
 
-        is_nsfw_channel = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
+        is_nsfw_channel = is_ctx_menu or (
+            isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
+        )
         urls = extract_urls(message.content)
 
         for url in urls:
@@ -134,23 +163,33 @@ class FixerCog(commands.Cog):
                 and not is_nsfw_channel
                 and await self.fetch_info.pixiv_is_nsfw(url)
             ):
-                break
+                continue
 
             if domain.id == DomainId.KEMONO and not is_nsfw_channel:
-                break
+                continue
 
-            if channel_id in settings.extract_media_channels:
-                asyncio.create_task(message.add_reaction("⏳"))
+            if extract_media or (
+                settings is not None and channel_id in settings.extract_media_channels
+            ):
+                if not is_ctx_menu:
+                    asyncio.create_task(message.add_reaction("⏳"))
 
                 result = await self._extract_post_info(
                     domain.id,
                     url,
-                    spoiler=is_nsfw_channel and channel_id not in settings.disable_image_spoilers,
+                    spoiler=is_nsfw_channel
+                    and (
+                        settings is not None and channel_id not in settings.disable_image_spoilers
+                    ),
                     filesize_limit=filesize_limit,
                 )
                 medias.extend(
                     Media(url=media.url)
-                    if (media.file and get_filesize(media.file.fp) > filesize_limit)
+                    if (
+                        media.file
+                        and filesize_limit is not None
+                        and get_filesize(media.file.fp) > filesize_limit
+                    )
                     else media
                     for media in result.medias
                 )
@@ -160,7 +199,10 @@ class FixerCog(commands.Cog):
                     fix_found = True
                     message.content = message.content.replace(url, "")
                     sauces.append(clean_url)
-                    break
+                    continue
+
+            if extract_media:
+                continue
 
             fix_method = await self._determine_fix_method(settings, domain)
             if fix_method is None:
@@ -176,14 +218,14 @@ class FixerCog(commands.Cog):
                 message.content = message.content.replace(url, new_url)
 
             fix_found = True
-            break
+            continue
 
         return FindFixResult(
             fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md
         )
 
     async def _extract_post_info(
-        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int
+        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int | None
     ) -> PostExtractionResult:
         media_urls: list[str] = []
         content = ""
@@ -225,12 +267,21 @@ class FixerCog(commands.Cog):
         message: discord.Message,
         result: FindFixResult,
         *,
-        disable_delete_reaction: bool,
-        delete_msg_emoji: str,
-        show_post_content: bool,
+        guild_settings: GuildSettings | None,
+        interaction: Interaction | None = None,
     ) -> None:
         medias, sauces = result.medias, result.sauces
         medias.extend([Media(url=a.url, file=await a.to_file()) for a in message.attachments])
+
+        disable_delete_reaction = (
+            None if guild_settings is None else guild_settings.disable_delete_reaction
+        )
+        delete_msg_emoji = None if guild_settings is None else guild_settings.delete_msg_emoji
+        show_post_content = (
+            None
+            if guild_settings is None
+            else message.channel.id in guild_settings.show_post_content_channels
+        )
 
         if show_post_content:
             if result.author_md:
@@ -266,17 +317,14 @@ class FixerCog(commands.Cog):
 
         if medias:
             await self._send_files(
-                message,
-                medias,
-                sauces,
-                disable_delete_reaction=disable_delete_reaction,
-                delete_msg_emoji=delete_msg_emoji,
+                message, medias, sauces, guild_settings=guild_settings, interaction=interaction
             )
         else:
             await self._send_message(
                 message,
                 disable_delete_reaction=disable_delete_reaction,
                 delete_msg_emoji=delete_msg_emoji,
+                interaction=interaction,
             )
 
     async def _send_files(
@@ -285,12 +333,16 @@ class FixerCog(commands.Cog):
         medias: list[Media],
         sauces: list[str],
         *,
-        delete_msg_emoji: str,
-        disable_delete_reaction: bool,
+        guild_settings: GuildSettings | None,
+        interaction: Interaction | None = None,
     ) -> discord.Message | None:
         """Send multiple files in batches of 10."""
         guild_lang: str | None = None
         fix_message = None
+        disable_delete_reaction = (
+            None if guild_settings is None else guild_settings.disable_delete_reaction
+        )
+        delete_msg_emoji = None if guild_settings is None else guild_settings.delete_msg_emoji
 
         for chunk in itertools.batched(medias, 10):
             kwargs: dict[str, Any] = {}
@@ -318,6 +370,7 @@ class FixerCog(commands.Cog):
                 disable_delete_reaction=disable_delete_reaction,
                 delete_msg_emoji=delete_msg_emoji,
                 medias=chunk,
+                interaction=interaction,
                 **kwargs,
             )
 
@@ -329,33 +382,47 @@ class FixerCog(commands.Cog):
         self,
         message: discord.Message,
         *,
-        disable_delete_reaction: bool,
-        delete_msg_emoji: str,
+        disable_delete_reaction: bool | None,
+        delete_msg_emoji: str | None,
         medias: Sequence[Media] | None = None,
+        interaction: Interaction | None = None,
         **kwargs: Any,
     ) -> discord.Message:
-        """Send a message with a webhook if possible, otherwise send a regular message."""
-        webhook = await self._get_or_create_webhook(message)
+        """Send a message with a webhook, interaction, or regular message."""
         medias = medias or []
         files = [media.file for media in medias if media.file is not None]
 
-        try:
-            if webhook is not None:
-                fix_message = await self._send_webhook(message, webhook, files=files, **kwargs)
-            else:
-                fix_message = await message.channel.send(
+        if interaction is not None:
+            if interaction.response.is_done():
+                await interaction.followup.send(
                     message.content, tts=message.tts, files=files, **kwargs
                 )
-        except discord.HTTPException as e:
-            if e.code != 40005:
-                raise
+            else:
+                await interaction.response.send_message(
+                    message.content, tts=message.tts, files=files, **kwargs
+                )
 
-            message.content += "\n".join(media.url for media in medias)
-            fix_message = await self._send_message(
-                message, disable_delete_reaction=disable_delete_reaction, **kwargs
-            )
+            fix_message = await interaction.original_response()
+        else:
+            webhook = await self._get_or_create_webhook(message)
 
-        if not disable_delete_reaction:
+            try:
+                if webhook is not None:
+                    fix_message = await self._send_webhook(message, webhook, files=files, **kwargs)
+                else:
+                    fix_message = await message.channel.send(
+                        message.content, tts=message.tts, files=files, **kwargs
+                    )
+            except discord.HTTPException as e:
+                if e.code != 40005:
+                    raise
+
+                message.content += "\n".join(media.url for media in medias)
+                fix_message = await self._send_message(
+                    message, disable_delete_reaction=disable_delete_reaction, **kwargs
+                )
+
+        if not disable_delete_reaction and delete_msg_emoji and interaction is None:
             try:
                 await fix_message.add_reaction(delete_msg_emoji)
             except discord.HTTPException as e:
@@ -498,13 +565,8 @@ class FixerCog(commands.Cog):
         )
 
         if result.fix_found:
-            await self._send_fixes(
-                message,
-                result,
-                disable_delete_reaction=guild_settings.disable_delete_reaction,
-                show_post_content=channel.id in guild_settings.show_post_content_channels,
-                delete_msg_emoji=guild_settings.delete_msg_emoji,
-            )
+            await self._send_fixes(message, result, guild_settings=guild_settings)
+
             try:
                 await message.delete()
             except discord.Forbidden:
@@ -527,6 +589,46 @@ class FixerCog(commands.Cog):
             and not guild_settings.disable_webhook_reply
         ):
             await self._handle_reply(message, resolved_ref)
+
+    async def base_ctx_menu(
+        self, i: Interaction, message: discord.Message, *, extract_media: bool
+    ) -> None:
+        await i.response.defer()
+
+        if i.guild_id is not None:
+            guild_settings, _ = await GuildSettings.get_or_create(id=i.guild_id)
+        else:
+            guild_settings = None
+
+        if (
+            guild_settings is not None
+            and i.channel_id is not None
+            and i.channel_id in guild_settings.disable_fix_channels
+        ):
+            return
+
+        result = await self._find_fixes(
+            message,
+            settings=guild_settings,
+            filesize_limit=None if i.guild is None else i.guild.filesize_limit,
+            extract_media=extract_media,
+            is_ctx_menu=True,
+        )
+
+        if result.fix_found:
+            await self._send_fixes(message, result, guild_settings=guild_settings, interaction=i)
+        else:
+            await i.followup.send(
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(i.guild), "no_fixes_found", url=message.jump_url
+                )
+            )
+
+    async def fix_embed(self, i: Interaction, message: discord.Message) -> None:
+        await self.base_ctx_menu(i, message, extract_media=False)
+
+    async def extract_medias(self, i: Interaction, message: discord.Message) -> None:
+        await self.base_ctx_menu(i, message, extract_media=True)
 
 
 async def setup(bot: EmbedFixer) -> None:
