@@ -31,19 +31,22 @@ Worry no more, this Discord bot fixes all of those issues.
 
 Fixings are currently available for:  
 
-- Pixiv with [phixiv](https://github.com/HazelTheWitch/phixiv)
-- Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
-- Instagram with fxinstagram (made by me, closed source because the implementation is sketchy)
-- Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit) or [vxreddit](https://github.com/dylanpdx/vxReddit)
-- Tiktok wtih [fxtiktok](https://github.com/okdargy/fxtiktok)
-- Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
-- Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
-- Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
-- Bluesky with [VixBluesky](https://github.com/Rapougnac/VixBluesky)
-- Facebook reels with [fxfacebook](https://github.com/seriaati/fxfacebook)
-- Bilibili videos with [fxBilibili](https://github.com/seriaati/fxBilibili)
-- Tumblr with [fxtumblr](https://github.com/knuxify/fxtumblr)
-- Threads with [fixthreads](https://github.com/milanmdev/fixthreads)
+- X/Twitter
+- Pixiv
+- TikTok
+- Reddit
+- Instagram
+- FurAffinity
+- Twitch clips
+- Iwara
+- Bluesky
+- Kemono
+- Facebook reels (unstable)
+- Bilibili
+- Tumblr
+- Threads
+
+The fix providers can be found in [`fixes.py`](https://github.com/seriaati/embed-fixer/blob/main/embed_fixer/fixes.py).
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
 
@@ -84,15 +87,15 @@ When you send a link that is from one of the platforms above in channel(s) with 
   
 Below are settings you can change with the `/settings` command:  
 
-- Disable embed fixes: Disable specific embed fixes
-- Language: Change language of the bot
-- Media extraction channels: Channels to enable the media extraction feature mentioned above
-- Disable embed fix channels: Channels to disable embed fixing
-- Disable webhook reply: Disable the webhook reply feature mentioned above  
-- Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels
+- Disable embed fixes for websites: Disable embed fixes for specific websites.
+- Language: Change language of the bot.
+- Media extraction channels: Channels to enable the media extraction feature mentioned above.
+- Disable embed fix channels: Channels to disable embed fixing.
+- Disable webhook reply: Disable the webhook reply feature mentioned above  .
+- Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels.
 - Show post content: For channels with media extraction enabled, channels with this feature on will also show the content and author of the post along with the media.
-- Use vxreddit: Use vxreddit to fix Reddit embeds instead of fxreddit.
 - Change delete message emoji: Change the reaction emoji used to delete the webhook messages, defaults to ❌. You can set custom emojis too, like `<:emoji:123456789012345678>`
+- Choose embed fix service: Choose the embed fix service to use for different websites.
 
 # Questions, Issues, Feedback, Contributions
 

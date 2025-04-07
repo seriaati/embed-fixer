@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import discord
 from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, ui
 
 from embed_fixer.embed import DefaultEmbed
-from embed_fixer.fixes import FIXES
-from embed_fixer.models import GuildSettings
+from embed_fixer.fixes import DOMAINS, Domain, DomainId
+from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import Setting
 
 from .components import Modal, View
@@ -40,10 +41,55 @@ class DeleteMsgEmojiModal(Modal):
 
 
 class GuildSettingsView(View):
-    async def interaction_check(self, i: Interaction) -> bool:
-        return i.user.id == self.author.id
+    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
+        super().__init__(guild, translator)
 
-    async def remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
+        self.domain_id: DomainId | None = None
+
+    @property
+    def domain(self) -> Domain:
+        if self.domain_id is None:
+            msg = "Domain ID is not set."
+            raise ValueError(msg)
+
+        domain = next((domain for domain in DOMAINS if domain.id == self.domain_id), None)
+        if domain is None:
+            msg = f"Invalid domain ID: {self.domain_id}"
+            raise ValueError(msg)
+
+        return domain
+
+    async def _get_current_fix(self) -> GuildFixMethod | None:
+        if self.domain_id is None:
+            msg = "Domain ID is not set."
+            raise ValueError(msg)
+
+        current = await GuildFixMethod.get_or_none(guild_id=self.guild.id, domain_id=self.domain_id)
+        return current
+
+    async def _get_domain_embed(self) -> DefaultEmbed:
+        if self.domain_id is None:
+            msg = "Domain ID is not set."
+            raise ValueError(msg)
+
+        domain = self.domain
+        db_fix = await self._get_current_fix()
+        fix = domain.default_fix_method if db_fix is None else domain.get_fix_method(db_fix.fix_id)
+
+        if fix is None:
+            fix = domain.default_fix_method
+            if fix is None:
+                msg = f"Domain {domain.name} has no default fix method."
+                raise ValueError(msg)
+
+        service_str = fix.name if fix.repo_url is None else f"[{fix.name}]({fix.repo_url})"
+        embed = DefaultEmbed(
+            title=domain.name, description=self.translate("using_fix_service", service=service_str)
+        )
+
+        return embed
+
+    async def _remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
         guild_channel_ids = [channel.id for channel in self.guild.channels]
         for attr_name in (
             "extract_media_channels",
@@ -58,7 +104,7 @@ class GuildSettingsView(View):
 
         await guild_settings.save()
 
-    def add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
+    def _add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
         channels: list[GuildChannel] = []
         for _, category_channels in self.guild.by_category():
             channels.extend(category_channels)
@@ -74,16 +120,16 @@ class GuildSettingsView(View):
             value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids_]),
         )
 
-    async def start(self, i: Interaction, *, setting: Setting) -> None:
+    async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: PLR0915
+        await i.response.defer(ephemeral=True)
         await super().start()
 
         embed = DefaultEmbed(
             title=self.translate(setting), description=self.translate(f"{setting}_desc")
         )
-        embed.set_footer(text=self.translate("settings_embed_footer"))
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
-        await self.remove_invalid_channels(guild_settings)
+        await self._remove_invalid_channels(guild_settings)
 
         if setting is Setting.DISABLE_FIXES:
             fix_selector = FixSelector(guild_settings.disabled_fixes)
@@ -99,19 +145,19 @@ class GuildSettingsView(View):
             selector = ChannelSelect("extract_media_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self.add_selected_channels_field(embed, guild_settings.extract_media_channels)
+            embed = self._add_selected_channels_field(embed, guild_settings.extract_media_channels)
 
         elif setting is Setting.DISABLE_FIX_CHANNELS:
             selector = ChannelSelect("disable_fix_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self.add_selected_channels_field(embed, guild_settings.disable_fix_channels)
+            embed = self._add_selected_channels_field(embed, guild_settings.disable_fix_channels)
 
         elif setting is Setting.DISABLE_IMAGE_SPOILERS:
             selector = ChannelSelect("disable_image_spoilers")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self.add_selected_channels_field(embed, guild_settings.disable_image_spoilers)
+            embed = self._add_selected_channels_field(embed, guild_settings.disable_image_spoilers)
 
         elif setting is Setting.TOGGLE_WEBHOOK_REPLY:
             toggle_btn = WebhookReplyToggle(
@@ -133,19 +179,26 @@ class GuildSettingsView(View):
             selector = ChannelSelect("show_post_content_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self.add_selected_channels_field(
+            embed = self._add_selected_channels_field(
                 embed, guild_settings.show_post_content_channels
             )
 
-        elif setting is Setting.USE_VXREDDIT:
-            toggle_btn = UseVxreddit(
-                current_toggle=guild_settings.use_vxreddit,
-                labels={True: "disable_vxreddit", False: "enable_vxreddit"},
-            )
-            toggle_btn.set_style(self)
-            self.add_item(toggle_btn)
+        elif setting is Setting.CHOOSE_FIX_SERVICE:
+            self.domain_id = DOMAINS[0].id
+            embed = await self._get_domain_embed()
 
-        await i.response.send_message(embed=embed, view=self)
+            domain_selector = DomainSelector(self.domain_id or DomainId.TWITTER)
+            self.add_item(domain_selector)
+
+            current = await self._get_current_fix()
+            fix_method_selector = FixMethodSelector(
+                self.domain, None if current is None else current.fix_id
+            )
+            self.add_item(fix_method_selector)
+
+        await i.followup.send(
+            content=f"-# {self.translate('settings_embed_footer')}", embed=embed, view=self
+        )
         self.message = await i.original_response()
 
 
@@ -153,11 +206,13 @@ class FixSelector(ui.Select[GuildSettingsView]):
     def __init__(self, current: list[str]) -> None:
         super().__init__(
             options=[
-                SelectOption(label=domain, value=domain, default=domain in current)
-                for domain in FIXES
+                SelectOption(
+                    label=domain.name, value=str(domain.id.value), default=domain in current
+                )
+                for domain in DOMAINS
             ],
             min_values=0,
-            max_values=len(FIXES),
+            max_values=len(DOMAINS),
         )
 
     async def callback(self, i: Interaction) -> None:
@@ -166,8 +221,8 @@ class FixSelector(ui.Select[GuildSettingsView]):
 
         await i.response.defer()
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.disabled_fixes = self.values
-        await guild_settings.save(update_fields=("disabled_fixes",))
+        guild_settings.disabled_domains = [int(domain) for domain in self.values]
+        await guild_settings.save(update_fields=("disabled_domains",))
 
 
 class LangSelector(ui.Select[GuildSettingsView]):
@@ -213,7 +268,7 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
                 current_channel_ids.append(channel_id)
 
         embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view.add_selected_channels_field(embed, current_channel_ids)
+        embed = self.view._add_selected_channels_field(embed, current_channel_ids)
 
         await guild_settings.save(update_fields=(self.attr_name,))
         await i.response.edit_message(embed=embed, view=None)
@@ -257,18 +312,77 @@ class DisableDeleteReaction(ToggleButton):
         await i.response.edit_message(view=self.view)
 
 
-class UseVxreddit(ToggleButton):
-    def set_style(self, view: View) -> None:
-        self.style = ButtonStyle.red if self.current_toggle else ButtonStyle.green
-        self.label = view.translate(self.labels[self.current_toggle])
+class DomainSelector(ui.Select[GuildSettingsView]):
+    def __init__(self, domain_id: DomainId) -> None:
+        super().__init__(
+            options=[
+                SelectOption(
+                    label=domain.name, value=str(domain.id.value), default=domain.id == domain_id
+                )
+                for domain in DOMAINS
+                if domain.fix_methods
+            ]
+        )
 
     async def callback(self, i: Interaction) -> None:
-        assert self.view is not None
+        if self.view is None:
+            return
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
-        guild_settings.use_vxreddit = not guild_settings.use_vxreddit
-        await guild_settings.save(update_fields=("use_vxreddit",))
+        self.view.domain_id = DomainId(int(self.values[0]))
+        embed = await self.view._get_domain_embed()
 
-        self.current_toggle = guild_settings.use_vxreddit
-        self.set_style(self.view)
-        await i.response.edit_message(view=self.view)
+        self.options = [
+            SelectOption(
+                label=domain.name,
+                value=str(domain.id.value),
+                default=domain.id == self.view.domain_id,
+            )
+            for domain in DOMAINS
+            if domain.fix_methods
+        ]
+
+        current = await self.view._get_current_fix()
+        fix_method_selector = FixMethodSelector(
+            self.view.domain, None if current is None else current.fix_id
+        )
+        current_selector = self.view.get_item("guild_settings:fix_method_selector")
+        if current_selector is not None:
+            self.view.remove_item(current_selector)
+
+        self.view.add_item(fix_method_selector)
+        await i.response.edit_message(embed=embed, view=self.view)
+
+
+class FixMethodSelector(ui.Select[GuildSettingsView]):
+    def __init__(self, domain: Domain, current: int | None) -> None:
+        super().__init__(
+            options=[
+                SelectOption(
+                    label=method.name,
+                    value=str(method.id),
+                    default=method.default if current is None else method.id == current,
+                )
+                for method in domain.fix_methods
+            ],
+            custom_id="guild_settings:fix_method_selector",
+        )
+
+    async def callback(self, i: Interaction) -> None:
+        if self.view is None:
+            return
+
+        await i.response.defer()
+
+        current = await self.view._get_current_fix()
+        if current is None:
+            await GuildFixMethod.create(
+                guild_id=self.view.guild.id,
+                domain_id=self.view.domain_id,
+                fix_id=DomainId(int(self.values[0])),
+            )
+        else:
+            current.fix_id = int(self.values[0])
+            await current.save(update_fields=("fix_id",))
+
+        embed = await self.view._get_domain_embed()
+        await i.edit_original_response(embed=embed, view=self.view)

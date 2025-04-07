@@ -6,8 +6,8 @@ strings:
   fix_selector_placeholder: Select embed fixe(s) to disable...
   lang_selector_placeholder: Select a language...
   settings_embed_footer: "Settings are unique to this server; Type in the dropdown to search for channels; Selecting a channel that is already selected will remove it"
-  disable_fixes: Disable Embed Fixes
-  disable_fixes_desc: Disable specific embed fixes
+  disable_fixes: Disable Embed Fixes for Websites
+  disable_fixes_desc: Disable embed fixes for specific websites
   lang: Language
   lang_desc: Change the language of the bot
   extract_media_channels: Media Extraction Channels
@@ -42,10 +42,9 @@ strings:
   no_perms_to_delete_msg: The bot is missing permission to delete messages
   no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
   failed_to_send_webhook: Failed to send webhook
-  use_vxreddit: Use vxreddit to fix Reddit embeds
-  use_vxreddit_desc: "[vxreddit](<https://github.com/dylanpdx/vxReddit>) supports embedding audio for more videos. If disabled, [fxreedit](<https://github.com/MinnDevelopment/fxreddit>) is used."
-  enable_vxreddit: Enable vxreddit
-  disable_vxreddit: Disable vxreddit
   delete_msg_emoji: Emoji used for deleting messages
   emoji: Emoji
   emoji_changed: Emoji used for deleting messages has been changed to {emoji}
+  choose_fix_service: Choose embed fix service
+  choose_fix_service_desc: Choose the embed fix service to use for different websites
+  using_fix_service: Using {service}

@@ -6,8 +6,8 @@ strings:
   fix_selector_placeholder: 選擇要停用的連結預覽修復...
   lang_selector_placeholder: 選擇語言...
   settings_embed_footer: "每個伺服器的設定都是獨立的\n在下拉選單中輸入文字以搜尋頻道\n選擇已選擇過的頻道將會移除該頻道"
-  disable_fixes: 停用連結預覽修復
-  disable_fixes_desc: 停用特定的連結預覽修復
+  disable_fixes: 停用網站的連結預覽修復
+  disable_fixes_desc: 停用特定網站的連結預覽修復
   lang: 語言
   lang_desc: 更改機器人的語言
   extract_media_channels: 媒體提取頻道
@@ -42,10 +42,9 @@ strings:
   no_perms_to_delete_msg: 機器人缺少刪除訊息的權限
   no_perms_to_manage_webhooks: 機器人缺少管理 Webhook 的權限
   failed_to_send_webhook: 發送 Webhook 失敗
-  use_vxreddit: 使用 vxreddit 修復 Reddit 嵌入
-  use_vxreddit_desc: "[vxreddit](<https://github.com/dylanpdx/vxReddit>) 支持嵌入更多影片的音頻。如果此選項被禁用，將使用 [fxreddit](<https://github.com/MinnDevelopment/fxreddit>)。"
-  enable_vxreddit: 啟用 vxreddit
-  disable_vxreddit: 禁用 vxreddit
   delete_msg_emoji: 用於刪除訊息的表情符號
   emoji: 表情符號
   emoji_changed: 用於刪除訊息的表情符號已更改為 {emoji}
+  choose_fix_service: 選擇連結預覽修復服務
+  choose_fix_service_desc: 選擇用於不同網站的連結預覽修復服務
+  using_fix_service: 正在使用 {service}

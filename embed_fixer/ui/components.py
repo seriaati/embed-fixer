@@ -11,12 +11,9 @@ if TYPE_CHECKING:
 
 
 class View(ui.View):
-    def __init__(
-        self, author: discord.Member | discord.User, guild: discord.Guild, translator: Translator
-    ) -> None:
+    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
         super().__init__(timeout=600)
 
-        self.author = author
         self.message: discord.Message | None = None
         self.guild = guild
         self.translator = translator
@@ -27,6 +24,12 @@ class View(ui.View):
 
     def translate(self, key: str, **kwargs: Any) -> str:
         return self.translator.get(self.lang, key, **kwargs)
+
+    def get_item(self, item_id: str) -> ui.Item | None:
+        for item in self.children:
+            if item.custom_id == item_id:  # pyright: ignore[reportAttributeAccessIssue]
+                return item
+        return None
 
     async def on_timeout(self) -> None:
         if self.message is None:

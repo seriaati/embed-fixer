@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import itertools
-import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
 
@@ -9,18 +8,12 @@ import discord
 from discord.ext import commands
 from loguru import logger
 
-from embed_fixer.fixes import FIX_PATTERNS, FIXES
-from embed_fixer.models import GuildSettings
+from embed_fixer.fixes import DOMAINS, Domain, DomainId, FixMethod, Website
+from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
-from embed_fixer.utils.misc import (
-    domain_in_url,
-    extract_urls,
-    get_filesize,
-    remove_query_params,
-    replace_domain,
-)
+from embed_fixer.utils.misc import extract_urls, get_filesize, remove_query_params, replace_domain
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -69,48 +62,50 @@ class FixerCog(commands.Cog):
 
         return authors[0]
 
-    @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
-        if payload.guild_id is None:
-            return
+    @staticmethod
+    async def _determine_fix_method(settings: GuildSettings, domain: Domain) -> FixMethod | None:
+        if not domain.fix_methods:
+            return None
 
-        settings, _ = await GuildSettings.get_or_create(id=payload.guild_id)
-        if payload.user_id == self.bot.user.id or str(payload.emoji) != settings.delete_msg_emoji:
-            return
-
-        channel = self.bot.get_channel(payload.channel_id)
-        if not isinstance(channel, discord.TextChannel | discord.Thread):
-            return
-
-        try:
-            message = await channel.fetch_message(payload.message_id)
-        except discord.Forbidden:
-            logger.warning(
-                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
+        guild_fix_method = await GuildFixMethod.get_or_none(
+            guild_id=settings.id, domain_id=domain.id
+        )
+        if guild_fix_method is None:
+            fix_method = domain.default_fix_method
+        else:
+            fix_method = next(
+                (f for f in domain.fix_methods if f.id == guild_fix_method.fix_id), None
             )
-            return
-
-        if USERNAME_SUFFIX not in message.author.display_name:
-            return
-
-        guild = message.guild
-        if guild is None:
-            return
-
-        author = await self._get_original_author(message, guild)
-        if author is None:
-            return
-
-        if payload.user_id == author.id:
-            try:
-                await message.delete()
-            except discord.Forbidden:
-                logger.warning(f"Failed to delete message in {channel!r} in {guild!r}")
-                await message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
-                    )
+            if fix_method is None:
+                logger.warning(
+                    f"Fix {guild_fix_method.fix_id} not found for {domain.name} in guild {settings.id}"
                 )
+                fix_method = domain.default_fix_method
+
+        return fix_method
+
+    @staticmethod
+    def _get_matching_domain_website(
+        settings: GuildSettings, clean_url: str
+    ) -> tuple[Domain | None, Website | None]:
+        domain: Domain | None = None
+        website: Website | None = None
+
+        for d in DOMAINS:
+            if d.id in settings.disabled_domains:
+                continue
+
+            for w in d.websites:
+                if w.match(clean_url):
+                    domain = d
+                    website = w
+                    break
+
+                # Break from outer loop
+            else:
+                continue
+            break
+        return domain, website
 
     async def _find_fixes(
         self, message: discord.Message, *, settings: GuildSettings, filesize_limit: int
@@ -123,81 +118,91 @@ class FixerCog(commands.Cog):
         content = ""
         author_md = ""
 
-        channel_is_nsfw = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
+        is_nsfw_channel = isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
         urls = extract_urls(message.content)
 
         for url in urls:
             clean_url = remove_query_params(url).replace("www.", "")
-            if not any(re.match(pattern, clean_url) for pattern in FIX_PATTERNS):
+            domain, website = self._get_matching_domain_website(settings, clean_url)
+
+            if domain is None or website is None:
                 continue
 
-            for domain, fix in FIXES.items():
-                if domain in settings.disabled_fixes or not domain_in_url(clean_url, domain):
-                    continue
+            if (
+                domain.id == DomainId.PIXIV
+                and not is_nsfw_channel
+                and await self.fetch_info.pixiv_is_nsfw(url)
+            ):
+                break
 
-                if (
-                    domain == "pixiv.net"
-                    and not channel_is_nsfw
-                    and await self.fetch_info.pixiv_is_nsfw(url)
-                ):
+            if domain.id == DomainId.KEMONO and not is_nsfw_channel:
+                break
+
+            fix_method = await self._determine_fix_method(settings, domain)
+
+            if channel_id in settings.extract_media_channels:
+                result = await self._extract_post_info(
+                    domain.id,
+                    url,
+                    spoiler=is_nsfw_channel and channel_id not in settings.disable_image_spoilers,
+                    filesize_limit=filesize_limit,
+                )
+                medias.extend(
+                    Media(url=media.url)
+                    if (media.file and get_filesize(media.file.fp) > filesize_limit)
+                    else media
+                    for media in result.medias
+                )
+                content, author_md = result.content, result.author_md
+
+                if medias:
+                    fix_found = True
+                    message.content = message.content.replace(url, "")
+                    sauces.append(clean_url)
                     break
 
-                if channel_id in settings.extract_media_channels:
-                    result = await self._extract_post_info(
-                        domain,
-                        url,
-                        spoiler=channel_is_nsfw
-                        and channel_id not in settings.disable_image_spoilers,
-                        filesize_limit=filesize_limit,
-                    )
-                    medias.extend(
-                        Media(url=media.url)
-                        if (media.file and get_filesize(media.file.fp) > filesize_limit)
-                        else media
-                        for media in result.medias
-                    )
-                    content, author_md = result.content, result.author_md
+            if fix_method is None:
+                continue
 
-                    if medias:
-                        fix_found = True
-                        message.content = message.content.replace(url, "")
-                        sauces.append(clean_url)
-                        break
+            for fix in fix_method.fixes:
+                if fix.method == "append_url":
+                    new_url = f"https://{fix.new_domain}?url={url}"
+                else:
+                    assert fix.old_domain is not None
+                    new_url = replace_domain(clean_url, fix.old_domain, fix.new_domain)
 
-                fix_found = True
-                fix_ = "vxreddit.com" if domain == "reddit.com" and settings.use_vxreddit else fix
-                message.content = message.content.replace(
-                    url, replace_domain(clean_url, domain, fix_)
-                )
-                break
+                message.content = message.content.replace(url, new_url)
+
+            fix_found = True
+            break
 
         return FindFixResult(
             fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md
         )
 
     async def _extract_post_info(
-        self, domain: str, url: str, *, spoiler: bool = False, filesize_limit: int
+        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int
     ) -> PostExtractionResult:
         media_urls: list[str] = []
         content = ""
 
         info = None
 
-        if domain == "pixiv.net":
+        if domain_id is DomainId.PIXIV:
             info = await self.fetch_info.pixiv(url)
             content = "" if info is None else info.description
             media_urls = [] if info is None else info.image_urls
-        elif domain in {"twitter.com", "x.com"}:
+        elif domain_id is DomainId.TWITTER:
             info = await self.fetch_info.twitter(url)
             content = "" if info is None else info.text
             media_urls = [] if info is None else [media.url for media in info.medias]
-        elif domain == "bsky.app":
+        elif domain_id is DomainId.BLUESKY:
             info = await self.fetch_info.bluesky(url)
             content = "" if info is None else info.record.text
             media_urls = [] if info is None else info.media_urls
-        elif domain == "kemono.su":
+        elif domain_id is DomainId.KEMONO:
             media_urls = await self.fetch_info.kemono(url)
-        elif domain == "bilibili.com":
+        elif domain_id is DomainId.BILIBILI:
             media_urls = self.fetch_info.bilibili(url)
 
         downloader = MediaDownloader(self.bot.session, media_urls=media_urls)
@@ -431,6 +436,49 @@ class FixerCog(commands.Cog):
             ),
             mention_author=False,
         )
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
+        if payload.guild_id is None:
+            return
+
+        settings, _ = await GuildSettings.get_or_create(id=payload.guild_id)
+        if payload.user_id == self.bot.user.id or str(payload.emoji) != settings.delete_msg_emoji:
+            return
+
+        channel = self.bot.get_channel(payload.channel_id)
+        if not isinstance(channel, discord.TextChannel | discord.Thread):
+            return
+
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except discord.Forbidden:
+            logger.warning(
+                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
+            )
+            return
+
+        if USERNAME_SUFFIX not in message.author.display_name:
+            return
+
+        guild = message.guild
+        if guild is None:
+            return
+
+        author = await self._get_original_author(message, guild)
+        if author is None:
+            return
+
+        if payload.user_id == author.id:
+            try:
+                await message.delete()
+            except discord.Forbidden:
+                logger.warning(f"Failed to delete message in {channel!r} in {guild!r}")
+                await message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                    )
+                )
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
