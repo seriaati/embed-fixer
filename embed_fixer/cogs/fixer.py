@@ -138,8 +138,6 @@ class FixerCog(commands.Cog):
             if domain.id == DomainId.KEMONO and not is_nsfw_channel:
                 break
 
-            fix_method = await self._determine_fix_method(settings, domain)
-
             if channel_id in settings.extract_media_channels:
                 result = await self._extract_post_info(
                     domain.id,
@@ -161,6 +159,7 @@ class FixerCog(commands.Cog):
                     sauces.append(clean_url)
                     break
 
+            fix_method = await self._determine_fix_method(settings, domain)
             if fix_method is None:
                 continue
 
