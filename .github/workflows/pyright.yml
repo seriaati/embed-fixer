@@ -19,4 +19,4 @@ jobs:
         run: uv sync --frozen --no-dev && uv pip install pyright[nodejs]
 
       - name: Run Pyright
-        run: uv run pyright hoyo_buddy/ --outputjson
+        run: uv run pyright --outputjson
