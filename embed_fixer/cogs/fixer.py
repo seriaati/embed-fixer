@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import itertools
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
@@ -139,6 +140,8 @@ class FixerCog(commands.Cog):
                 break
 
             if channel_id in settings.extract_media_channels:
+                asyncio.create_task(message.add_reaction("⏳"))
+
                 result = await self._extract_post_info(
                     domain.id,
                     url,
