@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import asyncio
 import io
 import re
+from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 
 def remove_html_tags(input_string: str) -> str:
     # Use a regex pattern to remove HTML tags
-    clean_text = re.sub(r"<[^>]*>", "", input_string)
-    return clean_text
+    return re.sub(r"<[^>]*>", "", input_string)
 
 
 def extract_urls(text: str) -> list[str]:
@@ -53,3 +54,24 @@ def replace_domain(url: str, old_domain: str, new_domain: str) -> str:
         return urlunparse(new_url)
 
     return url
+
+
+_tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()
+
+
+def wrap_task_factory() -> None:
+    loop = asyncio.get_running_loop()
+    original_factory = loop.get_task_factory()
+
+    def new_factory(
+        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs: Any
+    ) -> asyncio.Task[Any] | asyncio.Future[Any]:
+        if original_factory is not None:
+            t = original_factory(loop, coro, **kwargs)
+        else:
+            t = asyncio.Task(coro, loop=loop, **kwargs)
+        _tasks_set.add(t)
+        t.add_done_callback(_tasks_set.discard)
+        return t
+
+    loop.set_task_factory(new_factory)

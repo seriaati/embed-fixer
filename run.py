@@ -15,6 +15,7 @@ from loguru import logger
 
 from embed_fixer.bot import EmbedFixer
 from embed_fixer.logging import InterceptHandler
+from embed_fixer.utils.misc import wrap_task_factory
 
 load_dotenv()
 env = os.environ["ENV"]
@@ -29,6 +30,8 @@ def setup_logger() -> None:
 
 
 async def main() -> None:
+    wrap_task_factory()
+
     async with (
         CachedSession(
             cache=SQLiteBackend(expire_after=60 * 30), headers={"User-Agent": ua.random}
