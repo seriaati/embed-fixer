@@ -180,6 +180,7 @@ DOMAINS: Final[list[Domain]] = [
                 name="EmbedEZ",
                 fixes=[Fix(new_domain="embedez.seria.moe/embed", method="append_url")],
                 default=True,
+                repo_url="https://github.com/seriaati/embedez",
             ),
         ],
     ),
@@ -286,6 +287,7 @@ DOMAINS: Final[list[Domain]] = [
                 name="EmbedEZ",
                 fixes=[Fix(new_domain="embedez.seria.moe/embed", method="append_url")],
                 default=True,
+                repo_url="https://github.com/seriaati/embedez",
             ),
             FixMethod(
                 id=16,
@@ -330,6 +332,7 @@ DOMAINS: Final[list[Domain]] = [
                 id=18,
                 name="EmbedEZ",
                 fixes=[Fix(new_domain="embedez.seria.moe/embed", method="append_url")],
+                repo_url="https://github.com/seriaati/embedez",
             ),
         ],
     ),
