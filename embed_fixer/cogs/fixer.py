@@ -15,7 +15,13 @@ from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
-from embed_fixer.utils.misc import extract_urls, get_filesize, remove_query_params, replace_domain
+from embed_fixer.utils.misc import (
+    domain_in_url,
+    extract_urls,
+    get_filesize,
+    remove_query_params,
+    replace_domain,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -129,7 +135,7 @@ class FixerCog(commands.Cog):
             break
         return domain, website
 
-    async def _find_fixes(
+    async def _find_fixes(  # noqa: PLR0914
         self,
         message: discord.Message,
         *,
@@ -158,14 +164,14 @@ class FixerCog(commands.Cog):
             if domain is None or website is None:
                 continue
 
-            if (
+            pixiv_skip = (
                 domain.id == DomainId.PIXIV
                 and not is_nsfw_channel
                 and await self.fetch_info.pixiv_is_nsfw(url)
-            ):
-                continue
+            )
+            kemono_skip = domain.id == DomainId.KEMONO and not is_nsfw_channel
 
-            if domain.id == DomainId.KEMONO and not is_nsfw_channel:
+            if pixiv_skip or kemono_skip:
                 continue
 
             if extract_media or (
@@ -205,20 +211,21 @@ class FixerCog(commands.Cog):
                 continue
 
             fix_method = await self._determine_fix_method(settings, domain)
-            if fix_method is None:
+            if fix_method is None or not fix_method.fixes:
                 continue
 
             for fix in fix_method.fixes:
                 if fix.method == "append_url":
                     new_url = f"https://{fix.new_domain}?url={url}"
                 else:
-                    assert fix.old_domain is not None
+                    if fix.old_domain is None or not domain_in_url(clean_url, fix.old_domain):
+                        continue
+
                     new_url = replace_domain(clean_url, fix.old_domain, fix.new_domain)
 
+                fix_found = True
                 message.content = message.content.replace(url, new_url)
-
-            fix_found = True
-            continue
+                break
 
         return FindFixResult(
             fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md

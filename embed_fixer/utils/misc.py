@@ -48,9 +48,8 @@ def domain_in_url(url: str, domain: str) -> bool:
 
 def replace_domain(url: str, old_domain: str, new_domain: str) -> str:
     parsed_url = urlparse(url)
-    if parsed_url.netloc == old_domain or parsed_url.netloc.endswith(f".{old_domain}"):
-        new_netloc = new_domain
-        new_url = parsed_url._replace(netloc=new_netloc)
+    if domain_in_url(url, old_domain):
+        new_url = parsed_url._replace(netloc=new_domain)
         return urlunparse(new_url)
 
     return url
