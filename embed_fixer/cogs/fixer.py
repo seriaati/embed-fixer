@@ -400,13 +400,25 @@ class FixerCog(commands.Cog):
         files = [media.file for media in medias if media.file is not None]
 
         if interaction is not None:
+            allowed_mentions = discord.AllowedMentions(
+                everyone=False, users=False, roles=False, replied_user=False
+            )
+
             if interaction.response.is_done():
                 await interaction.followup.send(
-                    message.content, tts=message.tts, files=files, **kwargs
+                    message.content,
+                    tts=message.tts,
+                    files=files,
+                    allowed_mentions=allowed_mentions,
+                    **kwargs,
                 )
             else:
                 await interaction.response.send_message(
-                    message.content, tts=message.tts, files=files, **kwargs
+                    message.content,
+                    tts=message.tts,
+                    files=files,
+                    allowed_mentions=allowed_mentions,
+                    **kwargs,
                 )
 
             fix_message = await interaction.original_response()
