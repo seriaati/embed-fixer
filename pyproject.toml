@@ -19,7 +19,7 @@ license = { file = "LICENSE" }
 name = "embed-fixer"
 readme = "README.md"
 requires-python = ">=3.11"
-version = "1.8.2"
+version = "1.8.3"
 
 [tool.pyright]
 enableTypeIgnoreComments = false
