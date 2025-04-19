@@ -41,6 +41,8 @@ strings:
   show_post_content_channels_desc: If media extraction is enabled, channels selected here will show the content of the post
   no_perms_to_delete_msg: The bot is missing permission to delete messages
   no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
+  no_perms_to_add_reactions: The bot is missing permission to add reactions
+  add_reaction_error: Failed to add reaction '{emoji}', make sure it's valid
   failed_to_send_webhook: Failed to send webhook
   delete_msg_emoji: Emoji used for deleting messages
   emoji: Emoji

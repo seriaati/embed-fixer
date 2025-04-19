@@ -442,13 +442,26 @@ class FixerCog(commands.Cog):
                 )
 
         if not disable_delete_reaction and delete_msg_emoji and interaction is None:
+            guild_id = message.guild.id if message.guild else "DM"
+            err_message = f"Failed to add reaction {delete_msg_emoji!r} to message {fix_message.id} in {guild_id}"
+
             try:
                 await fix_message.add_reaction(delete_msg_emoji)
-            except discord.HTTPException as e:
-                if e.code != 10014:
-                    raise
-                logger.warning(
-                    f"Failed to add {delete_msg_emoji!r} reaction to message {message!r}"
+            except discord.Forbidden:
+                logger.warning(err_message)
+                await fix_message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(message.guild), "no_perms_to_add_reactions"
+                    )
+                )
+            except discord.HTTPException:
+                logger.error(err_message)
+                await fix_message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(message.guild),
+                        "add_reaction_error",
+                        emoji=delete_msg_emoji,
+                    )
                 )
 
         return fix_message
@@ -561,7 +574,7 @@ class FixerCog(commands.Cog):
             try:
                 await message.delete()
             except discord.Forbidden:
-                logger.warning(f"Failed to delete message in {channel!r} in {guild!r}")
+                logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
                 await message.reply(
                     self.bot.translator.get(
                         await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
@@ -589,7 +602,7 @@ class FixerCog(commands.Cog):
             try:
                 await message.delete()
             except discord.Forbidden:
-                logger.warning(f"Failed to delete message in {channel!r} in {guild!r}")
+                logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
                 await message.reply(
                     self.bot.translator.get(
                         await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"

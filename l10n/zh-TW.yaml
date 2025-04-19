@@ -42,6 +42,8 @@ strings:
   no_perms_to_delete_msg: 機器人缺少刪除訊息的權限
   no_perms_to_manage_webhooks: 機器人缺少管理 Webhook 的權限
   failed_to_send_webhook: 發送 Webhook 失敗
+  no_perms_to_add_reactions: 機器人缺少添加反應的權限
+  add_reaction_error: 無法添加反應 '{emoji}'，請確保它是有效的
   delete_msg_emoji: 用於刪除訊息的表情符號
   emoji: 表情符號
   emoji_changed: 用於刪除訊息的表情符號已更改為 {emoji}
