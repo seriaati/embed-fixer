@@ -615,7 +615,7 @@ class FixerCog(commands.Cog):
         await i.response.defer()
 
         if i.guild_id is not None:
-            guild_settings, _ = await GuildSettings.get_or_create(id=i.guild_id)
+            guild_settings = await GuildSettings.get_or_none(id=i.guild_id)
         else:
             guild_settings = None
 

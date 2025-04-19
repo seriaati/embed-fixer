@@ -66,6 +66,8 @@ class SettingsCog(commands.Cog):
         settings.use_vxreddit = False
         await settings.save(update_fields=("disabled_fixes", "disabled_domains", "use_vxreddit"))
 
+    @app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+    @app_commands.allowed_installs(guilds=True, users=False)
     @app_commands.guild_only()
     @app_commands.default_permissions()
     @app_commands.choices(
