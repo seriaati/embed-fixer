@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 class DeleteMsgEmojiModal(Modal):
-    emoji = ui.TextInput(label="emoji", max_length=100)
+    emoji = ui.TextInput(label="emoji", max_length=100, placeholder="<:emoji:12345678> / ❌")
 
     def __init__(self, guild: Guild, translator: Translator, *, settings: GuildSettings) -> None:
         super().__init__(guild, translator, title="delete_msg_emoji")
