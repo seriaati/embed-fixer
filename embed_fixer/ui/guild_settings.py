@@ -379,4 +379,7 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
             await current.save(update_fields=("fix_id",))
 
         embed = await self.view._get_domain_embed()
+        for option in self.options:
+            option.default = option.value == self.values[0]
+
         await i.edit_original_response(embed=embed, view=self.view)
