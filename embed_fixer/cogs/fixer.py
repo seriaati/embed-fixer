@@ -211,7 +211,11 @@ class FixerCog(commands.Cog):
                 continue
 
             fix_method = await self._determine_fix_method(settings, domain)
-            if fix_method is None or not fix_method.fixes:
+            if (
+                fix_method is None
+                or not fix_method.fixes
+                or (website.skip_method_ids and fix_method.id in website.skip_method_ids)
+            ):
                 continue
 
             for fix in fix_method.fixes:

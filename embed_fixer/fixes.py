@@ -47,6 +47,7 @@ class Domain:
 @dataclass
 class Website:
     pattern: str
+    skip_method_ids: list[int] | None = None
 
     def match(self, url: str) -> bool:
         return re.match(self.pattern, url) is not None
@@ -163,7 +164,7 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.INSTAGRAM,
         name="Instagram",
         websites=[
-            Website(r"https://(www.)?instagram.com/(p|reels?)/[\w]+"),
+            Website(r"https://(www.)?instagram.com/(share|p|reels?)/[\w]+", skip_method_ids=[8]),
             Website(r"https://(www.)?instagram.com/share/(p|reel?)/[\w]+"),
         ],
         fix_methods=[
