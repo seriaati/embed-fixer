@@ -567,8 +567,11 @@ class FixerCog(commands.Cog):
         if str(payload.emoji) != settings.delete_msg_emoji:
             return
 
-        channel = self.bot.get_partial_messageable(payload.channel_id)
-        if channel.guild is None:
+        channel_id = payload.channel_id
+        channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
+        if isinstance(
+            channel, discord.ForumChannel | discord.CategoryChannel | discord.abc.PrivateChannel
+        ):
             return
 
         try:
