@@ -165,8 +165,8 @@ DOMAINS: Final[list[Domain]] = [
         name="Instagram",
         websites=[
             Website(r"https://(www.)?instagram.com/share/[\w]+", skip_method_ids=[8]),
-            Website(r"https://(www.)?instagram.com/(p|reels)/[\w]+"),
-            Website(r"https://(www.)?instagram.com/share/(p|reel)/[\w]+"),
+            Website(r"https://(www.)?instagram.com/(p|reels?)/[\w]+"),
+            Website(r"https://(www.)?instagram.com/share/(p|reels?)/[\w]+"),
         ],
         fix_methods=[
             FixMethod(
