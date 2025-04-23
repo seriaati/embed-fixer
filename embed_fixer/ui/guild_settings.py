@@ -147,6 +147,12 @@ class GuildSettingsView(View):
             self.add_item(selector)
             embed = self._add_selected_channels_field(embed, guild_settings.disable_fix_channels)
 
+        elif setting is Setting.ENABLE_FIX_CHANNELS:
+            selector = ChannelSelect("enable_fix_channels")
+            selector.placeholder = self.translate("channel_selector_placeholder")
+            self.add_item(selector)
+            embed = self._add_selected_channels_field(embed, guild_settings.enable_fix_channels)
+
         elif setting is Setting.DISABLE_IMAGE_SPOILERS:
             selector = ChannelSelect("disable_image_spoilers")
             selector.placeholder = self.translate("channel_selector_placeholder")

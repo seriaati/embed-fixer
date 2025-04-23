@@ -12,8 +12,10 @@ strings:
   lang_desc: 更改機器人的語言
   extract_media_channels: 媒體提取頻道
   extract_media_channels_desc: 在這些頻道中發送的 Twitter/X/Pixiv 鏈接的圖片/影片將被提取
-  disable_fix_channels: 禁用連結預覽修復頻道
-  disable_fix_channels_desc: 設置要在其中禁用連結預覽修復的頻道
+  disable_fix_channels: 連結預覽修復頻道黑名單
+  disable_fix_channels_desc: 僅在這裡設置的頻道將接收連結預覽修復，白名單優先於黑名單
+  enable_fix_channels: 連結預覽修復頻道白名單
+  enable_fix_channels_desc: 這裡的頻道將不會接收連結預覽修復，白名單優先於黑名單
   disable_image_spoilers: 在 NSFW 頻道中禁用自動模糊
   disable_image_spoilers_desc: 對於媒體提取功能，在這裡選擇的 NSFW 頻道內的媒體將不會被自動模糊
   toggle_webhook_reply: 開關 Webhook 回覆

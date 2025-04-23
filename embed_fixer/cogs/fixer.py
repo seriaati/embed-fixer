@@ -75,6 +75,16 @@ class FixerCog(commands.Cog):
         )
 
     @staticmethod
+    def _skip_channel(settings: GuildSettings | None, channel_id: int) -> bool:
+        if settings is None:
+            return False
+
+        if settings.enable_fix_channels and channel_id not in settings.enable_fix_channels:
+            return True
+
+        return channel_id in settings.disable_fix_channels
+
+    @staticmethod
     async def _get_original_author(
         message: discord.Message, guild: discord.Guild
     ) -> discord.Member | None:
@@ -589,7 +599,7 @@ class FixerCog(commands.Cog):
         channel, guild, author = message.channel, message.guild, message.author
 
         guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)
-        if channel.id in guild_settings.disable_fix_channels:
+        if self._skip_channel(guild_settings, channel.id):
             return
 
         result = await self._find_fixes(
@@ -632,11 +642,7 @@ class FixerCog(commands.Cog):
         else:
             guild_settings = None
 
-        if (
-            guild_settings is not None
-            and i.channel_id is not None
-            and i.channel_id in guild_settings.disable_fix_channels
-        ):
+        if i.channel_id is not None and self._skip_channel(guild_settings, i.channel_id):
             return
 
         result = await self._find_fixes(

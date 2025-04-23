@@ -8,6 +8,7 @@ class Setting(StrEnum):
     DISABLE_FIXES = "disable_fixes"
     EXTRACT_MEDIA_CHANNELS = "extract_media_channels"
     DISABLE_FIX_CHANNELS = "disable_fix_channels"
+    ENABLE_FIX_CHANNELS = "enable_fix_channels"
     TOGGLE_WEBHOOK_REPLY = "toggle_webhook_reply"
     DISABLE_IMAGE_SPOILERS = "disable_image_spoilers"
     TOGGLE_DELETE_REACTION = "toggle_delete_reaction"

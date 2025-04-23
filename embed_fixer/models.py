@@ -14,6 +14,7 @@ class GuildSettings(Model):
     disabled_fixes: fields.Field[list[str]] = fields.JSONField(default=[])
     disabled_domains: fields.Field[list[int]] = fields.JSONField(default=[])
     disable_fix_channels: fields.Field[list[int]] = fields.JSONField(default=[])
+    enable_fix_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     extract_media_channels: fields.Field[list[int]] = fields.JSONField(default=[])
     disable_image_spoilers: fields.Field[list[int]] = fields.JSONField(default=[])
     show_post_content_channels: fields.Field[list[int]] = fields.JSONField(default=[])
