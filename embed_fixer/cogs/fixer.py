@@ -543,7 +543,7 @@ class FixerCog(commands.Cog):
         )
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         if payload.guild_id is None:
             return
 
@@ -551,8 +551,8 @@ class FixerCog(commands.Cog):
         if payload.user_id == self.bot.user.id or str(payload.emoji) != settings.delete_msg_emoji:
             return
 
-        channel = self.bot.get_channel(payload.channel_id)
-        if not isinstance(channel, discord.TextChannel | discord.Thread):
+        channel = self.bot.get_partial_messageable(payload.channel_id)
+        if channel.guild is None:
             return
 
         try:
@@ -563,11 +563,7 @@ class FixerCog(commands.Cog):
             )
             return
 
-        if USERNAME_SUFFIX not in message.author.display_name:
-            return
-
-        guild = message.guild
-        if guild is None:
+        if USERNAME_SUFFIX not in message.author.display_name or (guild := message.guild) is None:
             return
 
         author = await self._get_original_author(message, guild)
