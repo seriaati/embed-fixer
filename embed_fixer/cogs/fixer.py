@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import itertools
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
@@ -463,20 +464,23 @@ class FixerCog(commands.Cog):
                 await fix_message.add_reaction(delete_msg_emoji)
             except discord.Forbidden:
                 logger.warning(err_message)
-                await fix_message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(message.guild), "no_perms_to_add_reactions"
+                with contextlib.suppress(discord.Forbidden):
+                    await fix_message.reply(
+                        self.bot.translator.get(
+                            await Translator.get_guild_lang(message.guild),
+                            "no_perms_to_add_reactions",
+                        )
                     )
-                )
             except discord.HTTPException:
                 logger.error(err_message)
-                await fix_message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(message.guild),
-                        "add_reaction_error",
-                        emoji=delete_msg_emoji,
+                with contextlib.suppress(discord.Forbidden):
+                    await fix_message.reply(
+                        self.bot.translator.get(
+                            await Translator.get_guild_lang(message.guild),
+                            "add_reaction_error",
+                            emoji=delete_msg_emoji,
+                        )
                     )
-                )
 
         return fix_message
 
@@ -516,11 +520,13 @@ class FixerCog(commands.Cog):
         try:
             webhooks = await message.channel.webhooks()
         except discord.Forbidden:
-            await message.channel.send(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(message.guild), "no_perms_to_manage_webhooks"
+            with contextlib.suppress(discord.Forbidden):
+                await message.channel.send(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(message.guild),
+                        "no_perms_to_manage_webhooks",
+                    )
                 )
-            )
             return None
 
         webhook_name = self.bot.user.name
@@ -585,11 +591,12 @@ class FixerCog(commands.Cog):
                 await message.delete()
             except discord.Forbidden:
                 logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
-                await message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                with contextlib.suppress(discord.Forbidden):
+                    await message.reply(
+                        self.bot.translator.get(
+                            await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                        )
                     )
-                )
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
@@ -613,11 +620,12 @@ class FixerCog(commands.Cog):
                 await message.delete()
             except discord.Forbidden:
                 logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
-                await message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                with contextlib.suppress(discord.Forbidden):
+                    await message.reply(
+                        self.bot.translator.get(
+                            await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                        )
                     )
-                )
             except discord.NotFound:
                 pass
 
