@@ -554,11 +554,11 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
-        if payload.guild_id is None:
+        if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
         settings, _ = await GuildSettings.get_or_create(id=payload.guild_id)
-        if payload.user_id == self.bot.user.id or str(payload.emoji) != settings.delete_msg_emoji:
+        if str(payload.emoji) != settings.delete_msg_emoji:
             return
 
         channel = self.bot.get_partial_messageable(payload.channel_id)
