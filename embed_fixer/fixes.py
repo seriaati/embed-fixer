@@ -190,7 +190,6 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[
                     Fix(old_domain="instagram.com", new_domain="kkinstagram.com", method="replace")
                 ],
-                default=True,
             ),
         ],
     ),
