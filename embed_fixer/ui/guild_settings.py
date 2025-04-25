@@ -378,7 +378,7 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
             await GuildFixMethod.create(
                 guild_id=self.view.guild.id,
                 domain_id=self.view.domain_id,
-                fix_id=DomainId(int(self.values[0])),
+                fix_id=int(self.values[0]),
             )
         else:
             current.fix_id = int(self.values[0])

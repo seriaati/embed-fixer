@@ -184,6 +184,14 @@ DOMAINS: Final[list[Domain]] = [
                 default=True,
                 repo_url="https://github.com/seriaati/embedez",
             ),
+            FixMethod(
+                id=23,
+                name="KKInstagram",
+                fixes=[
+                    Fix(old_domain="instagram.com", new_domain="kkinstagram.com", method="replace")
+                ],
+                default=True,
+            ),
         ],
     ),
     Domain(
@@ -335,6 +343,16 @@ DOMAINS: Final[list[Domain]] = [
                 name="EmbedEZ",
                 fixes=[Fix(new_domain="embedez.seria.moe/embed", method="append_url")],
                 repo_url="https://github.com/seriaati/embedez",
+            ),
+            FixMethod(
+                id=22,
+                name="vxbilibili",
+                fixes=[
+                    Fix(old_domain="m.bilibili.com", new_domain="vxbilibili.com", method="replace"),
+                    Fix(old_domain="bilibili.com", new_domain="vxbilibili.com", method="replace"),
+                    Fix(old_domain="b23.tv", new_domain="vxb23.tv", method="replace"),
+                ],
+                repo_url="https://github.com/Pikacnu/BiliBili-Disocrd-Embed",
             ),
         ],
     ),

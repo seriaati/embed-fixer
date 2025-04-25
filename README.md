@@ -38,14 +38,14 @@ Fixings are currently available for:
 - Pixiv: [Phixiv](https://github.com/thelaao/phixiv)
 - TikTok: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)
 - Reddit: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)
-- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://github.com/seriaati/embedez)
+- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://github.com/seriaati/embedez)/KKInstagram
 - FurAffinity: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
 - Twitch clips: [fxtwitch](https://github.com/seriaati/fxtwitch)
 - Iwara: [fxiwara](https://github.com/seriaati/fxiwara)
 - Bluesky: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
 - Kemono: Media extraction only, no embed fixing
 - Facebook: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)
-- Bilibili: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)
+- Bilibili: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[vxbilibili](https://github.com/Pikacnu/BiliBili-Disocrd-Embed)
 - Tumblr: [fxtumblr](https://github.com/knuxify/fxtumblr)
 - Threads: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
 
