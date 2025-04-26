@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, ui
+from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, Thread, ui
 
 from embed_fixer.embed import DefaultEmbed
 from embed_fixer.fixes import DOMAINS, Domain, DomainId
@@ -87,7 +87,9 @@ class GuildSettingsView(View):
         )
 
     async def _remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
-        guild_channel_ids = [channel.id for channel in self.guild.channels]
+        guild_channel_ids = [
+            channel.id for channel in list(self.guild.channels) + list(self.guild.threads)
+        ]
         for attr_name in (
             "extract_media_channels",
             "disable_fix_channels",
@@ -102,9 +104,10 @@ class GuildSettingsView(View):
         await guild_settings.save()
 
     def _add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
-        channels: list[GuildChannel] = []
+        channels: list[GuildChannel | Thread] = []
         for _, category_channels in self.guild.by_category():
             channels.extend(category_channels)
+        channels.extend(self.guild.threads)
 
         channel_ids_: list[int] = [channel.id for channel in channels if channel.id in channel_ids]
 
@@ -249,7 +252,9 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
             min_values=0,
             max_values=25,
             channel_types=[
-                ct for ct in ChannelType if ct not in {ChannelType.category, ChannelType.group}
+                ct
+                for ct in ChannelType
+                if ct not in {ChannelType.category, ChannelType.group, ChannelType.forum}
             ],
         )
         self.attr_name = attr_name
