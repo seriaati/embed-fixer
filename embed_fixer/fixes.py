@@ -345,13 +345,13 @@ DOMAINS: Final[list[Domain]] = [
             ),
             FixMethod(
                 id=22,
-                name="vxbilibili",
+                name="BiliFix",
                 fixes=[
                     Fix(old_domain="m.bilibili.com", new_domain="vxbilibili.com", method="replace"),
                     Fix(old_domain="bilibili.com", new_domain="vxbilibili.com", method="replace"),
                     Fix(old_domain="b23.tv", new_domain="vxb23.tv", method="replace"),
                 ],
-                repo_url="https://github.com/Pikacnu/BiliBili-Disocrd-Embed",
+                repo_url="https://vxbilibili.com",
             ),
         ],
     ),
