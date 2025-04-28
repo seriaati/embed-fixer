@@ -45,7 +45,7 @@ Fixings are currently available for:
 - Bluesky: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
 - Kemono: Media extraction only, no embed fixing
 - Facebook: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)
-- Bilibili: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[vxbilibili](https://github.com/Pikacnu/BiliBili-Disocrd-Embed)
+- Bilibili: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[BiliFix](https://vxbilibili.com)
 - Tumblr: [fxtumblr](https://github.com/knuxify/fxtumblr)
 - Threads: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
 
