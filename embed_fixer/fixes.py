@@ -373,15 +373,16 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.THREADS,
         name="Threads",
         websites=[
-            Website(r"https://(www.)?threads.net/@[\w.]+"),
-            Website(r"https://(www.)?threads.net/@[\w.]+/post/[\w]+"),
+            Website(r"https://(www.)?threads.(net|com)/@[\w.]+"),
+            Website(r"https://(www.)?threads.(net|com)/@[\w.]+/post/[\w]+"),
         ],
         fix_methods=[
             FixMethod(
                 id=20,
                 name="FixThreads",
                 fixes=[
-                    Fix(old_domain="threads.net", new_domain="fixthreads.net", method="replace")
+                    Fix(old_domain="threads.net", new_domain="fixthreads.net", method="replace"),
+                    Fix(old_domain="threads.com", new_domain="fixthreads.net", method="replace"),
                 ],
                 repo_url="https://github.com/milanmdev/fixthreads",
                 default=True,
@@ -389,7 +390,10 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=21,
                 name="vxThreads",
-                fixes=[Fix(old_domain="threads.net", new_domain="vxthreads.net", method="replace")],
+                fixes=[
+                    Fix(old_domain="threads.net", new_domain="vxthreads.net", method="replace"),
+                    Fix(old_domain="threads.com", new_domain="vxthreads.net", method="replace"),
+                ],
                 repo_url="https://github.com/everettsouthwick/vxThreads",
             ),
         ],
