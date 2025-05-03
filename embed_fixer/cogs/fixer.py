@@ -89,13 +89,12 @@ class FixerCog(commands.Cog):
     async def _get_original_author(
         message: discord.Message, guild: discord.Guild
     ) -> discord.Member | None:
-        authors = await guild.query_members(
-            message.author.display_name.removesuffix(USERNAME_SUFFIX), limit=100
-        )
+        query = message.author.display_name.removesuffix(USERNAME_SUFFIX)
+        authors = await guild.query_members(query, limit=100)
         if not authors:
             return None
 
-        return next((a for a in authors if a.display_name == message.author.display_name), None)
+        return next((a for a in authors if a.display_name == query), None)
 
     @staticmethod
     async def _determine_fix_method(
