@@ -448,7 +448,7 @@ class FixerCog(commands.Cog):
                         message.content, tts=message.tts, files=files, **kwargs
                     )
             except discord.HTTPException as e:
-                if e.code != 40005:
+                if e.code != 40005:  # Request entity too large
                     raise
 
                 message.content += "\n".join(media.url for media in medias)
@@ -617,7 +617,10 @@ class FixerCog(commands.Cog):
         )
 
         if result.fix_found:
-            await self._send_fixes(message, result, guild_settings=guild_settings)
+            try:
+                await self._send_fixes(message, result, guild_settings=guild_settings)
+            except discord.Forbidden:
+                logger.warning(f"Failed to send fixes in {channel.id=} in {guild.id=}")
 
             try:
                 await message.delete()
@@ -665,7 +668,12 @@ class FixerCog(commands.Cog):
         )
 
         if result.fix_found:
-            await self._send_fixes(message, result, guild_settings=guild_settings, interaction=i)
+            try:
+                await self._send_fixes(
+                    message, result, guild_settings=guild_settings, interaction=i
+                )
+            except discord.Forbidden:
+                logger.warning(f"Failed to send fixes in {i.channel_id=} in {i.guild_id=}")
         else:
             await i.followup.send(
                 self.bot.translator.get(
