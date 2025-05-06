@@ -283,6 +283,31 @@ class FixerCog(commands.Cog):
             medias=medias, content=content[:2000], author_md="" if info is None else info.author_md
         )
 
+    async def _resolve_author_mention(
+        self, resolved_ref: discord.Message, message: discord.Message
+    ) -> str:
+        assert message.guild is not None
+
+        # Replying to a webhook message
+        if resolved_ref.webhook_id is not None:
+            author = await self._get_original_author(resolved_ref, message.guild)
+
+            if author is None:
+                return resolved_ref.author.display_name
+
+            # Author of the webhook message is the same as this message's author, don't mention
+            if author.id == message.author.id:
+                return author.display_name
+
+            return author.mention
+
+        # Replying to a normal message
+        if resolved_ref.author.id == message.author.id:
+            # Author of the normal message is the same as this message's author, don't mention
+            return resolved_ref.author.display_name
+
+        return resolved_ref.author.mention
+
     async def _send_fixes(
         self,
         message: discord.Message,
@@ -315,23 +340,19 @@ class FixerCog(commands.Cog):
             message.content += f"\n||{sauces_str}||"
             sauces.clear()
 
-        # If the message was originally replying to another message, and this message
-        # was deleted for a fix, add the reply to the new message.
+        # If the message was originally replying to another message, since this message
+        # will be deleted for a fix, add the reply to the new message containing the fix.
         if (
             message.reference is not None
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
             and message.guild is not None
         ):
-            if resolved_ref.webhook_id is not None:
-                author = await self._get_original_author(resolved_ref, message.guild)
-                user = author.mention if author is not None else resolved_ref.author.display_name
-            else:
-                user = resolved_ref.author.mention
+            mention = await self._resolve_author_mention(resolved_ref, message)
 
             replying_to = self.bot.translator.get(
                 await Translator.get_guild_lang(message.guild),
                 "replying_to",
-                user=user,
+                user=mention,
                 url=resolved_ref.jump_url,
             )
             message.content = f"{replying_to}\n{message.content}"
@@ -543,8 +564,8 @@ class FixerCog(commands.Cog):
             return
 
         author = await self._get_original_author(resolved_ref, guild)
-        # Can't find author or author is a bot
-        if author is None or author.bot:
+        # Can't find author or author is a bot or the author is the same as the message author
+        if author is None or author.bot or author.id == message.author.id:
             return
 
         await message.reply(
@@ -634,8 +655,8 @@ class FixerCog(commands.Cog):
             except discord.NotFound:
                 pass
 
-        # If the message is replying to a webhook message, mention the original author
-        # of the webhook.
+        # If this is a normal message (no embed fix found) replying to a webhook message,
+        # reply to this message containing mention to the original author of the webhook message.
         elif (
             message.reference is not None
             and isinstance(resolved_ref := message.reference.resolved, discord.Message)
