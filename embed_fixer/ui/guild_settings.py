@@ -86,10 +86,16 @@ class GuildSettingsView(View):
             title=domain.name, description=self.translate("using_fix_service", service=service_str)
         )
 
+    def _get_guild_channel_ids(self) -> list[int]:
+        channels: list[GuildChannel | Thread] = []
+        for _, category_channels in self.guild.by_category():
+            channels.extend(category_channels)
+        channels.extend(self.guild.threads)
+
+        return [channel.id for channel in channels]
+
     async def _remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
-        guild_channel_ids = [
-            channel.id for channel in list(self.guild.channels) + list(self.guild.threads)
-        ]
+        guild_channel_ids = self._get_guild_channel_ids()
         for attr_name in (
             "extract_media_channels",
             "disable_fix_channels",
@@ -104,12 +110,8 @@ class GuildSettingsView(View):
         await guild_settings.save()
 
     def _add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
-        channels: list[GuildChannel | Thread] = []
-        for _, category_channels in self.guild.by_category():
-            channels.extend(category_channels)
-        channels.extend(self.guild.threads)
-
-        channel_ids_: list[int] = [channel.id for channel in channels if channel.id in channel_ids]
+        guild_channel_ids = self._get_guild_channel_ids()
+        channel_ids_: list[int] = [x for x in guild_channel_ids if x in channel_ids]
 
         embed.clear_fields()
         return embed.add_field(
