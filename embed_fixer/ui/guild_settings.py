@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 from typing import TYPE_CHECKING
 
 import discord
@@ -13,10 +14,14 @@ from embed_fixer.settings import Setting
 from .components import Modal, View
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from discord.abc import GuildChannel
 
     from embed_fixer.bot import Interaction
     from embed_fixer.translator import Translator
+
+CHANNEL_IDS_PER_PAGE = 10
 
 
 class DeleteMsgEmojiModal(Modal):
@@ -46,6 +51,9 @@ class GuildSettingsView(View):
 
         self.domain_id: DomainId | None = None
 
+        self.page = 0
+        self.channel_ids: list[int] = []
+
     @property
     def domain(self) -> Domain:
         if self.domain_id is None:
@@ -58,6 +66,12 @@ class GuildSettingsView(View):
             raise ValueError(msg)
 
         return domain
+
+    @property
+    def page_channel_ids(self) -> tuple[int, ...]:
+        batched = list(itertools.batched(self.channel_ids, CHANNEL_IDS_PER_PAGE))
+        self.page = max(min(self.page, len(batched) - 1), 0)
+        return batched[self.page]
 
     async def _get_current_fix(self) -> GuildFixMethod | None:
         if self.domain_id is None:
@@ -109,14 +123,14 @@ class GuildSettingsView(View):
 
         await guild_settings.save()
 
-    def _add_selected_channels_field(self, embed: Embed, channel_ids: list[int]) -> Embed:
+    def _add_selected_channels_field(self, embed: Embed, channel_ids: Sequence[int]) -> Embed:
         guild_channel_ids = self._get_guild_channel_ids()
-        channel_ids_: list[int] = [x for x in guild_channel_ids if x in channel_ids]
+        valid_channel_ids: list[int] = [x for x in guild_channel_ids if x in channel_ids]
 
         embed.clear_fields()
         return embed.add_field(
             name=self.translate("selected_channels"),
-            value="\n".join([f"- <#{channel_id}>" for channel_id in channel_ids_]),
+            value="\n".join([f"- <#{channel_id}>" for channel_id in valid_channel_ids]),
         )
 
     async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: PLR0915
@@ -129,6 +143,7 @@ class GuildSettingsView(View):
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
         await self._remove_invalid_channels(guild_settings)
+        channel_ids: list[int] | None = None
 
         if setting is Setting.DISABLE_FIXES:
             fix_selector = FixSelector(guild_settings.disabled_fixes)
@@ -144,25 +159,26 @@ class GuildSettingsView(View):
             selector = ChannelSelect("extract_media_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self._add_selected_channels_field(embed, guild_settings.extract_media_channels)
+            channel_ids = guild_settings.extract_media_channels
+            embed = self._add_selected_channels_field(embed, channel_ids)
 
         elif setting is Setting.DISABLE_FIX_CHANNELS:
             selector = ChannelSelect("disable_fix_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self._add_selected_channels_field(embed, guild_settings.disable_fix_channels)
+            channel_ids = guild_settings.disable_fix_channels
 
         elif setting is Setting.ENABLE_FIX_CHANNELS:
             selector = ChannelSelect("enable_fix_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self._add_selected_channels_field(embed, guild_settings.enable_fix_channels)
+            channel_ids = guild_settings.enable_fix_channels
 
         elif setting is Setting.DISABLE_IMAGE_SPOILERS:
             selector = ChannelSelect("disable_image_spoilers")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self._add_selected_channels_field(embed, guild_settings.disable_image_spoilers)
+            channel_ids = guild_settings.disable_image_spoilers
 
         elif setting is Setting.TOGGLE_WEBHOOK_REPLY:
             toggle_btn = WebhookReplyToggle(
@@ -184,9 +200,7 @@ class GuildSettingsView(View):
             selector = ChannelSelect("show_post_content_channels")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
-            embed = self._add_selected_channels_field(
-                embed, guild_settings.show_post_content_channels
-            )
+            channel_ids = guild_settings.show_post_content_channels
 
         elif setting is Setting.CHOOSE_FIX_SERVICE:
             self.domain_id = DOMAINS[0].id
@@ -200,6 +214,17 @@ class GuildSettingsView(View):
                 self.domain, None if current is None else current.fix_id
             )
             self.add_item(fix_method_selector)
+
+        else:
+            msg = f"Unknown setting: {setting!r}"
+            raise ValueError(msg)
+
+        if channel_ids is not None:
+            self.channel_ids = channel_ids
+            embed = self._add_selected_channels_field(embed, self.page_channel_ids)
+
+            self.add_item(PreviousButton(label=self.translate("previous")))
+            self.add_item(NextButton(label=self.translate("next")))
 
         await i.followup.send(
             content=f"-# {self.translate('settings_embed_footer')}", embed=embed, view=self
@@ -274,8 +299,11 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
             else:
                 current_channel_ids.append(channel_id)
 
+        self.view.page = 0
+        self.view.channel_ids = current_channel_ids
+
         embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view._add_selected_channels_field(embed, current_channel_ids)
+        embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)
 
         await guild_settings.save(update_fields=(self.attr_name,))
         await i.response.edit_message(embed=embed, view=None)
@@ -396,3 +424,35 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
             option.default = option.value == self.values[0]
 
         await i.edit_original_response(embed=embed, view=self.view)
+
+
+class NextButton(ui.Button[GuildSettingsView]):
+    def __init__(self, *, label: str) -> None:
+        super().__init__(label=label, style=ButtonStyle.primary)
+
+    async def callback(self, i: Interaction) -> None:
+        if self.view is None:
+            return
+
+        self.view.page += 1
+
+        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
+        embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)
+        await i.response.edit_message(embed=embed, view=None)
+        await i.edit_original_response(view=self.view)
+
+
+class PreviousButton(ui.Button[GuildSettingsView]):
+    def __init__(self, *, label: str) -> None:
+        super().__init__(label=label, style=ButtonStyle.primary)
+
+    async def callback(self, i: Interaction) -> None:
+        if self.view is None:
+            return
+
+        self.view.page -= 1
+
+        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
+        embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)
+        await i.response.edit_message(embed=embed, view=None)
+        await i.edit_original_response(view=self.view)

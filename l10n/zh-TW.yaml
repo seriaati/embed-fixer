@@ -55,3 +55,5 @@ strings:
   fix_embed: 修復連結預覽
   extract_medias: 提取媒體
   no_fixes_found: 找不到此訊息的連結預覽修復/媒體
+  next: 下一頁
+  previous: 上一頁

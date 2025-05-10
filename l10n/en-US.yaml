@@ -55,3 +55,5 @@ strings:
   fix_embed: Fix Embed
   extract_medias: Extract Medias
   no_fixes_found: No fixes/medias found for this message
+  next: Next
+  previous: Previous
