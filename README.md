@@ -5,6 +5,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/seriaati/embed-fixer)
 ![GitHub forks](https://img.shields.io/github/forks/seriaati/embed-fixer)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/seriaati/embed-fixer)
+![Lines of code](https://tokei.rs/b1/github/seriaati/embed-fixer?style=flat&category=code&type=Python)
 ![GitHub](https://img.shields.io/github/license/seriaati/embed-fixer)
 ![Discord](https://img.shields.io/discord/1000727526194298910?label=Support%20Server&color=5865F2)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
