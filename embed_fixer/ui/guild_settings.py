@@ -70,6 +70,8 @@ class GuildSettingsView(View):
     @property
     def page_channel_ids(self) -> tuple[int, ...]:
         batched = list(itertools.batched(self.channel_ids, CHANNEL_IDS_PER_PAGE))
+        if not batched:
+            return ()
         self.page = max(min(self.page, len(batched) - 1), 0)
         return batched[self.page]
 
@@ -124,6 +126,9 @@ class GuildSettingsView(View):
         await guild_settings.save()
 
     def _add_selected_channels_field(self, embed: Embed, channel_ids: Sequence[int]) -> Embed:
+        if not channel_ids:
+            return embed
+
         guild_channel_ids = self._get_guild_channel_ids()
         valid_channel_ids: list[int] = [x for x in guild_channel_ids if x in channel_ids]
 
