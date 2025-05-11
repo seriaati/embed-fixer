@@ -210,6 +210,7 @@ class FixerCog(commands.Cog):
                     for media in result.medias
                 )
                 content, author_md = result.content, result.author_md
+                logger.debug(f"Extracted {len(result.medias)} media files from {url}")
 
                 if medias:
                     fix_found = True
@@ -248,6 +249,8 @@ class FixerCog(commands.Cog):
     async def _extract_post_info(
         self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int | None
     ) -> PostExtractionResult:
+        logger.debug(f"Extracting post info from {url} for domain {domain_id!r}")
+
         media_urls: list[str] = []
         content = ""
 
@@ -270,6 +273,8 @@ class FixerCog(commands.Cog):
         elif domain_id is DomainId.BILIBILI:
             media_urls = self.fetch_info.bilibili(url)
 
+        logger.debug(f"Extracted media URLs: {media_urls}")
+
         downloader = MediaDownloader(self.bot.session, media_urls=media_urls)
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
@@ -278,6 +283,8 @@ class FixerCog(commands.Cog):
         for media_url in media_urls:
             file_ = downloader.files.get(media_url)
             medias.append(Media(url=media_url, file=file_))
+
+        logger.debug(f"Downloaded {len(medias)} media files")
 
         return PostExtractionResult(
             medias=medias, content=content[:2000], author_md="" if info is None else info.author_md
