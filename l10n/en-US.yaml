@@ -1,59 +1,58 @@
 name: English
-strings:
-  replying_to: ⬅️ Replying to {user} ({url})
-  delete: Delete
-  delete_no_perms: Only the author or server administrators can delete this message.
-  fix_selector_placeholder: Select embed fixe(s) to disable...
-  lang_selector_placeholder: Select a language...
-  settings_embed_footer: "Settings are unique to this server; Type in the dropdown to search for channels; Selecting a channel that is already selected will remove it"
-  disable_fixes: Disable Embed Fixes for Websites
-  disable_fixes_desc: Disable embed fixes for specific websites
-  lang: Language
-  lang_desc: Change the language of the bot
-  extract_media_channels: Media Extraction Channels
-  extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
-  disable_fix_channels: Embed Fix Channel Blacklist
-  disable_fix_channels_desc: Only channels set here will receive embed fixes, whitelist has priority over blacklist
-  enable_fix_channels: Embed Fix Channel Whitelist
-  enable_fix_channels_desc: Channels here will not receive embed fixes, whitelist has priority over blacklist
-  disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
-  disable_image_spoilers_desc: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered
-  toggle_webhook_reply: Toggle Webhook Reply
-  toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook
-  sauce: Sauce
-  settings_cmd_desc: Change the bot's settings for this server
-  channel_selector_placeholder: Select channel(s)...
-  disable_webhook_reply: Disable webhook reply
-  webhook_reply_disabled: Webhook reply disabled
-  enable_webhook_reply: Enable webhook reply
-  webhook_reply_enabled: Webhook reply enabled
-  setting_param: setting
-  setting_param_desc: Setting to change
-  info_cmd_desc: Get information about the bot
-  info_embed_desc: |
-    This bot is made by [@seria_ati](https://discord.com/users/410036441129943050) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
-    For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
-    To contribute (such as translations), DM me or open a PR on GitHub.
-  selected_channels: Selected channels
-  enable_delete_reaction: Enable delete reaction
-  disable_delete_reaction: Disable delete reaction
-  toggle_delete_reaction: Toggle Delete Reaction
-  toggle_delete_reaction_desc: Add a emoji reaction to messages to delete them
-  show_post_content_channels: Show Post Content Channels
-  show_post_content_channels_desc: If media extraction is enabled, channels selected here will show the content of the post
-  no_perms_to_delete_msg: The bot is missing permission to delete messages
-  no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
-  no_perms_to_add_reactions: The bot is missing permission to add reactions
-  add_reaction_error: Failed to add reaction '{emoji}', make sure it's valid
-  failed_to_send_webhook: Failed to send webhook
-  delete_msg_emoji: Emoji used for deleting messages
-  emoji: Emoji
-  emoji_changed: Emoji used for deleting messages has been changed to {emoji}
-  choose_fix_service: Choose embed fix service
-  choose_fix_service_desc: Choose the embed fix service to use for different websites
-  using_fix_service: Using {service}
-  fix_embed: Fix Embed
-  extract_medias: Extract Medias
-  no_fixes_found: No fixes/medias found for this message
-  next: Next
-  previous: Previous
+replying_to: ⬅️ Replying to {user} ({url})
+delete: Delete
+delete_no_perms: Only the author or server administrators can delete this message.
+fix_selector_placeholder: Select embed fixe(s) to disable...
+lang_selector_placeholder: Select a language...
+settings_embed_footer: "Settings are unique to this server; Type in the dropdown to search for channels; Selecting a channel that is already selected will remove it"
+disable_fixes: Disable Embed Fixes for Websites
+disable_fixes_desc: Disable embed fixes for specific websites
+lang: Language
+lang_desc: Change the language of the bot
+extract_media_channels: Media Extraction Channels
+extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
+disable_fix_channels: Embed Fix Channel Blacklist
+disable_fix_channels_desc: Only channels set here will receive embed fixes, whitelist has priority over blacklist
+enable_fix_channels: Embed Fix Channel Whitelist
+enable_fix_channels_desc: Channels here will not receive embed fixes, whitelist has priority over blacklist
+disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
+disable_image_spoilers_desc: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered
+toggle_webhook_reply: Toggle Webhook Reply
+toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook
+sauce: Sauce
+settings_cmd_desc: Change the bot's settings for this server
+channel_selector_placeholder: Select channel(s)...
+disable_webhook_reply: Disable webhook reply
+webhook_reply_disabled: Webhook reply disabled
+enable_webhook_reply: Enable webhook reply
+webhook_reply_enabled: Webhook reply enabled
+setting_param: setting
+setting_param_desc: Setting to change
+info_cmd_desc: Get information about the bot
+info_embed_desc: |
+  This bot is made by [@seria_ati](https://discord.com/users/410036441129943050) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
+  For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
+  To contribute (such as translations), DM me or open a PR on GitHub.
+selected_channels: Selected channels
+enable_delete_reaction: Enable delete reaction
+disable_delete_reaction: Disable delete reaction
+toggle_delete_reaction: Toggle Delete Reaction
+toggle_delete_reaction_desc: Add a emoji reaction to messages to delete them
+show_post_content_channels: Show Post Content Channels
+show_post_content_channels_desc: If media extraction is enabled, channels selected here will show the content of the post
+no_perms_to_delete_msg: The bot is missing permission to delete messages
+no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
+no_perms_to_add_reactions: The bot is missing permission to add reactions
+add_reaction_error: Failed to add reaction '{emoji}', make sure it's valid
+failed_to_send_webhook: Failed to send webhook
+delete_msg_emoji: Emoji used for deleting messages
+emoji: Emoji
+emoji_changed: Emoji used for deleting messages has been changed to {emoji}
+choose_fix_service: Choose embed fix service
+choose_fix_service_desc: Choose the embed fix service to use for different websites
+using_fix_service: Using {service}
+fix_embed: Fix Embed
+extract_medias: Extract Medias
+no_fixes_found: No fixes/medias found for this message
+next: Next
+previous: Previous
