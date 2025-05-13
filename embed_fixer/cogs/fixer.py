@@ -253,25 +253,28 @@ class FixerCog(commands.Cog):
 
         media_urls: list[str] = []
         content = ""
-
         info = None
 
-        if domain_id is DomainId.PIXIV:
-            info = await self.fetch_info.pixiv(url)
-            content = "" if info is None else info.description
-            media_urls = [] if info is None else info.image_urls
-        elif domain_id is DomainId.TWITTER:
-            info = await self.fetch_info.twitter(url)
-            content = "" if info is None else info.text
-            media_urls = [] if info is None else [media.url for media in info.medias]
-        elif domain_id is DomainId.BLUESKY:
-            info = await self.fetch_info.bluesky(url)
-            content = "" if info is None else info.record.text
-            media_urls = [] if info is None else info.media_urls
-        elif domain_id is DomainId.KEMONO:
-            media_urls = await self.fetch_info.kemono(url)
-        elif domain_id is DomainId.BILIBILI:
-            media_urls = self.fetch_info.bilibili(url)
+        try:
+            if domain_id is DomainId.PIXIV:
+                info = await self.fetch_info.pixiv(url)
+                content = "" if info is None else info.description
+                media_urls = [] if info is None else info.image_urls
+            elif domain_id is DomainId.TWITTER:
+                info = await self.fetch_info.twitter(url)
+                content = "" if info is None else info.text
+                media_urls = [] if info is None else [media.url for media in info.medias]
+            elif domain_id is DomainId.BLUESKY:
+                info = await self.fetch_info.bluesky(url)
+                content = "" if info is None else info.record.text
+                media_urls = [] if info is None else info.media_urls
+            elif domain_id is DomainId.KEMONO:
+                media_urls = await self.fetch_info.kemono(url)
+            elif domain_id is DomainId.BILIBILI:
+                media_urls = self.fetch_info.bilibili(url)
+        except Exception:
+            logger.exception(f"Failed to extract post info from {url} for domain {domain_id!r}")
+            return PostExtractionResult(medias=[], content="", author_md="")
 
         logger.debug(f"Extracted media URLs: {media_urls}")
 
