@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import datetime
+import os
 import re
 from typing import TYPE_CHECKING, Any, Final
 
+from dotenv import load_dotenv
 from loguru import logger
 from pydantic import BaseModel, Field, field_validator
 
@@ -12,8 +14,11 @@ from embed_fixer.utils.misc import remove_html_tags, replace_domain
 if TYPE_CHECKING:
     import aiohttp
 
+load_dotenv()
+
 PIXIV_R18_TAG: Final[str] = "#R-18"
 TWITTER_MEDIA_TYPES = {"photo", "video", "gif"}
+PROXY_URL = os.getenv("PROXY_URL")
 
 
 class PostInfoFetcher:
@@ -108,7 +113,7 @@ class PostInfoFetcher:
         logger.debug(f"Fetching Bluesky post from URL: {api_url}")
         headers = {"User-Agent": "EmbedFixer/1.0"}
 
-        async with self.session.get(api_url, headers=headers) as response:
+        async with self.session.get(api_url, headers=headers, proxy=PROXY_URL) as response:
             if response.status != 200:
                 return None
 
