@@ -232,7 +232,7 @@ class GuildSettingsView(View):
             self.add_item(NextButton(label=self.translate("next")))
 
         await i.followup.send(
-            content=f"-# {self.translate('settings_embed_footer')}", embed=embed, view=self
+            content=self.translate("settings_embed_footer"), embed=embed, view=self
         )
         self.message = await i.original_response()
 

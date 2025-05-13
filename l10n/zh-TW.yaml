@@ -4,7 +4,7 @@ delete: 刪除
 delete_no_perms: 只有作者或伺服器管理員可以刪除此訊息。
 fix_selector_placeholder: 選擇要停用的連結預覽修復...
 lang_selector_placeholder: 選擇語言...
-settings_embed_footer: "每個伺服器的設定都是獨立的\n在下拉選單中輸入文字以搜尋頻道\n選擇已選擇過的頻道將會移除該頻道"
+settings_embed_footer: "-# 每個伺服器的設定都是獨立的\n-# 在下拉選單中輸入文字以搜尋頻道\n-# 選擇已選擇過的頻道將會移除該頻道"
 disable_fixes: 停用網站的連結預覽修復
 disable_fixes_desc: 停用特定網站的連結預覽修復
 lang: 語言

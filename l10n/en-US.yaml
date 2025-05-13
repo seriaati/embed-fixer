@@ -4,7 +4,7 @@ delete: Delete
 delete_no_perms: Only the author or server administrators can delete this message.
 fix_selector_placeholder: Select embed fixe(s) to disable...
 lang_selector_placeholder: Select a language...
-settings_embed_footer: "Settings are unique to this server; Type in the dropdown to search for channels; Selecting a channel that is already selected will remove it"
+settings_embed_footer: "-# Settings are unique to this server\n-# Type in the dropdown to search for channels\n-# Selecting a channel that is already selected will remove it"
 disable_fixes: Disable Embed Fixes for Websites
 disable_fixes_desc: Disable embed fixes for specific websites
 lang: Language
