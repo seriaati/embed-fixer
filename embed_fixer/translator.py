@@ -55,7 +55,7 @@ class Translator:
         for file in Path("./l10n").rglob("*.yaml"):
             async with aiofiles.open(file, encoding="utf-8") as f:
                 data = yaml.safe_load(await f.read())
-                self._l10n[file.stem] = data["strings"]
+                self._l10n[file.stem] = data
                 self._l10n_names[file.stem] = data["name"]
 
     def get(self, lang: str, key: str, **kwargs: Any) -> str:
