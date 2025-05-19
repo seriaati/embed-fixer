@@ -8,17 +8,17 @@ resolution-markers = [
 
 [[package]]
 name = "aerich"
-version = "0.8.2"
+version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asyncclick" },
     { name = "dictdiffer" },
     { name = "pydantic" },
-    { name = "tortoise-orm", marker = "python_full_version < '4.0'" },
+    { name = "tortoise-orm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/d1/701a44d8f7fdccf700400ce16a26c679b3f4e36de9fb86c3d9f55f64b07f/aerich-0.8.2.tar.gz", hash = "sha256:0ed2b15bb017785d17323329e5448b4b12fcfec08a20932626c12aa59a8378d6", size = 32464, upload-time = "2025-02-28T12:29:02.509Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/4b/1facb78fea47f790040035b94fdcc31630fabe1bda49ebc7a4f374da1757/aerich-0.9.0.tar.gz", hash = "sha256:37c7ca71e947e7de3aa0e778cb193fc1faebf9136a0f1108b52b902918b85acc", size = 34280, upload-time = "2025-05-14T05:18:53.281Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/6a/a3f4e906ac8d7fe0af4d41ded66edb6332d9d289011da2033eeab69393d2/aerich-0.8.2-py3-none-any.whl", hash = "sha256:c1000cebd8525a1310a0cf0ea7d9a03cc2529413f182e90f08a6c6f4f61edcda", size = 36611, upload-time = "2025-02-28T12:29:00Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/b6/4a4874edd218cf38110ce129967e02c8fb3a85fec46713d8df2e0d9a9248/aerich-0.9.0-py3-none-any.whl", hash = "sha256:64d4b79eb789895c83765d6a9fdc9d9fb047d5c39c369eeab0e3e043dfacc8a6", size = 38725, upload-time = "2025-05-14T05:18:52.266Z" },
 ]
 
 [[package]]
