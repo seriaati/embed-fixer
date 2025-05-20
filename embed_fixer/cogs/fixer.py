@@ -633,7 +633,11 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
-        if message.author.bot or message.guild is None:
+        if (
+            message.webhook_id is not None
+            or self.bot.user.id == message.author.id
+            or message.guild is None
+        ):
             return
 
         channel, guild, author = message.channel, message.guild, message.author
