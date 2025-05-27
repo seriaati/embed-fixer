@@ -231,7 +231,7 @@ class FixerCog(commands.Cog):
 
             for fix in fix_method.fixes:
                 if fix.method == "append_url":
-                    new_url = f"https://{fix.new_domain}?url={url}"
+                    new_url = f"https://{fix.new_domain}?url={clean_url}"
                 else:
                     if fix.old_domain is None or not domain_in_url(clean_url, fix.old_domain):
                         continue
