@@ -98,6 +98,7 @@ Below are settings you can change with the `/settings` command:
 - Show post content: For channels with media extraction enabled, channels with this feature on will also show the content and author of the post along with the media.
 - Change delete message emoji: Change the reaction emoji used to delete the webhook messages, defaults to ❌. You can set custom emojis too, like `<:emoji:123456789012345678>`
 - Choose embed fix service: Choose the embed fix service to use for different websites.
+- Bot visibility: Change whether Embed Fixer can fix other bots' embeds or just ones sent by users.
 
 # Questions, Issues, Feedback, Contributions
 
