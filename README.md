@@ -80,8 +80,9 @@ When you send a link that is from one of the platforms above in channel(s) with 
 
 ![image](https://iili.io/2RPwDMb.png)  
 
-> [!NOTE]
-> If the link is sent in a NSFW channel then the extracted media will be spoilered automatically (changeable).
+If the link is sent in a NSFW channel, then the extracted media will be spoilered automatically (changeable).
+
+Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the extracted image(s) will be spoilered automatically.
 
 ## Very Customizable
 

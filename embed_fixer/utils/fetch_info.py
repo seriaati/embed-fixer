@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-import os
 import re
 from typing import TYPE_CHECKING, Any, Final
 
@@ -18,7 +17,6 @@ load_dotenv()
 
 PIXIV_R18_TAG: Final[str] = "#R-18"
 TWITTER_MEDIA_TYPES = {"photo", "video", "gif"}
-PROXY_URL = os.getenv("PROXY_URL")
 
 
 class PostInfoFetcher:
@@ -113,7 +111,7 @@ class PostInfoFetcher:
         logger.debug(f"Fetching Bluesky post from URL: {api_url}")
         headers = {"User-Agent": "EmbedFixer/1.0"}
 
-        async with self.session.get(api_url, headers=headers, proxy=PROXY_URL) as response:
+        async with self.session.get(api_url, headers=headers) as response:
             if response.status != 200:
                 return None
 

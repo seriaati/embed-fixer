@@ -145,7 +145,7 @@ class FixerCog(commands.Cog):
             break
         return domain, website
 
-    async def _find_fixes(  # noqa: PLR0914
+    async def _find_fixes(  # noqa: PLR0912, PLR0914
         self,
         message: discord.Message,
         *,
@@ -167,7 +167,7 @@ class FixerCog(commands.Cog):
         )
         urls = extract_urls(message.content)
 
-        for url in urls:
+        for url, spoilered in urls:
             clean_url = remove_query_params(url).replace("www.", "")
             domain, website = self._get_matching_domain_website(settings, clean_url)
 
@@ -190,14 +190,12 @@ class FixerCog(commands.Cog):
                 if not is_ctx_menu:
                     asyncio.create_task(message.add_reaction("⏳"))
 
+                spoiler = spoilered or (
+                    is_nsfw_channel
+                    and (settings is not None and channel_id not in settings.disable_image_spoilers)
+                )
                 result = await self._extract_post_info(
-                    domain.id,
-                    url,
-                    spoiler=is_nsfw_channel
-                    and (
-                        settings is not None and channel_id not in settings.disable_image_spoilers
-                    ),
-                    filesize_limit=filesize_limit,
+                    domain.id, url, spoiler=spoiler, filesize_limit=filesize_limit
                 )
                 medias.extend(
                     Media(url=media.url)
@@ -214,7 +212,11 @@ class FixerCog(commands.Cog):
 
                 if medias:
                     fix_found = True
-                    message.content = message.content.replace(url, "")
+                    if spoilered:
+                        message.content = message.content.replace(f"||{url}||", "")
+                    else:
+                        message.content = message.content.replace(url, "")
+
                     sauces.append(clean_url)
                     continue
 

@@ -12,11 +12,16 @@ def remove_html_tags(input_string: str) -> str:
     return re.sub(r"<[^>]*>", "", input_string)
 
 
-def extract_urls(text: str) -> list[str]:
-    return re.findall(
-        r"(?<!\$)http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+",
-        text,
-    )
+def extract_urls(text: str) -> list[tuple[str, bool]]:
+    spoiler_pattern = r"\|\|(https?://[^\s|]+)\|\|"
+    regular_pattern = r"(?<!\$)(https?://[^\s]+)"
+
+    spoiler_urls = [(match, True) for match in re.findall(spoiler_pattern, text)]
+
+    text_without_spoilers = re.sub(spoiler_pattern, "", text)
+    regular_urls = [(match, False) for match in re.findall(regular_pattern, text_without_spoilers)]
+
+    return spoiler_urls + regular_urls
 
 
 def get_filesize(fp: io.BufferedIOBase) -> int:
