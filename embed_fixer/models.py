@@ -26,6 +26,9 @@ class GuildSettings(Model):
     class Meta:
         table = "guild_settings"
 
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}({', '.join(f'{field}={getattr(self, field)!r}' for field in self._meta.db_fields if hasattr(self, field))})"
+
 
 class GuildFixMethod(Model):
     guild: fields.ForeignKeyRelation[GuildSettings] = fields.ForeignKeyField(

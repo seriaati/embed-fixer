@@ -94,6 +94,16 @@ class SettingsCog(commands.Cog):
         view = GuildSettingsView(i.guild, self.bot.translator)
         await view.start(i, setting=setting)
 
+    @commands.is_owner()
+    @commands.guild_only()
+    @commands.command(name="gs")
+    async def get_guild_settings(self, ctx: commands.Context) -> None:
+        if ctx.guild is None:
+            return
+
+        settings, _ = await GuildSettings.get_or_create(id=ctx.guild.id)
+        await ctx.send(str(settings))
+
 
 async def setup(bot: EmbedFixer) -> None:
     await bot.add_cog(SettingsCog(bot))
