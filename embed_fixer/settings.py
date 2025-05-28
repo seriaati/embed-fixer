@@ -15,3 +15,4 @@ class Setting(StrEnum):
     SHOW_POST_CONTENT_CHANNELS = "show_post_content_channels"
     DELETE_MSG_EMOJI = "delete_msg_emoji"
     CHOOSE_FIX_SERVICE = "choose_fix_service"
+    BOT_VISIBILITY = "bot_visibility"

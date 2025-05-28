@@ -54,3 +54,7 @@ extract_medias: Extract Medias
 no_fixes_found: No fixes/medias found for this message
 next: Next
 previous: Previous
+bot_visibility: Bot Visibility
+bot_visibility_desc: "If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users."
+enable_bot_visibility: Enable bot visibility
+disable_bot_visibility: Disable bot visibility

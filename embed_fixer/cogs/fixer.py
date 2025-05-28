@@ -633,17 +633,19 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
+        channel, guild, author = message.channel, message.guild, message.author
+
         if (
-            (message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name)
-            or self.bot.user.id == message.author.id
-            or message.guild is None
+            (message.webhook_id is not None and USERNAME_SUFFIX in author.display_name)
+            or self.bot.user.id == author.id
+            or guild is None
         ):
             return
 
-        channel, guild, author = message.channel, message.guild, message.author
-
         guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)
-        if self._skip_channel(guild_settings, channel.id):
+        if self._skip_channel(guild_settings, channel.id) or (
+            not guild_settings.bot_visibility and author.bot
+        ):
             return
 
         result = await self._find_fixes(

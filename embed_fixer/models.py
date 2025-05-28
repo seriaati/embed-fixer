@@ -22,6 +22,7 @@ class GuildSettings(Model):
     lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
     use_vxreddit = fields.BooleanField(default=False)
     delete_msg_emoji = fields.CharField(max_length=100, default="❌")
+    bot_visibility = fields.BooleanField(default=False)
 
     class Meta:
         table = "guild_settings"
