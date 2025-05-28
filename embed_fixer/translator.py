@@ -61,4 +61,11 @@ class Translator:
     def get(self, lang: str, key: str, **kwargs: Any) -> str:
         if lang not in self._l10n:
             lang = "en-US"
-        return self._l10n[lang][key].format(**kwargs)
+
+        lang_map = self._l10n[lang]
+        string = lang_map.get(key)
+        if not string:
+            if lang == "en-US":
+                return key
+            return self.get("en-US", key, **kwargs)
+        return string.format(**kwargs)
