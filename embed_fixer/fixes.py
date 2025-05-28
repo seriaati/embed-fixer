@@ -176,12 +176,12 @@ DOMAINS: Final[list[Domain]] = [
                     Fix(old_domain="instagram.com", new_domain="ddinstagram.com", method="replace")
                 ],
                 repo_url="https://github.com/Wikidepia/InstaFix",
+                default=True,
             ),
             FixMethod(
                 id=9,
                 name="EmbedEZ",
                 fixes=[Fix(new_domain="embedez.seria.moe/embed", method="append_url")],
-                default=True,
                 repo_url="https://github.com/seriaati/embedez",
             ),
             FixMethod(
