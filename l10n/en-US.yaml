@@ -23,9 +23,7 @@ sauce: Sauce
 settings_cmd_desc: Change the bot's settings for this server
 channel_selector_placeholder: Select channel(s)...
 disable_webhook_reply: Disable webhook reply
-webhook_reply_disabled: Webhook reply disabled
 enable_webhook_reply: Enable webhook reply
-webhook_reply_enabled: Webhook reply enabled
 setting_param: setting
 setting_param_desc: Setting to change
 info_cmd_desc: Get information about the bot
