@@ -138,7 +138,7 @@ class GuildSettingsView(View):
             value="\n".join([f"- <#{channel_id}>" for channel_id in valid_channel_ids]),
         )
 
-    async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: PLR0915
+    async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: PLR0912, PLR0915
         await i.response.defer(ephemeral=True)
         await super().start()
 
@@ -186,17 +186,31 @@ class GuildSettingsView(View):
             channel_ids = guild_settings.disable_image_spoilers
 
         elif setting is Setting.TOGGLE_WEBHOOK_REPLY:
-            toggle_btn = WebhookReplyToggle(
+            toggle_btn = ToggleButton(
                 current_toggle=guild_settings.disable_webhook_reply,
                 labels={True: "enable_webhook_reply", False: "disable_webhook_reply"},
+                attr_name="disable_webhook_reply",
+                reverse_color=False,
             )
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
         elif setting is Setting.TOGGLE_DELETE_REACTION:
-            toggle_btn = DisableDeleteReaction(
+            toggle_btn = ToggleButton(
                 current_toggle=guild_settings.disable_delete_reaction,
                 labels={True: "enable_delete_reaction", False: "disable_delete_reaction"},
+                attr_name="disable_delete_reaction",
+                reverse_color=False,
+            )
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
+
+        elif setting is Setting.BOT_VISIBILITY:
+            toggle_btn = ToggleButton(
+                current_toggle=guild_settings.bot_visibility,
+                labels={True: "disable_bot_visibility", False: "enable_bot_visibility"},
+                attr_name="bot_visibility",
+                reverse_color=True,
             )
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
@@ -316,40 +330,34 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
 
 
 class ToggleButton(ui.Button[GuildSettingsView]):
-    def __init__(self, *, current_toggle: bool, labels: dict[bool, str]) -> None:
-        super().__init__(style=ButtonStyle.green if current_toggle else ButtonStyle.red)
+    def __init__(
+        self, *, current_toggle: bool, labels: dict[bool, str], attr_name: str, reverse_color: bool
+    ) -> None:
         self.current_toggle = current_toggle
         self.labels = labels
+        self.attr_name = attr_name
+        self.reverse_color = reverse_color
+        super().__init__()
 
     def set_style(self, view: View) -> None:
-        self.style = ButtonStyle.green if self.current_toggle else ButtonStyle.red
+        if self.reverse_color:
+            self.style = ButtonStyle.red if self.current_toggle else ButtonStyle.green
+        else:
+            self.style = ButtonStyle.green if self.current_toggle else ButtonStyle.red
         self.label = view.translate(self.labels[self.current_toggle])
 
-
-class WebhookReplyToggle(ToggleButton):
     async def callback(self, i: Interaction) -> None:
-        assert self.view is not None
+        if self.view is None:
+            return
 
+        await i.response.defer()
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
-        guild_settings.disable_webhook_reply = not guild_settings.disable_webhook_reply
-        await guild_settings.save(update_fields=("disable_webhook_reply",))
+        setattr(guild_settings, self.attr_name, not self.current_toggle)
+        await guild_settings.save(update_fields=(self.attr_name,))
 
-        self.current_toggle = guild_settings.disable_webhook_reply
+        self.current_toggle = not self.current_toggle
         self.set_style(self.view)
-        await i.response.edit_message(view=self.view)
-
-
-class DisableDeleteReaction(ToggleButton):
-    async def callback(self, i: Interaction) -> None:
-        assert self.view is not None
-
-        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
-        guild_settings.disable_delete_reaction = not guild_settings.disable_delete_reaction
-        await guild_settings.save(update_fields=("disable_delete_reaction",))
-
-        self.current_toggle = guild_settings.disable_delete_reaction
-        self.set_style(self.view)
-        await i.response.edit_message(view=self.view)
+        await i.edit_original_response(view=self.view)
 
 
 class DomainSelector(ui.Select[GuildSettingsView]):
