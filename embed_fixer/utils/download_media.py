@@ -42,9 +42,11 @@ class MediaDownloader:
             return
 
         if media_type:
-            filename = f"{url.split('/')[-1].split('.')[0]}.{media_type.split('/')[-1]}"
+            filename = (
+                f"{url.rsplit('/', maxsplit=1)[-1].split('.')[0]}.{media_type.split('/')[-1]}"
+            )
         else:
-            filename = url.split("/")[-1]
+            filename = url.rsplit("/", maxsplit=1)[-1]
 
         self.files[url] = discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
 
