@@ -151,7 +151,7 @@ class GuildSettingsView(View):
         channel_ids: list[int] | None = None
 
         if setting is Setting.DISABLE_FIXES:
-            fix_selector = FixSelector(guild_settings.disabled_fixes)
+            fix_selector = FixSelector(guild_settings.disabled_domains)
             fix_selector.placeholder = self.translate("fix_selector_placeholder")
             self.add_item(fix_selector)
 
@@ -252,11 +252,13 @@ class GuildSettingsView(View):
 
 
 class FixSelector(ui.Select[GuildSettingsView]):
-    def __init__(self, current: list[str]) -> None:
+    def __init__(self, current: list[int]) -> None:
         super().__init__(
             options=[
                 SelectOption(
-                    label=domain.name, value=str(domain.id.value), default=domain in current
+                    label=domain.name,
+                    value=str(domain.id.value),
+                    default=domain.id.value in current,
                 )
                 for domain in DOMAINS
             ],
