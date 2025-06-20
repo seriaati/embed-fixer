@@ -331,10 +331,6 @@ class FixerCog(commands.Cog):
         medias, sauces = result.medias, result.sauces
         medias.extend([Media(url=a.url, file=await a.to_file()) for a in message.attachments])
 
-        disable_delete_reaction = (
-            None if guild_settings is None else guild_settings.disable_delete_reaction
-        )
-        delete_msg_emoji = None if guild_settings is None else guild_settings.delete_msg_emoji
         show_post_content = (
             None
             if guild_settings is None
@@ -375,10 +371,7 @@ class FixerCog(commands.Cog):
             )
         else:
             await self._send_message(
-                message,
-                disable_delete_reaction=disable_delete_reaction,
-                delete_msg_emoji=delete_msg_emoji,
-                interaction=interaction,
+                message, guild_settings=guild_settings, interaction=interaction
             )
 
     async def _send_files(
@@ -393,10 +386,6 @@ class FixerCog(commands.Cog):
         """Send multiple files in batches of 10."""
         guild_lang: str | None = None
         fix_message = None
-        disable_delete_reaction = (
-            None if guild_settings is None else guild_settings.disable_delete_reaction
-        )
-        delete_msg_emoji = None if guild_settings is None else guild_settings.delete_msg_emoji
 
         for chunk in itertools.batched(medias, 10):
             kwargs: dict[str, Any] = {}
@@ -421,8 +410,7 @@ class FixerCog(commands.Cog):
 
             fix_message = await self._send_message(
                 message,
-                disable_delete_reaction=disable_delete_reaction,
-                delete_msg_emoji=delete_msg_emoji,
+                guild_settings=guild_settings,
                 medias=chunk,
                 interaction=interaction,
                 **kwargs,
@@ -436,8 +424,7 @@ class FixerCog(commands.Cog):
         self,
         message: discord.Message,
         *,
-        disable_delete_reaction: bool | None,
-        delete_msg_emoji: str | None,
+        guild_settings: GuildSettings | None,
         medias: Sequence[Media] | None = None,
         interaction: Interaction | None = None,
         **kwargs: Any,
@@ -445,6 +432,14 @@ class FixerCog(commands.Cog):
         """Send a message with a webhook, interaction, or regular message."""
         medias = medias or []
         files = [media.file for media in medias if media.file is not None]
+
+        disable_delete_reaction = (
+            None if guild_settings is None else guild_settings.disable_delete_reaction
+        )
+        delete_msg_emoji = None if guild_settings is None else guild_settings.delete_msg_emoji
+        funnel_target_channel = (
+            None if guild_settings is None else guild_settings.funnel_target_channel
+        )
 
         if interaction is not None:
             allowed_mentions = discord.AllowedMentions(
@@ -470,7 +465,16 @@ class FixerCog(commands.Cog):
 
             fix_message = await interaction.original_response()
         else:
-            webhook = await self._get_or_create_webhook(message)
+            webhook_channel = message.channel
+
+            if funnel_target_channel is not None:
+                target_channel = self.bot.get_channel(
+                    funnel_target_channel
+                ) or await self.bot.fetch_channel(funnel_target_channel)
+
+                webhook_channel = target_channel
+
+            webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
 
             try:
                 if webhook is not None:
@@ -485,7 +489,7 @@ class FixerCog(commands.Cog):
 
                 message.content += "\n".join(media.url for media in medias)
                 fix_message = await self._send_message(
-                    message, disable_delete_reaction=disable_delete_reaction, **kwargs
+                    message, guild_settings=guild_settings, **kwargs
                 )
 
         if not disable_delete_reaction and delete_msg_emoji and interaction is None:
@@ -545,18 +549,23 @@ class FixerCog(commands.Cog):
             )
             raise
 
-    async def _get_or_create_webhook(self, message: discord.Message) -> discord.Webhook | None:
-        if not isinstance(message.channel, discord.TextChannel):
+    async def _get_or_create_webhook(
+        self,
+        channel: discord.abc.GuildChannel
+        | discord.abc.MessageableChannel
+        | discord.abc.PrivateChannel,
+        guild: discord.Guild | None,
+    ) -> discord.Webhook | None:
+        if not isinstance(channel, discord.TextChannel):
             return None
 
         try:
-            webhooks = await message.channel.webhooks()
+            webhooks = await channel.webhooks()
         except discord.Forbidden:
             with contextlib.suppress(discord.Forbidden):
-                await message.channel.send(
+                await channel.send(
                     self.bot.translator.get(
-                        await Translator.get_guild_lang(message.guild),
-                        "no_perms_to_manage_webhooks",
+                        await Translator.get_guild_lang(guild), "no_perms_to_manage_webhooks"
                     )
                 )
             return None
@@ -564,7 +573,7 @@ class FixerCog(commands.Cog):
         webhook_name = self.bot.user.name
         webhook = discord.utils.get(webhooks, name=webhook_name)
         if webhook is None:
-            webhook = await message.channel.create_webhook(
+            webhook = await channel.create_webhook(
                 name=webhook_name, avatar=await self.bot.user.display_avatar.read()
             )
 

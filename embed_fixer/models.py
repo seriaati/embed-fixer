@@ -23,6 +23,7 @@ class GuildSettings(Model):
     use_vxreddit = fields.BooleanField(default=False)
     delete_msg_emoji = fields.CharField(max_length=100, default="❌")
     bot_visibility = fields.BooleanField(default=False)
+    funnel_target_channel: fields.Field[int | None] = fields.BigIntField(null=True)
 
     class Meta:
         table = "guild_settings"

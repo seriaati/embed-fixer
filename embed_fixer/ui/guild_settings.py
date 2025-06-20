@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 import discord
 from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, Thread, ui
@@ -127,6 +127,7 @@ class GuildSettingsView(View):
 
     def _add_selected_channels_field(self, embed: Embed, channel_ids: Sequence[int]) -> Embed:
         if not channel_ids:
+            embed.clear_fields()
             return embed
 
         guild_channel_ids = self._get_guild_channel_ids()
@@ -161,26 +162,26 @@ class GuildSettingsView(View):
             self.add_item(lang_selector)
 
         elif setting is Setting.EXTRACT_MEDIA_CHANNELS:
-            selector = ChannelSelect("extract_media_channels")
+            selector = ChannelSelect("extract_media_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.extract_media_channels
             embed = self._add_selected_channels_field(embed, channel_ids)
 
         elif setting is Setting.DISABLE_FIX_CHANNELS:
-            selector = ChannelSelect("disable_fix_channels")
+            selector = ChannelSelect("disable_fix_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.disable_fix_channels
 
         elif setting is Setting.ENABLE_FIX_CHANNELS:
-            selector = ChannelSelect("enable_fix_channels")
+            selector = ChannelSelect("enable_fix_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.enable_fix_channels
 
         elif setting is Setting.DISABLE_IMAGE_SPOILERS:
-            selector = ChannelSelect("disable_image_spoilers")
+            selector = ChannelSelect("disable_image_spoilers", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.disable_image_spoilers
@@ -216,7 +217,7 @@ class GuildSettingsView(View):
             self.add_item(toggle_btn)
 
         elif setting is Setting.SHOW_POST_CONTENT_CHANNELS:
-            selector = ChannelSelect("show_post_content_channels")
+            selector = ChannelSelect("show_post_content_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.show_post_content_channels
@@ -233,6 +234,13 @@ class GuildSettingsView(View):
                 self.domain, None if current is None else current.fix_id
             )
             self.add_item(fix_method_selector)
+
+        elif setting is Setting.FUNNEL_TARGET_CHANNEL:
+            channel_selector = ChannelSelect("funnel_target_channel", select_type="single")
+            channel_selector.placeholder = self.translate("channel_selector_placeholder")
+            self.add_item(channel_selector)
+            if guild_settings.funnel_target_channel is not None:
+                channel_ids = [guild_settings.funnel_target_channel]
 
         else:
             msg = f"Unknown setting: {setting!r}"
@@ -295,24 +303,34 @@ class LangSelector(ui.Select[GuildSettingsView]):
 
 
 class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
-    def __init__(self, attr_name: str) -> None:
+    def __init__(self, attr_name: str, *, select_type: Literal["single", "multiple"]) -> None:
         super().__init__(
             min_values=0,
-            max_values=25,
+            max_values=25 if select_type == "multiple" else 1,
             channel_types=[
                 ct
                 for ct in ChannelType
                 if ct not in {ChannelType.category, ChannelType.group, ChannelType.forum}
             ],
         )
+
         self.attr_name = attr_name
+        self.select_type = select_type
 
     async def callback(self, i: Interaction) -> None:
         assert self.view is not None
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         channel_ids = [channel.id for channel in self.values]
-        current_channel_ids: list[int] = getattr(guild_settings, self.attr_name)
+
+        current_channel_ids: list[int | None]
+
+        if self.select_type == "multiple":
+            current_channel_ids = getattr(guild_settings, self.attr_name, [])
+        else:
+            current_channel_ids = [getattr(guild_settings, self.attr_name)]
+
+        current_channel_ids = [x for x in current_channel_ids if x is not None]
 
         for channel_id in channel_ids:
             if channel_id in current_channel_ids:
@@ -321,7 +339,16 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
                 current_channel_ids.append(channel_id)
 
         self.view.page = 0
-        self.view.channel_ids = current_channel_ids
+        self.view.channel_ids = current_channel_ids  # pyright: ignore[reportAttributeAccessIssue]
+
+        if self.select_type == "multiple":
+            setattr(guild_settings, self.attr_name, current_channel_ids)
+        else:
+            setattr(
+                guild_settings,
+                self.attr_name,
+                current_channel_ids[0] if current_channel_ids else None,
+            )
 
         embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
         embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)

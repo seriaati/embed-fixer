@@ -16,3 +16,4 @@ class Setting(StrEnum):
     DELETE_MSG_EMOJI = "delete_msg_emoji"
     CHOOSE_FIX_SERVICE = "choose_fix_service"
     BOT_VISIBILITY = "bot_visibility"
+    FUNNEL_TARGET_CHANNEL = "funnel_target_channel"
