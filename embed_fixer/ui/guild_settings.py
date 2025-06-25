@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from embed_fixer.bot import Interaction
     from embed_fixer.translator import Translator
 
-CHANNEL_IDS_PER_PAGE = 10
+ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
 
 
 class DeleteMsgEmojiModal(Modal):
@@ -68,7 +68,7 @@ class GuildSettingsView(View):
 
     @property
     def page_item_ids(self) -> tuple[int, ...]:
-        batched = list(itertools.batched(self.item_ids, CHANNEL_IDS_PER_PAGE))
+        batched = list(itertools.batched(self.item_ids, ITEM_IDS_PER_PAGE))
         if not batched:
             return ()
         self.page = max(min(self.page, len(batched) - 1), 0)
