@@ -4,9 +4,18 @@ permissions:
   packages: write
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'embed_fixer/**.py'
+      - 'run.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - '.github/workflows/docker-build.yml'
 
 jobs:
   docker-build:

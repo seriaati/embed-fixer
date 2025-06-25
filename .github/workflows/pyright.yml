@@ -1,10 +1,25 @@
 name: Pyright
+
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'embed_fixer/**.py'
+      - 'run.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.github/workflows/pyright.yml'
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - 'embed_fixer/**.py'
+      - 'run.py'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.github/workflows/pyright.yml'
 
 jobs:
   pyright:
