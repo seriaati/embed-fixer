@@ -101,6 +101,7 @@ Below are settings you can change with the `/settings` command:
 - Choose embed fix service: Choose the embed fix service to use for different websites.
 - Bot visibility: Change whether Embed Fixer can fix other bots' embeds or just ones sent by users.
 - Funnel to target channel: If set, the bot will send all fixed embeds and extracted medias to a specific channel instead of the original channel.
+- Whitelist roles: If set, only users that has one of the specified roles will have their embeds fixed.
 
 # Questions, Issues, Feedback, Contributions
 
