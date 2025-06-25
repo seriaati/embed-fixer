@@ -1,11 +1,27 @@
 name: Ruff lint
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'embed_fixer/**.py'
+      - 'run.py'
+      - 'ruff.toml'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.github/workflows/ruff-lint.yml'
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - 'embed_fixer/**.py'
+      - 'run.py'
+      - 'ruff.toml'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.github/workflows/ruff-lint.yml'
 
 jobs:
   ruff-lint:
