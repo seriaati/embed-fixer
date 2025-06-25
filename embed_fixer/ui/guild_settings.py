@@ -14,14 +14,12 @@ from embed_fixer.settings import Setting
 from .components import Modal, View
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from discord.abc import GuildChannel
 
     from embed_fixer.bot import Interaction
     from embed_fixer.translator import Translator
 
-CHANNEL_IDS_PER_PAGE = 10
+ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
 
 
 class DeleteMsgEmojiModal(Modal):
@@ -52,7 +50,8 @@ class GuildSettingsView(View):
         self.domain_id: DomainId | None = None
 
         self.page = 0
-        self.channel_ids: list[int] = []
+        self.item_ids: list[int] = []
+        self.item_type: Literal["channel", "role"] | None = None
 
     @property
     def domain(self) -> Domain:
@@ -68,12 +67,22 @@ class GuildSettingsView(View):
         return domain
 
     @property
-    def page_channel_ids(self) -> tuple[int, ...]:
-        batched = list(itertools.batched(self.channel_ids, CHANNEL_IDS_PER_PAGE))
+    def page_item_ids(self) -> tuple[int, ...]:
+        batched = list(itertools.batched(self.item_ids, ITEM_IDS_PER_PAGE))
         if not batched:
             return ()
         self.page = max(min(self.page, len(batched) - 1), 0)
         return batched[self.page]
+
+    async def _update_page(self, i: Interaction) -> None:
+        embed = self.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
+        if self.item_type == "role":
+            embed = self._add_selected_roles_field(embed)
+        elif self.item_type == "channel":
+            embed = self._add_selected_channels_field(embed)
+
+        await i.response.edit_message(embed=embed, view=None)
+        await i.edit_original_response(view=self)
 
     async def _get_current_fix(self) -> GuildFixMethod | None:
         if self.domain_id is None:
@@ -125,7 +134,8 @@ class GuildSettingsView(View):
 
         await guild_settings.save()
 
-    def _add_selected_channels_field(self, embed: Embed, channel_ids: Sequence[int]) -> Embed:
+    def _add_selected_channels_field(self, embed: Embed) -> Embed:
+        channel_ids = self.page_item_ids
         if not channel_ids:
             embed.clear_fields()
             return embed
@@ -139,7 +149,22 @@ class GuildSettingsView(View):
             value="\n".join([f"- <#{channel_id}>" for channel_id in valid_channel_ids]),
         )
 
-    async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: PLR0912, PLR0915
+    def _add_selected_roles_field(self, embed: Embed) -> Embed:
+        role_ids = self.page_item_ids
+        if not role_ids:
+            embed.clear_fields()
+            return embed
+
+        guild_roles = self.guild.roles
+        valid_roles = [role for role in guild_roles if role.id in role_ids]
+
+        embed.clear_fields()
+        return embed.add_field(
+            name=self.translate("selected_roles"),
+            value="\n".join([f"- {role.mention}" for role in valid_roles]),
+        )
+
+    async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: C901, PLR0912, PLR0915
         await i.response.defer(ephemeral=True)
         await super().start()
 
@@ -149,7 +174,9 @@ class GuildSettingsView(View):
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
         await self._remove_invalid_channels(guild_settings)
+
         channel_ids: list[int] | None = None
+        role_ids: list[int] | None = None
 
         if setting is Setting.DISABLE_FIXES:
             fix_selector = FixSelector(guild_settings.disabled_domains)
@@ -166,7 +193,6 @@ class GuildSettingsView(View):
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.extract_media_channels
-            embed = self._add_selected_channels_field(embed, channel_ids)
 
         elif setting is Setting.DISABLE_FIX_CHANNELS:
             selector = ChannelSelect("disable_fix_channels", select_type="multiple")
@@ -242,14 +268,26 @@ class GuildSettingsView(View):
             if guild_settings.funnel_target_channel is not None:
                 channel_ids = [guild_settings.funnel_target_channel]
 
+        elif setting is Setting.WHITELIST_ROLE_IDS:
+            role_selector = RoleSelect("whitelist_role_ids")
+            role_selector.placeholder = self.translate("role_selector_placeholder")
+            self.add_item(role_selector)
+            role_ids = guild_settings.whitelist_role_ids
+
         else:
             msg = f"Unknown setting: {setting!r}"
             raise ValueError(msg)
 
         if channel_ids is not None:
-            self.channel_ids = channel_ids
-            embed = self._add_selected_channels_field(embed, self.page_channel_ids)
+            self.item_ids = channel_ids
+            self.item_type = "channel"
+            embed = self._add_selected_channels_field(embed)
+        elif role_ids is not None:
+            self.item_ids = role_ids
+            self.item_type = "role"
+            embed = self._add_selected_roles_field(embed)
 
+        if channel_ids is not None or role_ids is not None:
             self.add_item(PreviousButton(label=self.translate("previous")))
             self.add_item(NextButton(label=self.translate("next")))
 
@@ -339,7 +377,7 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
                 current_channel_ids.append(channel_id)
 
         self.view.page = 0
-        self.view.channel_ids = current_channel_ids  # pyright: ignore[reportAttributeAccessIssue]
+        self.view.item_ids = current_channel_ids  # pyright: ignore[reportAttributeAccessIssue]
 
         if self.select_type == "multiple":
             setattr(guild_settings, self.attr_name, current_channel_ids)
@@ -350,10 +388,41 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
                 current_channel_ids[0] if current_channel_ids else None,
             )
 
-        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)
-
         await guild_settings.save(update_fields=(self.attr_name,))
+
+        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
+        embed = self.view._add_selected_channels_field(embed)
+        await i.response.edit_message(embed=embed, view=None)
+        await i.edit_original_response(view=self.view)
+
+
+class RoleSelect(ui.RoleSelect[GuildSettingsView]):
+    def __init__(self, attr_name: str) -> None:
+        super().__init__(min_values=0, max_values=25)
+        self.attr_name = attr_name
+
+    async def callback(self, i: Interaction) -> None:
+        assert self.view is not None
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
+        role_ids = [role.id for role in self.values]
+
+        current_role_ids: list[int] = getattr(guild_settings, self.attr_name, [])
+
+        for role_id in role_ids:
+            if role_id in current_role_ids:
+                current_role_ids.remove(role_id)
+            else:
+                current_role_ids.append(role_id)
+
+        self.view.page = 0
+        self.view.item_ids = current_role_ids
+
+        setattr(guild_settings, self.attr_name, current_role_ids)
+        await guild_settings.save(update_fields=(self.attr_name,))
+
+        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
+        embed = self.view._add_selected_roles_field(embed)
         await i.response.edit_message(embed=embed, view=None)
         await i.edit_original_response(view=self.view)
 
@@ -473,15 +542,9 @@ class NextButton(ui.Button[GuildSettingsView]):
         super().__init__(label=label, style=ButtonStyle.primary)
 
     async def callback(self, i: Interaction) -> None:
-        if self.view is None:
-            return
-
+        assert self.view is not None
         self.view.page += 1
-
-        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)
-        await i.response.edit_message(embed=embed, view=None)
-        await i.edit_original_response(view=self.view)
+        await self.view._update_page(i)
 
 
 class PreviousButton(ui.Button[GuildSettingsView]):
@@ -489,12 +552,6 @@ class PreviousButton(ui.Button[GuildSettingsView]):
         super().__init__(label=label, style=ButtonStyle.primary)
 
     async def callback(self, i: Interaction) -> None:
-        if self.view is None:
-            return
-
+        assert self.view is not None
         self.view.page -= 1
-
-        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view._add_selected_channels_field(embed, self.view.page_channel_ids)
-        await i.response.edit_message(embed=embed, view=None)
-        await i.edit_original_response(view=self.view)
+        await self.view._update_page(i)

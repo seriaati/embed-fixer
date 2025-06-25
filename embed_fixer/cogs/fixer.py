@@ -654,8 +654,15 @@ class FixerCog(commands.Cog):
             return
 
         guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)
-        if self._skip_channel(guild_settings, channel.id) or (
-            not guild_settings.bot_visibility and author.bot
+        whitelist_role_skip = (
+            isinstance(author, discord.Member)
+            and guild_settings.whitelist_role_ids
+            and not any(role.id in guild_settings.whitelist_role_ids for role in author.roles)
+        )
+        if (
+            self._skip_channel(guild_settings, channel.id)
+            or (not guild_settings.bot_visibility and author.bot)
+            or whitelist_role_skip
         ):
             return
 
