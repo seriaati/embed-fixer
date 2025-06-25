@@ -60,3 +60,7 @@ enable_bot_visibility: 啟用機器人能見度
 disable_bot_visibility: 停用機器人能見度
 funnel_target_channel: 引流目標頻道
 funnel_target_channel_desc: "有設置的話，所有被修復的連結預覽和提取的媒體都會被發送至設置的頻道，而不是原訊息的頻道。"
+whitelist_role_ids: 身份組白名單
+whitelist_role_ids_desc: "如有設置值，則只有擁有這些身份組之一的使用者才會修復他們發送的連結預覽。留空則禁用。"
+selected_roles: 已選擇的身份組
+role_selector_placeholder: 選擇身份組...
