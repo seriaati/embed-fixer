@@ -280,9 +280,11 @@ class GuildSettingsView(View):
 
         if channel_ids is not None:
             self.item_ids = channel_ids
+            self.item_type = "channel"
             embed = self._add_selected_channels_field(embed)
         elif role_ids is not None:
             self.item_ids = role_ids
+            self.item_type = "role"
             embed = self._add_selected_roles_field(embed)
 
         if channel_ids is not None or role_ids is not None:
