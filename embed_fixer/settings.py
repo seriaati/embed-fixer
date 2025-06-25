@@ -17,3 +17,4 @@ class Setting(StrEnum):
     CHOOSE_FIX_SERVICE = "choose_fix_service"
     BOT_VISIBILITY = "bot_visibility"
     FUNNEL_TARGET_CHANNEL = "funnel_target_channel"
+    WHITELIST_ROLE_IDS = "whitelist_role_ids"

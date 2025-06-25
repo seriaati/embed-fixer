@@ -60,3 +60,7 @@ enable_bot_visibility: Enable bot visibility
 disable_bot_visibility: Disable bot visibility
 funnel_target_channel: Funnel to Target Channel
 funnel_target_channel_desc: "If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel."
+whitelist_role_ids: Whitelist Roles
+whitelist_role_ids_desc: "If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable."
+selected_roles: Selected roles
+role_selector_placeholder: Select role(s)...
