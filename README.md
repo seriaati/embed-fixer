@@ -12,10 +12,22 @@
 
 # Embed Fixer
 
+## Add Bot
+
 [**Bot invitation link**](https://discord.com/oauth2/authorize?client_id=770144963735453696)
 
 Available as both a user and server app.  
-When installed as a user app, you can right click a message to fix its embed or extract its media.  
+When installed as a user app, you can right click a message to fix its embed or extract its media.
+
+## Support
+
+- [Request new fix](https://github.com/seriaati/embed-fixer/issues/new?template=new-embed-fix-request.md)
+- [Report a bug](https://github.com/seriaati/embed-fixer/issues/new?template=bug_report.md)
+- [Request a new feature](https://github.com/seriaati/embed-fixer/issues/new?template=feature_request.md)
+- [Contribute to translations](https://app.transifex.com/seria/embed-fixer/)
+- [Contact me on Discord](https://discord.com/invite/b22kMKuwbS) (my username is @seria_ati)
+
+## Motive
 
 As we know, social media embeds on Discord are bad:  
 
@@ -102,11 +114,6 @@ Below are settings you can change with the `/settings` command:
 - Bot visibility: Change whether Embed Fixer can fix other bots' embeds or just ones sent by users.
 - Funnel to target channel: If set, the bot will send all fixed embeds and extracted medias to a specific channel instead of the original channel.
 - Whitelist roles: If set, only users that has one of the specified roles will have their embeds fixed.
-
-# Questions, Issues, Feedback, Contributions
-
-Whether you want a new fix to be added, to request a new feature, to report a bug, or to contribute to translations. You can do so by creating an issue or a pull request.  
-If GitHub is not your type, you can find me on [Discord](https://discord.com/invite/b22kMKuwbS), my username is @seria_ati.
 
 # Self Hosting
 
