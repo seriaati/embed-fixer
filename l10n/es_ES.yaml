@@ -2,7 +2,7 @@ name: Español
 replying_to: "⬅️ En respuesta a {user} ({url})"
 delete: Eliminar
 delete_no_perms: Sólo el autor o los administradores del servidor pueden borrar este mensaje.
-fix_selector_placeholder: Seleccionar embed fixe(s) para desactivar...
+fix_selector_placeholder: Selecciona embed fix(es) para desactivar...
 lang_selector_placeholder: Seleccionar idioma...
 settings_embed_footer: "-# Los ajustes son exclusivos de este servidor\n-# Escriba en el menú plegable para buscar canales\n-# Si seleccionas un canal ya seleccionado éste sera eliminado"
 disable_fixes: Desactivar Embed Fixes para sitios web
@@ -23,9 +23,7 @@ sauce: Fuente
 settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
 disable_webhook_reply: Desactivar la respuesta de webhook
-webhook_reply_disabled: Respuesta de webhook desactivada
 enable_webhook_reply: Activar respuesta de webhook
-webhook_reply_enabled: Respuesta de webhook activada
 setting_param: Ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
@@ -56,3 +54,13 @@ extract_medias: Extraer multimedia
 no_fixes_found: No se encontró ningún fixes/multimedia para este mensaje
 next: Siguiente
 previous: Anterior
+bot_visibility: Visibilidad del bot
+bot_visibility_desc: "Si está habilitado, el Embed Fixer corregirá los enlaces enviados por otros bots. Si está deshabilitado, solo corregirá los enlaces enviados por los usuarios."
+enable_bot_visibility: Habilitar la visibilidad del bot
+disable_bot_visibility: " Deshabilitar la visibilidad del bot"
+funnel_target_channel: Canal de destino para redirigir
+funnel_target_channel_desc: "Si se configura, todos los enlaces corregidos y los medios extraídos se enviarán al canal de destino en lugar del canal original."
+whitelist_role_ids: Lista blanca de roles
+whitelist_role_ids_desc: "Si se configura, solo se corregirán los enlaces de los usuarios que tengan uno de estos roles. Dejar en blanco para desactivar."
+selected_roles: Seleccionar roles
+role_selector_placeholder: Seleccionar rol(es)...
