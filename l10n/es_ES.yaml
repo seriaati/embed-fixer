@@ -61,6 +61,6 @@ disable_bot_visibility: " Deshabilitar la visibilidad del bot"
 funnel_target_channel: Canal de destino para redirigir
 funnel_target_channel_desc: "Si se configura, todos los enlaces corregidos y los medios extraídos se enviarán al canal de destino en lugar del canal original."
 whitelist_role_ids: Lista blanca de roles
-whitelist_role_ids_desc: "Si se activa, solo se corregirán los enlaces de los usuarios que tengan uno de estos roles. Dejar en blanco para desactivar."
+whitelist_role_ids_desc: "Si se configura, solo se corregirán los enlaces de los usuarios que tengan uno de estos roles. Dejar en blanco para desactivar."
 selected_roles: Seleccionar roles
 role_selector_placeholder: Seleccionar rol(es)...
