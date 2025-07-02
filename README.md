@@ -126,7 +126,7 @@ Below are settings you can change with the `/settings` command:
 ## Syncing Commands
 
 The command prefix is the bot's mention by default. For example, if your bot's name is `Embed Fixer`, the prefix would be `@Embed Fixer`.  
-Run `@Embed Fixer sync` to sync the commands.
+Run `@Embed Fixer sync` to sync the commands, you need to restart your client to see the changes.
 
 ## Database Migrations
 
@@ -136,7 +136,7 @@ To apply the changes, run `aerich upgrade` (only supports PostgreSQL; for other 
 ## Docker
 
 ```sh
-docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk ghcr.io/seriaati/embed-fixer:latest
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN ghcr.io/seriaati/embed-fixer:latest
 ```
 
 ### Volumes
@@ -148,6 +148,8 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=Your
 
 - `DISCORD_TOKEN`: your Discord bot token
 - `DB_URI`: defaults to `sqlite:///data/embed_fixer.db`, available to customize the database location
+- `ENV`: defaults to `prod`, can be set to `dev` for development mode
+- `REDIS_URL`: if set, uses Redis for caching instead of SQLite
 
 ## Local
 
@@ -156,8 +158,8 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=Your
 1. Create a `.env` file:
 
    ```env
-   DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk
-   ENV=dev
+   DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
+   ENV=prod
    ```
 
 1. `uv run run.py`
