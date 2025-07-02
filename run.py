@@ -6,11 +6,11 @@ import logging
 import os
 import sys
 
+import aiohttp
 import discord
-from aiohttp_client_cache.backends.sqlite import SQLiteBackend
+from aiohttp_client_cache.backends.redis import RedisBackend
 from aiohttp_client_cache.session import CachedSession
 from dotenv import load_dotenv
-from fake_useragent import UserAgent
 from loguru import logger
 
 from embed_fixer.bot import EmbedFixer
@@ -19,7 +19,6 @@ from embed_fixer.utils.misc import wrap_task_factory
 
 load_dotenv()
 env = os.environ["ENV"]
-ua = UserAgent()
 
 
 def setup_logger() -> None:
@@ -32,12 +31,16 @@ def setup_logger() -> None:
 async def main() -> None:
     wrap_task_factory()
 
-    async with (
-        CachedSession(
-            cache=SQLiteBackend(expire_after=60 * 30), headers={"User-Agent": ua.random}
-        ) as session,
-        EmbedFixer(session=session, env=env) as bot,
-    ):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+    }
+
+    if env == "dev":
+        session = aiohttp.ClientSession(headers=headers)
+    else:
+        session = CachedSession(cache=RedisBackend(expire_after=600), headers=headers)
+
+    async with session, EmbedFixer(session=session, env=env) as bot:
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             await bot.start(os.environ["DISCORD_TOKEN"])
 
