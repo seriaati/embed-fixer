@@ -6,7 +6,6 @@ import logging
 import os
 import sys
 
-import aiohttp
 import discord
 from aiohttp_client_cache.backends.redis import RedisBackend
 from aiohttp_client_cache.backends.sqlite import SQLiteBackend
