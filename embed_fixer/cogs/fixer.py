@@ -85,6 +85,16 @@ class FixerCog(commands.Cog):
 
         return channel_id in settings.disable_fix_channels
 
+    async def _nsfw_skip(self, url: str, domain: Domain, *, is_nsfw_channel: bool) -> bool:
+        """Skip NSFW domains if the channel is not NSFW."""
+        pixiv_skip = (
+            domain.id == DomainId.PIXIV
+            and not is_nsfw_channel
+            and await self.fetch_info.pixiv_is_nsfw(url)
+        )
+        kemono_skip = domain.id == DomainId.KEMONO and not is_nsfw_channel
+        return pixiv_skip or kemono_skip
+
     @staticmethod
     async def _get_original_author(
         message: discord.Message, guild: discord.Guild
@@ -145,7 +155,7 @@ class FixerCog(commands.Cog):
             break
         return domain, website
 
-    async def _find_fixes(  # noqa: PLR0912, PLR0914
+    async def _find_fixes(  # noqa: PLR0912
         self,
         message: discord.Message,
         *,
@@ -174,14 +184,7 @@ class FixerCog(commands.Cog):
             if domain is None or website is None:
                 continue
 
-            pixiv_skip = (
-                domain.id == DomainId.PIXIV
-                and not is_nsfw_channel
-                and await self.fetch_info.pixiv_is_nsfw(url)
-            )
-            kemono_skip = domain.id == DomainId.KEMONO and not is_nsfw_channel
-
-            if pixiv_skip or kemono_skip:
+            if await self._nsfw_skip(url, domain, is_nsfw_channel=is_nsfw_channel):
                 continue
 
             if extract_media or (
