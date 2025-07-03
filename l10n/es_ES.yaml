@@ -12,9 +12,9 @@ lang_desc: Cambiar el idioma del bot
 extract_media_channels: Canales con extracción de multimedia
 extract_media_channels_desc: Se extraerán las imágenes/vídeos de los enlaces de Twitter/X/Pixiv enviados en estos canales
 disable_fix_channels: Lista negra de canales para Embed Fix
-disable_fix_channels_desc: "Sólo los canales establecidos aquí recibirán correcciones de embed, la lista blanca tiene prioridad sobre la lista negra"
+disable_fix_channels_desc: "Los canales aquí no tendrán embed fixes, la lista blanca tiene prioridad sobre la lista negra"
 enable_fix_channels: Lista blanca de canales para Embed Fix
-enable_fix_channels_desc: "Los canales aquí no tendrán embed fixes, la lista blanca tiene prioridad sobre la lista negra"
+enable_fix_channels_desc: "Sólo los canales establecidos aquí recibirán correcciones de embed, la lista blanca tiene prioridad sobre la lista negra"
 disable_image_spoilers: Desactivar el Spoiler automático en los canales NSFW
 disable_image_spoilers_desc: "Para la función de extracción de multimedia, los canales NSFW seleccionados aquí no marcaran spoiler automáticamente en los archivos multimedia"
 toggle_webhook_reply: Activar/Desactivar respuesta de Webhook

@@ -12,9 +12,9 @@ lang_desc: Change the language of the bot
 extract_media_channels: Media Extraction Channels
 extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
 disable_fix_channels: Embed Fix Channel Blacklist
-disable_fix_channels_desc: "Only channels set here will receive embed fixes, whitelist has priority over blacklist"
+disable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist"
 enable_fix_channels: Embed Fix Channel Whitelist
-enable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist"
+enable_fix_channels_desc: "Only channels set here will receive embed fixes, whitelist has priority over blacklist"
 disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
 disable_image_spoilers_desc: "For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered"
 toggle_webhook_reply: Toggle Webhook Reply

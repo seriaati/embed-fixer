@@ -12,9 +12,9 @@ lang_desc: Thay đổi ngôn ngữ của bot
 extract_media_channels: Kênh trích xuất phương tiện
 extract_media_channels_desc: Hình ảnh/Video từ các liên kết Twitter/X/Pixiv được gửi trong các kênh này sẽ được trích xuất
 disable_fix_channels: Danh sách đen kênh Nhúng Sửa
-disable_fix_channels_desc: "Chỉ các kênh được đặt ở đây mới nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen"
+disable_fix_channels_desc: "Chỉ các kênh được đặt ở đây sẽ không nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen"
 enable_fix_channels: Danh sách trắng kênh Nhúng Sửa
-enable_fix_channels_desc: "Chỉ các kênh được đặt ở đây sẽ không nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen"
+enable_fix_channels_desc: "Chỉ các kênh được đặt ở đây mới nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen"
 disable_image_spoilers: Tắt tự động ẩn nội dung trong kênh NSFW
 disable_image_spoilers_desc: "Với tính năng Trình Xuất Phương Tiện, kênh NSFW được chọn sẽ không có Phượng tiện tự động ẩn"
 toggle_webhook_reply: Bật/tắt trả lời Webhook
