@@ -15,10 +15,10 @@ LANG = "en-US"
 
 def update_readme_bullet_points(
     new_items: list[str], *, section_start_marker: str, list_header_marker: str
-) -> bool:
+) -> None:
     if not README.exists():
-        logger.error(f"README file not found at {README}")
-        return False
+        msg = f"README file not found at {README}"
+        raise FileNotFoundError(msg)
 
     with README.open(encoding="utf-8") as f:
         lines = f.read().splitlines()
@@ -27,8 +27,8 @@ def update_readme_bullet_points(
         section_start_index = lines.index(section_start_marker)
         list_header_index = lines.index(list_header_marker, section_start_index)
     except ValueError as e:
-        logger.error(f"Error: Could not find required markers in the README file. {e}")
-        return False
+        msg = f"Could not find the specified section or list header in README: {e}"
+        raise ValueError(msg) from e
 
     list_start_index = -1
     for i in range(list_header_index + 1, len(lines)):
@@ -39,8 +39,8 @@ def update_readme_bullet_points(
             break
 
     if list_start_index == -1:
-        logger.error("Error: Could not find the start of the bulleted list to replace.")
-        return False
+        msg = "Could not find the start of the bulleted list to replace."
+        raise ValueError(msg)
 
     list_end_index = list_start_index
     while list_end_index < len(lines) and lines[list_end_index].strip().startswith(("-", "*")):
@@ -53,8 +53,6 @@ def update_readme_bullet_points(
         f.write("\n".join(updated_lines))
         f.write("\n")
 
-    return True
-
 
 async def run_ci() -> None:
     translator = Translator()
@@ -64,25 +62,23 @@ async def run_ci() -> None:
         f"**{translator.get(LANG, s.value)}**: {translator.get(LANG, f'{s.value}_desc')}"
         for s in Setting
     ]
-    success = update_readme_bullet_points(
+    update_readme_bullet_points(
         updated_settings,
         section_start_marker="## Very Customizable",
         list_header_marker="Below are settings you can change with the `/settings` command:",
     )
-    if success:
-        logger.success("Successfully updated settings in README.")
+    logger.success("Successfully updated settings in README.")
 
     updated_domains = [
         f"**{domain.name}**: {'/'.join(f'[{fix.name}]({fix.repo_url})' if fix.repo_url else fix.name for fix in domain.fix_methods) or 'Media extraction only, no embed fixing'}"
         for domain in DOMAINS
     ]
-    success = update_readme_bullet_points(
+    update_readme_bullet_points(
         updated_domains,
         section_start_marker="## Embed Fixing",
         list_header_marker="Fixings are currently available for:",
     )
-    if success:
-        logger.success("Successfully updated domains in README.")
+    logger.success("Successfully updated domains in README.")
 
 
 if __name__ == "__main__":
