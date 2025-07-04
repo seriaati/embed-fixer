@@ -47,20 +47,20 @@ Worry no more, this Discord bot fixes all of those issues.
 
 Fixings are currently available for:
 
-- X/Twitter: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
-- Pixiv: [Phixiv](https://github.com/thelaao/phixiv)
-- TikTok: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)
-- Reddit: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)
-- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://github.com/seriaati/embedez)/KKInstagram
-- FurAffinity: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
-- Twitch clips: [fxtwitch](https://github.com/seriaati/fxtwitch)
-- Iwara: [fxiwara](https://github.com/seriaati/fxiwara)
-- Bluesky: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
-- Kemono: Media extraction only, no embed fixing
-- Facebook: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)
-- Bilibili: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[BiliFix](https://vxbilibili.com)
-- Tumblr: [fxtumblr](https://github.com/knuxify/fxtumblr)
-- Threads: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
+- **Twitter/X**: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
+- **Pixiv**: [Phixiv](https://github.com/thelaao/phixiv)
+- **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)
+- **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)
+- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://github.com/seriaati/embedez)/KKInstagram
+- **FurAffinity**: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
+- **Twitch Clips**: [fxtwitch](https://github.com/seriaati/fxtwitch)
+- **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
+- **Bluesky**: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
+- **Kemono**: Media extraction only, no embed fixing
+- **Facebook**: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)
+- **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[BiliFix](https://vxbilibili.com)
+- **Tumblr**: [fxtumblr](https://github.com/knuxify/fxtumblr)
+- **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
 
@@ -103,18 +103,20 @@ Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the e
 
 Below are settings you can change with the `/settings` command:
 
-- Disable embed fixes for websites: Disable embed fixes for specific websites.
-- Language: Change language of the bot.
-- Media extraction channels: Channels to enable the media extraction feature mentioned above.
-- Disable embed fix channels: Channels to disable embed fixing.
-- Disable webhook reply: Disable the webhook reply feature mentioned above  .
-- Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels.
-- Show post content: For channels with media extraction enabled, channels with this feature on will also show the content and author of the post along with the media.
-- Change delete message emoji: Change the reaction emoji used to delete the webhook messages, defaults to ❌. You can set custom emojis too, like `<:emoji:123456789012345678>`
-- Choose embed fix service: Choose the embed fix service to use for different websites.
-- Bot visibility: Change whether Embed Fixer can fix other bots' embeds or just ones sent by users.
-- Funnel to target channel: If set, the bot will send all fixed embeds and extracted medias to a specific channel instead of the original channel.
-- Whitelist roles: If set, only users that has one of the specified roles will have their embeds fixed.
+- **Language**: Change the language of the bot
+- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites
+- **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
+- **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist
+- **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist
+- **Toggle Webhook Reply**: Toggle the ping to the original author when replying to a webhook
+- **Disable Automatic Spoilering in NSFW Channels**: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered
+- **Toggle Delete Reaction**: Add a emoji reaction to messages to delete them
+- **Show Post Content Channels**: If media extraction is enabled, channels selected here will show the content of the post
+- **Emoji used for deleting messages**: delete_msg_emoji_desc
+- **Choose embed fix service**: Choose the embed fix service to use for different websites
+- **Bot Visibility**: If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users.
+- **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
+- **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
 
 # Self Hosting
 
