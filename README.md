@@ -1,4 +1,4 @@
-![Embed Fixer](https://i.imgur.com/919Gum1.png)  
+![Embed Fixer](https://i.imgur.com/919Gum1.png)
 
 ![GitHub issues](https://img.shields.io/github/issues/seriaati/embed-fixer)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/seriaati/embed-fixer)
@@ -29,7 +29,7 @@ When installed as a user app, you can right click a message to fix its embed or 
 
 ## Motive
 
-As we know, social media embeds on Discord are bad:  
+As we know, social media embeds on Discord are bad:
 
 - Pixiv embeds don't show the full artwork
 - X/Twitter sometimes doesn't embed
@@ -45,7 +45,7 @@ Worry no more, this Discord bot fixes all of those issues.
 
 ## Embed Fixing
 
-Fixings are currently available for:  
+Fixings are currently available for:
 
 - X/Twitter: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
 - Pixiv: [Phixiv](https://github.com/thelaao/phixiv)
@@ -75,12 +75,13 @@ If the link is sent in a non-NSFW channel AND is from Pixiv AND the artwork cont
 
 ## Webhook Replying
 
-When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.  
+When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.
+
 ![image](https://iili.io/2RPjJ0Q.png)
 
 ## Media Extracting
 
-The following platforms are supported:  
+The following platforms are supported:
 
 - Twitter/X
 - Pixiv
@@ -99,8 +100,8 @@ Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the e
 ## Very Customizable
 
 *All settings are unique to each server*  
-  
-Below are settings you can change with the `/settings` command:  
+
+Below are settings you can change with the `/settings` command:
 
 - Disable embed fixes for websites: Disable embed fixes for specific websites.
 - Language: Change language of the bot.
@@ -157,9 +158,9 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR
 1. Clone the repository
 1. Create a `.env` file:
 
-   ```env
-   DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
-   ENV=prod
-   ```
+```env
+DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
+ENV=prod
+```
 
 1. `uv run run.py`
