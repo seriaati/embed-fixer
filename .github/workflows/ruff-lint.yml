@@ -6,22 +6,24 @@ on:
     branches:
       - main
     paths:
-      - 'embed_fixer/**.py'
-      - 'run.py'
-      - 'ruff.toml'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.github/workflows/ruff-lint.yml'
+      - embed_fixer/**.py
+      - run.py
+      - ci.py
+      - ruff.toml
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/ruff-lint.yml
   pull_request:
     branches:
       - main
     paths:
-      - 'embed_fixer/**.py'
-      - 'run.py'
-      - 'ruff.toml'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.github/workflows/ruff-lint.yml'
+      - embed_fixer/**.py
+      - run.py
+      - ci.py
+      - ruff.toml
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/ruff-lint.yml
 
 jobs:
   ruff-lint:

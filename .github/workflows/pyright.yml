@@ -6,20 +6,22 @@ on:
     branches:
       - main
     paths:
-      - 'embed_fixer/**.py'
-      - 'run.py'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.github/workflows/pyright.yml'
+      - embed_fixer/**.py
+      - run.py
+      - ci.py
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/pyright.yml
   pull_request:
     branches:
       - main
     paths:
-      - 'embed_fixer/**.py'
-      - 'run.py'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.github/workflows/pyright.yml'
+      - embed_fixer/**.py
+      - run.py
+      - ci.py
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/pyright.yml
 
 jobs:
   pyright:
