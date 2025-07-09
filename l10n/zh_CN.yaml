@@ -1,0 +1,65 @@
+name: 简体中文
+replying_to: "⬅️ 回复 {user} ({url})"
+delete: 删除
+delete_no_perms: 只有发布者或者服务器管理员可以删除此消息。
+fix_selector_placeholder: 选择要关闭的预览嵌入...
+lang_selector_placeholder: 选择语言...
+settings_embed_footer: "-# 每个服务器的设置都是独立的\n-# 在下拉菜单中输入文字来来搜索频道\n-# 选择已选的频道会被移除"
+disable_fixes: 关闭网站的预览嵌入
+disable_fixes_desc: 关闭特定网站的预览嵌入
+lang: 语言
+lang_desc: 更改机器人的语言
+extract_media_channels: 媒体提取频道
+extract_media_channels_desc: 在这个频道里发送的 Twitter/X/Pixiv 链接的图片/视频都会被提取
+disable_fix_channels: 预览嵌入频道黑名单
+disable_fix_channels_desc: "这里的频道将不会接收预览嵌入，白名单优先于黑名单"
+enable_fix_channels: 预览嵌入频道白名单
+enable_fix_channels_desc: "只有在这里设置的频道将接受预览嵌入，白名单优先于黑名单"
+disable_image_spoilers: 关闭 NSFW 频道的自动剧透
+disable_image_spoilers_desc: "对于媒体提取功能，在这里选择的 NSFW 频道内的媒体将不会自动标为剧透"
+toggle_webhook_reply: 切换 Webhook 回复
+toggle_webhook_reply_desc: 开关回复 Webhook 时对原发布者的@
+sauce: 出处
+settings_cmd_desc: 更改此服务器的机器人设置
+channel_selector_placeholder: 选择频道...
+disable_webhook_reply: 关闭 Webhook 回复
+enable_webhook_reply: 启用 Webhook 回复
+setting_param: 设置
+setting_param_desc: 要更改的设置
+info_cmd_desc: 获取有关机器人的信息
+info_embed_desc: |
+  这个机器人由 [@seria_ati](https://discord.com/users/410036441129943050) 制作，且在 [GitHub](https://github.com/seriaati/embed-fixer) 有开源。有关此机器人的疑问或者问题，请在 DIscord 上与我联系，或在 Github 上提出问题。
+  如有意愿贡献（比如翻译），请与我联系或者在 Github 上提交公关。
+selected_channels: 已选频道
+enable_delete_reaction: 开启删除消息反应
+disable_delete_reaction: 关闭删除消息反应
+toggle_delete_reaction: 开关删除消息反应
+toggle_delete_reaction_desc: 在消息上添加表情符号反应，用于删除消息
+show_post_content_channels: 显示贴文内容频道
+show_post_content_channels_desc: "如果媒体提取已开启，则在这里的已选频道将显示帖子内容"
+no_perms_to_delete_msg: 机器人缺少删除消息的权限
+no_perms_to_manage_webhooks: 机器人缺少管理 Webhook 的权限
+no_perms_to_add_reactions: 机器人缺少添加反应的权限
+add_reaction_error: "无法添加反应 '{emoji}'，请确认是否有效"
+failed_to_send_webhook: 发送 Webhook 失败
+delete_msg_emoji: 用于删除消息的表情符号
+emoji: 表情符号
+emoji_changed: "用于删除消息的表情符号已更改 {emoji}"
+choose_fix_service: 选择预览嵌入服务
+choose_fix_service_desc: 选择用于不同网站的预览嵌入
+using_fix_service: "正在使用 {service}"
+fix_embed: 预览嵌入
+extract_medias: 提取媒体
+no_fixes_found: 未发现嵌入/媒体于此消息
+next: 下一页
+previous: 上一页
+bot_visibility: 机器人能见度
+bot_visibility_desc: "开启后， Embed Fixer 将会对来自其他机器人链接进行预览嵌入。关闭后，将只会对来自用户的链接进行预览嵌入。"
+enable_bot_visibility: 开启机器人能见度
+disable_bot_visibility: 关闭机器人能见度
+funnel_target_channel: 引流目标频道
+funnel_target_channel_desc: "若已设置，所有的预览嵌入和媒体提取都会发送到被设置的频道，而非原消息的频道。"
+whitelist_role_ids: 白名单身份组
+whitelist_role_ids_desc: "如有设置，则只有拥有这些身份组之一的用户才有预览嵌入。留空则关闭。"
+selected_roles: 已选身份组
+role_selector_placeholder: 选择身份组...
