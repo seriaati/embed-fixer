@@ -91,7 +91,7 @@ The following platforms are supported:
 
 When you send a link that is from one of the platforms above in channel(s) with this feature on, the bot resends all of the images/videos in the link in a nice gallery-like layout.  
 
-![image](https://iili.io/2RPwDMb.png)  
+![image](https://github.com/user-attachments/assets/2b66ed5c-bbe2-450b-92f6-d36f01bf9102)
 
 If the link is sent in a NSFW channel, then the extracted media will be spoilered automatically (changeable).
 
