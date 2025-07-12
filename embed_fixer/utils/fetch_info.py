@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import os
 import re
 from typing import TYPE_CHECKING, Any, Final
 
@@ -107,11 +108,12 @@ class PostInfoFetcher:
 
     async def bluesky(self, url: str) -> BskyPost | None:
         api_url = replace_domain(url, "bsky.app", "bskx.app") + "/json"
+        proxy_url = os.getenv("PROXY_URL")
 
         logger.debug(f"Fetching Bluesky post from URL: {api_url}")
         headers = {"User-Agent": "EmbedFixer/1.0"}
 
-        async with self.session.get(api_url, headers=headers) as response:
+        async with self.session.get(api_url, headers=headers, proxy=proxy_url) as response:
             if response.status != 200:
                 return None
 
