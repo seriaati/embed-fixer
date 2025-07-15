@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  create-release:
+  biweekly-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
