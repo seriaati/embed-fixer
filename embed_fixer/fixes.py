@@ -21,6 +21,7 @@ class DomainId(IntEnum):
     BILIBILI = 12
     TUMBLR = 13
     THREADS = 14
+    PTT = 15
 
 
 @dataclass(kw_only=True)
@@ -396,6 +397,19 @@ DOMAINS: Final[list[Domain]] = [
                 ],
                 repo_url="https://github.com/everettsouthwick/vxThreads",
             ),
+        ],
+    ),
+    Domain(
+        id=DomainId.PTT,
+        name="PTT",
+        websites=[Website(r"https://(www.)?ptt.cc/bbs/[A-Za-z0-9_]+/M.\d+.A.[A-Z0-9]+.html")],
+        fix_methods=[
+            FixMethod(
+                id=24,
+                name="fxptt",
+                fixes=[Fix(old_domain="ptt.cc", new_domain="fxptt.seria.moe", method="replace")],
+                repo_url="https://github.com/seriaati/fxptt",
+            )
         ],
     ),
 ]
