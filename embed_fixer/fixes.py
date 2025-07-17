@@ -75,8 +75,8 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.TWITTER,
         name="Twitter/X",
         websites=[
-            Website(r"https://(www.)?twitter.com/[a-zA-Z0-9_]+/status/\d+(/photo|video/\d+)?"),
-            Website(r"https://(www.)?x.com/[a-zA-Z0-9_]+/status/\d+(/photo|video/\d+)?"),
+            Website(r"https://(www.)?twitter.com/[a-zA-Z0-9_]+/status/\d+(/photo|video/\d+)?/?"),
+            Website(r"https://(www.)?x.com/[a-zA-Z0-9_]+/status/\d+(/photo|video/\d+)?/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -103,7 +103,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.PIXIV,
         name="Pixiv",
-        websites=[Website(r"https://(www.)?pixiv.net(/[a-zA-Z]+)?/artworks/\d+")],
+        websites=[Website(r"https://(www.)?pixiv.net(/[a-zA-Z]+)?/artworks/\d+/?")],
         fix_methods=[
             FixMethod(
                 id=3,
@@ -118,9 +118,9 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.TIKTOK,
         name="TikTok",
         websites=[
-            Website(r"https://(www.)?tiktok.com/(t/\w+|@[\w.]+/video/\d+)"),
-            Website(r"https://vm.tiktok.com/\w+"),
-            Website(r"https://vt.tiktok.com/\w+"),
+            Website(r"https://(www.)?tiktok.com/(t/\w+|@[\w.]+/video/\d+)/?"),
+            Website(r"https://vm.tiktok.com/\w+/?"),
+            Website(r"https://vt.tiktok.com/\w+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -142,8 +142,8 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.REDDIT,
         name="Reddit",
         websites=[
-            Website(r"https://(www.|old.)?reddit.com/r/[\w]+/comments/[\w]+/[\w]+"),
-            Website(r"https://(www.|old.)?reddit.com/r/[\w]+/s/[\w]+"),
+            Website(r"https://(www.|old.)?reddit.com/r/[\w]+/comments/[\w]+/[\w]+/?"),
+            Website(r"https://(www.|old.)?reddit.com/r/[\w]+/s/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -165,9 +165,9 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.INSTAGRAM,
         name="Instagram",
         websites=[
-            Website(r"https://(www.)?instagram.com/share/[\w]+", skip_method_ids=[8]),
-            Website(r"https://(www.)?instagram.com/(p|reels?)/[\w]+"),
-            Website(r"https://(www.)?instagram.com/share/(p|reels?)/[\w]+"),
+            Website(r"https://(www.)?instagram.com/share/[\w]+/?", skip_method_ids=[8]),
+            Website(r"https://(www.)?instagram.com/(p|reels?)/[\w]+/?"),
+            Website(r"https://(www.)?instagram.com/share/(p|reels?)/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -197,7 +197,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.FURAFFINITY,
         name="FurAffinity",
-        websites=[Website(r"https://(www.)?furaffinity.net/view/\d+")],
+        websites=[Website(r"https://(www.)?furaffinity.net/view/\d+/?")],
         fix_methods=[
             FixMethod(
                 id=10,
@@ -218,9 +218,9 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.TWITCH_CLIPS,
         name="Twitch Clips",
         websites=[
-            Website(r"https://m.twitch.tv/clip/[\w]+"),
-            Website(r"https://clips.twitch.tv/[\w]+"),
-            Website(r"https://(www.)?twitch.tv/[\w]+/clip/[\w]+"),
+            Website(r"https://m.twitch.tv/clip/[\w]+/?"),
+            Website(r"https://clips.twitch.tv/[\w]+/?"),
+            Website(r"https://(www.)?twitch.tv/[\w]+/clip/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -245,7 +245,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.IWARA,
         name="Iwara",
-        websites=[Website(r"https://(www.)?iwara.tv/video/[\w]+/[\w]+")],
+        websites=[Website(r"https://(www.)?iwara.tv/video/[\w]+/[\w]+/?")],
         fix_methods=[
             FixMethod(
                 id=12,
@@ -261,7 +261,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.BLUESKY,
         name="Bluesky",
-        websites=[Website(r"https://(www.)?bsky.app/profile/[\w.]+/post/[\w]+")],
+        websites=[Website(r"https://(www.)?bsky.app/profile/[\w.]+/post/[\w]+/?")],
         fix_methods=[
             FixMethod(
                 id=13,
@@ -281,15 +281,15 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.KEMONO,
         name="Kemono",
-        websites=[Website(r"https://(www.)?kemono.su/[a-zA-Z0-9_]+/user/[\w]+/post/[\w]+")],
+        websites=[Website(r"https://(www.)?kemono.su/[a-zA-Z0-9_]+/user/[\w]+/post/[\w]+/?")],
         fix_methods=[],
     ),
     Domain(
         id=DomainId.FACEBOOK,
         name="Facebook",
         websites=[
-            Website(r"https://(www.)?facebook.com/share/r/[\w]+"),
-            Website(r"https://(www.)?facebook.com/reel/\d+"),
+            Website(r"https://(www.)?facebook.com/share/r/[\w]+/?"),
+            Website(r"https://(www.)?facebook.com/reel/\d+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -313,8 +313,8 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.BILIBILI,
         name="Bilibili",
         websites=[
-            Website(r"https://(www.|m.)?bilibili.com/video/[\w]+"),
-            Website(r"https://(www.)?b23.tv/[\w]+"),
+            Website(r"https://(www.|m.)?bilibili.com/video/[\w]+/?"),
+            Website(r"https://(www.)?b23.tv/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -359,7 +359,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.TUMBLR,
         name="Tumblr",
-        websites=[Website(r"https://(www.)?tumblr.com/[a-zA-Z0-9_-]+/[0-9]+/[a-zA-Z0-9_-]+")],
+        websites=[Website(r"https://(www.)?tumblr.com/[a-zA-Z0-9_-]+/[0-9]+/[a-zA-Z0-9_-]+/?")],
         fix_methods=[
             FixMethod(
                 id=19,
@@ -374,8 +374,8 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.THREADS,
         name="Threads",
         websites=[
-            Website(r"https://(www.)?threads.(net|com)/@[\w.]+"),
-            Website(r"https://(www.)?threads.(net|com)/@[\w.]+/post/[\w]+"),
+            Website(r"https://(www.)?threads.(net|com)/@[\w.]+/?"),
+            Website(r"https://(www.)?threads.(net|com)/@[\w.]+/post/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(
@@ -402,7 +402,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.PTT,
         name="PTT",
-        websites=[Website(r"https://(www.)?ptt.cc/bbs/[A-Za-z0-9_]+/M.\d+.A.[A-Z0-9]+.html")],
+        websites=[Website(r"https://(www.)?ptt.cc/bbs/[A-Za-z0-9_]+/M.\d+.A.[A-Z0-9]+.html/?")],
         fix_methods=[
             FixMethod(
                 id=24,
