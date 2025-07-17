@@ -35,20 +35,16 @@ def get_filesize(fp: io.BufferedIOBase) -> int:
 def remove_query_params(url: str) -> str:
     parsed_url = urlparse(url)
 
-    path = parsed_url.path
-    if path.endswith("/") and len(path) > 1:
-        path = path[:-1]
-
     return urlunparse(
         (
             parsed_url.scheme,
             parsed_url.netloc,
-            path,  # Use the modified path
+            parsed_url.path,
             parsed_url.params,
-            "",  # Remove query parameters
+            "",
             parsed_url.fragment,
         )
-    )
+    ).rstrip("/")
 
 
 def domain_in_url(url: str, domain: str) -> bool:
