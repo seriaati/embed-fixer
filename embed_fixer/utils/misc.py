@@ -44,7 +44,7 @@ def remove_query_params(url: str) -> str:
             "",
             parsed_url.fragment,
         )
-    ).rstrip("/")
+    )
 
 
 def domain_in_url(url: str, domain: str) -> bool:

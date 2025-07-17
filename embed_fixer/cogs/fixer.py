@@ -178,7 +178,7 @@ class FixerCog(commands.Cog):
         urls = extract_urls(message.content)
 
         for url, spoilered in urls:
-            clean_url = remove_query_params(url).replace("www.", "")
+            clean_url = remove_query_params(url).replace("www.", "").rstrip("/")
             domain, website = self._get_matching_domain_website(settings, clean_url)
 
             if domain is None or website is None:
