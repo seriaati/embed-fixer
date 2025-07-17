@@ -275,8 +275,6 @@ class FixerCog(commands.Cog):
                 media_urls = [] if info is None else info.media_urls
             elif domain_id is DomainId.KEMONO:
                 media_urls = await self.fetch_info.kemono(url)
-            elif domain_id is DomainId.BILIBILI:
-                media_urls = self.fetch_info.bilibili(url)
         except Exception:
             logger.exception(f"Failed to extract post info from {url} for domain {domain_id!r}")
             return PostExtractionResult(medias=[], content="", author_md="")

@@ -147,17 +147,6 @@ class PostInfoFetcher:
 
         return urls
 
-    def bilibili(self, url: str) -> list[str]:
-        b23_id = self._extract_b23_slug(url)
-        if b23_id is not None:
-            return [f"https://fxbilibili.seria.moe/dl/b23/{b23_id}"]
-
-        bvid = self._extract_bilibili_id(url)
-        if bvid is None:
-            return []
-
-        return [f"https://fxbilibili.seria.moe/dl/{bvid}"]
-
 
 class PixivArtwork(BaseModel):
     image_urls: list[str] = Field(alias="image_proxy_urls", default_factory=list)
