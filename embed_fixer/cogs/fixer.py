@@ -645,10 +645,7 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
-        if (
-            message.content.startswith(f"{self.bot.user.mention} jsk py")
-            and message.author.id == self.bot.owner_id
-        ):
+        if message.content.startswith(f"{self.bot.user.mention} jsk py"):
             return
 
         channel, guild, author = message.channel, message.guild, message.author
