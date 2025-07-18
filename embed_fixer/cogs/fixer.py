@@ -191,7 +191,12 @@ class FixerCog(commands.Cog):
                 settings is not None and channel_id in settings.extract_media_channels
             ):
                 if not is_ctx_menu:
-                    asyncio.create_task(message.add_reaction("⏳"))
+                    try:
+                        asyncio.create_task(message.add_reaction("⏳"))
+                    except discord.Forbidden:
+                        logger.warning(
+                            f"Failed to add reaction to message {message.id} in channel {channel_id}"
+                        )
 
                 spoiler = spoilered or (
                     is_nsfw_channel
@@ -383,10 +388,9 @@ class FixerCog(commands.Cog):
         *,
         guild_settings: GuildSettings | None,
         interaction: Interaction | None = None,
-    ) -> discord.Message | None:
+    ) -> None:
         """Send multiple files in batches of 10."""
         guild_lang: str | None = None
-        fix_message = None
 
         for chunk in itertools.batched(medias, 10):
             kwargs: dict[str, Any] = {}
@@ -409,7 +413,7 @@ class FixerCog(commands.Cog):
                 else:
                     message.content += f"\n{media.url}"
 
-            fix_message = await self._send_message(
+            await self._send_message(
                 message,
                 guild_settings=guild_settings,
                 medias=chunk,
@@ -419,8 +423,6 @@ class FixerCog(commands.Cog):
 
             message.content = ""
 
-        return fix_message
-
     async def _send_message(
         self,
         message: discord.Message,
@@ -429,11 +431,14 @@ class FixerCog(commands.Cog):
         medias: Sequence[Media] | None = None,
         interaction: Interaction | None = None,
         **kwargs: Any,
-    ) -> discord.Message:
+    ) -> None:
         """Send a message with a webhook, interaction, or regular message."""
+        fix_message: discord.Message | None = None
+
         medias = medias or []
         files = [media.file for media in medias if media.file is not None]
 
+        # Settings
         disable_delete_reaction = (
             None if guild_settings is None else guild_settings.disable_delete_reaction
         )
@@ -479,7 +484,15 @@ class FixerCog(commands.Cog):
 
             try:
                 if webhook is not None:
-                    fix_message = await self._send_webhook(message, webhook, files=files, **kwargs)
+                    try:
+                        fix_message = await self._send_webhook(
+                            message, webhook, files=files, **kwargs
+                        )
+                    except discord.HTTPException as e:
+                        err_message = self.bot.translator.get(
+                            await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
+                        )
+                        await message.channel.send(f"{err_message}\n\n{e}")
                 else:
                     fix_message = await message.channel.send(
                         message.content, tts=message.tts, files=files, **kwargs
@@ -489,11 +502,26 @@ class FixerCog(commands.Cog):
                     raise
 
                 message.content += "\n".join(media.url for media in medias)
-                fix_message = await self._send_message(
-                    message, guild_settings=guild_settings, **kwargs
-                )
+                await self._send_message(message, guild_settings=guild_settings, **kwargs)
 
-        if not disable_delete_reaction and delete_msg_emoji and interaction is None:
+        await self._add_delete_reaction(
+            message, interaction, fix_message, disable_delete_reaction, delete_msg_emoji
+        )
+
+    async def _add_delete_reaction(
+        self,
+        message: discord.Message,
+        interaction: Interaction | None,
+        fix_message: discord.Message | None,
+        disable_delete_reaction: bool | None,
+        delete_msg_emoji: str | None,
+    ) -> None:
+        if (
+            not disable_delete_reaction
+            and delete_msg_emoji
+            and interaction is None
+            and fix_message is not None
+        ):
             guild_id = message.guild.id if message.guild else "DM"
             err_message = f"Failed to add reaction {delete_msg_emoji!r} to message {fix_message.id} in {guild_id}"
 
@@ -518,8 +546,6 @@ class FixerCog(commands.Cog):
                             emoji=delete_msg_emoji,
                         )
                     )
-
-        return fix_message
 
     async def _send_webhook(
         self,
