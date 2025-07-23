@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
+import aiohttp
 from discord.ext import commands, tasks
 from loguru import logger
 
@@ -27,7 +28,8 @@ class HealthCheck(commands.Cog):
             logger.warning("No heartbeat URL configured, skipping health check.")
             return
 
-        await self.bot.session.get(url)
+        async with aiohttp.ClientSession() as session:
+            await session.get(url)
 
     @send_heartbeat.before_loop
     async def before_send_heartbeat(self) -> None:
