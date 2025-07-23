@@ -65,6 +65,9 @@ class EmbedFixer(commands.AutoShardedBot):
     async def setup_hook(self) -> None:
         for filepath in Path("embed_fixer/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem
+            if self.env == "dev" and cog_name == "health":
+                continue
+
             try:
                 await self.load_extension(f"embed_fixer.cogs.{cog_name}")
                 logger.info(f"Loaded cog {cog_name}")
