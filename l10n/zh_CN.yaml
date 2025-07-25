@@ -63,3 +63,9 @@ whitelist_role_ids: 白名单身份组
 whitelist_role_ids_desc: "如有设置，则只有拥有这些身份组之一的用户才有预览嵌入。留空则关闭。"
 selected_roles: 已选身份组
 role_selector_placeholder: 选择身份组...
+translang_disable: 关闭
+translang_set: "此服务器的翻译目标语言已设置为{lang_name}"
+invalid_translang: 无效语言选择
+translang_param: 目标语言
+translang_param_desc: 目标语言
+translang_cmd_desc: 更改帖子内容翻译的目标语言
