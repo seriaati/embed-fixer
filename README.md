@@ -125,7 +125,7 @@ Below are settings you can change with the `/settings` command:
 
 Currently only supports Twitter/X, and only when fix provider is [FxEmbed](https://github.com/FxEmbed/FxEmbed).
 
-Use the `/translang` command to set the target language.
+Use `/translang` to set the target language, choose "Disable" to disable.
 
 # Self Hosting
 
