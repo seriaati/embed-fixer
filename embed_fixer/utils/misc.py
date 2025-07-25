@@ -61,6 +61,13 @@ def replace_domain(url: str, old_domain: str, new_domain: str) -> str:
     return url
 
 
+def append_path_to_url(url: str, path: str) -> str:
+    parsed_url = urlparse(url)
+    new_path = parsed_url.path.rstrip("/") + "/" + path.lstrip("/")
+    new_url = parsed_url._replace(path=new_path)
+    return urlunparse(new_url)
+
+
 _tasks_set: set[asyncio.Task[Any] | asyncio.Future[Any]] = set()
 
 

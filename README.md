@@ -119,6 +119,14 @@ Below are settings you can change with the `/settings` command:
 - **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
 - **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
 
+## Post Content Translation
+
+![Post content translation](readme-images/translate.png)
+
+Currently only supports Twitter/X, and only when fix provider is [FxEmbed](https://github.com/FxEmbed/FxEmbed).
+
+Use the `/translang` command to set the target language.
+
 # Self Hosting
 
 1. Create a [Discord application](https://discord.com/developers/applications)

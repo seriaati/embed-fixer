@@ -17,6 +17,7 @@ from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
+    append_path_to_url,
     domain_in_url,
     extract_urls,
     get_filesize,
@@ -155,6 +156,15 @@ class FixerCog(commands.Cog):
             break
         return domain, website
 
+    @staticmethod
+    def _apply_fxembed_translation(url: str, *, translang: str | None) -> str:
+        # FxEmbed (fxtwitter) can translate posts by appending /{lang}
+        # See https://github.com/FxEmbed/FxEmbed#translate-posts-xtwitter for more info
+        if translang is None:
+            return url
+
+        return append_path_to_url(url, f"/{translang}")
+
     async def _find_fixes(  # noqa: PLR0912
         self,
         message: discord.Message,
@@ -247,6 +257,11 @@ class FixerCog(commands.Cog):
                         continue
 
                     new_url = replace_domain(clean_url, fix.old_domain, fix.new_domain)
+
+                    if fix_method.id == 1 and settings is not None:  # FxEmbed
+                        new_url = self._apply_fxembed_translation(
+                            new_url, translang=settings.translate_target_lang
+                        )
 
                 fix_found = True
                 message.content = message.content.replace(url, new_url)

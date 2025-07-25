@@ -14,6 +14,7 @@ dependencies = [
   "redis[hiredis]>=6.2.0",
   "aiohttp-client-cache>=0.13.0",
   "aiosqlite>=0.21.0",
+  "iso639-lang>=2.6.3",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }
