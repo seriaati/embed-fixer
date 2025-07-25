@@ -65,7 +65,7 @@ whitelist_role_ids_desc: "If set, only users that have one of these roles will h
 selected_roles: Selected roles
 role_selector_placeholder: Select role(s)...
 translang_disable: Disable
-translang_set: The translate target language for this server has been set to {lang_name}
+translang_set: "The translate target language for this server has been set to {lang_name}"
 invalid_translang: Invalid language chosen
 translang_param: target-lang
 translang_param_desc: Target language
