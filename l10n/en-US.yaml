@@ -68,4 +68,5 @@ translang_disable: Disable
 translang_set: The translate target language for this server has been set to {lang_name}
 invalid_translang: Invalid language chosen
 translang_param: target-lang
-translang_param_desc: Target language for post content translation
+translang_param_desc: Target language
+translang_cmd_desc: Change the target language for post content translation
