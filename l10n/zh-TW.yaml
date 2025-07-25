@@ -64,3 +64,9 @@ whitelist_role_ids: 身份組白名單
 whitelist_role_ids_desc: "如有設置值，則只有擁有這些身份組之一的使用者才會修復他們發送的連結預覽。留空則禁用。"
 selected_roles: 已選擇的身份組
 role_selector_placeholder: 選擇身份組...
+translang_disable: 關閉
+translang_set: "此伺服器的翻譯目標語言已設置為 {lang_name}"
+invalid_translang: 選擇了無效的語言
+translang_param: 目標語言
+translang_param_desc: 目標語言
+translang_cmd_desc: 變更貼文內文翻譯的目標語言
