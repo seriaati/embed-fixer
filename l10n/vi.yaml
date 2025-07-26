@@ -35,7 +35,7 @@ selected_channels: Kênh được chọn
 enable_delete_reaction: Bật biểu cảm Xóa
 disable_delete_reaction: Tắt biểu cảm Xóa
 toggle_delete_reaction: Bật/tắt biểu cảm Xóa
-toggle_delete_reaction_desc: Thêm biểu cảm trên tin nhắn để xóa chúng
+toggle_delete_reaction_desc: Có nên thêm biểu cảm vào tin nhắn webhook để tác giả gốc có thể xóa chúng bằng biểu cảm xóa
 show_post_content_channels: Hiển thị kênh nội dung bài đăng
 show_post_content_channels_desc: "Nếu trích xuất phương tiện được bật, các kênh được chọn ở đây sẽ hiển thị nội dung của bài đăng"
 no_perms_to_delete_msg: Bot không có quyền xóa tin nhắn
@@ -43,7 +43,8 @@ no_perms_to_manage_webhooks: Bot không có quyền quản lý webhook
 no_perms_to_add_reactions: Bot không có quyền thêm biểu cảm
 add_reaction_error: "Không thêm được phản ứng '{emoji}', hãy đảm bảo rằng phản ứng đó hợp lệ"
 failed_to_send_webhook: Không thể gửi webhook
-delete_msg_emoji: Biểu cảm được sử dụng để xóa tin nhắn
+delete_msg_emoji: Thay đổi biểu cảm Xóa tin nhắn
+delete_msg_emoji_desc: "Biểu cảm được sử dụng để xóa tin nhắn"
 emoji: Biểu cảm
 emoji_changed: "Biểu cảm được sử dụng để xóa tin nhắn đã được thay đổi thành {emoji}"
 choose_fix_service: Chọn dịch vụ Nhúng Sửa
