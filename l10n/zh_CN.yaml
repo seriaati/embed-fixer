@@ -34,7 +34,7 @@ selected_channels: 已选频道
 enable_delete_reaction: 开启删除消息反应
 disable_delete_reaction: 关闭删除消息反应
 toggle_delete_reaction: 开关删除消息反应
-toggle_delete_reaction_desc: 在消息上添加表情符号反应，用于删除消息
+toggle_delete_reaction_desc: 添加表情反应到webhook消息，便于发布者通过反应表情删除。
 show_post_content_channels: 显示贴文内容频道
 show_post_content_channels_desc: "如果媒体提取已开启，则在这里的已选频道将显示帖子内容"
 no_perms_to_delete_msg: 机器人缺少删除消息的权限
@@ -42,7 +42,8 @@ no_perms_to_manage_webhooks: 机器人缺少管理 Webhook 的权限
 no_perms_to_add_reactions: 机器人缺少添加反应的权限
 add_reaction_error: "无法添加反应 '{emoji}'，请确认是否有效"
 failed_to_send_webhook: 发送 Webhook 失败
-delete_msg_emoji: 用于删除消息的表情符号
+delete_msg_emoji: 更改删除消息反应表情
+delete_msg_emoji_desc: "更改用于删除消息的表情"
 emoji: 表情符号
 emoji_changed: "用于删除消息的表情符号已更改 {emoji}"
 choose_fix_service: 选择预览嵌入服务
