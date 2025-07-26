@@ -34,8 +34,8 @@ info_embed_desc: |
 selected_channels: Selected channels
 enable_delete_reaction: Enable delete reaction
 disable_delete_reaction: Disable delete reaction
-toggle_delete_reaction: Toggle Delete Reaction
-toggle_delete_reaction_desc: Add a emoji reaction to messages to delete them
+toggle_delete_reaction: Toggle Delete Message Reaction
+toggle_delete_reaction_desc: Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting
 show_post_content_channels: Show Post Content Channels
 show_post_content_channels_desc: "If media extraction is enabled, channels selected here will show the content of the post"
 no_perms_to_delete_msg: The bot is missing permission to delete messages
@@ -43,7 +43,8 @@ no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
 no_perms_to_add_reactions: The bot is missing permission to add reactions
 add_reaction_error: "Failed to add reaction '{emoji}', make sure it's valid"
 failed_to_send_webhook: Failed to send webhook
-delete_msg_emoji: Emoji used for deleting messages
+delete_msg_emoji: Change Delete Message Reaction Emoji
+delete_msg_emoji_desc: "Change the emoji used to delete messages"
 emoji: Emoji
 emoji_changed: "Emoji used for deleting messages has been changed to {emoji}"
 choose_fix_service: Choose embed fix service
