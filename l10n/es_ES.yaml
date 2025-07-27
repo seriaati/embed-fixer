@@ -34,8 +34,8 @@ info_embed_desc: |
 selected_channels: Canales seleccionados
 enable_delete_reaction: Activar la reacción de eliminación
 disable_delete_reaction: Desactivar la reacción de eliminación
-toggle_delete_reaction: Activar/Desactivar Reacción de eliminación
-toggle_delete_reaction_desc: Añade una emoji de reacción a los mensajes para eliminarlos
+toggle_delete_reaction: Habilitar/deshabilitar reacción para eliminar mensajes
+toggle_delete_reaction_desc: Agregar reacciones a mensajes del webhook para que el autor original pueda eliminarlos con una reacción
 show_post_content_channels: Mostrar canales de contenido
 show_post_content_channels_desc: "Si la extracción de multimedia está activada, los canales seleccionados aquí mostrarán el contenido de la publicación"
 no_perms_to_delete_msg: El bot no tiene permiso para eliminar mensajes
@@ -43,7 +43,8 @@ no_perms_to_manage_webhooks: El bot no tiene permiso para gestionar webhooks
 no_perms_to_add_reactions: El bot no tiene permiso para agregar reacciones
 add_reaction_error: "Error al añadir la reacción '{emoji}', asegúrate de que es válida"
 failed_to_send_webhook: Error al enviar webhook
-delete_msg_emoji: Emoji para eliminar mensajes
+delete_msg_emoji: Cambiar emoji de reacción para eliminar mensaje
+delete_msg_emoji_desc: "Cambiar el emoji usado para eliminar mensajes"
 emoji: Emoji
 emoji_changed: "Emoji para eliminar mensajes ha sido cambiado a {emoji}"
 choose_fix_service: Elije en que servicio se usará embed fix
@@ -64,3 +65,9 @@ whitelist_role_ids: Lista blanca de roles
 whitelist_role_ids_desc: "Si se configura, solo se corregirán los enlaces de los usuarios que tengan uno de estos roles. Dejar en blanco para desactivar."
 selected_roles: Seleccionar roles
 role_selector_placeholder: Seleccionar rol(es)...
+translang_disable: Desactivar
+translang_set: "El idioma de del bot para este servidor se ha establecido en {lang_name}"
+invalid_translang: Idioma seleccionado no válido
+translang_param: idioma destinado
+translang_param_desc: Idioma de destino
+translang_cmd_desc: Cambiar el idioma de destino para la traducción del contenido de las publicaciones

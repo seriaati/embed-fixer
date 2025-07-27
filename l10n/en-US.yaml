@@ -35,7 +35,7 @@ selected_channels: Selected channels
 enable_delete_reaction: Enable delete reaction
 disable_delete_reaction: Disable delete reaction
 toggle_delete_reaction: Toggle Delete Message Reaction
-toggle_delete_reaction_desc: Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting
+toggle_delete_reaction_desc: "Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting"
 show_post_content_channels: Show Post Content Channels
 show_post_content_channels_desc: "If media extraction is enabled, channels selected here will show the content of the post"
 no_perms_to_delete_msg: The bot is missing permission to delete messages
