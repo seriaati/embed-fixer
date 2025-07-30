@@ -1,0 +1,73 @@
+name: Engels
+replying_to: "⬅️ Reageert op {user} ({url})"
+delete: Verwijder
+delete_no_perms: Alleen de auteur of serverbeheerders kunnen dit bericht verwijderen.
+fix_selector_placeholder: Selecteer Embed Fix(es) om uit te schakelen...
+lang_selector_placeholder: Selecteer een taal...
+settings_embed_footer: "-# Instellingen zijn uniek voor deze server \n-# Schrijf in de vervolgkeuzelijst om naar kanalen te zoeken \n-# Als u een kanaal selecteert dat al is geselecteerd, wordt dit verwijderd"
+disable_fixes: Schakel Embed Fixes voor websites uit
+disable_fixes_desc: Schakel Embed Fixes uit voor specifieke websites
+lang: Taal
+lang_desc: Verander de taal van de bot
+extract_media_channels: Media Extractie Kanalen
+extract_media_channels_desc: "Afbeeldingen/video's van Twitter/X/Pixiv-links die in deze kanalen worden verzonden, worden geëxtraheerd"
+disable_fix_channels: Embed Fix Kanalen Blacklist
+disable_fix_channels_desc: "Kanalen hier ontvangen geen Embed Fixes, de whitelist heeft voorrang op de blacklist"
+enable_fix_channels: Embed Fix Kanalen Whitelist
+enable_fix_channels_desc: "Alleen kanalen die hier worden ingesteld, ontvangen Embed Fixes, de whitelist heeft voorrang op de blacklist"
+disable_image_spoilers: Schakel automatische spoilering uit in NSFW kanalen
+disable_image_spoilers_desc: "Voor de media extractie functie zullen de hier geselecteerde NSFW kanalen de media niet automatisch spoileren"
+toggle_webhook_reply: Schakel Webhook antwoord in
+toggle_webhook_reply_desc: Schakel de ping naar de oorspronkelijke auteur wanneer je op een webhook reageert
+sauce: Sauce
+settings_cmd_desc: Wijzig de instellingen van de bot voor deze server
+channel_selector_placeholder: Kanaal(en) selecteren...
+disable_webhook_reply: Schakel webhook antwoord uit
+enable_webhook_reply: Schakel webhookantwoord in
+setting_param: instelling
+setting_param_desc: Instelling om te veranderen
+info_cmd_desc: Krijg informatie over de bot
+info_embed_desc: |
+  Deze bot is gemaakt door [@seria_ati](https://discord.com/users/410036441129943050) en is open source op [GitHub](https://github.com/seriaati/embed-fixer).
+  Voor vragen of problemen met deze bot kun je mij een DM sturen op Discord of een issue openen op GitHub.
+  Om te bijdrage (zoals vertalingen), stuur mij een DM of open een PR op GitHub.
+selected_channels: Geselecteerde kanalen
+enable_delete_reaction: Schakel verwijder reactie in
+disable_delete_reaction: Schakel verwijder reactie uit
+toggle_delete_reaction: Schakel Bericht Verwijder Reactie
+toggle_delete_reaction_desc: "Of emoji reacties moeten worden toegevoegd aan webhookberichten, zodat de oorspronkelijke auteur deze kan verwijderen door te reageren"
+show_post_content_channels: Kanalen voor embeds tonen
+show_post_content_channels_desc: "Als media extractie is ingeschakeld, tonen de hier geselecteerde kanalen de inhoud van het bericht"
+no_perms_to_delete_msg: De bot heeft geen toestemming om berichten te verwijderen
+no_perms_to_manage_webhooks: De bot mist toestemming om webhooks te beheren
+no_perms_to_add_reactions: De bot mist toestemming om reacties toe te voegen
+add_reaction_error: "Kan reactie '{emoji}' niet toevoegen. Controleer of deze geldig is"
+failed_to_send_webhook: Kan webhook niet verzenden
+delete_msg_emoji: Wijzig Verwijder Bericht Reactie Emoji
+delete_msg_emoji_desc: "Wijzig de emoji die wordt gebruikt om berichten te verwijderen"
+emoji: Emoji
+emoji_changed: "Emoji die wordt gebruikt voor het verwijderen van berichten is gewijzigd naar {emoji}"
+choose_fix_service: Kies de Embed Fix service
+choose_fix_service_desc: Kies de Embed Fix service die je voor verschillende websites wilt gebruiken
+using_fix_service: "Gebruik van {service}"
+fix_embed: Fix Embed
+extract_medias: Media Extraheren
+no_fixes_found: Er zijn geen fixes/media gevonden voor dit bericht
+next: Volgende
+previous: Vorige
+bot_visibility: Bot zichtbaarheid
+bot_visibility_desc: "Indien ingeschakeld, repareert Embed Fixer embeds die door andere bots zijn verzonden. Indien uitgeschakeld, worden alleen embeds hersteld die door gebruikers zijn verzonden."
+enable_bot_visibility: Schakel bot zichtbaarheid in
+disable_bot_visibility: Schakel bot zichtbaarheid uit
+funnel_target_channel: Stuur alles naar Doel Kanaal
+funnel_target_channel_desc: "Indien ingesteld, worden alle vembeds en media naar het doel kanaal verzonden in plaats van naar het oorspronkelijke kanaal."
+whitelist_role_ids: Whitelist Rollen
+whitelist_role_ids_desc: "Indien ingesteld, worden de embeds van alleen gebruikers met een van deze rollen gefixt. Laat leeg om uit te schakelen."
+selected_roles: Geselecteerde rollen
+role_selector_placeholder: Geselecteerde rol(len)...
+translang_disable: Uitzetten
+translang_set: "De vertaal doeltaal voor deze server is ingesteld op {lang_name}"
+invalid_translang: Ongeldige taal gekozen
+translang_param: doel-taal
+translang_param_desc: Doel taal
+translang_cmd_desc: Wijzig de doeltaal voor de vertaling van de berichtinhoud
