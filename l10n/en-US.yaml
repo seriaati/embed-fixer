@@ -71,3 +71,4 @@ invalid_translang: Invalid language chosen
 translang_param: target-lang
 translang_param_desc: Target language
 translang_cmd_desc: Change the target language for post content translation
+translang_disabled: Post content translation has been disabled

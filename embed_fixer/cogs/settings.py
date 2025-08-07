@@ -119,9 +119,19 @@ class SettingsCog(commands.Cog):
             return
 
         if translang.lower() == "disable":
+            await i.response.defer(ephemeral=True)
+
             settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
             settings.translate_target_lang = None
             await settings.save(update_fields=("translate_target_lang",))
+
+            await i.followup.send(
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(i.guild), "translang_disabled"
+                ),
+                ephemeral=True,
+            )
+            return
 
         if translang not in ISO639_LANGS:
             await i.response.send_message(
