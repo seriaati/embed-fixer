@@ -111,9 +111,9 @@ Below are settings you can change with the `/settings` command:
 - **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist
 - **Toggle Webhook Reply**: Toggle the ping to the original author when replying to a webhook
 - **Disable Automatic Spoilering in NSFW Channels**: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered
-- **Toggle Delete Reaction**: Add a emoji reaction to messages to delete them
+- **Toggle Delete Message Reaction**: Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting
 - **Show Post Content Channels**: If media extraction is enabled, channels selected here will show the content of the post
-- **Emoji used for deleting messages**: delete_msg_emoji_desc
+- **Change Delete Message Reaction Emoji**: Change the emoji used to delete messages
 - **Choose embed fix service**: Choose the embed fix service to use for different websites
 - **Bot Visibility**: If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users.
 - **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
