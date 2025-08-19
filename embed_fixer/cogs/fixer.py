@@ -11,7 +11,7 @@ from discord import app_commands
 from discord.ext import commands
 from loguru import logger
 
-from embed_fixer.fixes import DOMAINS, Domain, DomainId, FixMethod, Website
+from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
@@ -247,13 +247,13 @@ class FixerCog(commands.Cog):
                 continue
 
             for fix in fix_method.fixes:
-                if fix.method == "append_url":
-                    new_url = f"https://{fix.new_domain}?url={clean_url}"
+                if isinstance(fix, AppendURLFix):
+                    new_url = f"https://{fix.domain}?url={clean_url}"
                     if domain.id == DomainId.FACEBOOK:
                         # For facebook, replace /v/ with /r/, found by @zzxc.
                         new_url = new_url.replace("/v/", "/r/")
                 else:
-                    if fix.old_domain is None or not domain_in_url(clean_url, fix.old_domain):
+                    if not domain_in_url(clean_url, fix.old_domain):
                         continue
 
                     new_url = replace_domain(clean_url, fix.old_domain, fix.new_domain)
