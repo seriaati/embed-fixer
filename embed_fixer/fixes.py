@@ -290,6 +290,7 @@ DOMAINS: Final[list[Domain]] = [
         websites=[
             Website(r"https://(www.)?facebook.com/share/r/[\w]+/?"),
             Website(r"https://(www.)?facebook.com/reel/\d+/?"),
+            Website(r"https://(www.)?facebook.com/share/v/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(

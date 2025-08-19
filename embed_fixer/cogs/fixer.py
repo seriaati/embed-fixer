@@ -162,7 +162,7 @@ class FixerCog(commands.Cog):
         # See https://github.com/FxEmbed/FxEmbed#translate-posts-xtwitter for more info
         return append_path_to_url(url, f"/{translang}")
 
-    async def _find_fixes(  # noqa: PLR0912
+    async def _find_fixes(  # noqa: C901, PLR0912, PLR0915
         self,
         message: discord.Message,
         *,
@@ -249,6 +249,9 @@ class FixerCog(commands.Cog):
             for fix in fix_method.fixes:
                 if fix.method == "append_url":
                     new_url = f"https://{fix.new_domain}?url={clean_url}"
+                    if domain.id == DomainId.FACEBOOK:
+                        # For facebook, replace /v/ with /r/, found by @zzxc.
+                        new_url = new_url.replace("/v/", "/r/")
                 else:
                     if fix.old_domain is None or not domain_in_url(clean_url, fix.old_domain):
                         continue
