@@ -140,6 +140,12 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[ReplaceFix(old_domain="tiktok.com", new_domain="vxtiktok.com")],
                 repo_url="https://github.com/dylanpdx/vxtiktok",
             ),
+            FixMethod(
+                id=27,
+                name="EmbedEZ",
+                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
+                repo_url="https://github.com/seriaati/embedez",
+            ),
         ],
     ),
     Domain(
