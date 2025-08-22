@@ -247,7 +247,7 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.BLUESKY,
         name="Bluesky",
-        websites=[Website(r"https://(www.)?bsky.app/profile/[\w.]+/post/[\w]+/?")],
+        websites=[Website(r"https://(www.)?bsky.app/profile/[\w.-]+/post/[\w]+/?")],
         fix_methods=[
             FixMethod(
                 id=13,
