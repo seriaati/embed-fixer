@@ -57,7 +57,7 @@ Fixings are currently available for:
 - **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
 - **Bluesky**: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
 - **Kemono**: Media extraction only, no embed fixing
-- **Facebook**: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)
+- **Facebook**: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
 - **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[BiliFix](https://vxbilibili.com)
 - **Tumblr**: [fxtumblr](https://github.com/knuxify/fxtumblr)
 - **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
