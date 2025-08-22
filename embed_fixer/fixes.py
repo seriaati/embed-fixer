@@ -274,6 +274,7 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.FACEBOOK,
         name="Facebook",
         websites=[
+            Website(r"https://(www.)?facebook.com/(.*)", skip_method_ids=[15]),
             Website(r"https://(www.)?facebook.com/share/r/[\w]+/?"),
             Website(r"https://(www.)?facebook.com/reel/\d+/?"),
             Website(r"https://(www.)?facebook.com/share/v/[\w]+/?"),
@@ -283,7 +284,6 @@ DOMAINS: Final[list[Domain]] = [
                 id=15,
                 name="EmbedEZ",
                 fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
-                default=True,
                 repo_url="https://github.com/seriaati/embedez",
             ),
             FixMethod(
@@ -291,6 +291,13 @@ DOMAINS: Final[list[Domain]] = [
                 name="fxfacebook",
                 fixes=[ReplaceFix(old_domain="facebook.com", new_domain="fxfb.seria.moe")],
                 repo_url="https://github.com/seriaati/fxfacebook",
+            ),
+            FixMethod(
+                id=25,
+                name="facebed",
+                fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebed.com")],
+                repo_url="https://github.com/4pii4/facebed",
+                default=True,
             ),
         ],
     ),
