@@ -163,6 +163,12 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[ReplaceFix(old_domain="reddit.com", new_domain="vxreddit.com")],
                 repo_url="https://github.com/dylanpdx/vxReddit",
             ),
+            FixMethod(
+                id=26,
+                name="EmbedEZ",
+                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
+                repo_url="https://github.com/seriaati/embedez",
+            ),
         ],
     ),
     Domain(
