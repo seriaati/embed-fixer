@@ -134,6 +134,7 @@ Use `/translang` to set the target language, choose "Disable" to disable.
 1. Enable **Message Content Intent**
 1. Run the application with your bot token as the `DISCORD_TOKEN` environment variable
 1. Invite your bot with the invite link in the logs
+2. Sync the commands
 
 ## Syncing Commands
 
