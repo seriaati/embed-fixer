@@ -353,7 +353,9 @@ DOMAINS: Final[list[Domain]] = [
     Domain(
         id=DomainId.TUMBLR,
         name="Tumblr",
-        websites=[Website(r"https://(www.)?tumblr.com/[a-zA-Z0-9_-]+/[0-9]+/[a-zA-Z0-9_-]+/?")],
+        websites=[
+            Website(r"https://(www\.)?tumblr\.com/[a-zA-Z0-9_-]+/[0-9]+/?([a-zA-Z0-9_-]+/?)?")
+        ],
         fix_methods=[
             FixMethod(
                 id=19,
