@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, cast
 
 import discord
 from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, Thread, ui
@@ -23,16 +23,20 @@ ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
 
 
 class DeleteMsgEmojiModal(Modal):
-    emoji = ui.TextInput(label="emoji", max_length=100, placeholder="<:emoji:12345678> / ❌")
+    emoji = ui.Label(
+        text="emoji", component=ui.TextInput(max_length=100, placeholder="<:emoji:12345678> / ❌")
+    )
 
     def __init__(self, guild: Guild, translator: Translator, *, settings: GuildSettings) -> None:
         super().__init__(guild, translator, title="delete_msg_emoji")
 
-        self.emoji.label = self.translate(self.emoji.label)
-        self.emoji.default = settings.delete_msg_emoji
+        text_input = cast("ui.TextInput", self.emoji.component)
+        self.emoji.text = self.translate(self.emoji.text)
+        text_input.default = settings.delete_msg_emoji
 
     async def on_submit(self, i: Interaction) -> None:
-        emoji = self.emoji.value
+        text_input = cast("ui.TextInput", self.emoji.component)
+        emoji = text_input.value
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
         guild_settings.delete_msg_emoji = emoji
