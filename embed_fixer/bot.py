@@ -51,7 +51,7 @@ class EmbedFixer(commands.AutoShardedBot):
             allowed_mentions=allowed_mentions,
             help_command=None,
             chunk_guilds_at_startup=False,
-            max_messages=None,
+            max_messages=None,  # pyright: ignore[reportArgumentType]
             member_cache_flags=discord.MemberCacheFlags.none(),
             allowed_installs=allowed_installs,
             allowed_contexts=allowed_contexts,
