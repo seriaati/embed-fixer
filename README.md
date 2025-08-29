@@ -100,7 +100,7 @@ Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the e
 
 ## Very Customizable
 
-*All settings are unique to each server*  
+*All settings are unique to each server, you can use `/reset` to reset them to default values.*
 
 Below are settings you can change with the `/settings` command:
 
@@ -134,7 +134,7 @@ Use `/translang` to set the target language, choose "Disable" to disable.
 1. Enable **Message Content Intent**
 1. Run the application with your bot token as the `DISCORD_TOKEN` environment variable
 1. Invite your bot with the invite link in the logs
-2. Sync the commands
+1. Sync the commands
 
 ## Syncing Commands
 

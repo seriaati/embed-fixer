@@ -12,6 +12,7 @@ from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import Setting
 from embed_fixer.translator import Translator
 from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
+from embed_fixer.ui.reset_settings import ResetSettingsView
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer, Interaction
@@ -170,6 +171,18 @@ class SettingsCog(commands.Cog):
             for c in choices
             if current.lower() in c.name.lower() or current.lower() in c.value.lower()
         ][:25]
+
+    @app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+    @app_commands.allowed_installs(guilds=True, users=False)
+    @app_commands.guild_only()
+    @app_commands.default_permissions()
+    @app_commands.command(name="reset", description=locale_str("reset_cmd_desc"))
+    async def reset_settings_command(self, i: Interaction) -> None:
+        if i.guild is None:
+            return
+
+        view = ResetSettingsView(i.guild, self.bot.translator)
+        await view.start(i)
 
 
 async def setup(bot: EmbedFixer) -> None:
