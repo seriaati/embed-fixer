@@ -73,6 +73,6 @@ translang_param_desc: Target language
 translang_cmd_desc: Change the target language for post content translation
 translang_disabled: Post content translation has been disabled
 reset_cmd_desc: Reset all settings for this server to default values
-reset_confirm: Are you sure you want to reset all settings for this server?
+reset_confirm: "Are you sure you want to reset all settings for this server?"
 reset_yes: "Yes"
 reset_done: All settings have been reset to default values
