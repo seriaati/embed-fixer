@@ -217,7 +217,13 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[ReplaceFix(old_domain="furaffinity.net", new_domain="xfuraffinity.net")],
                 repo_url="https://github.com/FirraWoof/xfuraffinity",
                 default=True,
-            )
+            ),
+            FixMethod(
+                id=28,
+                name="fxraffinity",
+                fixes=[ReplaceFix(old_domain="furaffinity.net", new_domain="fxraffinity.net")],
+                repo_url="https://fxraffinity.net/",
+            ),
         ],
     ),
     Domain(
