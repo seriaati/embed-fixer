@@ -26,6 +26,7 @@ class GuildSettings(Model):
     funnel_target_channel: fields.Field[int | None] = fields.BigIntField(null=True)
     whitelist_role_ids: fields.Field[list[int]] = fields.JSONField(default=[])
     translate_target_lang: fields.Field[str | None] = fields.CharField(max_length=5, null=True)
+    show_original_link_btn = fields.BooleanField(default=False)
 
     class Meta:
         table = "guild_settings"

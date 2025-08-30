@@ -283,6 +283,16 @@ class GuildSettingsView(View):
             self.add_item(role_selector)
             role_ids = guild_settings.whitelist_role_ids
 
+        elif setting is Setting.SHOW_ORIGINAL_LINK_BUTTON:
+            toggle_btn = ToggleButton(
+                current_toggle=guild_settings.show_original_link_btn,
+                labels={True: "disable_original_link_btn", False: "enable_original_link_btn"},
+                attr_name="show_original_link_btn",
+                reverse_color=True,
+            )
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
+
         else:
             msg = f"Unknown setting: {setting!r}"
             raise ValueError(msg)
