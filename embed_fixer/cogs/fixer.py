@@ -53,6 +53,7 @@ class FindFixResult:
     sauces: list[str]
     content: str
     author_md: str
+    urls: list[str]
 
 
 class FixerCog(commands.Cog):
@@ -272,7 +273,12 @@ class FixerCog(commands.Cog):
                 break
 
         return FindFixResult(
-            fix_found=fix_found, medias=medias, sauces=sauces, content=content, author_md=author_md
+            fix_found=fix_found,
+            medias=medias,
+            sauces=sauces,
+            content=content,
+            author_md=author_md,
+            urls=[url for url, _ in urls],
         )
 
     async def _extract_post_info(
@@ -396,7 +402,7 @@ class FixerCog(commands.Cog):
             )
         else:
             await self._send_message(
-                message, guild_settings=guild_settings, interaction=interaction
+                message, urls=result.urls, guild_settings=guild_settings, interaction=interaction
             )
 
     async def _send_files(
@@ -446,6 +452,7 @@ class FixerCog(commands.Cog):
         self,
         message: discord.Message,
         *,
+        urls: list[str],
         guild_settings: GuildSettings | None,
         medias: Sequence[Media] | None = None,
         interaction: Interaction | None = None,
@@ -465,6 +472,19 @@ class FixerCog(commands.Cog):
         funnel_target_channel = (
             None if guild_settings is None else guild_settings.funnel_target_channel
         )
+        show_original_link_btn = (
+            False if guild_settings is None else guild_settings.show_original_link_btn
+        )
+
+        if show_original_link_btn and urls:
+            guild_lang = await Translator.get_guild_lang(message.guild)
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(
+                    url=urls[0], label=self.bot.translator.get(guild_lang, "original_link")
+                )
+            )
+            kwargs["view"] = view
 
         if interaction is not None:
             allowed_mentions = discord.AllowedMentions(

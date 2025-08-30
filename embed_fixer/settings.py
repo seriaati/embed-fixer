@@ -18,3 +18,4 @@ class Setting(StrEnum):
     BOT_VISIBILITY = "bot_visibility"
     FUNNEL_TARGET_CHANNEL = "funnel_target_channel"
     WHITELIST_ROLE_IDS = "whitelist_role_ids"
+    SHOW_ORIGINAL_LINK_BUTTON = "show_original_link_btn"

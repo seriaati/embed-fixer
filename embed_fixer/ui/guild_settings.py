@@ -125,6 +125,8 @@ class GuildSettingsView(View):
 
     async def _remove_invalid_channels(self, guild_settings: GuildSettings) -> None:
         guild_channel_ids = self._get_guild_channel_ids()
+        updated_fields: list[str] = []
+
         for attr_name in (
             "extract_media_channels",
             "disable_fix_channels",
@@ -134,9 +136,12 @@ class GuildSettingsView(View):
             valid_channel_ids = [
                 channel_id for channel_id in channel_ids if channel_id in guild_channel_ids
             ]
-            setattr(guild_settings, attr_name, valid_channel_ids)
+            if valid_channel_ids != channel_ids:
+                setattr(guild_settings, attr_name, valid_channel_ids)
+                updated_fields.append(attr_name)
 
-        await guild_settings.save()
+        if updated_fields:
+            await guild_settings.save(update_fields=updated_fields)
 
     def _add_selected_channels_field(self, embed: Embed) -> Embed:
         channel_ids = self.page_item_ids
@@ -277,6 +282,16 @@ class GuildSettingsView(View):
             role_selector.placeholder = self.translate("role_selector_placeholder")
             self.add_item(role_selector)
             role_ids = guild_settings.whitelist_role_ids
+
+        elif setting is Setting.SHOW_ORIGINAL_LINK_BUTTON:
+            toggle_btn = ToggleButton(
+                current_toggle=guild_settings.show_original_link_btn,
+                labels={True: "disable_original_link_btn", False: "enable_original_link_btn"},
+                attr_name="show_original_link_btn",
+                reverse_color=True,
+            )
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
 
         else:
             msg = f"Unknown setting: {setting!r}"

@@ -118,6 +118,7 @@ Below are settings you can change with the `/settings` command:
 - **Bot Visibility**: If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users.
 - **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
 - **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
+- **Toggle Original Link Button**: Whether to show a button linking to the original post in fixed embed messages
 
 ## Post Content Translation
 
