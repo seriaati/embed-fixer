@@ -35,7 +35,7 @@ selected_channels: Kênh được chọn
 enable_delete_reaction: Bật biểu cảm Xóa
 disable_delete_reaction: Tắt biểu cảm Xóa
 toggle_delete_reaction: Bật/tắt biểu cảm Xóa
-toggle_delete_reaction_desc: Có nên thêm biểu cảm vào tin nhắn webhook để tác giả gốc có thể xóa chúng bằng biểu cảm xóa
+toggle_delete_reaction_desc: "Có nên thêm biểu cảm vào tin nhắn webhook để tác giả gốc có thể xóa chúng bằng biểu cảm xóa"
 show_post_content_channels: Hiển thị kênh nội dung bài đăng
 show_post_content_channels_desc: "Nếu trích xuất phương tiện được bật, các kênh được chọn ở đây sẽ hiển thị nội dung của bài đăng"
 no_perms_to_delete_msg: Bot không có quyền xóa tin nhắn
@@ -71,3 +71,13 @@ invalid_translang: Ngôn ngữ tùy chọn không hợp lệ
 translang_param: ngôn-ngữ-đích
 translang_param_desc: Ngôn ngữ đích
 translang_cmd_desc: Chọn ngôn ngữ đích để dịch bài viết
+translang_disabled: Dịch nội dung bài đăng đã được tắt
+reset_cmd_desc: Đặt lại tất cả cài đặt cho máy chủ này về ban đầu
+reset_confirm: "Bạn có muốn đặt lại tất cả cài đặt cho máy chủ này không?"
+reset_yes: "Có"
+reset_done: Tất cả cài đặt đã được đặt lại về ban đầu
+original_link: Link gốc
+show_original_link_btn: Bặt/Tắt nút Link Gốc
+show_original_link_btn_desc: "Hiển thị nút liên kết đến bài đăng gốc trong tin nhắn nhúng cố định không"
+enable_original_link_btn: Bật nút Link Gốc
+disable_original_link_btn: Tắt nút Link Gốc
