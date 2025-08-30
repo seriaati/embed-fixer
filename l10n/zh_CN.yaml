@@ -34,7 +34,7 @@ selected_channels: 已选频道
 enable_delete_reaction: 开启删除消息反应
 disable_delete_reaction: 关闭删除消息反应
 toggle_delete_reaction: 开关删除消息反应
-toggle_delete_reaction_desc: 添加表情反应到webhook消息，便于发布者通过反应表情删除。
+toggle_delete_reaction_desc: "添加表情反应到webhook消息，便于发布者通过反应表情删除。"
 show_post_content_channels: 显示贴文内容频道
 show_post_content_channels_desc: "如果媒体提取已开启，则在这里的已选频道将显示帖子内容"
 no_perms_to_delete_msg: 机器人缺少删除消息的权限
@@ -70,3 +70,13 @@ invalid_translang: 无效语言选择
 translang_param: 目标语言
 translang_param_desc: 目标语言
 translang_cmd_desc: 更改帖子内容翻译的目标语言
+translang_disabled: 已关闭帖文内容翻译
+reset_cmd_desc: 将此服务器所有设置还原为默认值
+reset_confirm: 你确定要还原此服务器的所有设置吗？
+reset_yes: "确认"
+reset_done: 所有设置已还原至默认值
+original_link: 原链接
+show_original_link_btn: 开关原链接按钮
+show_original_link_btn_desc: "是否在预览嵌入的消息中显示链接至原帖子的按钮"
+enable_original_link_btn: 打开原链接按钮
+disable_original_link_btn: 关闭原链接按钮

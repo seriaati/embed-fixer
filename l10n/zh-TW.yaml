@@ -35,7 +35,7 @@ selected_channels: 已選擇的頻道
 enable_delete_reaction: 啟用刪除訊息反應
 disable_delete_reaction: 禁用刪除訊息反應
 toggle_delete_reaction: 開關刪除訊息反應
-toggle_delete_reaction_desc: 是否要為 Webhook 訊息新增表情符號反應，原訊息作者可以反應來刪除該訊息。
+toggle_delete_reaction_desc: "是否要為 Webhook 訊息新增表情符號反應，原訊息作者可以反應來刪除該訊息。"
 show_post_content_channels: 顯示貼文內容頻道
 show_post_content_channels_desc: "如果媒體提取已啟用，則在此處選擇的頻道將顯示貼文的內容"
 no_perms_to_delete_msg: 機器人缺少刪除訊息的權限
@@ -71,3 +71,13 @@ invalid_translang: 選擇了無效的語言
 translang_param: 目標語言
 translang_param_desc: 目標語言
 translang_cmd_desc: 變更貼文內文翻譯的目標語言
+translang_disabled: 已停用貼文內容翻譯
+reset_cmd_desc: 將此伺服器的所有設置還原至預設值
+reset_confirm: 你確定要重設此伺服器的所有設置嗎？
+reset_yes: "確認"
+reset_done: 所有設置已被還原為預設值
+original_link: 原連結
+show_original_link_btn: 開關原連結按鈕
+show_original_link_btn_desc: "是否要在修復訊息的下方顯示前往原貼文連結的按鈕"
+enable_original_link_btn: 開啟原連結按鈕
+disable_original_link_btn: 關閉原連結按鈕

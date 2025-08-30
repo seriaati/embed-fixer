@@ -71,3 +71,13 @@ invalid_translang: Ongeldige taal gekozen
 translang_param: doel-taal
 translang_param_desc: Doel taal
 translang_cmd_desc: Wijzig de doeltaal voor de vertaling van de berichtinhoud
+translang_disabled: Vertaling van berichtinhoud is uitgeschakeld
+reset_cmd_desc: Reset alle instellingen voor deze server naar standaard waarden
+reset_confirm: "Weet je zeker dat je alle instellingen voor deze server wilt resetten?"
+reset_yes: "Ja"
+reset_done: Alle instellingen zijn teruggezet naar standaard waarden
+original_link: Originele link
+show_original_link_btn: Schakel de knop "Originele link" in
+show_original_link_btn_desc: "Of er een knop moet worden weergegeven die naar het originele bericht linkt in fixed embed berichten"
+enable_original_link_btn: "\"Originele link\" knop inschakelen"
+disable_original_link_btn: "\"Originele link\" knop uitschakelen"
