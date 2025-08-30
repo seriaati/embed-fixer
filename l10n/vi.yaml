@@ -64,7 +64,7 @@ funnel_target_channel_desc: "Nếu được thiết lập, tất cả các nội
 whitelist_role_ids: Danh sách trắng Vai trò
 whitelist_role_ids_desc: "Nếu được thiết lập, chỉ những người dùng có một trong những vai trò này mới có thể sửa nhúng của họ. Để trống để tắt."
 selected_roles: Vai trò được chọn
-role_selector_placeholder: Chọn (các) vai trò...
+role_selector_placeholder: Chọn vai trò...
 translang_disable: Tắt
 translang_set: "Ngôn ngữ đích cho máy chủ này được đặt là {lang_name}"
 invalid_translang: Ngôn ngữ tùy chọn không hợp lệ
