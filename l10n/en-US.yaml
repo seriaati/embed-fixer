@@ -76,3 +76,8 @@ reset_cmd_desc: Reset all settings for this server to default values
 reset_confirm: "Are you sure you want to reset all settings for this server?"
 reset_yes: "Yes"
 reset_done: All settings have been reset to default values
+original_link: Original link
+show_original_link_btn: Toggle Original Link Button
+show_original_link_btn_desc: "Whether to show a button linking to the original post in fixed embed messages"
+enable_original_link_btn: Enable original link button
+disable_original_link_btn: Disable original link button
