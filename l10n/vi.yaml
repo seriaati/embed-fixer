@@ -1,7 +1,7 @@
 name: Tiếng Việt
-replying_to: "⬅️ Đang trả lời tới {user} ({url})"
+replying_to: "⬅️ Đang trả lời {user} ({url})"
 delete: Xóa
-delete_no_perms: Chỉ chủ tin nhắn hoặc Quản trị viên máy chủ có thể xóa tin nhắn này.
+delete_no_perms: Chỉ người gửi tin nhắn hoặc quản trị viên máy chủ mới có thể xóa tin nhắn này.
 fix_selector_placeholder: Chọn (các) Nhúng Sữa để tắt...
 lang_selector_placeholder: Chọn Ngôn Ngữ...
 settings_embed_footer: "-# Cài đặt cho máy chủ này là duy nhất cho máy chủ này\n-# Nhập vào danh sách thả xuống để tìm kiếm kênh\n-# Việc chọn một kênh đã được chọn sẽ xóa kênh đó"
