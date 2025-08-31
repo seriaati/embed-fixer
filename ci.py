@@ -10,7 +10,7 @@ from embed_fixer.settings import Setting
 from embed_fixer.translator import Translator
 
 README = Path(__file__).parent / "README.md"
-LANG = "en-US"
+LANG = "en_US"
 
 
 def update_readme_bullet_points(
