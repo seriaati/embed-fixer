@@ -27,7 +27,7 @@ class AppCommandTranslator(app_commands.Translator):
         locale: discord.Locale,
         _: discord.app_commands.TranslationContextTypes,
     ) -> str | None:
-        if locale.value.replace("-", "_") not in self.translator.langs:
+        if locale.value.replace("-", "_") not in self.translator._l10n:
             return None
 
         try:
@@ -63,6 +63,7 @@ class Translator:
                 self._l10n_names[file.stem] = data["name"]
 
     def get(self, lang: str, key: str, **kwargs: Any) -> str:
+        lang = lang.replace("-", "_")
         if lang not in self._l10n:
             lang = DEFAULT_LANG
 
