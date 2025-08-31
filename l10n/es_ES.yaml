@@ -24,7 +24,7 @@ settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
 disable_webhook_reply: Desactivar la respuesta de webhook
 enable_webhook_reply: Activar respuesta de webhook
-setting_param: Ajustes
+setting_param: ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
 info_embed_desc: |
@@ -35,7 +35,7 @@ selected_channels: Canales seleccionados
 enable_delete_reaction: Activar la reacción de eliminación
 disable_delete_reaction: Desactivar la reacción de eliminación
 toggle_delete_reaction: Habilitar/deshabilitar reacción para eliminar mensajes
-toggle_delete_reaction_desc: "Agregar reacciones a mensajes del webhook para que el autor original pueda eliminarlos con una reacción"
+toggle_delete_reaction_desc: Agregar reacciones a mensajes del webhook para que el autor original pueda eliminarlos con una reacción
 show_post_content_channels: Mostrar canales de contenido
 show_post_content_channels_desc: "Si la extracción de multimedia está activada, los canales seleccionados aquí mostrarán el contenido de la publicación"
 no_perms_to_delete_msg: El bot no tiene permiso para eliminar mensajes
@@ -68,16 +68,6 @@ role_selector_placeholder: Seleccionar rol(es)...
 translang_disable: Desactivar
 translang_set: "El idioma de del bot para este servidor se ha establecido en {lang_name}"
 invalid_translang: Idioma seleccionado no válido
-translang_param: idioma destinado
+translang_param: idioma-destinado
 translang_param_desc: Idioma de destino
 translang_cmd_desc: Cambiar el idioma de destino para la traducción del contenido de las publicaciones
-translang_disabled: Se desabilito la traducción de contenido del post
-reset_cmd_desc: Restablecer los ajustes para que este servidor
-reset_confirm: "¿Estás seguro que quieres restablecer todos los ajustes para este servidor?"
-reset_yes: "Si"
-reset_done: Todos los ajustes han sido reestablecidos
-original_link: Link original
-show_original_link_btn: Cambiar boton de link original
-show_original_link_btn_desc: "Mostrar un botón enlazando al post original en mensajes de embed fixed"
-enable_original_link_btn: Habilitar boton de link original
-disable_original_link_btn: Desabilitar boton de link original
