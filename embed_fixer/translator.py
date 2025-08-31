@@ -6,11 +6,14 @@ from typing import TYPE_CHECKING, Any
 import aiofiles
 import yaml
 from discord import app_commands
+from loguru import logger
 
 from .models import GuildSettings
 
 if TYPE_CHECKING:
     import discord
+
+DEFAULT_LANG = "en_US"
 
 
 class AppCommandTranslator(app_commands.Translator):
@@ -23,14 +26,15 @@ class AppCommandTranslator(app_commands.Translator):
         string: app_commands.locale_str,
         locale: discord.Locale,
         _: discord.app_commands.TranslationContextTypes,
-    ) -> str:
+    ) -> str | None:
+        if locale.value.replace("-", "_") not in self.translator._l10n:
+            return None
+
         try:
             return self.translator.get(locale.value, string.message)
-        except KeyError:
-            try:
-                return self.translator.get("en-US", string.message)
-            except KeyError:
-                return string.message
+        except Exception:
+            logger.exception("Failed to translate app command string")
+            return None
 
 
 class Translator:
@@ -44,7 +48,7 @@ class Translator:
 
     @staticmethod
     async def get_guild_lang(guild: discord.Guild | None) -> str:
-        lang = "en-US"
+        lang = DEFAULT_LANG
         if guild is not None:
             guild_settings, _ = await GuildSettings.get_or_create(id=guild.id)
             lang = guild_settings.lang or guild.preferred_locale.value
@@ -59,13 +63,14 @@ class Translator:
                 self._l10n_names[file.stem] = data["name"]
 
     def get(self, lang: str, key: str, **kwargs: Any) -> str:
+        lang = lang.replace("-", "_")
         if lang not in self._l10n:
-            lang = "en-US"
+            lang = DEFAULT_LANG
 
         lang_map = self._l10n[lang]
         string = lang_map.get(key)
         if not string:
-            if lang == "en-US":
+            if lang == DEFAULT_LANG:
                 return key
-            return self.get("en-US", key, **kwargs)
+            return self.get(DEFAULT_LANG, key, **kwargs)
         return string.format(**kwargs)

@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Any
 import discord
 from discord import ui
 
+from embed_fixer.translator import DEFAULT_LANG
+
 if TYPE_CHECKING:
     from ..translator import Translator
 
@@ -17,7 +19,7 @@ class View(ui.View):
         self.message: discord.Message | None = None
         self.guild = guild
         self.translator = translator
-        self.lang = guild.preferred_locale.value if guild else "en-US"
+        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
 
     async def start(self) -> None:
         self.lang = await self.translator.get_guild_lang(self.guild)
@@ -49,7 +51,7 @@ class Modal(ui.Modal):
 
         self.guild = guild
         self.translator = translator
-        self.lang = guild.preferred_locale.value if guild else "en-US"
+        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
         self.title = self.translate(title)
 
     def translate(self, key: str, **kwargs: Any) -> str:
