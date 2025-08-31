@@ -2,12 +2,12 @@ name: Tiếng Việt
 replying_to: "⬅️ Đang trả lời {user} ({url})"
 delete: Xóa
 delete_no_perms: Chỉ người gửi tin nhắn hoặc quản trị viên máy chủ mới có thể xóa tin nhắn này.
-fix_selector_placeholder: Chọn các trang không muốn sửa embed...
-lang_selector_placeholder: Chọn ngôn ngữ...
+fix_selector_placeholder: Chọn (các) Nhúng Sữa để tắt...
+lang_selector_placeholder: Chọn Ngôn Ngữ...
 settings_embed_footer: "-# Cài đặt này chỉ áp dụng cho máy chủ hiện tại\n-# Nhập vào danh sách thả xuống để tìm kiếm kênh\n-# Việc chọn một kênh đã được chọn sẽ bỏ chọn kênh đó"
-disable_fixes: Tắt sửa embed của trang cụ thể
-disable_fixes_desc: Bot sẽ không sửa phần embed của các link từ trang web được chọn
-lang: Ngôn ngữ
+disable_fixes: Tắt Sửa Nhúng cho các trang web
+disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể
+lang: Ngôn Ngữ
 lang_desc: Thay đổi ngôn ngữ của bot
 extract_media_channels: Kênh trích xuất phương tiện
 extract_media_channels_desc: Hình ảnh/Video từ các liên kết Twitter/X/Pixiv được gửi trong các kênh này sẽ được trích xuất
