@@ -27,14 +27,11 @@ class AppCommandTranslator(app_commands.Translator):
         locale: discord.Locale,
         _: discord.app_commands.TranslationContextTypes,
     ) -> str | None:
-        if locale.value.replace("-", "_") not in self.translator._l10n:
-            return None
-
         try:
             return self.translator.get(locale.value, string.message)
         except Exception:
             logger.exception("Failed to translate app command string")
-            return None
+            return self.translator.get(DEFAULT_LANG, string.message)
 
 
 class Translator:
@@ -64,6 +61,8 @@ class Translator:
 
     def get(self, lang: str, key: str, **kwargs: Any) -> str:
         lang = lang.replace("-", "_")
+        if lang == "es_419":
+            lang = "es_ES"
         if lang not in self._l10n:
             lang = DEFAULT_LANG
 
