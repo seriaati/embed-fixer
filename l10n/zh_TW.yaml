@@ -73,7 +73,7 @@ translang_param_desc: 目標語言
 translang_cmd_desc: 變更貼文內文翻譯的目標語言
 translang_disabled: 已停用貼文內容翻譯
 reset_cmd_desc: 將此伺服器的所有設置還原至預設值
-reset_confirm: 你確定要重設此伺服器的所有設置嗎？
+reset_confirm: "你確定要重設此伺服器的所有設置嗎？"
 reset_yes: "確認"
 reset_done: 所有設置已被還原為預設值
 original_link: 原連結
