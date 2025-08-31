@@ -27,7 +27,7 @@ class AppCommandTranslator(app_commands.Translator):
         locale: discord.Locale,
         _: discord.app_commands.TranslationContextTypes,
     ) -> str | None:
-        if locale.value not in self.translator.langs:
+        if locale.value.replace("-", "_") not in self.translator.langs:
             return None
 
         try:
