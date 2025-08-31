@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class ResetSettingsView(View):
     async def start(self, i: Interaction) -> None:
+        await super().start()
         embed = DefaultEmbed(title=self.translate("reset_confirm"))
         self.add_item(ConfirmButton(label=self.translate("reset_yes")))
         await i.response.send_message(embed=embed, view=self)
