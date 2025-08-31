@@ -452,7 +452,7 @@ class FixerCog(commands.Cog):
         self,
         message: discord.Message,
         *,
-        urls: list[str],
+        urls: list[str] | None = None,
         guild_settings: GuildSettings | None,
         medias: Sequence[Media] | None = None,
         interaction: Interaction | None = None,
