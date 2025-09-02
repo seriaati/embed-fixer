@@ -359,6 +359,7 @@ class FixerCog(commands.Cog):
         guild_settings: GuildSettings | None,
         interaction: Interaction | None = None,
     ) -> None:
+        silent = False
         medias, sauces = result.medias, result.sauces
         medias.extend([Media(url=a.url, file=await a.to_file()) for a in message.attachments])
 
@@ -395,17 +396,27 @@ class FixerCog(commands.Cog):
                 url=resolved_ref.jump_url,
             )
             message.content = f"{replying_to}\n{message.content}"
+            silent = True
 
         if medias:
             await self._send_files(
-                message, medias, sauces, guild_settings=guild_settings, interaction=interaction
+                message,
+                medias,
+                sauces,
+                guild_settings=guild_settings,
+                interaction=interaction,
+                silent=silent,
             )
         else:
             await self._send_message(
-                message, urls=result.urls, guild_settings=guild_settings, interaction=interaction
+                message,
+                urls=result.urls,
+                guild_settings=guild_settings,
+                interaction=interaction,
+                silent=silent,
             )
 
-    async def _send_files(
+    async def _send_files(  # noqa: PLR0913
         self,
         message: discord.Message,
         medias: list[Media],
@@ -413,12 +424,13 @@ class FixerCog(commands.Cog):
         *,
         guild_settings: GuildSettings | None,
         interaction: Interaction | None = None,
+        silent: bool = False,
     ) -> None:
         """Send multiple files in batches of 10."""
         guild_lang: str | None = None
 
         for chunk in itertools.batched(medias, 10):
-            kwargs: dict[str, Any] = {}
+            kwargs: dict[str, Any] = {"silent": silent}
             if sauces:
                 if guild_lang is None:
                     guild_lang = await Translator.get_guild_lang(message.guild)
@@ -663,6 +675,7 @@ class FixerCog(commands.Cog):
                 url=resolved_ref.jump_url,
             ),
             mention_author=False,
+            silent=True,
         )
 
     @commands.Cog.listener()
