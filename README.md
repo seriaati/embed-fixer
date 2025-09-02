@@ -49,16 +49,16 @@ Fixings are currently available for:
 
 - **Twitter/X**: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
 - **Pixiv**: [Phixiv](https://github.com/thelaao/phixiv)
-- **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)/[EmbedEZ](https://github.com/seriaati/embedez)
-- **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://github.com/seriaati/embedez)
-- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://github.com/seriaati/embedez)/KKInstagram
+- **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)/[EmbedEZ](https://embedez.com/)
+- **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://embedez.com/)
+- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com/)/KKInstagram
 - **FurAffinity**: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)/[fxraffinity](https://fxraffinity.net/)
 - **Twitch Clips**: [fxtwitch](https://github.com/seriaati/fxtwitch)
 - **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
 - **Bluesky**: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
 - **Kemono**: Media extraction only, no embed fixing
-- **Facebook**: [EmbedEZ](https://github.com/seriaati/embedez)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
-- **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://github.com/seriaati/embedez)/[BiliFix](https://vxbilibili.com)
+- **Facebook**: [EmbedEZ](https://embedez.com/)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
+- **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://embedez.com/)/[BiliFix](https://vxbilibili.com)
 - **Tumblr**: [fxtumblr](https://github.com/knuxify/fxtumblr)
 - **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
