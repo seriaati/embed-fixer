@@ -143,8 +143,8 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=27,
                 name="EmbedEZ",
-                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
-                repo_url="https://github.com/seriaati/embedez",
+                fixes=[ReplaceFix(old_domain="tiktok.com", new_domain="tiktokez.com")],
+                repo_url="https://embedez.com/",
             ),
         ],
     ),
@@ -172,8 +172,8 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=26,
                 name="EmbedEZ",
-                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
-                repo_url="https://github.com/seriaati/embedez",
+                fixes=[ReplaceFix(old_domain="reddit.com", new_domain="redditez.com")],
+                repo_url="https://embedez.com/",
             ),
         ],
     ),
@@ -196,8 +196,8 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=9,
                 name="EmbedEZ",
-                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
-                repo_url="https://github.com/seriaati/embedez",
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="instagramez.com")],
+                repo_url="https://embedez.com/",
             ),
             FixMethod(
                 id=23,
@@ -301,8 +301,8 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=15,
                 name="EmbedEZ",
-                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
-                repo_url="https://github.com/seriaati/embedez",
+                fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebookez.com")],
+                repo_url="https://embedez.com/",
             ),
             FixMethod(
                 id=16,
@@ -341,8 +341,8 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=18,
                 name="EmbedEZ",
-                fixes=[AppendURLFix(domain="embedez.seria.moe/embed")],
-                repo_url="https://github.com/seriaati/embedez",
+                fixes=[ReplaceFix(old_domain="bilibili.com", new_domain="bilibiliez.com")],
+                repo_url="https://embedez.com/",
             ),
             FixMethod(
                 id=22,
