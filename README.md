@@ -47,20 +47,20 @@ Worry no more, this Discord bot fixes all of those issues.
 
 Fixings are currently available for:
 
-- **Twitter/X**: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
+- **Twitter/X**: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)/[EmbedEZ](https://embedez.com)
 - **Pixiv**: [Phixiv](https://github.com/thelaao/phixiv)
-- **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)/[EmbedEZ](https://embedez.com/)
-- **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://embedez.com/)
-- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com/)/KKInstagram
+- **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[vxtiktok](https://github.com/dylanpdx/vxtiktok)/[EmbedEZ](https://embedez.com)
+- **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://embedez.com)
+- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com)/KKInstagram
 - **FurAffinity**: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)/[fxraffinity](https://fxraffinity.net/)
 - **Twitch Clips**: [fxtwitch](https://github.com/seriaati/fxtwitch)
 - **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
 - **Bluesky**: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
 - **Kemono**: Media extraction only, no embed fixing
-- **Facebook**: [EmbedEZ](https://embedez.com/)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
-- **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://embedez.com/)/[BiliFix](https://vxbilibili.com)
+- **Facebook**: [EmbedEZ](https://embedez.com)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
+- **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://embedez.com)/[BiliFix](https://vxbilibili.com)
 - **Tumblr**: [fxtumblr](https://github.com/knuxify/fxtumblr)
-- **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)
+- **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)/[EmbedEZ](https://embedez.com)
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
