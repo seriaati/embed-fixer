@@ -102,6 +102,15 @@ DOMAINS: Final[list[Domain]] = [
                 ],
                 repo_url="https://github.com/dylanpdx/BetterTwitFix",
             ),
+            FixMethod(
+                id=29,
+                name="EmbedEZ",
+                fixes=[
+                    ReplaceFix(old_domain="twitter.com", new_domain="xeezz.com"),
+                    ReplaceFix(old_domain="x.com", new_domain="xeezz.com"),
+                ],
+                repo_url="https://embedez.com/",
+            ),
         ],
     ),
     Domain(
