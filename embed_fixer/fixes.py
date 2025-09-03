@@ -408,6 +408,15 @@ DOMAINS: Final[list[Domain]] = [
                 ],
                 repo_url="https://github.com/everettsouthwick/vxThreads",
             ),
+            FixMethod(
+                id=30,
+                name=EMBEDEZ_NAME,
+                fixes=[
+                    ReplaceFix(old_domain="threads.net", new_domain="threadsez.com"),
+                    ReplaceFix(old_domain="threads.com", new_domain="threadsez.com"),
+                ],
+                repo_url=EMBEDEZ_URL,
+            ),
         ],
     ),
     Domain(
