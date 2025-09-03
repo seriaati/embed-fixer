@@ -74,6 +74,12 @@ If your message contains link(s) that are of any of the social medias above, it 
 
 If the link is sent in a non-NSFW channel AND is from Pixiv AND the artwork contains the "#R-18" tag, the Embed Fixer will **NOT** fix the embed as this will show the NSFW image.
 
+### About EmbedEZ
+
+Turn on "Show original link button" in `/settings` when using EmbedEZ fixes if you want to go to the original post without seeing the ads.
+
+EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. I originally made a [proxy](https://github.com/seriaati/embedez) to it to bypass the ads, but it stopped working after the site owner changed some stuff.
+
 ## Webhook Replying
 
 When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.
@@ -100,7 +106,7 @@ Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the e
 
 ## Very Customizable
 
-*All settings are unique to each server, you can use `/reset` to reset them to default values.*
+All settings are unique to each server, you can use `/reset` to reset them to default values.
 
 Below are settings you can change with the `/settings` command:
 
