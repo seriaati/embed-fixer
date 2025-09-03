@@ -5,6 +5,9 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Final
 
+EMBEDEZ_NAME = "EmbedEZ"
+EMBEDEZ_REPO_URL = "https://embedez.com"
+
 
 class DomainId(IntEnum):
     TWITTER = 1
@@ -104,12 +107,12 @@ DOMAINS: Final[list[Domain]] = [
             ),
             FixMethod(
                 id=29,
-                name="EmbedEZ",
+                name=EMBEDEZ_NAME,
                 fixes=[
                     ReplaceFix(old_domain="twitter.com", new_domain="xeezz.com"),
                     ReplaceFix(old_domain="x.com", new_domain="xeezz.com"),
                 ],
-                repo_url="https://embedez.com/",
+                repo_url=EMBEDEZ_REPO_URL,
             ),
         ],
     ),
@@ -151,9 +154,9 @@ DOMAINS: Final[list[Domain]] = [
             ),
             FixMethod(
                 id=27,
-                name="EmbedEZ",
+                name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="tiktok.com", new_domain="tiktokez.com")],
-                repo_url="https://embedez.com/",
+                repo_url=EMBEDEZ_REPO_URL,
             ),
         ],
     ),
@@ -180,9 +183,9 @@ DOMAINS: Final[list[Domain]] = [
             ),
             FixMethod(
                 id=26,
-                name="EmbedEZ",
+                name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="reddit.com", new_domain="redditez.com")],
-                repo_url="https://embedez.com/",
+                repo_url=EMBEDEZ_REPO_URL,
             ),
         ],
     ),
@@ -204,9 +207,9 @@ DOMAINS: Final[list[Domain]] = [
             ),
             FixMethod(
                 id=9,
-                name="EmbedEZ",
+                name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="g.embedez.com")],
-                repo_url="https://embedez.com/",
+                repo_url=EMBEDEZ_REPO_URL,
             ),
             FixMethod(
                 id=23,
@@ -309,9 +312,9 @@ DOMAINS: Final[list[Domain]] = [
         fix_methods=[
             FixMethod(
                 id=15,
-                name="EmbedEZ",
+                name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebookez.com")],
-                repo_url="https://embedez.com/",
+                repo_url=EMBEDEZ_REPO_URL,
             ),
             FixMethod(
                 id=16,
@@ -349,9 +352,9 @@ DOMAINS: Final[list[Domain]] = [
             ),
             FixMethod(
                 id=18,
-                name="EmbedEZ",
+                name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="bilibili.com", new_domain="bilibiliez.com")],
-                repo_url="https://embedez.com/",
+                repo_url=EMBEDEZ_REPO_URL,
             ),
             FixMethod(
                 id=22,
@@ -415,7 +418,7 @@ DOMAINS: Final[list[Domain]] = [
                     ReplaceFix(old_domain="threads.net", new_domain="threadsez.com"),
                     ReplaceFix(old_domain="threads.com", new_domain="threadsez.com"),
                 ],
-                repo_url=EMBEDEZ_URL,
+                repo_url=EMBEDEZ_REPO_URL,
             ),
         ],
     ),
