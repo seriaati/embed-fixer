@@ -196,7 +196,7 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=9,
                 name="EmbedEZ",
-                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="instagramez.com")],
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="g.embedez.com")],
                 repo_url="https://embedez.com/",
             ),
             FixMethod(
