@@ -199,13 +199,6 @@ DOMAINS: Final[list[Domain]] = [
         ],
         fix_methods=[
             FixMethod(
-                id=8,
-                name="InstaFix",
-                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="ddinstagram.com")],
-                repo_url="https://github.com/Wikidepia/InstaFix",
-                default=True,
-            ),
-            FixMethod(
                 id=9,
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="g.embedez.com")],
@@ -215,6 +208,7 @@ DOMAINS: Final[list[Domain]] = [
                 id=23,
                 name="KKInstagram",
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="kkinstagram.com")],
+                default=True,
             ),
         ],
     ),
