@@ -163,7 +163,7 @@ class FixerCog(commands.Cog):
         # See https://github.com/FxEmbed/FxEmbed#translate-posts-xtwitter for more info
         return append_path_to_url(url, f"/{translang}")
 
-    async def _find_fixes(  # noqa: C901, PLR0912, PLR0915
+    async def _find_fixes(  # noqa: C901, PLR0912, PLR0914, PLR0915
         self,
         message: discord.Message,
         *,
@@ -268,8 +268,20 @@ class FixerCog(commands.Cog):
                             new_url, translang=settings.translate_target_lang
                         )
 
+                if fix_method.has_ads and (
+                    settings is not None and not settings.show_original_link_btn
+                ):
+                    # If the fix method has ads and the guild hasn't enabled
+                    # "Show Original Link Button", recommend enabling it.
+                    guild_lang = await Translator.get_guild_lang(message.guild)
+                    recommend_msg = self.bot.translator.get(
+                        guild_lang, "recommend_original_link_btn"
+                    )
+                    message.content = f"-# {recommend_msg}\n{message.content}"
+
                 fix_found = True
                 message.content = message.content.replace(url, new_url)
+
                 break
 
         return FindFixResult(

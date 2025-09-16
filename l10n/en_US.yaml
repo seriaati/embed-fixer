@@ -81,3 +81,4 @@ show_original_link_btn: Toggle Original Link Button
 show_original_link_btn_desc: "Whether to show a button linking to the original post in fixed embed messages"
 enable_original_link_btn: Enable original link button
 disable_original_link_btn: Disable original link button
+recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.

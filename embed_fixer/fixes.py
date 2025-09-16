@@ -64,6 +64,7 @@ class FixMethod:
     fixes: list[ReplaceFix | AppendURLFix]
     repo_url: str | None = None
     default: bool = False
+    has_ads: bool = False
 
 
 @dataclass(kw_only=True)
@@ -113,6 +114,7 @@ DOMAINS: Final[list[Domain]] = [
                     ReplaceFix(old_domain="x.com", new_domain="xeezz.com"),
                 ],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
         ],
     ),
@@ -157,6 +159,7 @@ DOMAINS: Final[list[Domain]] = [
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="tiktok.com", new_domain="tiktokez.com")],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
         ],
     ),
@@ -186,6 +189,7 @@ DOMAINS: Final[list[Domain]] = [
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="reddit.com", new_domain="redditez.com")],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
         ],
     ),
@@ -210,11 +214,13 @@ DOMAINS: Final[list[Domain]] = [
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="g.embedez.com")],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
             FixMethod(
                 id=23,
                 name="KKInstagram",
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="kkinstagram.com")],
+                has_ads=True,
             ),
         ],
     ),
@@ -315,6 +321,7 @@ DOMAINS: Final[list[Domain]] = [
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebookez.com")],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
             FixMethod(
                 id=16,
@@ -355,6 +362,7 @@ DOMAINS: Final[list[Domain]] = [
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="bilibili.com", new_domain="bilibiliez.com")],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
             FixMethod(
                 id=22,
@@ -419,6 +427,7 @@ DOMAINS: Final[list[Domain]] = [
                     ReplaceFix(old_domain="threads.com", new_domain="threadsez.com"),
                 ],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             ),
         ],
     ),
