@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import itertools
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Final
 
 import discord
@@ -35,8 +34,7 @@ if TYPE_CHECKING:
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 
 
-@dataclass(kw_only=True)
-class Media:
+class Media(BaseModel):
     url: str
     file: discord.File | None = None
 
@@ -52,8 +50,7 @@ class PostExtractionResult(BaseModel):
         return remove_emojis(v)
 
 
-@dataclass(kw_only=True)
-class FindFixResult:
+class FindFixResult(BaseModel):
     fix_found: bool
     medias: list[Media]
     sauces: list[str]
