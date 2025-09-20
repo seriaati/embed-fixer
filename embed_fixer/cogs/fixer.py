@@ -10,6 +10,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
+from pydantic import BaseModel, field_validator
 
 from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
 from embed_fixer.models import GuildFixMethod, GuildSettings
@@ -21,6 +22,7 @@ from embed_fixer.utils.misc import (
     domain_in_url,
     extract_urls,
     get_filesize,
+    remove_emojis,
     remove_query_params,
     replace_domain,
 )
@@ -39,11 +41,15 @@ class Media:
     file: discord.File | None = None
 
 
-@dataclass(kw_only=True)
-class PostExtractionResult:
+class PostExtractionResult(BaseModel):
     medias: list[Media]
     content: str
     author_md: str
+
+    @field_validator("author_md", mode="after")
+    @classmethod
+    def __remove_emojis(cls, v: str) -> str:
+        return remove_emojis(v)
 
 
 @dataclass(kw_only=True)

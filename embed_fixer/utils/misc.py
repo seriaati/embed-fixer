@@ -87,3 +87,29 @@ def wrap_task_factory() -> None:
         return t
 
     loop.set_task_factory(new_factory)
+
+
+def remove_emojis(string: str) -> str:
+    emoji_pattern = re.compile(
+        r"["
+        r"\U0001f600-\U0001f64f"  # emoticons
+        r"\U0001f300-\U0001f5ff"  # symbols & pictographs
+        r"\U0001f680-\U0001f6ff"  # transport & map symbols
+        r"\U0001f1e0-\U0001f1ff"  # flags (iOS)
+        r"\U00002500-\U00002bef"  # chinese char
+        r"\U00002702-\U000027b0"
+        r"\U000024c2-\U0001f251"
+        r"\U0001f926-\U0001f937"
+        r"\U00010000-\U0010ffff"
+        r"\u2640-\u2642"
+        r"\u2600-\u2b55"
+        r"\u200d"
+        r"\u23cf"
+        r"\u23e9"
+        r"\u231a"
+        r"\ufe0f"  # dingbats
+        r"\u3030"
+        r"]+",
+        flags=re.UNICODE,
+    )
+    return emoji_pattern.sub(r"", string)
