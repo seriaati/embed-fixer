@@ -38,6 +38,8 @@ class Media(BaseModel):
     url: str
     file: discord.File | None = None
 
+    model_config = {"arbitrary_types_allowed": True}
+
 
 class PostExtractionResult(BaseModel):
     medias: list[Media]
