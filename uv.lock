@@ -356,6 +356,7 @@ dependencies = [
     { name = "aiosqlite" },
     { name = "anyio" },
     { name = "discord-py" },
+    { name = "emoji" },
     { name = "iso639-lang" },
     { name = "jishaku" },
     { name = "loguru" },
@@ -375,6 +376,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "anyio", specifier = ">=4.10.0" },
     { name = "discord-py", specifier = ">=2.4.0" },
+    { name = "emoji", specifier = ">=2.15.0" },
     { name = "iso639-lang", specifier = ">=2.6.3" },
     { name = "jishaku", specifier = ">=2.5.2" },
     { name = "loguru", specifier = ">=0.7.2" },
@@ -384,6 +386,15 @@ requires-dist = [
     { name = "redis", extras = ["hiredis"], specifier = ">=6.2.0" },
     { name = "tortoise-orm", extras = ["asyncpg"], specifier = ">=0.21.6" },
     { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
+]
+
+[[package]]
+name = "emoji"
+version = "2.15.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/78/0d2db9382c92a163d7095fc08efff7800880f830a152cfced40161e7638d/emoji-2.15.0.tar.gz", hash = "sha256:eae4ab7d86456a70a00a985125a03263a5eac54cd55e51d7e184b1ed3b6757e4", size = 615483, upload-time = "2025-09-21T12:13:02.755Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/5e/4b5aaaabddfacfe36ba7768817bd1f71a7a810a43705e531f3ae4c690767/emoji-2.15.0-py3-none-any.whl", hash = "sha256:205296793d66a89d88af4688fa57fd6496732eb48917a87175a023c8138995eb", size = 608433, upload-time = "2025-09-21T12:13:01.197Z" },
 ]
 
 [[package]]

@@ -6,6 +6,7 @@ import itertools
 from typing import TYPE_CHECKING, Any, Final
 
 import discord
+import emoji
 from discord import app_commands
 from discord.ext import commands
 from loguru import logger
@@ -21,7 +22,6 @@ from embed_fixer.utils.misc import (
     domain_in_url,
     extract_urls,
     get_filesize,
-    remove_emojis,
     remove_query_params,
     replace_domain,
 )
@@ -49,7 +49,7 @@ class PostExtractionResult(BaseModel):
     @field_validator("author_md", mode="after")
     @classmethod
     def __remove_emojis(cls, v: str) -> str:
-        return remove_emojis(v)
+        return emoji.replace_emoji(v, "")
 
 
 class FindFixResult(BaseModel):
