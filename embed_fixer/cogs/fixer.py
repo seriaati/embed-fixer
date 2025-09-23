@@ -132,10 +132,8 @@ class FixerCog(commands.Cog):
                 (f for f in domain.fix_methods if f.id == guild_fix_method.fix_id), None
             )
             if fix_method is None:
-                logger.warning(
-                    f"Fix {guild_fix_method.fix_id} not found for {domain.name} in guild {'Unknown' if settings is None else settings.id}"
-                )
                 fix_method = domain.default_fix_method
+                asyncio.create_task(guild_fix_method.delete())
 
         return fix_method
 
