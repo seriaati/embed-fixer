@@ -81,3 +81,4 @@ show_original_link_btn: Activar/Desactivar boton de Enlace original
 show_original_link_btn_desc: "Se mostrará un boton del Link original de la publicación en los mensajes de Fixed embed"
 enable_original_link_btn: Boton de Enlace original activado
 disable_original_link_btn: Boton de Enlace original desactivado
+recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace original" en /ajustes para este fix porque contiene anuncios.
