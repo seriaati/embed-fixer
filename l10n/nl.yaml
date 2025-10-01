@@ -81,3 +81,4 @@ show_original_link_btn: Schakel de knop "Originele link" in
 show_original_link_btn_desc: "Of er een knop moet worden weergegeven die naar het originele bericht linkt in fixed embed berichten"
 enable_original_link_btn: "\"Originele link\" knop inschakelen"
 disable_original_link_btn: "\"Originele link\" knop uitschakelen"
+recommend_original_link_btn: "Het wordt aanbevolen om de \"Originele Link Button\" in /settings voor deze fix in te schakelen, omdat deze advertenties bevat."
