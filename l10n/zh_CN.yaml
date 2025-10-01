@@ -80,3 +80,4 @@ show_original_link_btn: 开关原链接按钮
 show_original_link_btn_desc: "是否在预览嵌入的消息中显示链接至原帖子的按钮"
 enable_original_link_btn: 打开原链接按钮
 disable_original_link_btn: 关闭原链接按钮
+recommend_original_link_btn: 推荐在 /setting 中启用“原链接按钮”，因为此修复网站含有广告。

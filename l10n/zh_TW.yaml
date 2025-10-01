@@ -81,3 +81,4 @@ show_original_link_btn: 開關原連結按鈕
 show_original_link_btn_desc: "是否要在修復訊息的下方顯示前往原貼文連結的按鈕"
 enable_original_link_btn: 開啟原連結按鈕
 disable_original_link_btn: 關閉原連結按鈕
+recommend_original_link_btn: 推薦在 /settings 中啟用「原連結按鈕」，因為此修復網站帶有廣告。
