@@ -4,6 +4,7 @@ import contextlib
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import anyio
 import discord
 from discord.ext import commands
 from loguru import logger
@@ -63,7 +64,7 @@ class EmbedFixer(commands.AutoShardedBot):
         self.translator = Translator()
 
     async def setup_hook(self) -> None:
-        for filepath in Path("embed_fixer/cogs").glob("**/*.py"):
+        async for filepath in anyio.Path("embed_fixer/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem
             if self.env == "dev" and cog_name == "health":
                 continue
