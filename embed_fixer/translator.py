@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import aiofiles
+import anyio
 import yaml
 from discord import app_commands
 from loguru import logger
@@ -53,7 +53,7 @@ class Translator:
 
     async def load(self) -> None:
         # open all files in ./l10n/*.yaml
-        for file in Path("./l10n").rglob("*.yaml"):
+        async for file in anyio.Path("./l10n").rglob("*.yaml"):
             async with aiofiles.open(file, encoding="utf-8") as f:
                 data = yaml.safe_load(await f.read())
                 self._l10n[file.stem] = data
