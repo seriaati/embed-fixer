@@ -156,7 +156,7 @@ DOMAINS: Final[list[Domain]] = [
                 has_ads=True,
             ),
             FixMethod(
-                id=27,
+                id=31,
                 name="KKTikTok",
                 fixes=[ReplaceFix(old_domain="tiktok.com", new_domain="kktiktok.com")],
                 repo_url="https://kkscript.com/",
