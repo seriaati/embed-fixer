@@ -13,7 +13,7 @@ from tortoise.exceptions import IntegrityError
 
 from embed_fixer.db_config import TORTOISE_CONFIG
 
-from .models import GuildSettings
+from .models import GuildSettings, GuildSettingsOld
 from .translator import AppCommandTranslator, Translator
 
 if TYPE_CHECKING:
@@ -84,6 +84,36 @@ class EmbedFixer(commands.AutoShardedBot):
 
         await Tortoise.init(TORTOISE_CONFIG)
         await Tortoise.generate_schemas()
+        await self._migrate_guild_settings()
+
+    async def _migrate_guild_settings(self) -> None:
+        old_gs = await GuildSettingsOld.all()
+        for old in old_gs:
+            if await GuildSettings.get_or_none(id=old.id):
+                continue
+
+            new = GuildSettings(
+                id=old.id,
+                disable_webhook_reply=old.disable_webhook_reply,
+                disabled_fixes=old.disabled_fixes,
+                disabled_domains=old.disabled_domains,
+                disable_fix_channels=old.disable_fix_channels,
+                enable_fix_channels=old.enable_fix_channels,
+                extract_media_channels=old.extract_media_channels,
+                disable_image_spoilers=old.disable_image_spoilers,
+                show_post_content_channels=old.show_post_content_channels,
+                disable_delete_reaction=old.disable_delete_reaction,
+                lang=old.lang,
+                use_vxreddit=old.use_vxreddit,
+                delete_msg_emoji=old.delete_msg_emoji,
+                bot_visibility=old.bot_visibility,
+                funnel_target_channel=old.funnel_target_channel,
+                whitelist_role_ids=old.whitelist_role_ids,
+                translate_target_lang=old.translate_target_lang,
+                show_original_link_btn=old.show_original_link_btn,
+            )
+            await new.save()
+            logger.info(f"Migrated guild settings for guild {new.id}")
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
         logger.info(f"Joined guild {guild.name} ({guild.id})")

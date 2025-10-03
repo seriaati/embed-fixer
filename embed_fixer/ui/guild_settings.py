@@ -141,7 +141,7 @@ class GuildSettingsView(View):
                 updated_fields.append(attr_name)
 
         if updated_fields:
-            await guild_settings.save(update_fields=updated_fields)
+            await guild_settings.save()
 
     def _add_selected_channels_field(self, embed: Embed) -> Embed:
         channel_ids = self.page_item_ids

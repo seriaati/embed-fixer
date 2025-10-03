@@ -28,7 +28,7 @@ class ConfirmButton(discord.ui.Button[ResetSettingsView]):
         if self.view is None:
             return
 
-        await GuildSettings.filter(id=self.view.guild.id).delete()
+        await GuildSettings.delete(id=self.view.guild.id)
         await i.response.edit_message(
             embed=DefaultEmbed(title=self.view.translate("reset_done")), view=None
         )

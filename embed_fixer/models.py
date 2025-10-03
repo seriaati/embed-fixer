@@ -2,13 +2,80 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+import pydantic
 from tortoise import fields
 from tortoise.models import Model
 
 from embed_fixer.fixes import DomainId
 
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
-class GuildSettings(Model):
+
+class GuildSettingsTable(Model):
+    id = fields.BigIntField(pk=True, generated=False)
+    data = fields.JSONField(default={})
+
+    class Meta:
+        table = "guild_settings_v2"
+
+
+class GuildSettings(pydantic.BaseModel):
+    id: int
+    disable_webhook_reply: bool = False
+    disabled_fixes: list[str] = pydantic.Field(default_factory=list)
+    disabled_domains: list[int] = pydantic.Field(default_factory=list)
+    disable_fix_channels: list[int] = pydantic.Field(default_factory=list)
+    enable_fix_channels: list[int] = pydantic.Field(default_factory=list)
+    extract_media_channels: list[int] = pydantic.Field(default_factory=list)
+    disable_image_spoilers: list[int] = pydantic.Field(default_factory=list)
+    show_post_content_channels: list[int] = pydantic.Field(default_factory=list)
+    disable_delete_reaction: bool = False
+    lang: str | None = None
+    use_vxreddit: bool = False
+    delete_msg_emoji: str = "❌"
+    bot_visibility: bool = False
+    funnel_target_channel: int | None = None
+    whitelist_role_ids: list[int] = pydantic.Field(default_factory=list)
+    translate_target_lang: str | None = None
+    show_original_link_btn: bool = False
+
+    @classmethod
+    async def get_or_create(cls, id: int) -> tuple[GuildSettings, bool]:  # noqa: A002
+        obj, created = await GuildSettingsTable.get_or_create(id=id)
+        if created or not obj.data:
+            settings = cls(id=id)
+            await settings.save()
+            return settings, created
+        return cls(id=id, **obj.data), created
+
+    @classmethod
+    async def get_or_none(cls, id: int) -> GuildSettings | None:  # noqa: A002
+        obj = await GuildSettingsTable.get_or_none(id=id)
+        if obj is None or not obj.data:
+            return None
+        return cls(id=id, **obj.data)
+
+    @classmethod
+    async def create(cls, id: int) -> GuildSettings:  # noqa: A002
+        settings = cls(id=id)
+        await settings.save()
+        return settings
+
+    @classmethod
+    async def delete(cls, id: int) -> None:  # noqa: A002
+        await GuildSettingsTable.filter(id=id).delete()
+
+    async def save(self, *, update_fields: Iterable[str] | None = None) -> None:  # noqa: ARG002
+        obj, _ = await GuildSettingsTable.get_or_create(id=self.id)
+        obj.data = self.model_dump(exclude={"id"})
+        await obj.save()
+
+
+# Deprecated, only for migration, new fields should be added to GuildSettings
+class GuildSettingsOld(Model):
     id = fields.BigIntField(pk=True, generated=False)
     disable_webhook_reply = fields.BooleanField(default=False)
     disabled_fixes: fields.Field[list[str]] = fields.JSONField(default=[])
@@ -36,8 +103,8 @@ class GuildSettings(Model):
 
 
 class GuildFixMethod(Model):
-    guild: fields.ForeignKeyRelation[GuildSettings] = fields.ForeignKeyField(
-        "embed_fixer.GuildSettings", related_name="embed_fixes"
+    guild: fields.ForeignKeyRelation[GuildSettingsTable] = fields.ForeignKeyField(
+        "embed_fixer.GuildSettingsTable", related_name="embed_fixes"
     )
     domain_id: fields.Field[DomainId] = fields.IntEnumField(DomainId)
     fix_id = fields.IntField()
