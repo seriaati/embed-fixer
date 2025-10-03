@@ -493,6 +493,8 @@ class DomainSelector(ui.Select[GuildSettingsView]):
         if self.view is None:
             return
 
+        await i.response.defer()
+
         self.view.domain_id = DomainId(int(self.values[0]))
         embed = await self.view._get_domain_embed()
 
@@ -515,7 +517,7 @@ class DomainSelector(ui.Select[GuildSettingsView]):
             self.view.remove_item(current_selector)
 
         self.view.add_item(fix_method_selector)
-        await i.response.edit_message(embed=embed, view=self.view)
+        await i.edit_original_response(embed=embed, view=self.view)
 
 
 class FixMethodSelector(ui.Select[GuildSettingsView]):
