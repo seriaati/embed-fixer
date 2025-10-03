@@ -10,10 +10,11 @@ from discord.ext import commands
 from loguru import logger
 from tortoise import Tortoise
 from tortoise.exceptions import IntegrityError
+from tortoise.expressions import Subquery
 
 from embed_fixer.db_config import TORTOISE_CONFIG
 
-from .models import GuildSettings, GuildSettingsOld
+from .models import GuildSettings, GuildSettingsOld, GuildSettingsTable
 from .translator import AppCommandTranslator, Translator
 
 if TYPE_CHECKING:
@@ -87,11 +88,10 @@ class EmbedFixer(commands.AutoShardedBot):
         await self._migrate_guild_settings()
 
     async def _migrate_guild_settings(self) -> None:
-        old_gs = await GuildSettingsOld.all()
+        old_gs = await GuildSettingsOld.exclude(
+            id__in=Subquery(GuildSettingsTable.all().values("id"))
+        )
         for old in old_gs:
-            if await GuildSettings.get_or_none(id=old.id):
-                continue
-
             new = GuildSettings(
                 id=old.id,
                 disable_webhook_reply=getattr(old, "disable_webhook_reply", False),
