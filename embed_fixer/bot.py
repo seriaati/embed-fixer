@@ -59,7 +59,7 @@ class EmbedFixer(commands.AutoShardedBot):
             member_cache_flags=discord.MemberCacheFlags.none(),
             allowed_installs=allowed_installs,
             allowed_contexts=allowed_contexts,
-            activity=discord.Activity(type=discord.ActivityType.custom, name=get_project_version()),
+            activity=discord.CustomActivity(get_project_version()),
             tree_cls=CommandTree,
         )
 
