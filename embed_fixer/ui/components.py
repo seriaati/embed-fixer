@@ -26,7 +26,7 @@ class View(ui.View):
         self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
 
     async def on_error(self, i: Interaction, error: Exception, _item: ui.Item) -> None:
-        logger.error(f"Error in view {self.__class__.__name__}: {error}")
+        logger.warning(f"Error in view {self.__class__.__name__}: {error}")
         capture_exception(error)
 
         if i.response.is_done():

@@ -111,7 +111,7 @@ def get_project_version() -> str:
 
 def capture_exception(e: Exception) -> None:
     if settings.sentry_dsn is not None:
-        logger.error(f"Capturing exception: {e}")
+        logger.warning(f"Capturing exception: {e}")
         sentry_sdk.capture_exception(e)
     else:
         logger.exception(f"Exception occurred: {e}")

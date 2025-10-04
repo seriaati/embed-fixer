@@ -12,7 +12,6 @@ from aiohttp_client_cache.backends.redis import RedisBackend
 from aiohttp_client_cache.backends.sqlite import SQLiteBackend
 from aiohttp_client_cache.session import CachedSession
 from loguru import logger
-from sentry_sdk.integrations.loguru import LoguruIntegration
 
 from embed_fixer.bot import EmbedFixer
 from embed_fixer.core.config import settings
@@ -42,7 +41,6 @@ def setup_sentry() -> None:
         environment=settings.env,
         release=get_project_version(),
         enable_logs=True,
-        disabled_integrations=[LoguruIntegration],
     )
 
 
