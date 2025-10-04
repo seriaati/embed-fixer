@@ -3,8 +3,11 @@ from __future__ import annotations
 import asyncio
 import io
 import re
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse, urlunparse
+
+import tomli
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -87,3 +90,16 @@ def wrap_task_factory() -> None:
         return t
 
     loop.set_task_factory(new_factory)
+
+
+def get_project_version() -> str:
+    """Parse version from pyproject.toml."""
+    try:
+        with Path("pyproject.toml").open("rb") as f:
+            pyproject_data = tomli.load(f)
+            version = pyproject_data.get("project", {}).get("version", "unknown")
+            if version != "unknown":
+                return f"v{version}"
+            return version
+    except (FileNotFoundError, tomli.TOMLDecodeError):
+        return "unknown"
