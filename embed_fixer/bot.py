@@ -12,7 +12,8 @@ from tortoise import Tortoise
 from tortoise.exceptions import IntegrityError
 from tortoise.expressions import Subquery
 
-from embed_fixer.db_config import TORTOISE_CONFIG
+from embed_fixer.core.command_tree import CommandTree
+from embed_fixer.core.db_config import TORTOISE_CONFIG
 from embed_fixer.utils.misc import get_project_version
 
 from .models import GuildSettings, GuildSettingsOld, GuildSettingsTable
@@ -59,6 +60,7 @@ class EmbedFixer(commands.AutoShardedBot):
             allowed_installs=allowed_installs,
             allowed_contexts=allowed_contexts,
             activity=discord.Activity(type=discord.ActivityType.custom, name=get_project_version()),
+            tree_cls=CommandTree,
         )
 
         self.session = session

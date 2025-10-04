@@ -7,7 +7,11 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse, urlunparse
 
+import sentry_sdk
 import tomli
+from loguru import logger
+
+from embed_fixer.core.config import settings
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -103,3 +107,11 @@ def get_project_version() -> str:
             return version
     except (FileNotFoundError, tomli.TOMLDecodeError):
         return "unknown"
+
+
+def capture_exception(e: Exception) -> None:
+    if settings.sentry_dsn is not None:
+        logger.error(f"Capturing exception: {e}")
+        sentry_sdk.capture_exception(e)
+    else:
+        logger.exception(f"Exception occurred: {e}")

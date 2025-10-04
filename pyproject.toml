@@ -19,6 +19,7 @@ dependencies = [
   "emoji>=2.15.0",
   "sentry-sdk>=2.39.0",
   "tomli>=2.2.1",
+  "pydantic-settings>=2.11.0",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }

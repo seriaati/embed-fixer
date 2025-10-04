@@ -5,11 +5,15 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 from discord import ui
+from loguru import logger
 
+from embed_fixer.embed import ErrorEmbed
 from embed_fixer.translator import DEFAULT_LANG
+from embed_fixer.utils.misc import capture_exception
 
 if TYPE_CHECKING:
-    from ..translator import Translator
+    from embed_fixer.bot import Interaction
+    from embed_fixer.translator import Translator
 
 
 class View(ui.View):
@@ -20,6 +24,19 @@ class View(ui.View):
         self.guild = guild
         self.translator = translator
         self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
+
+    async def on_error(self, i: Interaction, error: Exception, _item: ui.Item) -> None:
+        logger.error(f"Error in view {self.__class__.__name__}: {error}")
+        capture_exception(error)
+
+        if i.response.is_done():
+            await i.followup.send(
+                embed=ErrorEmbed(title="Error", description=str(error)[:4096]), ephemeral=True
+            )
+        else:
+            await i.response.send_message(
+                embed=ErrorEmbed(title="Error", description=str(error)[:4096]), ephemeral=True
+            )
 
     async def start(self) -> None:
         self.lang = await self.translator.get_guild_lang(self.guild)
@@ -53,6 +70,18 @@ class Modal(ui.Modal):
         self.translator = translator
         self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
         self.title = self.translate(title)
+
+    async def on_error(self, i: Interaction, error: Exception) -> None:
+        capture_exception(error)
+
+        if i.response.is_done():
+            await i.followup.send(
+                embed=ErrorEmbed(title="Error", description=str(error)[:4096]), ephemeral=True
+            )
+        else:
+            await i.response.send_message(
+                embed=ErrorEmbed(title="Error", description=str(error)[:4096]), ephemeral=True
+            )
 
     def translate(self, key: str, **kwargs: Any) -> str:
         return self.translator.get(self.lang, key, **kwargs)
