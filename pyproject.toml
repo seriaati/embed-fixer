@@ -17,6 +17,8 @@ dependencies = [
   "iso639-lang>=2.6.3",
   "anyio>=4.10.0", # Temporarily added, see aerich/#480
   "emoji>=2.15.0",
+  "sentry-sdk>=2.39.0",
+  "tomli>=2.2.1",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }
