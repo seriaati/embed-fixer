@@ -159,7 +159,7 @@ class PixivArtwork(BaseModel):
     author_id: str
     is_ugoira: bool
     created_at: datetime.datetime = Field(alias="create_date")
-    profile_image_url: str
+    profile_image_url: str | None = None
 
     @field_validator("description", mode="after")
     @classmethod
