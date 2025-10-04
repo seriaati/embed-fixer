@@ -493,6 +493,9 @@ class DomainSelector(ui.Select[GuildSettingsView]):
         if self.view is None:
             return
 
+        msg = "test"
+        raise ValueError(msg)
+
         await i.response.defer()
 
         self.view.domain_id = DomainId(int(self.values[0]))

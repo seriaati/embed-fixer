@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import discord
 from discord import Embed
 
 
@@ -10,4 +11,4 @@ class DefaultEmbed(Embed):
 
 class ErrorEmbed(Embed):
     def __init__(self, *, title: str | None = None, description: str | None = None) -> None:
-        super().__init__(color=54327, title=title, description=description)
+        super().__init__(color=discord.Color.red(), title=title, description=description)
