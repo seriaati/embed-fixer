@@ -540,16 +540,11 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
 
         await i.response.defer()
 
-        current = await self.view._get_current_fix()
-        if current is None:
-            await GuildFixMethod.create(
-                guild_id=self.view.guild.id,
-                domain_id=self.view.domain_id,
-                fix_id=int(self.values[0]),
-            )
-        else:
-            current.fix_id = int(self.values[0])
-            await current.save(update_fields=("fix_id",))
+        await GuildFixMethod.update_or_create(
+            guild_id=self.view.guild.id,
+            domain_id=self.view.domain_id,
+            defaults={"fix_id": int(self.values[0])},
+        )
 
         embed = await self.view._get_domain_embed()
         for option in self.options:
