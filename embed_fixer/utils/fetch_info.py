@@ -184,7 +184,7 @@ class TwitterPostAuthor(BaseModel):
     handle: str = Field(alias="screen_name")
 
     avatar_url: str
-    banner_url: str
+    banner_url: str | None = None
     url: str
 
 
