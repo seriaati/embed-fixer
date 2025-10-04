@@ -61,6 +61,15 @@ class FindFixResult(BaseModel):
     urls: list[str]
 
 
+async def add_reaction_safe(message: discord.Message, emoji: str) -> None:
+    try:
+        await message.add_reaction(emoji)
+    except discord.Forbidden:
+        logger.warning(
+            f"Failed to add reaction to message {message.id} in channel {message.channel.id}"
+        )
+
+
 class FixerCog(commands.Cog):
     def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
@@ -202,12 +211,7 @@ class FixerCog(commands.Cog):
                 settings is not None and channel_id in settings.extract_media_channels
             ):
                 if not is_ctx_menu:
-                    try:
-                        asyncio.create_task(message.add_reaction("⏳"))
-                    except discord.Forbidden:
-                        logger.warning(
-                            f"Failed to add reaction to message {message.id} in channel {channel_id}"
-                        )
+                    asyncio.create_task(add_reaction_safe(message, "⌛"))
 
                 spoiler = spoilered or (
                     is_nsfw_channel
