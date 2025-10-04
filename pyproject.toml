@@ -39,6 +39,6 @@ reportUnnecessaryTypeIgnoreComment = true
 typeCheckingMode = "standard"
 
 [tool.aerich]
-tortoise_orm = "embed_fixer.db_config.TORTOISE_CONFIG"
+tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"
 location = "./migrations"
 src_folder = "./."

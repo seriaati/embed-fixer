@@ -13,7 +13,7 @@ from tortoise.exceptions import IntegrityError
 from tortoise.expressions import Subquery
 
 from embed_fixer.core.command_tree import CommandTree
-from embed_fixer.core.db_config import TORTOISE_CONFIG
+from embed_fixer.core.db_config import TORTOISE_ORM
 from embed_fixer.utils.misc import get_project_version
 
 from .core.translator import AppCommandTranslator, Translator
@@ -87,7 +87,7 @@ class EmbedFixer(commands.AutoShardedBot):
 
         logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
 
-        await Tortoise.init(TORTOISE_CONFIG)
+        await Tortoise.init(TORTOISE_ORM)
         await Tortoise.generate_schemas()
         await self._migrate_guild_settings()
 

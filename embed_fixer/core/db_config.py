@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TORTOISE_CONFIG = {
+TORTOISE_ORM = {
     "connections": {"default": os.getenv("DB_URI") or "sqlite://embed_fixer.db"},
     "apps": {"embed_fixer": {"models": ["embed_fixer.models", "aerich.models"]}},
 }
