@@ -7,13 +7,13 @@ import discord
 from discord import ui
 from loguru import logger
 
-from embed_fixer.embed import ErrorEmbed
-from embed_fixer.translator import DEFAULT_LANG
+from embed_fixer.core.translator import DEFAULT_LANG
+from embed_fixer.utils.embed import ErrorEmbed
 from embed_fixer.utils.misc import capture_exception
 
 if TYPE_CHECKING:
     from embed_fixer.bot import Interaction
-    from embed_fixer.translator import Translator
+    from embed_fixer.core.translator import Translator
 
 
 class View(ui.View):

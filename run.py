@@ -15,7 +15,7 @@ from loguru import logger
 
 from embed_fixer.bot import EmbedFixer
 from embed_fixer.core.config import settings
-from embed_fixer.logging import InterceptHandler
+from embed_fixer.utils.logging import InterceptHandler
 from embed_fixer.utils.misc import get_project_version, wrap_task_factory
 
 HEADERS = {

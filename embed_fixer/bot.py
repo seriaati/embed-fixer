@@ -16,8 +16,8 @@ from embed_fixer.core.command_tree import CommandTree
 from embed_fixer.core.db_config import TORTOISE_CONFIG
 from embed_fixer.utils.misc import get_project_version
 
+from .core.translator import AppCommandTranslator, Translator
 from .models import GuildSettings, GuildSettingsOld, GuildSettingsTable
-from .translator import AppCommandTranslator, Translator
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession

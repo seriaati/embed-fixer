@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 import discord
 
-from embed_fixer.embed import DefaultEmbed
 from embed_fixer.models import GuildSettings
 from embed_fixer.ui.components import View
+from embed_fixer.utils.embed import DefaultEmbed
 
 if TYPE_CHECKING:
     from embed_fixer.bot import Interaction

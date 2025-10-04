@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING, Literal, cast
 import discord
 from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, Thread, ui
 
-from embed_fixer.embed import DefaultEmbed
 from embed_fixer.fixes import DOMAINS, Domain, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import Setting
+from embed_fixer.utils.embed import DefaultEmbed
 
 from .components import Modal, View
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from discord.abc import GuildChannel
 
     from embed_fixer.bot import Interaction
-    from embed_fixer.translator import Translator
+    from embed_fixer.core.translator import Translator
 
 ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
 

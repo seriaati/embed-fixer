@@ -5,9 +5,9 @@ from pathlib import Path
 
 from loguru import logger
 
+from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DOMAINS
 from embed_fixer.settings import Setting
-from embed_fixer.translator import Translator
 
 README = Path(__file__).parent / "README.md"
 LANG = "en_US"

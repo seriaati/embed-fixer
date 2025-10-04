@@ -12,9 +12,9 @@ from discord.ext import commands
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
+from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
 from embed_fixer.models import GuildFixMethod, GuildSettings
-from embed_fixer.translator import Translator
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (

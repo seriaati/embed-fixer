@@ -7,10 +7,10 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
+from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import Setting
-from embed_fixer.translator import Translator
 from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
 from embed_fixer.ui.reset_settings import ResetSettingsView
 

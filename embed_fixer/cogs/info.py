@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from ..embed import DefaultEmbed
+from ..utils.embed import DefaultEmbed
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer

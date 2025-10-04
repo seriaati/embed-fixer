@@ -8,7 +8,7 @@ import yaml
 from discord import app_commands
 from loguru import logger
 
-from .models import GuildSettings
+from ..models import GuildSettings
 
 if TYPE_CHECKING:
     import discord
