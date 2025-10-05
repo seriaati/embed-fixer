@@ -686,16 +686,19 @@ class FixerCog(commands.Cog):
         if author is None or author.bot or author.id == message.author.id:
             return
 
-        await message.reply(
-            self.bot.translator.get(
-                await Translator.get_guild_lang(guild),
-                "replying_to",
-                user=author.mention,
-                url=resolved_ref.jump_url,
-            ),
-            mention_author=False,
-            silent=True,
-        )
+        try:
+            await message.reply(
+                self.bot.translator.get(
+                    await Translator.get_guild_lang(guild),
+                    "replying_to",
+                    user=author.mention,
+                    url=resolved_ref.jump_url,
+                ),
+                mention_author=False,
+                silent=True,
+            )
+        except discord.Forbidden:
+            logger.warning(f"No permission to send reply in {message.channel.id=} in {guild.id=}")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
