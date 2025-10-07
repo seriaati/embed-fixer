@@ -37,6 +37,9 @@ class MediaDownloader:
                 data = await resp.read()
 
                 media_type = resp.headers.get("Content-Type")
+        except TimeoutError:
+            logger.warning(f"Timeout downloading media {url}")
+            return
         except Exception:
             logger.exception(f"Failed to download media {url}")
             return
