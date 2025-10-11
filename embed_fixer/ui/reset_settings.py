@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import discord
 
-from embed_fixer.models import GuildSettings
+from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.ui.components import View
 from embed_fixer.utils.embed import DefaultEmbed
 
@@ -28,6 +28,7 @@ class ConfirmButton(discord.ui.Button[ResetSettingsView]):
         if self.view is None:
             return
 
+        await GuildFixMethod.filter(guild_id=self.view.guild.id).delete()
         await GuildSettings.delete(id=self.view.guild.id)
         await i.response.edit_message(
             embed=DefaultEmbed(title=self.view.translate("reset_done")), view=None
