@@ -11,6 +11,7 @@ import sentry_sdk
 from aiohttp_client_cache.backends.redis import RedisBackend
 from aiohttp_client_cache.backends.sqlite import SQLiteBackend
 from aiohttp_client_cache.session import CachedSession
+from discord.ext.commands import CommandNotFound
 from loguru import logger
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
@@ -45,6 +46,7 @@ def setup_sentry() -> None:
         environment=settings.env,
         release=get_project_version(),
         enable_logs=True,
+        ignore_errors=[CommandNotFound],
     )
 
 
