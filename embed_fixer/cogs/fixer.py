@@ -607,7 +607,7 @@ class FixerCog(commands.Cog):
                         )
                     )
             except discord.HTTPException:
-                logger.error(err_message)
+                logger.exception(err_message)
                 with contextlib.suppress(discord.Forbidden):
                     await fix_message.reply(
                         self.bot.translator.get(
