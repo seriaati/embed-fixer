@@ -58,7 +58,7 @@ class View(ui.View):
             if isinstance(child, ui.Select) or (isinstance(child, ui.Button) and child.url is None):
                 child.disabled = True
 
-        with contextlib.suppress(discord.NotFound):
+        with contextlib.suppress(discord.NotFound, discord.HTTPException):
             await self.message.edit(view=self)
 
 
