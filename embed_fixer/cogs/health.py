@@ -28,7 +28,6 @@ class HealthCheck(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def send_heartbeat(self) -> None:
-        logger.info("Sending heartbeat")
         if HEARBEAT_URL is not None:
             await self.bot.session.get(HEARBEAT_URL)
 
