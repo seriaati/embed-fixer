@@ -36,4 +36,4 @@ jobs:
         run: uv sync --frozen --no-dev && uv pip install pyright[nodejs]
 
       - name: Run Pyright
-        run: uv run pyright embed_fixer/ --outputjson
+        run: uv run pyright embed_fixer
