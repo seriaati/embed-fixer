@@ -206,7 +206,7 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=8,
                 name="InstaFix",
-                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="uuinstagram.com")],
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="eeinstagram.com")],
                 repo_url="https://github.com/Wikidepia/InstaFix",
                 default=True,
             ),
