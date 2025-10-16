@@ -68,6 +68,8 @@ async def add_reaction_safe(message: discord.Message, emoji: str) -> None:
         logger.warning(
             f"Failed to add reaction to message {message.id} in channel {message.channel.id}"
         )
+    except discord.NotFound:
+        pass
 
 
 class FixerCog(commands.Cog):
