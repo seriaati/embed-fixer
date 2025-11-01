@@ -390,7 +390,7 @@ wheels = [
 
 [[package]]
 name = "embed-fixer"
-version = "1.8.15"
+version = "1.8.16"
 source = { virtual = "." }
 dependencies = [
     { name = "aerich", extra = ["toml"] },
