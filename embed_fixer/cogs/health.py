@@ -29,7 +29,12 @@ class HealthCheck(commands.Cog):
     @tasks.loop(minutes=1)
     async def send_heartbeat(self) -> None:
         if HEARBEAT_URL is not None:
-            await self.bot.session.get(HEARBEAT_URL)
+            try:
+                async with self.bot.session.get(HEARBEAT_URL) as resp:
+                    if resp.status != 200:
+                        logger.error(f"Heartbeat ping returned non-200 status code: {resp.status}")
+            except Exception as e:
+                logger.error(f"Error sending heartbeat ping: {e}")
 
     @send_heartbeat.before_loop
     async def before_send_heartbeat(self) -> None:
