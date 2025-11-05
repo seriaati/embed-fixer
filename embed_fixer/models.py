@@ -40,7 +40,7 @@ class GuildSettings(pydantic.BaseModel):
     funnel_target_channel: int | None = None
     whitelist_role_ids: list[int] = pydantic.Field(default_factory=list)
     translate_target_lang: str | None = None
-    show_original_link_btn: bool = False
+    show_original_link_btn: bool = True
 
     @classmethod
     async def get_or_create(cls, id: int) -> tuple[GuildSettings, bool]:  # noqa: A002
