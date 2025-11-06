@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import itertools
+import re
 from typing import TYPE_CHECKING, Any, Final
 
 import discord
@@ -21,6 +22,7 @@ from embed_fixer.utils.misc import (
     append_path_to_url,
     domain_in_url,
     extract_urls,
+    fetch_reddit_json,
     get_filesize,
     remove_query_params,
     replace_domain,
@@ -32,6 +34,7 @@ if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer, Interaction
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
+YOUTUBE_EMBED_REGEX: Final[str] = r"https://www.youtube.com/embed/[a-zA-Z0-9_-]+"
 
 
 class Media(BaseModel):
@@ -70,6 +73,13 @@ async def add_reaction_safe(message: discord.Message, emoji: str) -> None:
         )
     except discord.NotFound:
         pass
+
+
+def find_youtube_embed_video_id(content: str) -> str | None:
+    match = re.search(YOUTUBE_EMBED_REGEX, content)
+    if match:
+        return match.group(0).split("/")[-1]
+    return None
 
 
 class FixerCog(commands.Cog):
@@ -292,6 +302,15 @@ class FixerCog(commands.Cog):
                         guild_lang, "recommend_original_link_btn"
                     )
                     message.content = f"-# {recommend_msg}\n{message.content}"
+
+                if domain.id == DomainId.REDDIT:
+                    # If the Reddit post has youtube video link, add it to content
+                    post_json = await fetch_reddit_json(self.bot.session, url=clean_url)
+                    if post_json:
+                        youtube_video_id = find_youtube_embed_video_id(post_json)
+                        if youtube_video_id:
+                            youtube_url = f"https://www.youtube.com/watch?v={youtube_video_id}"
+                            message.content += f"\n{youtube_url}"
 
                 fix_found = True
                 message.content = message.content.replace(url, new_url)

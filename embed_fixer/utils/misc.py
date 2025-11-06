@@ -4,7 +4,7 @@ import asyncio
 import io
 import re
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
 import sentry_sdk
@@ -12,6 +12,9 @@ import tomli
 from loguru import logger
 
 from embed_fixer.core.config import settings
+
+if TYPE_CHECKING:
+    import aiohttp
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -115,3 +118,16 @@ def capture_exception(e: Exception) -> None:
         sentry_sdk.capture_exception(e)
     else:
         logger.exception(f"Exception occurred: {e}")
+
+
+async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str | None:
+    try:
+        async with session.get(f"{url.rstrip('/')}.json") as response:
+            if response.status == 200:
+                return await response.text()
+
+            logger.error(f"Failed to fetch Reddit JSON from {url}, status code: {response.status}")
+            return None
+    except Exception as e:
+        logger.error(f"Error fetching Reddit JSON from {url}: {e}")
+        return None
