@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-import os
 import re
 from typing import TYPE_CHECKING, Any, Final
 
@@ -9,6 +8,7 @@ from dotenv import load_dotenv
 from loguru import logger
 from pydantic import BaseModel, Field, field_validator
 
+from embed_fixer.core.config import settings
 from embed_fixer.utils.misc import remove_html_tags, replace_domain
 
 if TYPE_CHECKING:
@@ -108,7 +108,7 @@ class PostInfoFetcher:
 
     async def bluesky(self, url: str) -> BskyPost | None:
         api_url = replace_domain(url, "bsky.app", "bskx.app") + "/json"
-        proxy_url = os.getenv("PROXY_URL")
+        proxy_url = settings.proxy_url
 
         logger.debug(f"Fetching Bluesky post from URL: {api_url}")
         headers = {"User-Agent": "EmbedFixer/1.0"}

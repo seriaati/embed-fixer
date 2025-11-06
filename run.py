@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-import os
 import sys
 
 import discord
@@ -63,7 +62,7 @@ async def main() -> None:
 
     async with session, EmbedFixer(session=session, env=settings.env) as bot:
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
-            await bot.start(os.environ["DISCORD_TOKEN"])
+            await bot.start(settings.discord_token)
 
 
 if __name__ == "__main__":

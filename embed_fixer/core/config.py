@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     db_uri: str
     env: Literal["dev", "prod"] = "dev"
     user_agent: str = USER_AGENT
+    proxy_url: str | None = None
+    heartbeat_url: str | None = None
 
 
 load_dotenv()
