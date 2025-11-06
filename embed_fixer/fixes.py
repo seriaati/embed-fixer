@@ -170,6 +170,7 @@ DOMAINS: Final[list[Domain]] = [
         websites=[
             Website(r"https://(www.|old.)?reddit.com/r/[\w]+/comments/[\w]+/[\w]+/?"),
             Website(r"https://(www.|old.)?reddit.com/r/[\w]+/s/[\w]+/?"),
+            Website(r"https://(www.|old.)?reddit.com/user/[\w]+/comments/[\w]+/[\w]+/?"),
         ],
         fix_methods=[
             FixMethod(
