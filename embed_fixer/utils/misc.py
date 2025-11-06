@@ -122,7 +122,9 @@ def capture_exception(e: Exception) -> None:
 
 async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str | None:
     try:
-        async with session.get(f"{url.rstrip('/')}.json") as response:
+        proxy = settings.proxy_url
+        headers = {"User-Agent": settings.user_agent}
+        async with session.get(f"{url.rstrip('/')}.json", proxy=proxy, headers=headers) as response:
             if response.status == 200:
                 return await response.text()
 
