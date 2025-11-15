@@ -68,7 +68,7 @@ If your message contains link(s) that are of any of the social medias above, it 
 ![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)
 
 > [!TIP]
-> You can disable embed fixing for a specific link by adding `$` at the beginning of the link. For example, `$https://twitter.com/...` will not be fixed.
+> You can disable embed fixing for a specific link by adding `$` at the beginning of the link, or wrapping the link with `<>`. For example, `$https://twitter.com/...` and `<https://twitter.com/...>` will not be fixed.
 
 ### About Pixiv Embed Fixing
 

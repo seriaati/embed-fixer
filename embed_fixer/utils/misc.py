@@ -24,7 +24,7 @@ def remove_html_tags(input_string: str) -> str:
 
 def extract_urls(text: str) -> list[tuple[str, bool]]:
     spoiler_pattern = r"\|\|(https?://[^\s|]+)\|\|"
-    regular_pattern = r"(?<!\$)(https?://[^\s]+)"
+    regular_pattern = r"(?<!\$)(?<!<)(https?://[^\s>]+)(?!>)"
 
     spoiler_urls = [(match, True) for match in re.findall(spoiler_pattern, text)]
 
