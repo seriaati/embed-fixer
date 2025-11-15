@@ -20,6 +20,7 @@ from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
     append_path_to_url,
+    capture_exception,
     domain_in_url,
     extract_urls,
     fetch_reddit_json,
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 YOUTUBE_EMBED_REGEX: Final[str] = r"https://www.youtube.com/embed/[a-zA-Z0-9_-]+"
+ERROR_MSG_DELETE_AFTER: Final[int] = 10
 
 
 class Media(BaseModel):
@@ -584,21 +586,24 @@ class FixerCog(commands.Cog):
                         fix_message = await self._send_webhook(
                             message, webhook, files=files, **kwargs
                         )
-                    except discord.HTTPException as e:
+                    except Exception as e:
                         err_message = self.bot.translator.get(
                             await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
                         )
-                        await message.channel.send(f"{err_message}\n\n{e}")
+                        await message.channel.send(
+                            f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
+                        )
+                        raise
                 else:
                     fix_message = await message.channel.send(
                         message.content, tts=message.tts, files=files, **kwargs
                     )
             except discord.HTTPException as e:
-                if e.code != 40005:  # Request entity too large
+                if e.code == 40005:  # Request entity too large
+                    message.content += "\n".join(media.url for media in medias)
+                    await self._send_message(message, guild_settings=guild_settings, **kwargs)
+                else:
                     raise
-
-                message.content += "\n".join(media.url for media in medias)
-                await self._send_message(message, guild_settings=guild_settings, **kwargs)
 
         await self._add_delete_reaction(
             message, interaction, fix_message, disable_delete_reaction, delete_msg_emoji
@@ -630,7 +635,8 @@ class FixerCog(commands.Cog):
                         self.bot.translator.get(
                             await Translator.get_guild_lang(message.guild),
                             "no_perms_to_add_reactions",
-                        )
+                        ),
+                        delete_after=ERROR_MSG_DELETE_AFTER,
                     )
             except discord.HTTPException:
                 logger.exception(err_message)
@@ -640,7 +646,8 @@ class FixerCog(commands.Cog):
                             await Translator.get_guild_lang(message.guild),
                             "add_reaction_error",
                             emoji=delete_msg_emoji,
-                        )
+                        ),
+                        delete_after=ERROR_MSG_DELETE_AFTER,
                     )
 
     async def _send_webhook(
@@ -651,26 +658,15 @@ class FixerCog(commands.Cog):
         **kwargs: Any,
     ) -> discord.Message:
         files = files or []
-        try:
-            return await webhook.send(
-                message.content,
-                username=f"{message.author.display_name}{USERNAME_SUFFIX}",
-                avatar_url=message.author.display_avatar.url,
-                tts=message.tts,
-                wait=True,
-                files=files,
-                **kwargs,
-            )
-        except discord.HTTPException:
-            raise
-        except Exception:
-            logger.exception("Failed to send webhook message")
-            await message.channel.send(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
-                )
-            )
-            raise
+        return await webhook.send(
+            message.content,
+            username=f"{message.author.display_name}{USERNAME_SUFFIX}",
+            avatar_url=message.author.display_avatar.url,
+            tts=message.tts,
+            wait=True,
+            files=files,
+            **kwargs,
+        )
 
     async def _get_or_create_webhook(
         self,
@@ -689,7 +685,8 @@ class FixerCog(commands.Cog):
                 await channel.send(
                     self.bot.translator.get(
                         await Translator.get_guild_lang(guild), "no_perms_to_manage_webhooks"
-                    )
+                    ),
+                    delete_after=ERROR_MSG_DELETE_AFTER,
                 )
             return None
 
@@ -766,7 +763,8 @@ class FixerCog(commands.Cog):
                     await message.reply(
                         self.bot.translator.get(
                             await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
-                        )
+                        ),
+                        delete_after=ERROR_MSG_DELETE_AFTER,
                     )
 
     @commands.Cog.listener("on_message")
@@ -801,10 +799,18 @@ class FixerCog(commands.Cog):
         )
 
         if result.fix_found:
+            errored = False
             try:
                 await self._send_fixes(message, result, guild_settings=guild_settings)
-            except discord.Forbidden:
+            except discord.HTTPException:
                 logger.warning(f"Failed to send fixes in {channel.id=} in {guild.id=}")
+                errored = True
+            except Exception as e:
+                capture_exception(e)
+                errored = True
+
+            if errored:
+                return
 
             try:
                 await message.delete()
@@ -814,7 +820,8 @@ class FixerCog(commands.Cog):
                     await message.reply(
                         self.bot.translator.get(
                             await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
-                        )
+                        ),
+                        delete_after=ERROR_MSG_DELETE_AFTER,
                     )
             except discord.NotFound:
                 pass
