@@ -9,13 +9,14 @@ on:
     branches:
       - main
     paths:
-      - 'embed_fixer/**.py'
-      - 'run.py'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - 'Dockerfile'
-      - '.dockerignore'
-      - '.github/workflows/docker-build.yml'
+      - "embed_fixer/**.py"
+      - "l10n/*.yaml"
+      - "run.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "Dockerfile"
+      - ".dockerignore"
+      - ".github/workflows/docker-build.yml"
 
 jobs:
   docker-build:
