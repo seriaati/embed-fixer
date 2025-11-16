@@ -24,7 +24,7 @@ settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
 disable_webhook_reply: Desactivar la respuesta de webhook
 enable_webhook_reply: Activar respuesta de webhook
-setting_param: Ajustes
+setting_param: ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
 info_embed_desc: |
@@ -68,7 +68,7 @@ role_selector_placeholder: Seleccionar rol(es)...
 translang_disable: Desactivar
 translang_set: "El idioma de del bot para este servidor se ha establecido en {lang_name}"
 invalid_translang: Idioma seleccionado no válido
-translang_param: idioma destinado
+translang_param: idioma-destinado
 translang_param_desc: Idioma de destino
 translang_cmd_desc: Cambiar el idioma de destino para la traducción del contenido de las publicaciones
 translang_disabled: La traducción del contenido de la publicación ha sido deshabilitada

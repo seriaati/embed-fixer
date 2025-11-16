@@ -81,3 +81,4 @@ show_original_link_btn: Bặt/Tắt nút Link Gốc
 show_original_link_btn_desc: "Hiển thị nút liên kết đến bài đăng gốc trong tin nhắn nhúng cố định không"
 enable_original_link_btn: Bật nút Link Gốc
 disable_original_link_btn: Tắt nút Link Gốc
+recommend_original_link_btn: ""
