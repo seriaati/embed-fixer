@@ -4,7 +4,7 @@ import asyncio
 import io
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final
 from urllib.parse import urlparse, urlunparse
 
 import sentry_sdk
@@ -15,6 +15,8 @@ from embed_fixer.core.config import settings
 
 if TYPE_CHECKING:
     import aiohttp
+
+REDDIT_SHORT_LINK_REGEX: Final[str] = r"https://(www.|old.)?reddit.com/r/[\w]+/s/[\w]+/?"
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -120,11 +122,37 @@ def capture_exception(e: Exception) -> None:
         logger.exception(f"Exception occurred: {e}")
 
 
+def is_reddit_short_link(url: str) -> bool:
+    return re.match(REDDIT_SHORT_LINK_REGEX, url) is not None
+
+
 async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str | None:
+    proxy = settings.proxy_url
+    headers = {"User-Agent": settings.user_agent}
+
+    if is_reddit_short_link(url):
+        # Try to find the full Reddit URL by following redirects
+        try:
+            async with session.get(
+                url, proxy=proxy, headers=headers, allow_redirects=True
+            ) as response:
+                final_url = str(response.url)
+                if response.status == 200 and not is_reddit_short_link(final_url):
+                    url = final_url
+                else:
+                    logger.error(
+                        f"Failed to resolve Reddit short link {url}, status code: {response.status}"
+                    )
+                    return None
+        except Exception as e:
+            logger.error(f"Error resolving Reddit short link {url}: {e}")
+            return None
+
     try:
-        proxy = settings.proxy_url
-        headers = {"User-Agent": settings.user_agent}
-        async with session.get(f"{url.rstrip('/')}.json", proxy=proxy, headers=headers) as response:
+        url = remove_query_params(url)
+        url = f"{url.rstrip('/')}.json"
+
+        async with session.get(url, proxy=proxy, headers=headers) as response:
             if response.status == 200:
                 return await response.text()
 
