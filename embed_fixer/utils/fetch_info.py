@@ -212,7 +212,7 @@ class BskyPostAuthor(BaseModel):
     did: str
     handle: str
     name: str = Field(alias="displayName")
-    avatar_url: str = Field(alias="avatar")
+    avatar_url: str | None = Field(alias="avatar", default=None)
 
 
 class BskyPostEmbedImage(BaseModel):
