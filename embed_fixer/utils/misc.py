@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     import aiohttp
 
 REDDIT_SHORT_LINK_REGEX: Final[str] = r"https://(www.|old.)?reddit.com/r/[\w]+/s/[\w]+/?"
+YOUTUBE_EMBED_REGEX: Final[str] = r"https://www.youtube.com/embed/[a-zA-Z0-9_-]+"
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -161,3 +162,10 @@ async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str 
     except Exception as e:
         logger.error(f"Error fetching Reddit JSON from {url}: {e}")
         return None
+
+
+def find_youtube_embed_video_id(content: str) -> str | None:
+    match = re.search(YOUTUBE_EMBED_REGEX, content)
+    if match:
+        return match.group(0).split("/")[-1]
+    return None

@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import itertools
-import re
 from typing import TYPE_CHECKING, Any, Final
 
 import discord
@@ -24,6 +23,7 @@ from embed_fixer.utils.misc import (
     domain_in_url,
     extract_urls,
     fetch_reddit_json,
+    find_youtube_embed_video_id,
     get_filesize,
     remove_query_params,
     replace_domain,
@@ -35,7 +35,6 @@ if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer, Interaction
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
-YOUTUBE_EMBED_REGEX: Final[str] = r"https://www.youtube.com/embed/[a-zA-Z0-9_-]+"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
 
 
@@ -75,13 +74,6 @@ async def add_reaction_safe(message: discord.Message, emoji: str) -> None:
         )
     except discord.NotFound:
         pass
-
-
-def find_youtube_embed_video_id(content: str) -> str | None:
-    match = re.search(YOUTUBE_EMBED_REGEX, content)
-    if match:
-        return match.group(0).split("/")[-1]
-    return None
 
 
 class FixerCog(commands.Cog):
