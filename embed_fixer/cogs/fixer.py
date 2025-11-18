@@ -638,8 +638,9 @@ class FixerCog(commands.Cog):
                         ),
                         delete_after=ERROR_MSG_DELETE_AFTER,
                     )
-            except discord.HTTPException:
-                logger.exception(err_message)
+            except discord.HTTPException as e:
+                if e.code != 50035:  # Invalid Form Body (emoji), user error so ignore
+                    capture_exception(e)
                 with contextlib.suppress(discord.Forbidden):
                     await fix_message.reply(
                         self.bot.translator.get(
