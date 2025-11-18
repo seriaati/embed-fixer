@@ -723,6 +723,10 @@ class FixerCog(commands.Cog):
             )
         except discord.Forbidden:
             logger.warning(f"No permission to send reply in {message.channel.id=} in {guild.id=}")
+        except discord.HTTPException as e:
+            if e.code == 50035:  # Invalid Form Body, mostly due to "Unknown message", so ignore
+                return
+            capture_exception(e)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
