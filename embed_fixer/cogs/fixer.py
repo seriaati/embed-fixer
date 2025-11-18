@@ -724,7 +724,7 @@ class FixerCog(commands.Cog):
             logger.warning(f"No permission to send reply in {message.channel.id=} in {guild.id=}")
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
         if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
@@ -741,6 +741,8 @@ class FixerCog(commands.Cog):
 
         try:
             message = await channel.fetch_message(payload.message_id)
+        except discord.NotFound:
+            return
         except discord.Forbidden:
             logger.warning(
                 f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
