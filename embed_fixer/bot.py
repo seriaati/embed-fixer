@@ -124,6 +124,13 @@ class EmbedFixer(commands.AutoShardedBot):
         with contextlib.suppress(IntegrityError):
             await GuildSettings.create(id=guild.id)
 
+    async def on_command_error(
+        self, context: commands.Context, exception: commands.CommandError
+    ) -> None:
+        if isinstance(exception, commands.CheckFailure):
+            return None
+        return await super().on_command_error(context, exception)
+
     async def close(self) -> None:
         logger.info("Bot shutting down...")
         await Tortoise.close_connections()
