@@ -140,14 +140,14 @@ async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str 
                 final_url = str(response.url)
                 if response.status == 200 and not is_reddit_short_link(final_url):
                     url = final_url
+                elif response.status == 403:
+                    logger.warning(f"Access forbidden when resolving Reddit short link '{url}'")
                 else:
                     logger.error(
-                        f"Failed to resolve Reddit short link {url}, status code: {response.status}"
+                        f"Failed to resolve Reddit short link '{url}' status code: {response.status}"
                     )
-                    return None
         except Exception as e:
-            logger.error(f"Error resolving Reddit short link {url}: {e}")
-            return None
+            logger.error(f"Error resolving Reddit short link '{url}': {e}")
 
     try:
         url = remove_query_params(url)
@@ -157,11 +157,14 @@ async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str 
             if response.status == 200:
                 return await response.text()
 
-            logger.error(f"Failed to fetch Reddit JSON from {url}, status code: {response.status}")
-            return None
+            if response.status == 403:
+                logger.warning(f"Access forbidden when fetching Reddit JSON from '{url}'")
+            else:
+                logger.error(
+                    f"Failed to fetch Reddit JSON from '{url}', status code: {response.status}"
+                )
     except Exception as e:
-        logger.error(f"Error fetching Reddit JSON from {url}: {e}")
-        return None
+        logger.error(f"Error fetching Reddit JSON from '{url}': {e}")
 
 
 def find_youtube_embed_video_id(content: str) -> str | None:
