@@ -499,6 +499,111 @@ class FixerCog(commands.Cog):
 
             message.content = ""
 
+    def _add_original_link_button(
+        self,
+        urls: list[str] | None,
+        show_original_link_btn: bool,
+        guild_lang: str,
+        kwargs: dict[str, Any],
+    ) -> None:
+        """Add original link button to kwargs if enabled."""
+        if show_original_link_btn and urls:
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(
+                    url=urls[0], label=self.bot.translator.get(guild_lang, "original_link")
+                )
+            )
+            kwargs["view"] = view
+
+    async def _send_via_interaction(
+        self,
+        interaction: Interaction,
+        message: discord.Message,
+        files: list[discord.File],
+        **kwargs: Any,
+    ) -> discord.Message:
+        """Send message via interaction."""
+        allowed_mentions = discord.AllowedMentions(
+            everyone=False, users=False, roles=False, replied_user=False
+        )
+
+        if interaction.response.is_done():
+            await interaction.followup.send(
+                message.content,
+                tts=message.tts,
+                files=files,
+                allowed_mentions=allowed_mentions,
+                **kwargs,
+            )
+        else:
+            await interaction.response.send_message(
+                message.content,
+                tts=message.tts,
+                files=files,
+                allowed_mentions=allowed_mentions,
+                **kwargs,
+            )
+
+        return await interaction.original_response()
+
+    async def _get_target_channel(
+        self, message: discord.Message, funnel_target_channel: int | None
+    ) -> discord.abc.GuildChannel | discord.abc.MessageableChannel | discord.abc.PrivateChannel:
+        """Get the target channel for sending the message."""
+        if funnel_target_channel is None:
+            return message.channel
+
+        return self.bot.get_channel(funnel_target_channel) or await self.bot.fetch_channel(
+            funnel_target_channel
+        )
+
+    async def _send_via_webhook_or_channel(
+        self,
+        message: discord.Message,
+        webhook_channel: discord.abc.GuildChannel
+        | discord.abc.MessageableChannel
+        | discord.abc.PrivateChannel,
+        files: list[discord.File],
+        **kwargs: Any,
+    ) -> discord.Message | None:
+        """Send message via webhook or regular channel message."""
+        webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
+
+        if webhook is not None:
+            try:
+                return await self._send_webhook(message, webhook, files=files, **kwargs)
+            except Exception as e:
+                err_message = self.bot.translator.get(
+                    await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
+                )
+                await message.channel.send(
+                    f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
+                )
+                raise
+        else:
+            return await message.channel.send(
+                message.content, tts=message.tts, files=files, **kwargs
+            )
+
+    async def _handle_http_exception(
+        self,
+        e: discord.HTTPException,
+        message: discord.Message,
+        medias: Sequence[Media],
+        guild_settings: GuildSettings | None,
+        **kwargs: Any,
+    ) -> None:
+        """Handle HTTP exceptions during message sending."""
+        if e.code == 40005:  # Request entity too large
+            message.content += "\n".join(media.url for media in medias)
+            await self._send_message(message, guild_settings=guild_settings, **kwargs)
+        elif e.code == 50035:  # Invalid Form Body, most likely due to sauce button URL too long
+            kwargs.pop("view", None)
+            await self._send_message(message, guild_settings=guild_settings, **kwargs)
+        else:
+            raise e
+
     async def _send_message(
         self,
         message: discord.Message,
@@ -515,7 +620,7 @@ class FixerCog(commands.Cog):
         medias = medias or []
         files = [media.file for media in medias if media.file is not None]
 
-        # Settings
+        # Extract settings
         disable_delete_reaction = (
             None if guild_settings is None else guild_settings.disable_delete_reaction
         )
@@ -527,81 +632,23 @@ class FixerCog(commands.Cog):
             False if guild_settings is None else guild_settings.show_original_link_btn
         )
 
+        # Add original link button if needed
         if show_original_link_btn and urls:
             guild_lang = await Translator.get_guild_lang(message.guild)
-            view = discord.ui.View()
-            view.add_item(
-                discord.ui.Button(
-                    url=urls[0], label=self.bot.translator.get(guild_lang, "original_link")
-                )
-            )
-            kwargs["view"] = view
+            self._add_original_link_button(urls, show_original_link_btn, guild_lang, kwargs)
 
+        # Send message via interaction or webhook/channel
         if interaction is not None:
-            allowed_mentions = discord.AllowedMentions(
-                everyone=False, users=False, roles=False, replied_user=False
-            )
-
-            if interaction.response.is_done():
-                await interaction.followup.send(
-                    message.content,
-                    tts=message.tts,
-                    files=files,
-                    allowed_mentions=allowed_mentions,
-                    **kwargs,
-                )
-            else:
-                await interaction.response.send_message(
-                    message.content,
-                    tts=message.tts,
-                    files=files,
-                    allowed_mentions=allowed_mentions,
-                    **kwargs,
-                )
-
-            fix_message = await interaction.original_response()
+            fix_message = await self._send_via_interaction(interaction, message, files, **kwargs)
         else:
-            webhook_channel = message.channel
-
-            if funnel_target_channel is not None:
-                target_channel = self.bot.get_channel(
-                    funnel_target_channel
-                ) or await self.bot.fetch_channel(funnel_target_channel)
-
-                webhook_channel = target_channel
-
-            webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
-
             try:
-                if webhook is not None:
-                    try:
-                        fix_message = await self._send_webhook(
-                            message, webhook, files=files, **kwargs
-                        )
-                    except Exception as e:
-                        err_message = self.bot.translator.get(
-                            await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
-                        )
-                        await message.channel.send(
-                            f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
-                        )
-                        raise
-                else:
-                    fix_message = await message.channel.send(
-                        message.content, tts=message.tts, files=files, **kwargs
-                    )
+                webhook_channel = await self._get_target_channel(message, funnel_target_channel)
+                fix_message = await self._send_via_webhook_or_channel(
+                    message, webhook_channel, files, **kwargs
+                )
             except discord.HTTPException as e:
-                if e.code == 40005:  # Request entity too large
-                    message.content += "\n".join(media.url for media in medias)
-                    await self._send_message(message, guild_settings=guild_settings, **kwargs)
-
-                # Invalid Form Body, most likely due to sauce button URL too long
-                elif e.code == 50035:
-                    kwargs.pop("view", None)
-                    await self._send_message(message, guild_settings=guild_settings, **kwargs)
-
-                else:
-                    raise
+                await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
+                return
 
         await self._add_delete_reaction(
             message, interaction, fix_message, disable_delete_reaction, delete_msg_emoji
