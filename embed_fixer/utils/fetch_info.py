@@ -77,6 +77,12 @@ class PostInfoFetcher:
             return False
         return PIXIV_R18_TAG in artwork_info.tags
 
+    async def twitter_is_nsfw(self, url: str) -> bool:
+        info = await self.twitter(url)
+        if info is None:
+            return False
+        return info.possibly_sensitive
+
     async def twitter(self, url: str) -> TwitterPost | None:
         ids = self._extract_twitter_details(url)
         logger.debug(f"Extracted Twitter IDs: {ids}")
@@ -192,6 +198,7 @@ class TwitterPost(BaseModel):
     medias: list[TwitterPostMedia] = Field(alias="media", default_factory=list)
     author: TwitterPostAuthor
     text: str
+    possibly_sensitive: bool = False
 
     @field_validator("medias", mode="before")
     @classmethod

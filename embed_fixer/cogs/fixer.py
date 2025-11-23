@@ -115,7 +115,12 @@ class FixerCog(commands.Cog):
             and await self.fetch_info.pixiv_is_nsfw(url)
         )
         kemono_skip = domain.id == DomainId.KEMONO and not is_nsfw_channel
-        return pixiv_skip or kemono_skip
+        twitter_skip = (
+            domain.id == DomainId.TWITTER
+            and not is_nsfw_channel
+            and await self.fetch_info.twitter_is_nsfw(url)
+        )
+        return pixiv_skip or kemono_skip or twitter_skip
 
     @staticmethod
     async def _get_original_author(

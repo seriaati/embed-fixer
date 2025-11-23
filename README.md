@@ -70,9 +70,9 @@ If your message contains link(s) that are of any of the social medias above, it 
 > [!TIP]
 > You can disable embed fixing for a specific link by adding `$` at the beginning of the link, or wrapping the link with `<>`. For example, `$https://twitter.com/...` and `<https://twitter.com/...>` will not be fixed.
 
-### About Pixiv Embed Fixing
+### About NSFW Embed Fixing
 
-If the link is sent in a non-NSFW channel AND is from Pixiv AND the artwork contains the "#R-18" tag, the Embed Fixer will **NOT** fix the embed as this will show the NSFW image.
+For Pixiv and Twitter/X links, the bot checks if the artwork/post is marked as NSFW. For kemono links, posts are always assumed to be NSFW. If the channel doesn't have NSFW turned on and the artwork/post is marked as NSFW, the bot will not fix the embed.
 
 ### About EmbedEZ
 
