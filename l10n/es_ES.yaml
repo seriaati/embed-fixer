@@ -28,7 +28,7 @@ setting_param: ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
 info_embed_desc: |
-  Este bot está hecho por [@seria_ati](https://discord.com/users/410036441129943050) y es de código abierto en [GitHub](https://github.com/seriaati/embed-fixer).
+  Este bot está hecho por [@seria_ati](<discord://-/users/410036441129943050>) y es de código abierto en [GitHub](https://github.com/seriaati/embed-fixer).
   Para preguntas o problemas con este bot, MD en Discord o abre un PR en GitHub.
   Para contribuir (como traducciones), MD en Discord o abre un PR en GitHub.
 selected_channels: Canales seleccionados
