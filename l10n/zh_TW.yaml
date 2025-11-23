@@ -28,7 +28,7 @@ setting_param: 設置
 setting_param_desc: 要更改的設置
 info_cmd_desc: 獲取有關機器人的信息
 info_embed_desc: |
-  這個機器人是由 [@seria_ati](https://discord.com/users/410036441129943050) 製作的，並且在 [GitHub](https://github.com/seriaati/embed-fixer) 上是開源的。
+  這個機器人由 [@seria_ati](<discord://-/users/410036441129943050>) 製作，並且在 [GitHub](https://github.com/seriaati/embed-fixer) 上開源。
   有關此機器人的問題或問題，請在 Discord 上與我聯繫，或在 GitHub 上提出 Issue。
   如有意願貢獻（例如翻譯），請與我聯繫，或在 GitHub 上提交 PR。
 selected_channels: 已選擇的頻道
