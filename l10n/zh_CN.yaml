@@ -28,8 +28,8 @@ setting_param: 设置
 setting_param_desc: 要更改的设置
 info_cmd_desc: 获取有关机器人的信息
 info_embed_desc: |
-  这个机器人由 [@seria_ati](https://discord.com/users/410036441129943050) 制作，且在 [GitHub](https://github.com/seriaati/embed-fixer) 有开源。有关此机器人的疑问或者问题，请在 DIscord 上与我联系，或在 Github 上提出问题。
-  如有意愿贡献（比如翻译），请与我联系或者在 Github 上提交公关。
+  这个机器人由 [@seria_ati](<discord://-/users/410036441129943050>) 制作，且在 [GitHub](https://github.com/seriaati/embed-fixer) 有开源。有关此机器人的疑问或者问题，请在 DIscord 上与我联系，或在 Github 上提交 Issue。
+  如有意愿贡献（比如翻译），请与我联系或者在 Github 上提交 PR。
 selected_channels: 已选频道
 enable_delete_reaction: 开启删除消息反应
 disable_delete_reaction: 关闭删除消息反应
