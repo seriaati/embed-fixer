@@ -17,6 +17,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 
 from embed_fixer.bot import EmbedFixer
 from embed_fixer.core.config import settings
+from embed_fixer.health import HealthCheckServer
 from embed_fixer.utils.logging import InterceptHandler
 from embed_fixer.utils.misc import get_project_version, wrap_task_factory
 
@@ -60,7 +61,11 @@ async def main() -> None:
             headers=HEADERS,
         )
 
-    async with session, EmbedFixer(session=session, env=settings.env) as bot:
+    async with (
+        session,
+        EmbedFixer(session=session, env=settings.env) as bot,
+        HealthCheckServer(bot),
+    ):
         with contextlib.suppress(KeyboardInterrupt, asyncio.CancelledError):
             await bot.start(settings.discord_token)
 
