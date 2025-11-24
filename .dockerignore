@@ -4,3 +4,4 @@
 !pyproject.toml
 !run.py
 !uv.lock
+.venv/
