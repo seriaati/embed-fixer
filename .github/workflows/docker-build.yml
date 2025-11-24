@@ -67,3 +67,17 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=${{ github.workflow }}
           cache-to: type=gha,mode=max,scope=${{ github.workflow }}
+
+      - name: Trigger deployment webhook
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          jq -n --arg id "$COMMIT_SHA" --arg msg "$COMMIT_MESSAGE" '{head_commit: {id: $id, message: $msg}}' > payload.json
+          curl -sS --fail-with-body --retry 3 --retry-delay 2 --retry-connrefused \
+            -X POST "${{ secrets.DEPLOYMENT_WEBHOOK_URL }}" \
+            -H "x-github-event: ci_cd" \
+            -H "Content-Type: application/json" \
+            --data-binary @payload.json \
+            -w "\nHTTP %{http_code}\n"
