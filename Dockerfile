@@ -26,9 +26,13 @@ FROM python:3.12-slim-bookworm
 # It is important to use the image that matches the builder, as the path to the
 # Python executable must be the same
 
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Create a non-root user for security
 RUN groupadd --system --gid 999 appuser \
- && useradd --system --gid 999 --uid 999 --create-home appuser
+    && useradd --system --gid 999 --uid 999 --create-home appuser
 
 WORKDIR /app
 
@@ -47,5 +51,8 @@ VOLUME [ "/data", "/app/logs" ]
 
 # Use the non-root user to run the application
 USER appuser
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
 
 CMD ["python", "run.py"]
