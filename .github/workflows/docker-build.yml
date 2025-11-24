@@ -72,7 +72,7 @@ jobs:
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           COMMIT_SHA: ${{ github.sha }}
-          PACKAGE_URL: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          PACKAGE_URL: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
         run: |
           set -euo pipefail
           jq -n --arg id "$COMMIT_SHA" --arg msg "$COMMIT_MESSAGE" --arg url "$PACKAGE_URL" '{head_commit: {id: $id, message: $msg}, registry_package: {package_version: {package_url: $url}}}' > payload.json
