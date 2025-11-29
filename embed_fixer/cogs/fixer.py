@@ -751,6 +751,9 @@ class FixerCog(commands.Cog):
         return webhook
 
     async def _handle_reply(self, message: discord.Message, resolved_ref: discord.Message) -> None:
+        if message.content.startswith("$"):
+            return
+
         guild = message.guild
         if guild is None:
             return

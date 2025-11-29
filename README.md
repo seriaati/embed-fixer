@@ -86,6 +86,9 @@ When you reply to a webhook, it replies to the webhook, not the original author.
 
 ![image](https://iili.io/2RPjJ0Q.png)
 
+> [!TIP]
+> Add `$` at the beginning of your message to disable this feature.
+
 ## Media Extracting
 
 The following platforms are supported:
