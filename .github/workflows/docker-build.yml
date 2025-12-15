@@ -25,6 +25,15 @@ env:
 jobs:
   docker-build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant:
+          - name: ""
+            suffix: ""
+            extra_dependencies: ""
+          - name: "asyncpg"
+            suffix: "-asyncpg"
+            extra_dependencies: "asyncpg"
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -35,13 +44,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
+            type=ref,event=branch,suffix=${{ matrix.variant.suffix }}
+            type=ref,event=pr,suffix=${{ matrix.variant.suffix }}
+            type=semver,pattern={{version}},suffix=${{ matrix.variant.suffix }}
+            type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.variant.suffix }}
+            type=semver,pattern={{major}},suffix=${{ matrix.variant.suffix }}
+            type=sha,prefix={{branch}}-,suffix=${{ matrix.variant.suffix }}
+            type=raw,value=latest${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -65,10 +74,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha,scope=${{ github.workflow }}
-          cache-to: type=gha,mode=max,scope=${{ github.workflow }}
+          build-args: |
+            EXTRA_DEPENDENCIES=${{ matrix.variant.extra_dependencies }}
+          cache-from: type=gha,scope=${{ github.workflow }}-${{ matrix.variant.name }}
+          cache-to: type=gha,mode=max,scope=${{ github.workflow }}-${{ matrix.variant.name }}
 
       - name: Trigger deployment webhook
+        if: matrix.variant.name == ''
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           COMMIT_SHA: ${{ github.sha }}
