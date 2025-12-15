@@ -158,8 +158,16 @@ To apply the changes, run `aerich upgrade` (only supports PostgreSQL; for other 
 
 ## Docker
 
+With SQLite:
+
 ```sh
 docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN ghcr.io/seriaati/embed-fixer:latest
+```
+
+With PostgreSQL:
+
+```sh
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN -e DB_URI=postgres://USERNAME:PASSWORD@DBHOST:PORT/DBNAME ghcr.io/seriaati/embed-fixer:latest-asyncpg
 ```
 
 ### Volumes
