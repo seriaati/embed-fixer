@@ -7,7 +7,7 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
-# Install dependencies first (this layer is cached unless lockfile changes)
+# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -22,9 +22,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Then, use a final image without uv
 FROM python:3.12-slim-bookworm
-
-# It is important to use the image that matches the builder, as the path to the
-# Python executable must be the same
 
 # Install curl for healthcheck
 RUN apt-get update && apt-get install -y --no-install-recommends curl \
