@@ -79,11 +79,15 @@ jobs:
           cache-from: type=gha,scope=${{ github.workflow }}-${{ matrix.variant.name }}
           cache-to: type=gha,mode=max,scope=${{ github.workflow }}-${{ matrix.variant.name }}
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.event_name != 'pull_request'
+    steps:
       - name: Deploy to Dokploy
-        if: github.event_name != 'pull_request'
         run: |
           curl -X 'POST' \
-            'https://dokploy.offgrind.co/api/application.deploy' \
+            'https://dokploy.seria.moe/api/application.deploy' \
             -H 'accept: application/json' \
             -H 'Content-Type: application/json' \
             -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
