@@ -407,8 +407,8 @@ DOMAINS: Final[list[Domain]] = [
                 id=20,
                 name="FixThreads",
                 fixes=[
-                    ReplaceFix(old_domain="threads.net", new_domain="fixthreads.net"),
-                    ReplaceFix(old_domain="threads.com", new_domain="fixthreads.net"),
+                    ReplaceFix(old_domain="threads.net", new_domain="fixthreads.seria.moe"),
+                    ReplaceFix(old_domain="threads.com", new_domain="fixthreads.seria.moe"),
                 ],
                 repo_url="https://github.com/milanmdev/fixthreads",
                 default=True,
