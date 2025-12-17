@@ -76,6 +76,8 @@ if __name__ == "__main__":
     setup_logger()
     setup_sentry()
 
+    logger.info(f"Starting EmbedFixer {get_project_version()} in {settings.env!r} environment.")
+
     try:
         import uvloop  # pyright: ignore [reportMissingImports]
     except ImportError:

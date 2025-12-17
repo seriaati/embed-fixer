@@ -269,6 +269,7 @@ class FixerCog(commands.Cog):
                 or not fix_method.fixes
                 or (website.skip_method_ids and fix_method.id in website.skip_method_ids)
             ):
+                logger.debug(f"No valid fix method for domain {domain.id!r} and URL: {clean_url}")
                 continue
 
             for fix in fix_method.fixes:
@@ -282,6 +283,7 @@ class FixerCog(commands.Cog):
                         continue
 
                     new_url = replace_domain(clean_url, fix.old_domain, fix.new_domain)
+                    logger.debug(f"Replaced domain {fix.old_domain} with {fix.new_domain}")
 
                     if (
                         fix_method.id == 1
@@ -864,6 +866,8 @@ class FixerCog(commands.Cog):
         except Exception as e:
             capture_exception(e)
             return
+
+        logger.debug(f"FindFixResult for message {message.id} in {guild.id=}: {result}")
 
         if result.fix_found:
             errored = False
