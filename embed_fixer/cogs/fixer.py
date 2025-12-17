@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import itertools
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any, Final, Literal
 
 import discord
 import emoji
@@ -36,6 +36,8 @@ if TYPE_CHECKING:
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
+
+type SendType = Literal["webhook", "reply", "interaction"]
 
 
 class Media(BaseModel):
@@ -418,7 +420,7 @@ class FixerCog(commands.Cog):
         *,
         guild_settings: GuildSettings | None,
         interaction: Interaction | None = None,
-    ) -> None:
+    ) -> SendType | None:
         silent = False
         medias, sauces = result.medias, result.sauces
         medias.extend([Media(url=a.url, file=await a.to_file()) for a in message.attachments])
@@ -459,7 +461,7 @@ class FixerCog(commands.Cog):
             silent = True
 
         if medias:
-            await self._send_files(
+            return await self._send_files(
                 message,
                 medias,
                 sauces,
@@ -467,14 +469,14 @@ class FixerCog(commands.Cog):
                 interaction=interaction,
                 silent=silent,
             )
-        else:
-            await self._send_message(
-                message,
-                urls=result.urls,
-                guild_settings=guild_settings,
-                interaction=interaction,
-                silent=silent,
-            )
+
+        return await self._send_message(
+            message,
+            urls=result.urls,
+            guild_settings=guild_settings,
+            interaction=interaction,
+            silent=silent,
+        )
 
     async def _send_files(  # noqa: PLR0913
         self,
@@ -485,9 +487,10 @@ class FixerCog(commands.Cog):
         guild_settings: GuildSettings | None,
         interaction: Interaction | None = None,
         silent: bool = False,
-    ) -> None:
+    ) -> SendType | None:
         """Send multiple files in batches of 10."""
         guild_lang: str | None = None
+        send_type: SendType | None = None
 
         for chunk in itertools.batched(medias, 10):
             kwargs: dict[str, Any] = {"silent": silent}
@@ -510,7 +513,7 @@ class FixerCog(commands.Cog):
                 else:
                     message.content += f"\n{media.url}"
 
-            await self._send_message(
+            send_type = await self._send_message(
                 message,
                 guild_settings=guild_settings,
                 medias=chunk,
@@ -519,6 +522,8 @@ class FixerCog(commands.Cog):
             )
 
             message.content = ""
+
+        return send_type
 
     def _add_original_link_button(
         self,
@@ -579,7 +584,7 @@ class FixerCog(commands.Cog):
             funnel_target_channel
         )
 
-    async def _send_via_webhook_or_channel(
+    async def _send_via_webhook_or_reply(
         self,
         message: discord.Message,
         webhook_channel: discord.abc.GuildChannel
@@ -587,13 +592,13 @@ class FixerCog(commands.Cog):
         | discord.abc.PrivateChannel,
         files: list[discord.File],
         **kwargs: Any,
-    ) -> discord.Message | None:
-        """Send message via webhook or regular channel message."""
+    ) -> tuple[discord.Message | None, SendType]:
+        """Send message via webhook or reply."""
         webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
 
         if webhook is not None:
             try:
-                return await self._send_webhook(message, webhook, files=files, **kwargs)
+                return await self._send_webhook(message, webhook, files=files, **kwargs), "webhook"
             except Exception as e:
                 err_message = self.bot.translator.get(
                     await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
@@ -603,9 +608,11 @@ class FixerCog(commands.Cog):
                 )
                 raise
         else:
-            return await message.channel.send(
-                message.content, tts=message.tts, files=files, **kwargs
-            )
+            # In a thread or something that doesn't have webhook, then reply (and suppress embed
+            # of the original message later)
+            return await message.reply(
+                message.content, tts=message.tts, files=files, mention_author=False, **kwargs
+            ), "reply"
 
     async def _handle_http_exception(
         self,
@@ -634,8 +641,8 @@ class FixerCog(commands.Cog):
         medias: Sequence[Media] | None = None,
         interaction: Interaction | None = None,
         **kwargs: Any,
-    ) -> None:
-        """Send a message with a webhook, interaction, or regular message."""
+    ) -> SendType | None:
+        """Send a message with a webhook, interaction, or reply."""
         fix_message: discord.Message | None = None
 
         medias = medias or []
@@ -661,19 +668,21 @@ class FixerCog(commands.Cog):
         # Send message via interaction or webhook/channel
         if interaction is not None:
             fix_message = await self._send_via_interaction(interaction, message, files, **kwargs)
+            send_type = "interaction"
         else:
             try:
                 webhook_channel = await self._get_target_channel(message, funnel_target_channel)
-                fix_message = await self._send_via_webhook_or_channel(
+                fix_message, send_type = await self._send_via_webhook_or_reply(
                     message, webhook_channel, files, **kwargs
                 )
             except discord.HTTPException as e:
                 await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
-                return
+                return None
 
         await self._add_delete_reaction(
             message, interaction, fix_message, disable_delete_reaction, delete_msg_emoji
         )
+        return send_type
 
     async def _add_delete_reaction(
         self,
@@ -881,32 +890,19 @@ class FixerCog(commands.Cog):
         logger.debug(f"FindFixResult for message {message.id} in {guild.id=}: {result}")
 
         if result.fix_found:
-            errored = False
             try:
-                await self._send_fixes(message, result, guild_settings=guild_settings)
+                send_type = await self._send_fixes(message, result, guild_settings=guild_settings)
             except discord.HTTPException:
                 logger.warning(f"Failed to send fixes in {channel.id=} in {guild.id=}")
-                errored = True
+                return
             except Exception as e:
                 capture_exception(e)
-                errored = True
-
-            if errored:
                 return
 
-            try:
-                await message.delete()
-            except discord.Forbidden:
-                logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
-                with contextlib.suppress(discord.Forbidden):
-                    await message.reply(
-                        self.bot.translator.get(
-                            await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
-                        ),
-                        delete_after=ERROR_MSG_DELETE_AFTER,
-                    )
-            except discord.NotFound:
-                pass
+            if send_type == "webhook":
+                await self.delete_message_safe(message, channel, guild)
+            elif send_type == "reply":
+                await self.suppress_embed_safe(message, channel, guild)
 
         # If this is a normal message (no embed fix found) replying to a webhook message,
         # reply to this message containing mention to the original author of the webhook message.
@@ -918,6 +914,39 @@ class FixerCog(commands.Cog):
             and not guild_settings.disable_webhook_reply
         ):
             await self._handle_reply(message, resolved_ref)
+
+    async def suppress_embed_safe(
+        self,
+        message: discord.Message,
+        channel: discord.abc.MessageableChannel,
+        guild: discord.Guild,
+    ) -> None:
+        try:
+            await message.edit(suppress=True)
+        except discord.Forbidden:
+            logger.warning(f"Failed to suppress embed in {channel.id=} in {guild.id=}")
+        except discord.NotFound:
+            pass
+
+    async def delete_message_safe(
+        self,
+        message: discord.Message,
+        channel: discord.abc.MessageableChannel,
+        guild: discord.Guild,
+    ) -> None:
+        try:
+            await message.delete()
+        except discord.Forbidden:
+            logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
+            with contextlib.suppress(discord.Forbidden):
+                await message.reply(
+                    self.bot.translator.get(
+                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                    ),
+                    delete_after=ERROR_MSG_DELETE_AFTER,
+                )
+        except discord.NotFound:
+            pass
 
     async def base_ctx_menu(
         self, i: Interaction, message: discord.Message, *, extract_media: bool
