@@ -128,15 +128,16 @@ def is_reddit_short_link(url: str) -> bool:
 
 
 async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str | None:
-    proxy = settings.proxy_url
-    headers = {"User-Agent": settings.user_agent}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/116.0",
+        "Accept": "application/json",
+        "Accept-Language": "en-US,en;q=0.5",
+    }
 
     if is_reddit_short_link(url):
         # Try to find the full Reddit URL by following redirects
         try:
-            async with session.get(
-                url, proxy=proxy, headers=headers, allow_redirects=True
-            ) as response:
+            async with session.head(url, headers=headers, allow_redirects=True) as response:
                 final_url = str(response.url)
                 if response.status == 200 and not is_reddit_short_link(final_url):
                     url = final_url
@@ -153,7 +154,7 @@ async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str 
         url = remove_query_params(url)
         url = f"{url.rstrip('/')}.json"
 
-        async with session.get(url, proxy=proxy, headers=headers) as response:
+        async with session.get(url, headers=headers) as response:
             if response.status == 200:
                 return await response.text()
 
