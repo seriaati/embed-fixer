@@ -154,7 +154,7 @@ async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str 
         url = remove_query_params(url)
         url = f"{url.rstrip('/')}.json"
 
-        async with session.get(url, headers=headers) as response:
+        async with session.get(url, headers=headers, proxy=settings.proxy_url) as response:
             if response.status == 200:
                 return await response.text()
 
