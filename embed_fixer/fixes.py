@@ -313,10 +313,10 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.FACEBOOK,
         name="Facebook",
         websites=[
-            Website(r"https://(www.)?facebook.com/(.*)", skip_method_ids=[15]),
             Website(r"https://(www.)?facebook.com/share/r/[\w]+/?"),
             Website(r"https://(www.)?facebook.com/reel/\d+/?"),
             Website(r"https://(www.)?facebook.com/share/v/[\w]+/?"),
+            Website(r"https://(www.)?facebook.com/(.*)", skip_method_ids=[15]),
         ],
         fix_methods=[
             FixMethod(
