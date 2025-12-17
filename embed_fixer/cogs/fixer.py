@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import itertools
-from typing import TYPE_CHECKING, Any, Final, Literal
+from typing import TYPE_CHECKING, Any, Final, Literal, cast
 
 import discord
 import emoji
@@ -73,6 +73,19 @@ async def add_reaction_safe(message: discord.Message, emoji: str) -> None:
     except discord.Forbidden:
         logger.warning(
             f"Failed to add reaction to message {message.id} in channel {message.channel.id}"
+        )
+    except discord.NotFound:
+        pass
+
+
+async def remove_reaction_safe(
+    message: discord.Message, emoji: str, member: discord.Member
+) -> None:
+    try:
+        await message.remove_reaction(emoji, member)
+    except discord.Forbidden:
+        logger.warning(
+            f"Failed to remove reaction from message {message.id} in channel {message.channel.id}"
         )
     except discord.NotFound:
         pass
@@ -832,12 +845,24 @@ class FixerCog(commands.Cog):
             )
             return
 
-        if USERNAME_SUFFIX not in message.author.display_name or (guild := message.guild) is None:
+        is_webhook = (
+            message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
+        )
+        is_reply = message.reference is not None and isinstance(
+            message.reference.resolved, discord.Message
+        )
+
+        if (guild := message.guild) is None or not (is_webhook or is_reply):
             return
 
-        author = await self._get_original_author(message, guild)
-        if author is None:
-            return
+        if is_webhook:
+            author = await self._get_original_author(message, guild)
+            if author is None:
+                return
+        else:
+            message_ref = cast("discord.MessageReference", message.reference)
+            resolved_ref = cast("discord.Message", message_ref.resolved)
+            author = resolved_ref.author
 
         if payload.user_id == author.id:
             try:
@@ -903,6 +928,7 @@ class FixerCog(commands.Cog):
                 await self.delete_message_safe(message, channel, guild)
             elif send_type == "reply":
                 await self.suppress_embed_safe(message, channel, guild)
+                await remove_reaction_safe(message, "⌛", guild.me)
 
         # If this is a normal message (no embed fix found) replying to a webhook message,
         # reply to this message containing mention to the original author of the webhook message.
