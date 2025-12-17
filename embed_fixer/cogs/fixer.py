@@ -219,6 +219,7 @@ class FixerCog(commands.Cog):
 
             if domain is None or website is None:
                 continue
+            logger.debug(f"Matched domain {domain.id!r} for URL: {clean_url}")
 
             if await self._nsfw_skip(url, domain, is_nsfw_channel=is_nsfw_channel):
                 continue
@@ -856,9 +857,13 @@ class FixerCog(commands.Cog):
         ):
             return
 
-        result = await self._find_fixes(
-            message, settings=guild_settings, filesize_limit=guild.filesize_limit
-        )
+        try:
+            result = await self._find_fixes(
+                message, settings=guild_settings, filesize_limit=guild.filesize_limit
+            )
+        except Exception as e:
+            capture_exception(e)
+            return
 
         if result.fix_found:
             errored = False
