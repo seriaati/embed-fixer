@@ -28,6 +28,7 @@ EXPIRE_AFTER = 600  # seconds
 
 
 def setup_logger() -> None:
+    logger.disable("aiohttp.web_log")
     logger.remove()
     logger.add(sys.stderr, level="INFO" if settings.env == "prod" else "DEBUG")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
