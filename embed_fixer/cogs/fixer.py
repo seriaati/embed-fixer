@@ -203,8 +203,19 @@ class FixerCog(commands.Cog):
         content = ""
         author_md = ""
 
-        is_nsfw_channel = is_ctx_menu or (
-            isinstance(message.channel, discord.TextChannel) and message.channel.nsfw
+        is_nsfw_channel = (
+            is_ctx_menu
+            # Text or Voice channel is nsfw
+            or (
+                isinstance(message.channel, (discord.TextChannel, discord.VoiceChannel))
+                and message.channel.nsfw
+            )
+            # Thread's parent is nsfw
+            or (
+                isinstance(message.channel, discord.Thread)
+                and message.channel.parent is not None
+                and message.channel.parent.nsfw
+            )
         )
         urls = extract_urls(message.content)
 
