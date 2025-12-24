@@ -13,7 +13,7 @@ dependencies = [
   "pydantic>=2.10.4",
   "redis[hiredis]>=6.2.0",
   "aiohttp-client-cache>=0.13.0",
-  "aiosqlite==0.21.0",
+  "aiosqlite==0.22.1",
   "iso639-lang>=2.6.3",
   "anyio>=4.10.0",                              # Temporarily added, see aerich/#480
   "emoji>=2.15.0",
