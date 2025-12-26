@@ -4,7 +4,7 @@ import asyncio
 import io
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Final
+from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 import sentry_sdk
@@ -12,12 +12,6 @@ import tomli
 from loguru import logger
 
 from embed_fixer.core.config import settings
-
-if TYPE_CHECKING:
-    import aiohttp
-
-REDDIT_SHORT_LINK_REGEX: Final[str] = r"https://(www.|old.)?reddit.com/r/[\w]+/s/[\w]+/?"
-YOUTUBE_EMBED_REGEX: Final[str] = r"https://www.youtube.com/embed/[a-zA-Z0-9_-]+"
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -121,55 +115,3 @@ def capture_exception(e: Exception) -> None:
         sentry_sdk.capture_exception(e)
     else:
         logger.exception(f"Exception occurred: {e}")
-
-
-def is_reddit_short_link(url: str) -> bool:
-    return re.match(REDDIT_SHORT_LINK_REGEX, url) is not None
-
-
-async def fetch_reddit_json(session: aiohttp.ClientSession, *, url: str) -> str | None:
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/116.0",
-        "Accept": "application/json",
-        "Accept-Language": "en-US,en;q=0.5",
-    }
-
-    if is_reddit_short_link(url):
-        # Try to find the full Reddit URL by following redirects
-        try:
-            async with session.head(url, headers=headers, allow_redirects=True) as response:
-                final_url = str(response.url)
-                if response.status == 200 and not is_reddit_short_link(final_url):
-                    url = final_url
-                elif response.status == 403:
-                    logger.warning(f"Access forbidden when resolving Reddit short link '{url}'")
-                else:
-                    logger.error(
-                        f"Failed to resolve Reddit short link '{url}' status code: {response.status}"
-                    )
-        except Exception as e:
-            logger.error(f"Error resolving Reddit short link '{url}': {e}")
-
-    try:
-        url = remove_query_params(url)
-        url = f"{url.rstrip('/')}.json"
-
-        async with session.get(url, headers=headers, proxy=settings.proxy_url) as response:
-            if response.status == 200:
-                return await response.text()
-
-            if response.status == 403:
-                logger.warning(f"Access forbidden when fetching Reddit JSON from '{url}'")
-            else:
-                logger.error(
-                    f"Failed to fetch Reddit JSON from '{url}', status code: {response.status}"
-                )
-    except Exception as e:
-        logger.error(f"Error fetching Reddit JSON from '{url}': {e}")
-
-
-def find_youtube_embed_video_id(content: str) -> str | None:
-    match = re.search(YOUTUBE_EMBED_REGEX, content)
-    if match:
-        return match.group(0).split("/")[-1]
-    return None

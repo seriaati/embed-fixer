@@ -22,8 +22,6 @@ from embed_fixer.utils.misc import (
     capture_exception,
     domain_in_url,
     extract_urls,
-    fetch_reddit_json,
-    find_youtube_embed_video_id,
     get_filesize,
     remove_query_params,
     replace_domain,
@@ -330,15 +328,6 @@ class FixerCog(commands.Cog):
                         guild_lang, "recommend_original_link_btn"
                     )
                     message.content = f"-# {recommend_msg}\n{message.content}"
-
-                if domain.id == DomainId.REDDIT:
-                    # If the Reddit post has youtube video link, add it to content
-                    post_json = await fetch_reddit_json(self.bot.session, url=clean_url)
-                    if post_json:
-                        youtube_video_id = find_youtube_embed_video_id(post_json)
-                        if youtube_video_id:
-                            youtube_url = f"https://www.youtube.com/watch?v={youtube_video_id}"
-                            message.content += f"\n{youtube_url}"
 
                 fix_found = True
                 message.content = message.content.replace(url, new_url)

@@ -176,7 +176,7 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=6,
                 name="FixReddit",
-                fixes=[ReplaceFix(old_domain="reddit.com", new_domain="rxddit.com")],
+                fixes=[ReplaceFix(old_domain="reddit.com", new_domain="fxreddit.seria.moe")],
                 repo_url="https://github.com/MinnDevelopment/fxreddit",
                 default=True,
             ),
