@@ -80,6 +80,10 @@ Turn on "Show original link button" in `/settings` when using EmbedEZ fixes if y
 
 EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. I originally made a [proxy](https://github.com/seriaati/embedez) to it to bypass the ads, but it stopped working after the site owner changed some stuff.
 
+### Opt Out of Embed Fixing
+
+Use the `/ignore-me` command.
+
 ## Webhook Replying
 
 When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.
