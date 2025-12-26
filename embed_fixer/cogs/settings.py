@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DomainId
-from embed_fixer.models import GuildFixMethod, GuildSettings
+from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
 from embed_fixer.settings import Setting
 from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
 from embed_fixer.ui.reset_settings import ResetSettingsView
@@ -183,6 +183,22 @@ class SettingsCog(commands.Cog):
 
         view = ResetSettingsView(i.guild, self.bot.translator)
         await view.start(i)
+
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.command(name="ignore-me", description=locale_str("ignore_me_cmd_desc"))
+    async def ignore_me_command(self, i: Interaction) -> None:
+        await i.response.defer(ephemeral=True)
+
+        toggled = await IgnoreMe.toggle(i.user.id)
+        if toggled:
+            await i.followup.send(
+                self.bot.translator.get(i.locale.value, "ignore_me_enabled"), ephemeral=True
+            )
+        else:
+            await i.followup.send(
+                self.bot.translator.get(i.locale.value, "ignore_me_disabled"), ephemeral=True
+            )
 
 
 async def setup(bot: EmbedFixer) -> None:

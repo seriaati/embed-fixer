@@ -14,7 +14,7 @@ from pydantic import BaseModel, field_validator
 
 from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
-from embed_fixer.models import GuildFixMethod, GuildSettings
+from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
@@ -888,6 +888,7 @@ class FixerCog(commands.Cog):
             (message.webhook_id is not None and USERNAME_SUFFIX in author.display_name)
             or self.bot.user.id == author.id
             or guild is None
+            or await IgnoreMe.contains(author.id)
         ):
             return
 

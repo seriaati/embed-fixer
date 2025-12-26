@@ -2,16 +2,46 @@
 
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING
 
 import pydantic
 from tortoise import fields
+from tortoise.exceptions import IntegrityError
 from tortoise.models import Model
 
 from embed_fixer.fixes import DomainId
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+
+class IgnoreMe(Model):
+    id = fields.BigIntField(pk=True, generated=False)
+
+    class Meta:
+        table = "ignore_me"
+
+    @classmethod
+    async def add(cls, id: int) -> None:  # noqa: A002
+        with contextlib.suppress(IntegrityError):
+            await cls.create(id=id)
+
+    @classmethod
+    async def remove(cls, id: int) -> None:  # noqa: A002
+        await cls.filter(id=id).delete()
+
+    @classmethod
+    async def contains(cls, id: int) -> bool:  # noqa: A002
+        return await cls.filter(id=id).exists()
+
+    @classmethod
+    async def toggle(cls, id: int) -> bool:  # noqa: A002
+        if await cls.contains(id):
+            await cls.remove(id)
+            return False
+        await cls.add(id)
+        return True
 
 
 class GuildSettingsTable(Model):

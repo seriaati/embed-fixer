@@ -82,3 +82,6 @@ show_original_link_btn_desc: "Whether to show a button linking to the original p
 enable_original_link_btn: Enable original link button
 disable_original_link_btn: Disable original link button
 recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.
+ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
+ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
+ignore_me_cmd_desc: Toggle whether Embed Fixer should ignore your messages
