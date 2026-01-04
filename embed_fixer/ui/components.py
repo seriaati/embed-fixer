@@ -16,14 +16,11 @@ if TYPE_CHECKING:
     from embed_fixer.core.translator import Translator
 
 
-class View(ui.View):
-    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
-        super().__init__(timeout=600)
-
-        self.message: discord.Message | None = None
-        self.guild = guild
-        self.translator = translator
-        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
+class ViewMixin:
+    children: list[discord.ui.Item[Any]]
+    message: discord.Message | None
+    translator: Translator
+    guild: discord.Guild
 
     async def on_error(self, i: Interaction, error: Exception, _item: ui.Item) -> None:
         logger.warning(f"Error in view {self.__class__.__name__}: {error}")
@@ -49,6 +46,37 @@ class View(ui.View):
             if item.custom_id == item_id:  # pyright: ignore[reportAttributeAccessIssue]
                 return item
         return None
+
+
+class View(ui.View, ViewMixin):
+    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
+        super().__init__(timeout=600)
+
+        self.message: discord.Message | None = None
+        self.guild = guild
+        self.translator = translator
+        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
+
+    async def on_timeout(self) -> None:
+        if self.message is None:
+            return
+
+        for child in self.children:
+            if isinstance(child, ui.Select) or (isinstance(child, ui.Button) and child.url is None):
+                child.disabled = True
+
+        with contextlib.suppress(discord.NotFound, discord.HTTPException):
+            await self.message.edit(view=self)
+
+
+class LayoutView(ui.LayoutView, ViewMixin):
+    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
+        super().__init__(timeout=600)
+
+        self.message: discord.Message | None = None
+        self.guild = guild
+        self.translator = translator
+        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
 
     async def on_timeout(self) -> None:
         if self.message is None:
@@ -85,3 +113,7 @@ class Modal(ui.Modal):
 
     def translate(self, key: str, **kwargs: Any) -> str:
         return self.translator.get(self.lang, key, **kwargs)
+
+
+class Label[C: ui.Item](ui.Label):
+    component: C
