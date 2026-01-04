@@ -25,6 +25,7 @@ class DomainId(IntEnum):
     TUMBLR = 13
     THREADS = 14
     PTT = 15
+    DEVIANTART = 16
 
 
 @dataclass(kw_only=True)
@@ -444,6 +445,20 @@ DOMAINS: Final[list[Domain]] = [
                 name="fxptt",
                 fixes=[ReplaceFix(old_domain="ptt.cc", new_domain="fxptt.seria.moe")],
                 repo_url="https://github.com/seriaati/fxptt",
+            )
+        ],
+    ),
+    Domain(
+        id=DomainId.DEVIANTART,
+        name="DeviantArt",
+        websites=[Website(r"https://(www.)?deviantart.com/[\w.-]+/art/[\w.-]+-\d+/?")],
+        fix_methods=[
+            FixMethod(
+                id=32,
+                name="fxdeviantart",
+                fixes=[ReplaceFix(old_domain="deviantart.com", new_domain="fixdeviantart.com")],
+                repo_url="https://github.com/Tschrock/fixdeviantart",
+                default=True,
             )
         ],
     ),
