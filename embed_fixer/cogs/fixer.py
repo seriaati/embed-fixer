@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
 
-type SendType = Literal["webhook", "reply", "interaction"]
+type SendType = Literal["webhook", "reply", "channel", "interaction"]
 
 
 class Media(BaseModel):
@@ -593,6 +593,7 @@ class FixerCog(commands.Cog):
         | discord.abc.MessageableChannel
         | discord.abc.PrivateChannel,
         files: list[discord.File],
+        guild_settings: GuildSettings | None,
         **kwargs: Any,
     ) -> tuple[discord.Message | None, SendType]:
         """Send message via webhook or reply."""
@@ -609,6 +610,11 @@ class FixerCog(commands.Cog):
                     f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
                 )
                 raise
+        elif guild_settings is not None and guild_settings.delete_original_message_in_threads:
+            return (
+                await message.channel.send(message.content, tts=message.tts, files=files, **kwargs),
+                "channel",
+            )
         else:
             # In a thread or something that doesn't have webhook, then reply (and suppress embed
             # of the original message later)
@@ -675,7 +681,7 @@ class FixerCog(commands.Cog):
             try:
                 webhook_channel = await self._get_target_channel(message, funnel_target_channel)
                 fix_message, send_type = await self._send_via_webhook_or_reply(
-                    message, webhook_channel, files, **kwargs
+                    message, webhook_channel, files, guild_settings=guild_settings, **kwargs
                 )
             except discord.HTTPException as e:
                 await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
@@ -914,7 +920,9 @@ class FixerCog(commands.Cog):
                 capture_exception(e)
                 return
 
-            if send_type == "webhook":
+            if send_type in {"webhook", "channel"}:
+                # send_type is only "channel" when delete_original_message_in_threads is enabled
+                # this is checked in _send_via_webhook_or_reply.
                 await self.delete_message_safe(message, channel, guild)
             elif send_type == "reply":
                 await self.suppress_embed_safe(message, channel, guild)

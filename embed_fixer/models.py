@@ -71,6 +71,7 @@ class GuildSettings(pydantic.BaseModel):
     whitelist_role_ids: list[int] = pydantic.Field(default_factory=list)
     translate_target_lang: str | None = None
     show_original_link_btn: bool = True
+    delete_original_message_in_threads: bool = False
 
     @classmethod
     async def get_or_create(cls, id: int) -> tuple[GuildSettings, bool]:  # noqa: A002
