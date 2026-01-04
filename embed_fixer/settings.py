@@ -19,3 +19,4 @@ class Setting(StrEnum):
     FUNNEL_TARGET_CHANNEL = "funnel_target_channel"
     WHITELIST_ROLE_IDS = "whitelist_role_ids"
     SHOW_ORIGINAL_LINK_BUTTON = "show_original_link_btn"
+    DELETE_ORIGINAL_MESSAGE_IN_THREADS = "delete_original_message_in_threads"

@@ -85,3 +85,7 @@ recommend_original_link_btn: It is recommended to enable "Original Link Button" 
 ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
 ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
 ignore_me_cmd_desc: Toggle whether Embed Fixer should ignore your messages
+disable_delete_original_message_in_threads: Keep original messages in threads
+enable_delete_original_message_in_threads: Delete original messages in threads
+delete_original_message_in_threads: Toggle Deleting Original Messages in Threads
+delete_original_message_in_threads_desc: "Because threads can't have webhooks, the original message is kept to know who sent it. Enabling this will delete the original message in threads after sending the fixed embed."

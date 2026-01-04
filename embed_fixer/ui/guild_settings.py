@@ -291,6 +291,19 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
+        elif setting is Setting.DELETE_ORIGINAL_MESSAGE_IN_THREADS:
+            toggle_btn = ToggleButton(
+                current_toggle=guild_settings.delete_original_message_in_threads,
+                labels={
+                    True: "disable_delete_original_message_in_threads",
+                    False: "enable_delete_original_message_in_threads",
+                },
+                attr_name="delete_original_message_in_threads",
+                reverse_color=True,
+            )
+            toggle_btn.set_style(self)
+            self.add_item(toggle_btn)
+
         else:
             msg = f"Unknown setting: {setting!r}"
             raise ValueError(msg)
