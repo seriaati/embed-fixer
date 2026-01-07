@@ -86,13 +86,14 @@ jobs:
     steps:
       - name: Deploy to Dokploy
         run: |
+          COMMIT_MSG=$(echo '${{ github.event.head_commit.message }}' | head -n 1 | jq -Rs .)
           curl -X 'POST' \
             'https://dokploy.seria.moe/api/application.deploy' \
             -H 'accept: application/json' \
             -H 'Content-Type: application/json' \
-            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
-            -d '{
-            "applicationId": "${{ secrets.DOKPLOY_APP_ID }}",
-            "title": "${{ github.event.head_commit.message }}",
-            "description": "Hash: ${{ github.sha }}"
-          }'
+            -H "x-api-key: ${{ secrets.DOKPLOY_API_KEY }}" \
+            -d "{
+              \"applicationId\": \"${{ secrets.DOKPLOY_APP_ID }}\",
+              \"title\": ${COMMIT_MSG},
+              \"description\": \"Hash: ${{ github.sha }}\"
+            }"
