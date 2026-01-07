@@ -840,11 +840,16 @@ class FixerCog(commands.Cog):
             )
             return
 
+        # The emoji is added to a webhook message which also has the USERNAME_SUFFIX,
         is_webhook = (
             message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
         )
-        is_reply = message.reference is not None and isinstance(
-            message.reference.resolved, discord.Message
+        # The emoji is added to a message sent by the bot, and is also replying to
+        # another message.
+        is_reply = (
+            message.reference is not None
+            and isinstance(message.reference.resolved, discord.Message)
+            and message.author.id == self.bot.user.id
         )
 
         if (guild := message.guild) is None or not (is_webhook or is_reply):
