@@ -85,6 +85,10 @@ EmbedEZ is a service that covers many platforms for embed fixing; however, it is
 
 Use the `/ignore-me` command.
 
+### Fixing Manually
+
+Use the `/fix` command or right click a message and use the "Fix Embed" context menu.
+
 ## Webhook Replying
 
 When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.
