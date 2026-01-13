@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Final, Literal, cast
 import discord
 import emoji
 from discord import app_commands
+from discord.app_commands import locale_str
 from discord.ext import commands
 from loguru import logger
 from pydantic import BaseModel, field_validator
@@ -34,8 +35,30 @@ if TYPE_CHECKING:
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
+DEFAULT_FILESIZE_LIMIT: Final[int] = 10 * 1024 * 1024  # 10 MB
 
 type SendType = Literal["webhook", "reply", "channel", "interaction"]
+
+
+class MockMessage:
+    """Mock message object for slash command URL fixing."""
+
+    def __init__(
+        self,
+        content: str,
+        channel: discord.interactions.InteractionChannel,
+        guild: discord.Guild | None,
+        author: discord.User | discord.Member,
+    ) -> None:
+        self.id = 0
+        self.content = content
+        self.channel = channel
+        self.guild = guild
+        self.author = author
+        self.attachments: list[discord.Attachment] = []
+        self.tts = False
+        self.reference: discord.MessageReference | None = None
+        self.webhook_id: int | None = None
 
 
 class Media(BaseModel):
@@ -201,10 +224,10 @@ class FixerCog(commands.Cog):
 
     async def _find_fixes(  # noqa: C901, PLR0912, PLR0914, PLR0915
         self,
-        message: discord.Message,
+        message: discord.Message | MockMessage,
         *,
         settings: GuildSettings | None,
-        filesize_limit: int | None,
+        filesize_limit: int,
         extract_media: bool = False,
         is_ctx_menu: bool = False,
     ) -> FindFixResult:
@@ -251,7 +274,7 @@ class FixerCog(commands.Cog):
             if extract_media or (
                 settings is not None and channel_id in settings.extract_media_channels
             ):
-                if not is_ctx_menu:
+                if not is_ctx_menu and isinstance(message, discord.Message):
                     asyncio.create_task(add_reaction_safe(message, "⌛"))
 
                 spoiler = spoilered or (
@@ -263,11 +286,7 @@ class FixerCog(commands.Cog):
                 )
                 medias.extend(
                     Media(url=media.url)
-                    if (
-                        media.file
-                        and filesize_limit is not None
-                        and get_filesize(media.file.fp) > filesize_limit
-                    )
+                    if (media.file and get_filesize(media.file.fp) > filesize_limit)
                     else media
                     for media in result.medias
                 )
@@ -344,7 +363,7 @@ class FixerCog(commands.Cog):
         )
 
     async def _extract_post_info(
-        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int | None
+        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int
     ) -> PostExtractionResult:
         logger.debug(f"Extracting post info from {url} for domain {domain_id!r}")
 
@@ -993,7 +1012,7 @@ class FixerCog(commands.Cog):
         result = await self._find_fixes(
             message,
             settings=guild_settings,
-            filesize_limit=None if i.guild is None else i.guild.filesize_limit,
+            filesize_limit=DEFAULT_FILESIZE_LIMIT if i.guild is None else i.guild.filesize_limit,
             extract_media=extract_media,
             is_ctx_menu=True,
         )
@@ -1017,6 +1036,72 @@ class FixerCog(commands.Cog):
 
     async def extract_medias(self, i: Interaction, message: discord.Message) -> None:
         await self.base_ctx_menu(i, message, extract_media=True)
+
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.command(name="fix", description=locale_str("fix_url_command_desc"))
+    @app_commands.rename(
+        link=locale_str("fix_url_param"), extract_media=locale_str("fix_url_extract_media_param")
+    )
+    @app_commands.describe(
+        link=locale_str("fix_url_param_desc"),
+        extract_media=locale_str("fix_url_extract_media_param_desc"),
+    )
+    async def fix_url_command(self, i: Interaction, link: str, extract_media: bool = False) -> None:
+        assert i.channel is not None
+        await i.response.defer()
+
+        mock_message = MockMessage(content=link, channel=i.channel, guild=i.guild, author=i.user)
+
+        is_nsfw_channel = (
+            i.guild is None
+            or (
+                isinstance(i.channel, (discord.TextChannel, discord.VoiceChannel))
+                and i.channel.nsfw
+            )
+            or (
+                isinstance(i.channel, discord.Thread)
+                and i.channel.parent is not None
+                and i.channel.parent.nsfw
+            )
+        )
+
+        result = await self._find_fixes(
+            mock_message,
+            settings=None,
+            filesize_limit=DEFAULT_FILESIZE_LIMIT if i.guild is None else i.guild.filesize_limit,
+            extract_media=extract_media,
+            is_ctx_menu=is_nsfw_channel,
+        )
+
+        if result.fix_found:
+            guild_lang = await Translator.get_guild_lang(i.guild)
+            response_content = mock_message.content
+
+            if extract_media and result.medias:
+                files: list[discord.File] = []
+                for media in result.medias[:10]:
+                    if media.file is not None:
+                        files.append(media.file)
+                    else:
+                        response_content += f"\n{media.url}"
+
+                kwargs: dict[str, Any] = {}
+                if result.sauces:
+                    view = discord.ui.View()
+                    view.add_item(
+                        discord.ui.Button(
+                            url=result.sauces[0], label=self.bot.translator.get(guild_lang, "sauce")
+                        )
+                    )
+                    kwargs["view"] = view
+
+                await i.followup.send(response_content, files=files, **kwargs)
+            else:
+                await i.followup.send(response_content)
+        else:
+            guild_lang = await Translator.get_guild_lang(i.guild)
+            await i.followup.send(self.bot.translator.get(guild_lang, "no_fixes_found", url=link))
 
 
 async def setup(bot: EmbedFixer) -> None:
