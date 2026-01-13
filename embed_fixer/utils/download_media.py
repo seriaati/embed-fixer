@@ -18,7 +18,7 @@ class MediaDownloader:
         self.session = session
         self.files: dict[str, discord.File] = {}
 
-    async def _download(self, url: str, *, spoiler: bool, filesize_limit: int | None) -> None:
+    async def _download(self, url: str, *, spoiler: bool, filesize_limit: int) -> None:
         timeout = aiohttp.ClientTimeout(total=10)
 
         try:
@@ -27,11 +27,7 @@ class MediaDownloader:
                     return
 
                 content_length = resp.headers.get("Content-Length")
-                if (
-                    content_length is not None
-                    and filesize_limit is not None
-                    and int(content_length) > filesize_limit
-                ):
+                if content_length is not None and int(content_length) > filesize_limit:
                     return
 
                 data = await resp.read()
@@ -53,7 +49,7 @@ class MediaDownloader:
 
         self.files[url] = discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
 
-    async def start(self, *, spoiler: bool, filesize_limit: int | None) -> None:
+    async def start(self, *, spoiler: bool, filesize_limit: int) -> None:
         async with asyncio.TaskGroup() as tg:
             for media_url in self.media_urls:
                 tg.create_task(
