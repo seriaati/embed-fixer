@@ -1101,7 +1101,9 @@ class FixerCog(commands.Cog):
                 await i.followup.send(response_content)
         else:
             guild_lang = await Translator.get_guild_lang(i.guild)
-            await i.followup.send(self.bot.translator.get(guild_lang, "no_fixes_found", url=link))
+            await i.followup.send(
+                self.bot.translator.get(guild_lang, "no_fixes_found", url=link), ephemeral=True
+            )
 
 
 async def setup(bot: EmbedFixer) -> None:
