@@ -1056,7 +1056,9 @@ class FixerCog(commands.Cog):
                     message,
                     result,
                     guild_settings=guild_settings,
-                    filesize_limit=DEFAULT_FILESIZE_LIMIT if i.guild is None else i.guild.filesize_limit,
+                    filesize_limit=DEFAULT_FILESIZE_LIMIT
+                    if i.guild is None
+                    else i.guild.filesize_limit,
                     interaction=i,
                 )
             except discord.Forbidden:
