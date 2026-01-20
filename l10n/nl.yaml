@@ -82,3 +82,15 @@ show_original_link_btn_desc: "Of er een knop moet worden weergegeven die naar he
 enable_original_link_btn: "\"Originele link\" knop inschakelen"
 disable_original_link_btn: "\"Originele link\" knop uitschakelen"
 recommend_original_link_btn: "Het wordt aanbevolen om de \"Originele Link Button\" in /settings voor deze fix in te schakelen, omdat deze advertenties bevat."
+ignore_me_enabled: Je wordt nu genegeerd door de bot. Je embeds worden niet meer gefixt.
+ignore_me_disabled: Je wordt niet meer genegeerd door de bot. Je embeds worden gefixt.
+ignore_me_cmd_desc: Schakel of Embed Fixer je berichten moet negeren
+disable_delete_original_message_in_threads: Behoud originele berichten in threads
+enable_delete_original_message_in_threads: Verwijder originele berichten in threads
+delete_original_message_in_threads: Schakel het verwijderen van originele berichten in threads
+delete_original_message_in_threads_desc: "Omdat threads geen webhooks kunnen hebben, wordt het originele bericht bewaard om te weten wie het heeft verzonden. Door dit in te schakelen wordt het originele bericht in threads verwijderd na het verzenden van de gefixte embed."
+fix_url_command_desc: Fix een URL en krijg de embed-vriendelijke versie
+fix_url_param: link
+fix_url_param_desc: De URL om te fixen
+fix_url_extract_media_param: media-extraheren
+fix_url_extract_media_param_desc: "Of media uit de URL moet worden geëxtraheerd (standaard: False)"
