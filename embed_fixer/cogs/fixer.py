@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import itertools
 from typing import TYPE_CHECKING, Any, Final, Literal, cast
 
 import discord
@@ -440,6 +439,7 @@ class FixerCog(commands.Cog):
         result: FindFixResult,
         *,
         guild_settings: GuildSettings | None,
+        filesize_limit: int,
         interaction: Interaction | None = None,
     ) -> SendType | None:
         silent = False
@@ -487,6 +487,7 @@ class FixerCog(commands.Cog):
                 medias,
                 sauces,
                 guild_settings=guild_settings,
+                filesize_limit=filesize_limit,
                 interaction=interaction,
                 silent=silent,
             )
@@ -499,6 +500,32 @@ class FixerCog(commands.Cog):
             silent=silent,
         )
 
+    @staticmethod
+    def _batch_medias(medias: list[Media], filesize_limit: int) -> list[list[Media]]:
+        """Batch medias by count (max 10) and total size (max filesize_limit)."""
+        batches: list[list[Media]] = []
+        current_batch: list[Media] = []
+        current_size = 0
+
+        for media in medias:
+            file_size = 0 if media.file is None else get_filesize(media.file.fp)
+
+            # If adding this file would exceed limits, start a new batch
+            if current_batch and (
+                len(current_batch) >= 10 or current_size + file_size > filesize_limit
+            ):
+                batches.append(current_batch)
+                current_batch = []
+                current_size = 0
+
+            current_batch.append(media)
+            current_size += file_size
+
+        if current_batch:
+            batches.append(current_batch)
+
+        return batches
+
     async def _send_files(  # noqa: PLR0913
         self,
         message: discord.Message,
@@ -506,14 +533,15 @@ class FixerCog(commands.Cog):
         sauces: list[str],
         *,
         guild_settings: GuildSettings | None,
+        filesize_limit: int,
         interaction: Interaction | None = None,
         silent: bool = False,
     ) -> SendType | None:
-        """Send multiple files in batches of 10."""
+        """Send multiple files in batches of 10 and within filesize limit."""
         guild_lang: str | None = None
         send_type: SendType | None = None
 
-        for chunk in itertools.batched(medias, 10):
+        for chunk in self._batch_medias(medias, filesize_limit):
             kwargs: dict[str, Any] = {"silent": silent}
             if sauces:
                 if guild_lang is None:
@@ -936,7 +964,12 @@ class FixerCog(commands.Cog):
 
         if result.fix_found:
             try:
-                send_type = await self._send_fixes(message, result, guild_settings=guild_settings)
+                send_type = await self._send_fixes(
+                    message,
+                    result,
+                    guild_settings=guild_settings,
+                    filesize_limit=guild.filesize_limit,
+                )
             except discord.HTTPException:
                 logger.warning(f"Failed to send fixes in {channel.id=} in {guild.id=}")
                 return
@@ -1020,7 +1053,11 @@ class FixerCog(commands.Cog):
         if result.fix_found:
             try:
                 await self._send_fixes(
-                    message, result, guild_settings=guild_settings, interaction=i
+                    message,
+                    result,
+                    guild_settings=guild_settings,
+                    filesize_limit=DEFAULT_FILESIZE_LIMIT if i.guild is None else i.guild.filesize_limit,
+                    interaction=i,
                 )
             except discord.Forbidden:
                 logger.warning(f"Failed to send fixes in {i.channel_id=} in {i.guild_id=}")
