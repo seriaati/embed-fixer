@@ -82,3 +82,15 @@ show_original_link_btn_desc: "Se mostrará un boton del Link original de la publ
 enable_original_link_btn: Boton de Enlace original activado
 disable_original_link_btn: Boton de Enlace original desactivado
 recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace original" en /ajustes para este fix porque contiene anuncios.
+ignore_me_enabled: Ahora el bot te está ignorando. Tus embeds no serán corregidos.
+ignore_me_disabled: El bot ya no te está ignorando. Tus embeds serán corregidos.
+ignore_me_cmd_desc: Activar/Desactivar si Embed Fixer debe ignorar tus mensajes
+disable_delete_original_message_in_threads: Mantener mensajes originales en hilos
+enable_delete_original_message_in_threads: Eliminar mensajes originales en hilos
+delete_original_message_in_threads: Activar/Desactivar eliminación de mensajes originales en hilos
+delete_original_message_in_threads_desc: "Debido a que los hilos no pueden tener webhooks, el mensaje original se mantiene para saber quién lo envió. Habilitar esto eliminará el mensaje original en los hilos después de enviar el embed corregido."
+fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
+fix_url_param: enlace
+fix_url_param_desc: La URL a corregir
+fix_url_extract_media_param: extraer-multimedia
+fix_url_extract_media_param_desc: "Si se debe extraer multimedia de la URL (predeterminado: False)"
