@@ -82,8 +82,8 @@ show_original_link_btn_desc: "是否要在修復訊息的下方顯示前往原�
 enable_original_link_btn: 開啟原連結按鈕
 disable_original_link_btn: 關閉原連結按鈕
 recommend_original_link_btn: 推薦在 /settings 中啟用「原連結按鈕」，因為此修復網站帶有廣告。
-ignore_me_enabled: 機器人將不再修復你的訊息中的連結預覽。
-ignore_me_disabled: 機器人將會修復你的訊息中的連結預覽。
+ignore_me_enabled: 從現在起，機器人將不再忽略你的訊息，你的連結預覽將會被修復。
+ignore_me_disabled: 從現在起，機器人將忽略你的訊息，你的連結預覽將不會被修復。
 ignore_me_cmd_desc: 開關 Embed Fixer 是否要忽略你的訊息
 disable_delete_original_message_in_threads: 在討論串中保留原訊息
 enable_delete_original_message_in_threads: 在討論串中刪除原訊息
@@ -93,4 +93,4 @@ fix_url_command_desc: 修復一個連結的連結預覽
 fix_url_param: 連結
 fix_url_param_desc: 要修復的連結
 fix_url_extract_media_param: 提取媒體
-fix_url_extract_media_param_desc: "是否要從連結中提取媒體（預設：否）"
+fix_url_extract_media_param_desc: "是否要從連結中提取媒體（預設：不提取）"
