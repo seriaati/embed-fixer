@@ -82,3 +82,15 @@ show_original_link_btn_desc: "Hiển thị nút liên kết đến bài đăng g
 enable_original_link_btn: Bật nút Link Gốc
 disable_original_link_btn: Tắt nút Link Gốc
 recommend_original_link_btn: Nên bật "Nút Link Gốc" trong /settings cho bản sửa này vì nó có quảng cáo.
+ignore_me_enabled: Bây giờ bạn đã bị bot bỏ qua. Các nhúng của bạn sẽ không được sửa.
+ignore_me_disabled: Bạn không còn bị bot bỏ qua nữa. Các nhúng của bạn sẽ được sửa.
+ignore_me_cmd_desc: Bật/tắt việc Embed Fixer bỏ qua tin nhắn của bạn
+disable_delete_original_message_in_threads: Giữ tin nhắn gốc trong chủ đề
+enable_delete_original_message_in_threads: Xóa tin nhắn gốc trong chủ đề
+delete_original_message_in_threads: Bật/tắt Xóa tin nhắn gốc trong chủ đề
+delete_original_message_in_threads_desc: "Vì chủ đề không thể có webhook, tin nhắn gốc được giữ lại để biết ai đã gửi. Bật tính năng này sẽ xóa tin nhắn gốc trong chủ đề sau khi gửi nhúng đã sửa."
+fix_url_command_desc: Sửa một URL và nhận phiên bản thân thiện với nhúng
+fix_url_param: liên-kết
+fix_url_param_desc: URL cần sửa
+fix_url_extract_media_param: trích-xuất-phương-tiện
+fix_url_extract_media_param_desc: "Có trích xuất phương tiện từ URL hay không (mặc định: False)"
