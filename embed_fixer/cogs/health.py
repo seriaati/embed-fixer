@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import aiohttp
 from discord.ext import commands, tasks
 from loguru import logger
 
@@ -18,20 +19,25 @@ if HEARTBEAT_URL is None:
 class HealthCheck(commands.Cog):
     def __init__(self, bot: EmbedFixer) -> None:
         self.bot = bot
+        self.session: aiohttp.ClientSession | None = None
 
     async def cog_load(self) -> None:
         if HEARTBEAT_URL is not None:
+            self.session = aiohttp.ClientSession()
             self.send_heartbeat.start()
 
     async def cog_unload(self) -> None:
         if HEARTBEAT_URL is not None:
             self.send_heartbeat.cancel()
+            assert self.session is not None
+            await self.session.close()
 
     @tasks.loop(minutes=1)
     async def send_heartbeat(self) -> None:
         if HEARTBEAT_URL is not None:
+            assert self.session is not None
             try:
-                async with self.bot.session.get(HEARTBEAT_URL) as resp:
+                async with self.session.get(HEARTBEAT_URL) as resp:
                     if resp.status != 200:
                         logger.error(f"Heartbeat ping returned non-200 status code: {resp.status}")
             except Exception as e:
