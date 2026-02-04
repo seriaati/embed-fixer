@@ -125,9 +125,10 @@ class PostInfoFetcher:
 
             data = await response.json()
 
-        if not data.get("posts"):
+        try:
+            post = data["thread"]["post"]
+        except KeyError:
             return None
-        post = data["posts"][0]
 
         return BskyPost(**post)
 
