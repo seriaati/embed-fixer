@@ -2,28 +2,28 @@ name: Español
 replying_to: "⬅️ En respuesta a {user} ({url})"
 delete: Eliminar
 delete_no_perms: Sólo el autor o los administradores del servidor pueden borrar este mensaje.
-fix_selector_placeholder: Selecciona embed fix(es) para desactivar...
+fix_selector_placeholder: Selecciona el sitio(s) a desactivar...
 lang_selector_placeholder: Seleccionar idioma...
-settings_embed_footer: "-# Los ajustes son exclusivos de este servidor\n-# Escriba en el menú plegable para buscar canales\n-# Si seleccionas un canal ya seleccionado éste sera eliminado"
-disable_fixes: Desactivar Embed Fixes para sitios web
-disable_fixes_desc: Desactivar Embed fixes para sitios web específicos
+settings_embed_footer: "-# Los ajustes son exclusivos para éste servidor\n-# Escribe en el menú plegable para buscar el/los canales.\n-# Al seleccionar un canal existente en la lista, éste será eliminado."
+disable_fixes: Deshabilitar Embed Fixer para sitios web
+disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos
 lang: Idioma
 lang_desc: Cambiar el idioma del bot
-extract_media_channels: Canales con extracción de multimedia
-extract_media_channels_desc: Se extraerán las imágenes/vídeos de los enlaces de Twitter/X/Pixiv enviados en estos canales
-disable_fix_channels: Lista negra de canales para Embed Fix
-disable_fix_channels_desc: "Los canales aquí no tendrán embed fixes, la lista blanca tiene prioridad sobre la lista negra"
-enable_fix_channels: Lista blanca de canales para Embed Fix
-enable_fix_channels_desc: "Sólo los canales establecidos aquí recibirán correcciones de embed, la lista blanca tiene prioridad sobre la lista negra"
-disable_image_spoilers: Desactivar el Spoiler automático en los canales NSFW
-disable_image_spoilers_desc: "Para la función de extracción de multimedia, los canales NSFW seleccionados aquí no marcaran spoiler automáticamente en los archivos multimedia"
-toggle_webhook_reply: Activar/Desactivar respuesta de Webhook
-toggle_webhook_reply_desc: Activar/Desactivar el ping al autor original al responder a un webhook
+extract_media_channels: Canales con extracción multimedia
+extract_media_channels_desc: La extracción de multimedia para los enlaces de Twitter/X/Pixiv está habilitada para los siguientes canales.
+disable_fix_channels: Ajustar canales no permitidos para Embed Fixer
+disable_fix_channels_desc: "Embed Fixer no corregirá en los canales de la lista de no permitidos. No tiene prioridad sobre la lista de permitidos."
+enable_fix_channels: Ajustar canales permitidos para Embed Fixer
+enable_fix_channels_desc: "Embed Fixer corregirá en los canales de la lista de permitidos. Tiene prioridad sobre la lista de no permitidos."
+disable_image_spoilers: Deshabilitar marcar como spoiler automáticamente en canales NSFW
+disable_image_spoilers_desc: "Habilita la función de marcar como Spoiler de forma automática en archivos multimedia en estos canales."
+toggle_webhook_reply: Habilitar/deshabilitar mención al webhook
+toggle_webhook_reply_desc: Habilitar/Deshabilitar la mención al autor original si respondes al webhook
 sauce: Fuente
 settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
-disable_webhook_reply: Desactivar la respuesta de webhook
-enable_webhook_reply: Activar respuesta de webhook
+disable_webhook_reply: Deshabilitar la respuesta de webhook
+enable_webhook_reply: Habilitar respuesta de webhook
 setting_param: ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
@@ -32,40 +32,40 @@ info_embed_desc: |
   Para preguntas o problemas con este bot, MD en Discord o abre un PR en GitHub.
   Para contribuir (como traducciones), MD en Discord o abre un PR en GitHub.
 selected_channels: Canales seleccionados
-enable_delete_reaction: Activar la reacción de eliminación
-disable_delete_reaction: Desactivar la reacción de eliminación
+enable_delete_reaction: Habilitar reacción para eliminar
+disable_delete_reaction: Deshabilitar reacción para eliminar
 toggle_delete_reaction: Habilitar/deshabilitar reacción para eliminar mensajes
-toggle_delete_reaction_desc: "Agregar reacciones a mensajes del webhook para que el autor original pueda eliminarlos con una reacción"
-show_post_content_channels: Mostrar canales de contenido
-show_post_content_channels_desc: "Si la extracción de multimedia está activada, los canales seleccionados aquí mostrarán el contenido de la publicación"
+toggle_delete_reaction_desc: "Añade reacciones a los mensajes del webhook permitiendo así al autor original eliminarlos con dicha reacción."
+show_post_content_channels: Mostrar contenido multimedia en ciertos canales
+show_post_content_channels_desc: "Mientras la extracción de multimedia esté activa, estos canales mostrarán el contenido de la publicación."
 no_perms_to_delete_msg: El bot no tiene permiso para eliminar mensajes
 no_perms_to_manage_webhooks: El bot no tiene permiso para gestionar webhooks
 no_perms_to_add_reactions: El bot no tiene permiso para agregar reacciones
 add_reaction_error: "Error al añadir la reacción '{emoji}', asegúrate de que es válida"
 failed_to_send_webhook: Error al enviar webhook
-delete_msg_emoji: Cambiar emoji de reacción para eliminar mensaje
-delete_msg_emoji_desc: "Cambiar el emoji usado para eliminar mensajes"
+delete_msg_emoji: Elegir el emoji de reacción para eliminar el mensaje
+delete_msg_emoji_desc: "Elegir el emoji usado para eliminar el mensaje"
 emoji: Emoji
 emoji_changed: "Emoji para eliminar mensajes ha sido cambiado a {emoji}"
 choose_fix_service: Elije en que servicio se usará embed fix
 choose_fix_service_desc: Elegir que tipo de embed fix se usará para los distintos sitios web
-using_fix_service: "Usando {service}"
+using_fix_service: "Actualmente {0}"
 fix_embed: Fix Embed
 extract_medias: Extraer multimedia
 no_fixes_found: No se encontró ningún fixes/multimedia para este mensaje
 next: Siguiente
 previous: Anterior
-bot_visibility: Visibilidad del bot
-bot_visibility_desc: "Si está habilitado, el Embed Fixer corregirá los enlaces enviados por otros bots. Si está deshabilitado, solo corregirá los enlaces enviados por los usuarios."
-enable_bot_visibility: Habilitar la visibilidad del bot
-disable_bot_visibility: " Deshabilitar la visibilidad del bot"
-funnel_target_channel: Canal de destino para redirigir
-funnel_target_channel_desc: "Si se configura, todos los enlaces corregidos y los medios extraídos se enviarán al canal de destino en lugar del canal original."
-whitelist_role_ids: Lista blanca de roles
-whitelist_role_ids_desc: "Si se configura, solo se corregirán los enlaces de los usuarios que tengan uno de estos roles. Dejar en blanco para desactivar."
+bot_visibility: Visibilidad hacia otros bots
+bot_visibility_desc: "Embed Fixer actuará sobre otros bots si está habilitado. Si no lo está, solo actuará sobre los usuarios."
+enable_bot_visibility: Habilitar visibilidad hacia otros bots
+disable_bot_visibility: Deshabilitar visibilidad hacia otros bots
+funnel_target_channel: Canal de destino para redirecciones
+funnel_target_channel_desc: "Configurando esta opción, se enviarán los enlaces al canal establecido independientemente del canal de origen."
+whitelist_role_ids: Roles permitidos
+whitelist_role_ids_desc: "Corregir los enlaces de los usuarios si poseen cualquier rol de esta lista. Déjalo en blanco para desactivarlo."
 selected_roles: Seleccionar roles
 role_selector_placeholder: Seleccionar rol(es)...
-translang_disable: Desactivar
+translang_disable: Deshabilitar
 translang_set: "El idioma de del bot para este servidor se ha establecido en {lang_name}"
 invalid_translang: Idioma seleccionado no válido
 translang_param: idioma-destinado
@@ -73,24 +73,24 @@ translang_param_desc: Idioma de destino
 translang_cmd_desc: Cambiar el idioma de destino para la traducción del contenido de las publicaciones
 translang_disabled: La traducción del contenido de la publicación ha sido deshabilitada
 reset_cmd_desc: Reestablecer todos los valores predeterminados para este servidor
-reset_confirm: "¿Estás seguro que quieres reiniciar todos los ajustes de este servidor?"
+reset_confirm: "¿Estás seguro que quieres reiniciar todos los ajustes para este servidor?"
 reset_yes: "Si"
 reset_done: Todos los ajustes han sido reestablecido a valores predeterminados
 original_link: Enlace original
-show_original_link_btn: Activar/Desactivar boton de Enlace original
-show_original_link_btn_desc: "Se mostrará un boton del Link original de la publicación en los mensajes de Fixed embed"
-enable_original_link_btn: Boton de Enlace original activado
-disable_original_link_btn: Boton de Enlace original desactivado
+show_original_link_btn: Habilitar/deshabilitar botón de "Enlace original"
+show_original_link_btn_desc: "Se mostrará un botón de \"Enlace original\" en los mensajes de Embed Fixer."
+enable_original_link_btn: Botón de "Enlace original" habilitado
+disable_original_link_btn: Botón de "Enlace original" deshabilitado
 recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace original" en /ajustes para este fix porque contiene anuncios.
 ignore_me_enabled: Ahora el bot te está ignorando. Tus embeds no serán corregidos.
 ignore_me_disabled: El bot ya no te está ignorando. Tus embeds serán corregidos.
-ignore_me_cmd_desc: Activar/Desactivar si Embed Fixer debe ignorar tus mensajes
+ignore_me_cmd_desc: Habilitar/Deshabilitar si Embed Fixer debe ignorar tus mensajes
 disable_delete_original_message_in_threads: Mantener mensajes originales en hilos
 enable_delete_original_message_in_threads: Eliminar mensajes originales en hilos
-delete_original_message_in_threads: Activar/Desactivar eliminación de mensajes originales en hilos
-delete_original_message_in_threads_desc: "Debido a que los hilos no pueden tener webhooks, el mensaje original se mantiene para saber quién lo envió. Habilitar esto eliminará el mensaje original en los hilos después de enviar el embed corregido."
+delete_original_message_in_threads: Habilitad/Deshabilitar el borrado del mensaje original en hilos
+delete_original_message_in_threads_desc: "Por limitaciones técnicas, los hilos no soportan webhooks; por lo tanto el mensaje original se mantendrá. Activando esta opción hará que el mensaje sea eliminado y posteriormente se publicará el enlace corregido."
 fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
 fix_url_param: enlace
 fix_url_param_desc: La URL a corregir
-fix_url_extract_media_param: extraer-multimedia
-fix_url_extract_media_param_desc: "Si se debe extraer multimedia de la URL (predeterminado: False)"
+fix_url_extract_media_param: extraer multimedia
+fix_url_extract_media_param_desc: "Extraer multimedia de la URL (predeterminado: Deshabilitado)"
