@@ -9,16 +9,16 @@ disable_fixes: Desactivar Embed Fixes para sitios web
 disable_fixes_desc: Desactivar Embed fixes para sitios web específicos
 lang: Idioma
 lang_desc: Cambiar el idioma del bot
-extract_media_channels: Canales con extracción de multimedia
+extract_media_channels: Canales con extracción multimedia
 extract_media_channels_desc: Se extraerán las imágenes/vídeos de los enlaces de Twitter/X/Pixiv enviados en estos canales
-disable_fix_channels: Lista negra de canales para Embed Fix
+disable_fix_channels: Ajustar canales no permitidos para Embed Fixer
 disable_fix_channels_desc: "Los canales aquí no tendrán embed fixes, la lista blanca tiene prioridad sobre la lista negra"
-enable_fix_channels: Lista blanca de canales para Embed Fix
+enable_fix_channels: Ajustar canales permitidos para Embed Fixer
 enable_fix_channels_desc: "Sólo los canales establecidos aquí recibirán correcciones de embed, la lista blanca tiene prioridad sobre la lista negra"
-disable_image_spoilers: Desactivar el Spoiler automático en los canales NSFW
+disable_image_spoilers: Deshabilitar marcar como spoiler automáticamente en canales NSFW
 disable_image_spoilers_desc: "Para la función de extracción de multimedia, los canales NSFW seleccionados aquí no marcaran spoiler automáticamente en los archivos multimedia"
-toggle_webhook_reply: Activar/Desactivar respuesta de Webhook
-toggle_webhook_reply_desc: Activar/Desactivar el ping al autor original al responder a un webhook
+toggle_webhook_reply: Habilitar/deshabilitar mención al webhook
+toggle_webhook_reply_desc: Habilitar/Desactivar mención al autor original al responder al webhook
 sauce: Fuente
 settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
@@ -36,7 +36,7 @@ enable_delete_reaction: Activar la reacción de eliminación
 disable_delete_reaction: Desactivar la reacción de eliminación
 toggle_delete_reaction: Habilitar/deshabilitar reacción para eliminar mensajes
 toggle_delete_reaction_desc: "Agregar reacciones a mensajes del webhook para que el autor original pueda eliminarlos con una reacción"
-show_post_content_channels: Mostrar canales de contenido
+show_post_content_channels: Mostrar contenido multimedia en ciertos canales
 show_post_content_channels_desc: "Si la extracción de multimedia está activada, los canales seleccionados aquí mostrarán el contenido de la publicación"
 no_perms_to_delete_msg: El bot no tiene permiso para eliminar mensajes
 no_perms_to_manage_webhooks: El bot no tiene permiso para gestionar webhooks
