@@ -12,13 +12,13 @@ lang_desc: Cambiar el idioma del bot
 extract_media_channels: Canales con extracción multimedia
 extract_media_channels_desc: La extracción de multimedia para los enlaces de Twitter/X/Pixiv está habilitada para los siguientes canales.
 disable_fix_channels: Ajustar canales no permitidos para Embed Fixer
-disable_fix_channels_desc: "Los canales aquí no tendrán embed fixes, la lista blanca tiene prioridad sobre la lista negra"
+disable_fix_channels_desc: "Embed Fixer no corregirá en los canales de la lista de no permitidos. No tiene prioridad sobre la lista de permitidos."
 enable_fix_channels: Ajustar canales permitidos para Embed Fixer
-enable_fix_channels_desc: "Sólo los canales establecidos aquí recibirán correcciones de embed, la lista blanca tiene prioridad sobre la lista negra"
+enable_fix_channels_desc: "Embed Fixer corregirá en los canales de la lista de permitidos. Tiene prioridad sobre la lista de no permitidos."
 disable_image_spoilers: Deshabilitar marcar como spoiler automáticamente en canales NSFW
 disable_image_spoilers_desc: "Para la función de extracción de multimedia, los canales NSFW seleccionados aquí no marcaran spoiler automáticamente en los archivos multimedia"
 toggle_webhook_reply: Habilitar/deshabilitar mención al webhook
-toggle_webhook_reply_desc: Habilitar/Desactivar mención al autor original al responder al webhook
+toggle_webhook_reply_desc: Habilitar/Deshabilitar la mención al autor original si respondes al webhook
 sauce: Fuente
 settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
