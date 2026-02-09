@@ -2,15 +2,15 @@ name: Español
 replying_to: "⬅️ En respuesta a {user} ({url})"
 delete: Eliminar
 delete_no_perms: Sólo el autor o los administradores del servidor pueden borrar este mensaje.
-fix_selector_placeholder: Selecciona embed fix(es) para desactivar...
+fix_selector_placeholder: Selecciona el sitio(s) a desactivar...
 lang_selector_placeholder: Seleccionar idioma...
-settings_embed_footer: "-# Los ajustes son exclusivos de este servidor\n-# Escriba en el menú plegable para buscar canales\n-# Si seleccionas un canal ya seleccionado éste sera eliminado"
+settings_embed_footer: "-# Los ajustes son exclusivos para éste servidor\n-# Escribe en el menú plegable para buscar el/los canales.\n-# Al seleccionar un canal existente en la lista, éste será eliminado."
 disable_fixes: Deshabilitar Embed Fixes para sitios web
 disable_fixes_desc: Desactivar Embed fixes para sitios web específicos
 lang: Idioma
 lang_desc: Cambiar el idioma del bot
 extract_media_channels: Canales con extracción multimedia
-extract_media_channels_desc: Se extraerán las imágenes/vídeos de los enlaces de Twitter/X/Pixiv enviados en estos canales
+extract_media_channels_desc: La extracción de multimedia para los enlaces de Twitter/X/Pixiv está habilitada para los siguientes canales.
 disable_fix_channels: Ajustar canales no permitidos para Embed Fixer
 disable_fix_channels_desc: "Los canales aquí no tendrán embed fixes, la lista blanca tiene prioridad sobre la lista negra"
 enable_fix_channels: Ajustar canales permitidos para Embed Fixer
