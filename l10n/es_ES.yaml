@@ -5,7 +5,7 @@ delete_no_perms: Sólo el autor o los administradores del servidor pueden borrar
 fix_selector_placeholder: Selecciona embed fix(es) para desactivar...
 lang_selector_placeholder: Seleccionar idioma...
 settings_embed_footer: "-# Los ajustes son exclusivos de este servidor\n-# Escriba en el menú plegable para buscar canales\n-# Si seleccionas un canal ya seleccionado éste sera eliminado"
-disable_fixes: Desactivar Embed Fixes para sitios web
+disable_fixes: Deshabilitar Embed Fixes para sitios web
 disable_fixes_desc: Desactivar Embed fixes para sitios web específicos
 lang: Idioma
 lang_desc: Cambiar el idioma del bot
@@ -22,8 +22,8 @@ toggle_webhook_reply_desc: Habilitar/Desactivar mención al autor original al re
 sauce: Fuente
 settings_cmd_desc: Cambiar los ajustes del bot para este servidor
 channel_selector_placeholder: Seleccionar canal(es)...
-disable_webhook_reply: Desactivar la respuesta de webhook
-enable_webhook_reply: Activar respuesta de webhook
+disable_webhook_reply: Deshabilitar la respuesta de webhook
+enable_webhook_reply: Habilitar respuesta de webhook
 setting_param: ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
@@ -77,7 +77,7 @@ reset_confirm: "¿Estás seguro que quieres reiniciar todos los ajustes de este 
 reset_yes: "Si"
 reset_done: Todos los ajustes han sido reestablecido a valores predeterminados
 original_link: Enlace original
-show_original_link_btn: Activar/Desactivar boton de Enlace original
+show_original_link_btn: Habilitar/deshabilitar botón de "Enlace original"
 show_original_link_btn_desc: "Se mostrará un boton del Link original de la publicación en los mensajes de Fixed embed"
 enable_original_link_btn: Boton de Enlace original activado
 disable_original_link_btn: Boton de Enlace original desactivado
@@ -87,7 +87,7 @@ ignore_me_disabled: El bot ya no te está ignorando. Tus embeds serán corregido
 ignore_me_cmd_desc: Activar/Desactivar si Embed Fixer debe ignorar tus mensajes
 disable_delete_original_message_in_threads: Mantener mensajes originales en hilos
 enable_delete_original_message_in_threads: Eliminar mensajes originales en hilos
-delete_original_message_in_threads: Activar/Desactivar eliminación de mensajes originales en hilos
+delete_original_message_in_threads: Habilitad/Deshabilitar el borrado del mensaje original en hilos
 delete_original_message_in_threads_desc: "Debido a que los hilos no pueden tener webhooks, el mensaje original se mantiene para saber quién lo envió. Habilitar esto eliminará el mensaje original en los hilos después de enviar el embed corregido."
 fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
 fix_url_param: enlace
