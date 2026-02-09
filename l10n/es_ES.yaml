@@ -5,8 +5,8 @@ delete_no_perms: Sólo el autor o los administradores del servidor pueden borrar
 fix_selector_placeholder: Selecciona el sitio(s) a desactivar...
 lang_selector_placeholder: Seleccionar idioma...
 settings_embed_footer: "-# Los ajustes son exclusivos para éste servidor\n-# Escribe en el menú plegable para buscar el/los canales.\n-# Al seleccionar un canal existente en la lista, éste será eliminado."
-disable_fixes: Deshabilitar Embed Fixes para sitios web
-disable_fixes_desc: Desactivar Embed fixes para sitios web específicos
+disable_fixes: Deshabilitar Embed Fixer para sitios web
+disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos
 lang: Idioma
 lang_desc: Cambiar el idioma del bot
 extract_media_channels: Canales con extracción multimedia
@@ -32,7 +32,7 @@ info_embed_desc: |
   Para preguntas o problemas con este bot, MD en Discord o abre un PR en GitHub.
   Para contribuir (como traducciones), MD en Discord o abre un PR en GitHub.
 selected_channels: Canales seleccionados
-enable_delete_reaction: Activar la reacción de eliminación
+enable_delete_reaction: Habilitar reacción para eliminar
 disable_delete_reaction: Deshabilitar reacción para eliminar
 toggle_delete_reaction: Habilitar/deshabilitar reacción para eliminar mensajes
 toggle_delete_reaction_desc: "Añade reacciones a los mensajes del webhook permitiendo así al autor original eliminarlos con dicha reacción."
@@ -65,7 +65,7 @@ whitelist_role_ids: Roles permitidos
 whitelist_role_ids_desc: "Corregir los enlaces de los usuarios si poseen cualquier rol de esta lista. Déjalo en blanco para desactivarlo."
 selected_roles: Seleccionar roles
 role_selector_placeholder: Seleccionar rol(es)...
-translang_disable: Desactivar
+translang_disable: Deshabilitar
 translang_set: "El idioma de del bot para este servidor se ha establecido en {lang_name}"
 invalid_translang: Idioma seleccionado no válido
 translang_param: idioma-destinado
@@ -73,13 +73,13 @@ translang_param_desc: Idioma de destino
 translang_cmd_desc: Cambiar el idioma de destino para la traducción del contenido de las publicaciones
 translang_disabled: La traducción del contenido de la publicación ha sido deshabilitada
 reset_cmd_desc: Reestablecer todos los valores predeterminados para este servidor
-reset_confirm: "¿Estás seguro que quieres reiniciar todos los ajustes de este servidor?"
+reset_confirm: "¿Estás seguro que quieres reiniciar todos los ajustes para este servidor?"
 reset_yes: "Si"
 reset_done: Todos los ajustes han sido reestablecido a valores predeterminados
 original_link: Enlace original
 show_original_link_btn: Habilitar/deshabilitar botón de "Enlace original"
 show_original_link_btn_desc: "Se mostrará un botón de \"Enlace original\" en los mensajes de Embed Fixer."
-enable_original_link_btn: Boton de Enlace original activado
+enable_original_link_btn: Boton de "Enlace original" habilitado
 disable_original_link_btn: Boton de Enlace original desactivado
 recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace original" en /ajustes para este fix porque contiene anuncios.
 ignore_me_enabled: Ahora el bot te está ignorando. Tus embeds no serán corregidos.
