@@ -79,12 +79,12 @@ reset_done: Todos los ajustes han sido reestablecido a valores predeterminados
 original_link: Enlace original
 show_original_link_btn: Habilitar/deshabilitar botón de "Enlace original"
 show_original_link_btn_desc: "Se mostrará un botón de \"Enlace original\" en los mensajes de Embed Fixer."
-enable_original_link_btn: Boton de "Enlace original" habilitado
-disable_original_link_btn: Boton de Enlace original desactivado
+enable_original_link_btn: Botón de "Enlace original" habilitado
+disable_original_link_btn: Botón de "Enlace original" deshabilitado
 recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace original" en /ajustes para este fix porque contiene anuncios.
 ignore_me_enabled: Ahora el bot te está ignorando. Tus embeds no serán corregidos.
 ignore_me_disabled: El bot ya no te está ignorando. Tus embeds serán corregidos.
-ignore_me_cmd_desc: Activar/Desactivar si Embed Fixer debe ignorar tus mensajes
+ignore_me_cmd_desc: Habilitar/Deshabilitar si Embed Fixer debe ignorar tus mensajes
 disable_delete_original_message_in_threads: Mantener mensajes originales en hilos
 enable_delete_original_message_in_threads: Eliminar mensajes originales en hilos
 delete_original_message_in_threads: Habilitad/Deshabilitar el borrado del mensaje original en hilos
@@ -92,5 +92,5 @@ delete_original_message_in_threads_desc: "Por limitaciones técnicas, los hilos 
 fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
 fix_url_param: enlace
 fix_url_param_desc: La URL a corregir
-fix_url_extract_media_param: extraer-multimedia
-fix_url_extract_media_param_desc: "Si se debe extraer multimedia de la URL (predeterminado: False)"
+fix_url_extract_media_param: extraer multimedia
+fix_url_extract_media_param_desc: "Extraer multimedia de la URL (predeterminado: Deshabilitado)"
