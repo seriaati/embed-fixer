@@ -92,5 +92,5 @@ delete_original_message_in_threads_desc: "Por limitaciones técnicas, los hilos 
 fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
 fix_url_param: enlace
 fix_url_param_desc: La URL a corregir
-fix_url_extract_media_param: extraer multimedia
+fix_url_extract_media_param: extraer-multimedia
 fix_url_extract_media_param_desc: "Extraer multimedia de la URL (predeterminado: Deshabilitado)"
