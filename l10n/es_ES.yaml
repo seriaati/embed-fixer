@@ -49,7 +49,7 @@ emoji: Emoji
 emoji_changed: "Emoji para eliminar mensajes ha sido cambiado a {emoji}"
 choose_fix_service: Elije en que servicio se usará embed fix
 choose_fix_service_desc: Elegir que tipo de embed fix se usará para los distintos sitios web
-using_fix_service: "Actualmente {0}"
+using_fix_service: "Actualmente usando {service}"
 fix_embed: Fix Embed
 extract_medias: Extraer multimedia
 no_fixes_found: No se encontró ningún fixes/multimedia para este mensaje
