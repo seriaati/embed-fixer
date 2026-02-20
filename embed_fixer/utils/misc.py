@@ -115,3 +115,7 @@ def capture_exception(e: Exception) -> None:
         sentry_sdk.capture_exception(e)
     else:
         logger.exception(f"Exception occurred: {e}")
+
+
+def sanitize_username(username: str) -> str:
+    return re.sub(r"(?i)discord", "discorɗ", username)

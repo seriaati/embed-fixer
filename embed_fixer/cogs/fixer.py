@@ -25,6 +25,7 @@ from embed_fixer.utils.misc import (
     get_filesize,
     remove_query_params,
     replace_domain,
+    sanitize_username,
 )
 
 if TYPE_CHECKING:
@@ -788,7 +789,7 @@ class FixerCog(commands.Cog):
         files = files or []
         return await webhook.send(
             message.content,
-            username=f"{message.author.display_name}{USERNAME_SUFFIX}",
+            username=f"{sanitize_username(message.author.display_name)}{USERNAME_SUFFIX}",
             avatar_url=message.author.display_avatar.url,
             tts=message.tts,
             wait=True,
