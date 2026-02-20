@@ -681,9 +681,6 @@ class FixerCog(commands.Cog):
         if e.code == 40005:  # Request entity too large
             message.content += "\n".join(media.url for media in medias)
             await self._send_message(message, guild_settings=guild_settings, **kwargs)
-        elif e.code == 50035:  # Invalid Form Body, most likely due to sauce button URL too long
-            kwargs.pop("view", None)
-            await self._send_message(message, guild_settings=guild_settings, **kwargs)
         else:
             raise e
 
