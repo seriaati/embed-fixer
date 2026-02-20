@@ -43,7 +43,7 @@ no_perms_to_manage_webhooks: El bot no tiene permiso para gestionar webhooks
 no_perms_to_add_reactions: El bot no tiene permiso para agregar reacciones
 add_reaction_error: "Error al añadir la reacción '{emoji}', asegúrate de que es válida"
 failed_to_send_webhook: Error al enviar webhook
-delete_msg_emoji: Elegir el emoji de reacción para eliminar el mensaje
+delete_msg_emoji: Elige emoji para eliminar mensaje
 delete_msg_emoji_desc: "Elegir el emoji usado para eliminar el mensaje"
 emoji: Emoji
 emoji_changed: "Emoji para eliminar mensajes ha sido cambiado a {emoji}"
