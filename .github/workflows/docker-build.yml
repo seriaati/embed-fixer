@@ -53,7 +53,7 @@ jobs:
             type=raw,value=latest${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
         id: buildx
