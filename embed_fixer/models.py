@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar, Self
 
 import pydantic
 from tortoise import fields
@@ -14,6 +14,50 @@ from embed_fixer.fixes import DomainId
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+
+class SettingsTable(Model):
+    id = fields.BigIntField(pk=True, generated=False)
+    data = fields.JSONField(default=dict)
+
+    class Meta:
+        abstract = True
+
+
+class BaseSettings(pydantic.BaseModel):
+    id: int
+    _table_class: ClassVar[type[SettingsTable]]
+
+    @classmethod
+    async def get_or_create(cls, id: int) -> tuple[Self, bool]:  # noqa: A002
+        obj, created = await cls._table_class.get_or_create(id=id)
+        if created or not obj.data:
+            settings = cls(id=id)
+            await settings.save()
+            return settings, created
+        return cls(id=id, **obj.data), created
+
+    @classmethod
+    async def get_or_none(cls, id: int) -> Self | None:  # noqa: A002
+        obj = await cls._table_class.get_or_none(id=id)
+        if obj is None or not obj.data:
+            return None
+        return cls(id=id, **obj.data)
+
+    @classmethod
+    async def create(cls, id: int) -> Self:  # noqa: A002
+        settings = cls(id=id)
+        await settings.save()
+        return settings
+
+    @classmethod
+    async def delete(cls, id: int) -> None:  # noqa: A002
+        await cls._table_class.filter(id=id).delete()
+
+    async def save(self, *, update_fields: Iterable[str] | None = None) -> None:  # noqa: ARG002
+        obj, _ = await self.__class__._table_class.get_or_create(id=self.id)
+        obj.data = self.model_dump(exclude={"id"})
+        await obj.save()
 
 
 class IgnoreMe(Model):
@@ -44,16 +88,26 @@ class IgnoreMe(Model):
         return True
 
 
-class GuildSettingsTable(Model):
-    id = fields.BigIntField(pk=True, generated=False)
-    data = fields.JSONField(default={})
-
+class GuildSettingsTable(SettingsTable):
     class Meta:
         table = "guild_settings_v2"
 
 
-class GuildSettings(pydantic.BaseModel):
-    id: int
+class UserSettingsTable(SettingsTable):
+    class Meta:
+        table = "user_settings"
+
+
+class UserSettings(BaseSettings):
+    _table_class = UserSettingsTable
+
+    notify_on_react: bool = False
+    lang: str | None = None
+
+
+class GuildSettings(BaseSettings):
+    _table_class = GuildSettingsTable
+
     disable_webhook_reply: bool = False
     disabled_fixes: list[str] = pydantic.Field(default_factory=list)
     disabled_domains: list[int] = pydantic.Field(default_factory=list)
@@ -72,37 +126,6 @@ class GuildSettings(pydantic.BaseModel):
     translate_target_lang: str | None = None
     show_original_link_btn: bool = True
     delete_original_message_in_threads: bool = False
-
-    @classmethod
-    async def get_or_create(cls, id: int) -> tuple[GuildSettings, bool]:  # noqa: A002
-        obj, created = await GuildSettingsTable.get_or_create(id=id)
-        if created or not obj.data:
-            settings = cls(id=id)
-            await settings.save()
-            return settings, created
-        return cls(id=id, **obj.data), created
-
-    @classmethod
-    async def get_or_none(cls, id: int) -> GuildSettings | None:  # noqa: A002
-        obj = await GuildSettingsTable.get_or_none(id=id)
-        if obj is None or not obj.data:
-            return None
-        return cls(id=id, **obj.data)
-
-    @classmethod
-    async def create(cls, id: int) -> GuildSettings:  # noqa: A002
-        settings = cls(id=id)
-        await settings.save()
-        return settings
-
-    @classmethod
-    async def delete(cls, id: int) -> None:  # noqa: A002
-        await GuildSettingsTable.filter(id=id).delete()
-
-    async def save(self, *, update_fields: Iterable[str] | None = None) -> None:  # noqa: ARG002
-        obj, _ = await GuildSettingsTable.get_or_create(id=self.id)
-        obj.data = self.model_dump(exclude={"id"})
-        await obj.save()
 
 
 # Deprecated, only for migration, new fields should be added to GuildSettings
