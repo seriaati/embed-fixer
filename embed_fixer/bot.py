@@ -67,6 +67,7 @@ class EmbedFixer(commands.AutoShardedBot):
         self.session = session
         self.env = env
         self.user: discord.ClientUser
+        self.app_emojis: dict[str, discord.Emoji] = {}
 
     async def setup_hook(self) -> None:
         async for filepath in anyio.Path("embed_fixer/cogs").glob("**/*.py"):
@@ -84,6 +85,9 @@ class EmbedFixer(commands.AutoShardedBot):
 
         await translator.load()
         await self.tree.set_translator(AppCommandTranslator())
+
+        await self._create_app_emojis()
+        await self._load_app_emojis()
 
         logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
 
@@ -118,6 +122,28 @@ class EmbedFixer(commands.AutoShardedBot):
             )
             await new.save()
             logger.info(f"Migrated guild settings for guild {new.id}")
+
+    async def _create_app_emojis(self) -> None:
+        app_emojis = await self.fetch_application_emojis()
+        names = {emoji.name for emoji in app_emojis}
+
+        async for emoji in anyio.Path("embed_fixer/emojis").rglob("*.png"):
+            name = emoji.stem
+            if name in names:
+                logger.debug(f"Emoji {name!r} already exists, skipping")
+                continue
+
+            bytes_ = await emoji.read_bytes()
+            try:
+                await self.create_application_emoji(name=name, image=bytes_)
+            except discord.HTTPException:
+                logger.exception(f"Failed to create emoji {name!r}")
+            else:
+                logger.info(f"Created emoji {name!r}")
+
+    async def _load_app_emojis(self) -> None:
+        app_emojis = await self.fetch_application_emojis()
+        self.app_emojis = {emoji.name: emoji for emoji in app_emojis}
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
         logger.info(f"Joined guild {guild.name} ({guild.id})")
