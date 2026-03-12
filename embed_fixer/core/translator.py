@@ -8,7 +8,7 @@ import yaml
 from discord import app_commands
 from loguru import logger
 
-from ..models import GuildSettings
+from ..models import GuildSettings, UserSettings
 
 if TYPE_CHECKING:
     import discord
@@ -17,9 +17,8 @@ DEFAULT_LANG = "en_US"
 
 
 class AppCommandTranslator(app_commands.Translator):
-    def __init__(self, translator: Translator) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.translator = translator
 
     async def translate(
         self,
@@ -28,10 +27,10 @@ class AppCommandTranslator(app_commands.Translator):
         _: discord.app_commands.TranslationContextTypes,
     ) -> str | None:
         try:
-            return self.translator.get(locale.value, string.message)
+            return translator.translate(string.message, lang=locale.value)
         except Exception:
             logger.exception("Failed to translate app command string")
-            return self.translator.get(DEFAULT_LANG, string.message)
+            return translator.translate(string.message, lang=DEFAULT_LANG)
 
 
 class Translator:
@@ -51,6 +50,11 @@ class Translator:
             lang = guild_settings.lang or guild.preferred_locale.value
         return lang
 
+    @staticmethod
+    async def get_user_lang(user_id: int) -> str:
+        user_settings, _ = await UserSettings.get_or_create(id=user_id)
+        return user_settings.lang or DEFAULT_LANG
+
     async def load(self) -> None:
         # open all files in ./l10n/*.yaml
         async for file in anyio.Path("./l10n").rglob("*.yaml"):
@@ -59,7 +63,7 @@ class Translator:
                 self._l10n[file.stem] = data
                 self._l10n_names[file.stem] = data["name"]
 
-    def get(self, lang: str, key: str, **kwargs: Any) -> str:
+    def translate(self, key: str, *, lang: str, **kwargs: Any) -> str:
         lang = lang.replace("-", "_")
         if lang == "es_419":
             lang = "es_ES"
@@ -71,5 +75,8 @@ class Translator:
         if not string:
             if lang == DEFAULT_LANG:
                 return key
-            return self.get(DEFAULT_LANG, key, **kwargs)
+            return self.translate(key, lang=DEFAULT_LANG, **kwargs)
         return string.format(**kwargs)
+
+
+translator = Translator()

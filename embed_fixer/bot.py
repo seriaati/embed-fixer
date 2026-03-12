@@ -14,9 +14,10 @@ from tortoise.expressions import Subquery
 
 from embed_fixer.core.command_tree import CommandTree
 from embed_fixer.core.db_config import TORTOISE_ORM
+from embed_fixer.core.translator import translator
 from embed_fixer.utils.misc import get_project_version
 
-from .core.translator import AppCommandTranslator, Translator
+from .core.translator import AppCommandTranslator
 from .models import GuildSettings, GuildSettingsOld, GuildSettingsTable
 
 if TYPE_CHECKING:
@@ -66,7 +67,6 @@ class EmbedFixer(commands.AutoShardedBot):
         self.session = session
         self.env = env
         self.user: discord.ClientUser
-        self.translator = Translator()
 
     async def setup_hook(self) -> None:
         async for filepath in anyio.Path("embed_fixer/cogs").glob("**/*.py"):
@@ -82,8 +82,8 @@ class EmbedFixer(commands.AutoShardedBot):
 
         await self.load_extension("jishaku")
 
-        await self.translator.load()
-        await self.tree.set_translator(AppCommandTranslator(self.translator))
+        await translator.load()
+        await self.tree.set_translator(AppCommandTranslator())
 
         logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
 

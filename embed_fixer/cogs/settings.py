@@ -7,7 +7,7 @@ from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands
 
-from embed_fixer.core.translator import Translator
+from embed_fixer.core.translator import Translator, translator
 from embed_fixer.fixes import DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
 from embed_fixer.settings import GuildSetting
@@ -119,6 +119,8 @@ class SettingsCog(commands.Cog):
         if i.guild is None:
             return
 
+        lang = await Translator.get_guild_lang(i.guild)
+
         if translang.lower() == "disable":
             await i.response.defer(ephemeral=True)
 
@@ -127,19 +129,13 @@ class SettingsCog(commands.Cog):
             await settings.save(update_fields=("translate_target_lang",))
 
             await i.followup.send(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(i.guild), "translang_disabled"
-                ),
-                ephemeral=True,
+                translator.translate("translang_disabled", lang=lang), ephemeral=True
             )
             return
 
         if translang not in ISO639_LANGS:
             await i.response.send_message(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(i.guild), "invalid_translang"
-                ),
-                ephemeral=True,
+                translator.translate("invalid_translang", lang=lang), ephemeral=True
             )
             return
 
@@ -150,10 +146,8 @@ class SettingsCog(commands.Cog):
         await settings.save(update_fields=("translate_target_lang",))
 
         await i.followup.send(
-            self.bot.translator.get(
-                await Translator.get_guild_lang(i.guild),
-                "translang_set",
-                lang_name=ISO639_LANGS.get(translang, translang),
+            translator.translate(
+                "translang_set", lang=lang, lang_name=ISO639_LANGS.get(translang, translang)
             ),
             ephemeral=True,
         )
@@ -190,14 +184,16 @@ class SettingsCog(commands.Cog):
     async def ignore_me_command(self, i: Interaction) -> None:
         await i.response.defer(ephemeral=True)
 
+        lang = await Translator.get_user_lang(i.user.id)
+
         toggled = await IgnoreMe.toggle(i.user.id)
         if toggled:
             await i.followup.send(
-                self.bot.translator.get(i.locale.value, "ignore_me_enabled"), ephemeral=True
+                translator.translate("ignore_me_enabled", lang=lang), ephemeral=True
             )
         else:
             await i.followup.send(
-                self.bot.translator.get(i.locale.value, "ignore_me_disabled"), ephemeral=True
+                translator.translate("ignore_me_disabled", lang=lang), ephemeral=True
             )
 
 

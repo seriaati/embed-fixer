@@ -7,20 +7,18 @@ import discord
 from discord import ui
 from loguru import logger
 
-from embed_fixer.core.translator import DEFAULT_LANG
+from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.utils.embed import ErrorEmbed
 from embed_fixer.utils.misc import capture_exception
 
 if TYPE_CHECKING:
     from embed_fixer.bot import Interaction
-    from embed_fixer.core.translator import Translator
 
 
 class ViewMixin:
     children: list[discord.ui.Item[Any]]
     message: discord.Message | None
-    translator: Translator
-    guild: discord.Guild
+    lang: str | None
 
     async def on_error(self, i: Interaction, error: Exception, _item: ui.Item) -> None:
         logger.warning(f"Error in view {self.__class__.__name__}: {error}")
@@ -35,27 +33,22 @@ class ViewMixin:
                 embed=ErrorEmbed(title="Error", description=str(error)[:4096]), ephemeral=True
             )
 
-    async def start(self) -> None:
-        self.lang = await self.translator.get_guild_lang(self.guild)
-
-    def translate(self, key: str, **kwargs: Any) -> str:
-        return self.translator.get(self.lang, key, **kwargs)
-
     def get_item(self, item_id: str) -> ui.Item | None:
         for item in self.children:
             if item.custom_id == item_id:  # pyright: ignore[reportAttributeAccessIssue]
                 return item
         return None
 
+    def translate(self, key: str, **kwargs: Any) -> str:
+        return translator.translate(key, lang=self.lang or DEFAULT_LANG, **kwargs)
+
 
 class View(ui.View, ViewMixin):
-    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
-        super().__init__(timeout=600)
+    def __init__(self, *, lang: str | None, timeout: float | None = None) -> None:
+        super().__init__(timeout=timeout or 600)
 
         self.message: discord.Message | None = None
-        self.guild = guild
-        self.translator = translator
-        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
+        self.lang = lang
 
     async def on_timeout(self) -> None:
         if self.message is None:
@@ -70,13 +63,11 @@ class View(ui.View, ViewMixin):
 
 
 class LayoutView(ui.LayoutView, ViewMixin):
-    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
-        super().__init__(timeout=600)
+    def __init__(self, *, lang: str | None, timeout: float | None = None) -> None:
+        super().__init__(timeout=timeout or 600)
 
         self.message: discord.Message | None = None
-        self.guild = guild
-        self.translator = translator
-        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
+        self.lang = lang
 
     async def on_timeout(self) -> None:
         if self.message is None:
@@ -91,13 +82,9 @@ class LayoutView(ui.LayoutView, ViewMixin):
 
 
 class Modal(ui.Modal):
-    def __init__(self, guild: discord.Guild, translator: Translator, *, title: str) -> None:
-        super().__init__(title=title, timeout=600)
-
-        self.guild = guild
-        self.translator = translator
-        self.lang = guild.preferred_locale.value if guild else DEFAULT_LANG
-        self.title = self.translate(title)
+    def __init__(self, *, title_key: str, lang: str | None) -> None:
+        self.lang = lang or DEFAULT_LANG
+        super().__init__(title=self.translate(title_key), timeout=600)
 
     async def on_error(self, i: Interaction, error: Exception) -> None:
         capture_exception(error)
@@ -112,7 +99,7 @@ class Modal(ui.Modal):
             )
 
     def translate(self, key: str, **kwargs: Any) -> str:
-        return self.translator.get(self.lang, key, **kwargs)
+        return translator.translate(key, lang=self.lang, **kwargs)
 
 
 class Label[C: ui.Item](ui.Label):

@@ -12,7 +12,7 @@ from discord.ext import commands
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
-from embed_fixer.core.translator import Translator
+from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
 from embed_fixer.utils.download_media import MediaDownloader
@@ -342,9 +342,9 @@ class FixerCog(commands.Cog):
                 ):
                     # If the fix method has ads and the guild hasn't enabled
                     # "Show Original Link Button", recommend enabling it.
-                    guild_lang = await Translator.get_guild_lang(message.guild)
-                    recommend_msg = self.bot.translator.get(
-                        guild_lang, "recommend_original_link_btn"
+                    guild_lang = await translator.get_guild_lang(message.guild)
+                    recommend_msg = translator.translate(
+                        "recommend_original_link_btn", lang=guild_lang
                     )
                     message.content = f"-# {recommend_msg}\n{message.content}"
 
@@ -473,9 +473,9 @@ class FixerCog(commands.Cog):
         ):
             mention = await self._resolve_author_mention(resolved_ref, message)
 
-            replying_to = self.bot.translator.get(
-                await Translator.get_guild_lang(message.guild),
+            replying_to = translator.translate(
                 "replying_to",
+                lang=await translator.get_guild_lang(message.guild),
                 user=mention,
                 url=resolved_ref.jump_url,
             )
@@ -546,12 +546,12 @@ class FixerCog(commands.Cog):
             kwargs: dict[str, Any] = {"silent": silent}
             if sauces:
                 if guild_lang is None:
-                    guild_lang = await Translator.get_guild_lang(message.guild)
+                    guild_lang = await translator.get_guild_lang(message.guild)
 
                 view = discord.ui.View()
                 view.add_item(
                     discord.ui.Button(
-                        url=sauces[0], label=self.bot.translator.get(guild_lang, "sauce")
+                        url=sauces[0], label=translator.translate("sauce", lang=guild_lang)
                     )
                 )
                 kwargs["view"] = view
@@ -587,7 +587,7 @@ class FixerCog(commands.Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    url=urls[0], label=self.bot.translator.get(guild_lang, "original_link")
+                    url=urls[0], label=translator.translate("original_link", lang=guild_lang)
                 )
             )
             kwargs["view"] = view
@@ -651,8 +651,8 @@ class FixerCog(commands.Cog):
             try:
                 return await self._send_webhook(message, webhook, files=files, **kwargs), "webhook"
             except Exception as e:
-                err_message = self.bot.translator.get(
-                    await Translator.get_guild_lang(message.guild), "failed_to_send_webhook"
+                err_message = translator.translate(
+                    "failed_to_send_webhook", lang=await translator.get_guild_lang(message.guild)
                 )
                 await message.channel.send(
                     f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
@@ -715,7 +715,7 @@ class FixerCog(commands.Cog):
 
         # Add original link button if needed
         if show_original_link_btn and urls:
-            guild_lang = await Translator.get_guild_lang(message.guild)
+            guild_lang = await translator.get_guild_lang(message.guild)
             self._add_original_link_button(urls, show_original_link_btn, guild_lang, kwargs)
 
         # Send message via interaction or webhook/channel
@@ -760,9 +760,9 @@ class FixerCog(commands.Cog):
                 logger.warning(err_message)
                 with contextlib.suppress(discord.Forbidden):
                     await fix_message.reply(
-                        self.bot.translator.get(
-                            await Translator.get_guild_lang(message.guild),
+                        translator.translate(
                             "no_perms_to_add_reactions",
+                            lang=await translator.get_guild_lang(message.guild),
                         ),
                         delete_after=ERROR_MSG_DELETE_AFTER,
                     )
@@ -771,9 +771,9 @@ class FixerCog(commands.Cog):
                     capture_exception(e)
                 with contextlib.suppress(discord.Forbidden):
                     await fix_message.reply(
-                        self.bot.translator.get(
-                            await Translator.get_guild_lang(message.guild),
+                        translator.translate(
                             "add_reaction_error",
+                            lang=await translator.get_guild_lang(message.guild),
                             emoji=delete_msg_emoji,
                         ),
                         delete_after=ERROR_MSG_DELETE_AFTER,
@@ -812,8 +812,8 @@ class FixerCog(commands.Cog):
         except discord.Forbidden:
             with contextlib.suppress(discord.Forbidden):
                 await channel.send(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(guild), "no_perms_to_manage_webhooks"
+                    translator.translate(
+                        "no_perms_to_manage_webhooks", lang=await translator.get_guild_lang(guild)
                     ),
                     delete_after=ERROR_MSG_DELETE_AFTER,
                 )
@@ -843,9 +843,9 @@ class FixerCog(commands.Cog):
 
         try:
             await message.reply(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(guild),
+                translator.translate(
                     "replying_to",
+                    lang=await translator.get_guild_lang(guild),
                     user=author.mention,
                     url=resolved_ref.jump_url,
                 ),
@@ -916,8 +916,8 @@ class FixerCog(commands.Cog):
                 logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
                 with contextlib.suppress(discord.Forbidden):
                     await message.reply(
-                        self.bot.translator.get(
-                            await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                        translator.translate(
+                            "no_perms_to_delete_msg", lang=await translator.get_guild_lang(guild)
                         ),
                         delete_after=ERROR_MSG_DELETE_AFTER,
                     )
@@ -1019,8 +1019,8 @@ class FixerCog(commands.Cog):
             logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
             with contextlib.suppress(discord.Forbidden):
                 await message.reply(
-                    self.bot.translator.get(
-                        await Translator.get_guild_lang(guild), "no_perms_to_delete_msg"
+                    translator.translate(
+                        "no_perms_to_delete_msg", lang=await translator.get_guild_lang(guild)
                     ),
                     delete_after=ERROR_MSG_DELETE_AFTER,
                 )
@@ -1063,8 +1063,10 @@ class FixerCog(commands.Cog):
                 logger.warning(f"Failed to send fixes in {i.channel_id=} in {i.guild_id=}")
         else:
             await i.followup.send(
-                self.bot.translator.get(
-                    await Translator.get_guild_lang(i.guild), "no_fixes_found", url=message.jump_url
+                translator.translate(
+                    "no_fixes_found",
+                    lang=await translator.get_guild_lang(i.guild),
+                    url=message.jump_url,
                 )
             )
 
@@ -1112,7 +1114,7 @@ class FixerCog(commands.Cog):
         )
 
         if result.fix_found:
-            guild_lang = await Translator.get_guild_lang(i.guild)
+            guild_lang = await translator.get_guild_lang(i.guild)
             response_content = mock_message.content
 
             if extract_media and result.medias:
@@ -1128,7 +1130,8 @@ class FixerCog(commands.Cog):
                     view = discord.ui.View()
                     view.add_item(
                         discord.ui.Button(
-                            url=result.sauces[0], label=self.bot.translator.get(guild_lang, "sauce")
+                            url=result.sauces[0],
+                            label=translator.translate("sauce", lang=guild_lang),
                         )
                     )
                     kwargs["view"] = view
@@ -1137,9 +1140,9 @@ class FixerCog(commands.Cog):
             else:
                 await i.followup.send(response_content)
         else:
-            guild_lang = await Translator.get_guild_lang(i.guild)
+            guild_lang = await translator.get_guild_lang(i.guild)
             await i.followup.send(
-                self.bot.translator.get(guild_lang, "no_fixes_found", url=link), ephemeral=True
+                translator.translate("no_fixes_found", lang=guild_lang, url=link), ephemeral=True
             )
 
 

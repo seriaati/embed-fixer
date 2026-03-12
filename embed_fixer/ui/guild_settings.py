@@ -4,52 +4,57 @@ import itertools
 from typing import TYPE_CHECKING, Literal
 
 import discord
-from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, Thread, ui
+from discord import ButtonStyle, ChannelType, Embed, SelectOption, Thread
 
+from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, Domain, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import GuildSetting
 from embed_fixer.utils.embed import DefaultEmbed
 
-from .components import Label, Modal, View
+from . import components as ui
 
 if TYPE_CHECKING:
     from discord.abc import GuildChannel
 
     from embed_fixer.bot import Interaction
-    from embed_fixer.core.translator import Translator
 
 ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
 
 
-class DeleteMsgEmojiModal(Modal):
-    emoji = Label(
+class DeleteMsgEmojiModal(ui.Modal):
+    emoji = ui.Label(
         text="emoji", component=ui.TextInput(max_length=100, placeholder="<:emoji:12345678> / ❌")
     )
 
-    def __init__(self, guild: Guild, translator: Translator, *, settings: GuildSettings) -> None:
-        super().__init__(guild, translator, title="delete_msg_emoji")
+    def __init__(self, *, settings: GuildSettings) -> None:
+        self.lang = lang = settings.lang or DEFAULT_LANG
+        super().__init__(title_key="delete_msg_emoji", lang=settings.lang)
 
-        self.emoji.text = self.translate(self.emoji.text)
+        self.emoji.text = translator.translate(self.emoji.text, lang=lang)
         self.emoji.component.default = settings.delete_msg_emoji
+        self.settings = settings
 
     async def on_submit(self, i: Interaction) -> None:
         emoji = self.emoji.component.value
 
-        guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.settings.id)
         guild_settings.delete_msg_emoji = emoji
         await guild_settings.save(update_fields=("delete_msg_emoji",))
 
         await i.response.send_message(
-            content=self.translate("emoji_changed", emoji=emoji), ephemeral=True
+            content=translator.translate("emoji_changed", lang=self.lang, emoji=emoji),
+            ephemeral=True,
         )
 
 
-class GuildSettingsView(View):
-    def __init__(self, guild: discord.Guild, translator: Translator) -> None:
-        super().__init__(guild, translator)
+class GuildSettingsView(ui.View):
+    def __init__(self, *, guild: discord.Guild, lang: str | None) -> None:
+        super().__init__(lang=lang)
 
         self.domain_id: DomainId | None = None
+        self.guild = guild
+        self.guild_id = guild.id
 
         self.page = 0
         self.item_ids: list[int] = []
@@ -91,7 +96,7 @@ class GuildSettingsView(View):
             msg = "Domain ID is not set."
             raise ValueError(msg)
 
-        return await GuildFixMethod.get_or_none(guild_id=self.guild.id, domain_id=self.domain_id)
+        return await GuildFixMethod.get_or_none(guild_id=self.guild_id, domain_id=self.domain_id)
 
     async def _get_domain_embed(self) -> DefaultEmbed:
         if self.domain_id is None:
@@ -173,7 +178,6 @@ class GuildSettingsView(View):
 
     async def start(self, i: Interaction, *, setting: GuildSetting) -> None:  # noqa: C901, PLR0912, PLR0915
         await i.response.defer(ephemeral=True)
-        await super().start()
 
         embed = DefaultEmbed(
             title=self.translate(setting), description=self.translate(f"{setting}_desc")
@@ -190,8 +194,8 @@ class GuildSettingsView(View):
             fix_selector.placeholder = self.translate("fix_selector_placeholder")
             self.add_item(fix_selector)
 
-        elif setting is Setting.LANG:
-            lang_selector = LangSelector(self.translator, self.lang)
+        elif setting is GuildSetting.LANG:
+            lang_selector = LangSelector(current=self.lang or DEFAULT_LANG)
             lang_selector.placeholder = self.translate("lang_selector_placeholder")
             self.add_item(lang_selector)
 
@@ -343,7 +347,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if i.guild is None or self.view is None:
+        if i.guild is None:
             return
 
         await i.response.defer()
@@ -353,7 +357,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
 
 
 class LangSelector(ui.Select[GuildSettingsView]):
-    def __init__(self, translator: Translator, current: str) -> None:
+    def __init__(self, *, current: str) -> None:
         super().__init__(
             options=[
                 SelectOption(label=lang_name, value=lang, default=lang == current)
@@ -362,8 +366,6 @@ class LangSelector(ui.Select[GuildSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        assert self.view is not None
-
         await i.response.defer()
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         guild_settings.lang = self.values[0]
@@ -467,7 +469,7 @@ class ToggleButton(ui.Button[GuildSettingsView]):
         self.reverse_color = reverse_color
         super().__init__()
 
-    def set_style(self, view: View) -> None:
+    def set_style(self, view: ui.View) -> None:
         if self.reverse_color:
             self.style = ButtonStyle.red if self.current_toggle else ButtonStyle.green
         else:
@@ -475,9 +477,6 @@ class ToggleButton(ui.Button[GuildSettingsView]):
         self.label = view.translate(self.labels[self.current_toggle])
 
     async def callback(self, i: Interaction) -> None:
-        if self.view is None:
-            return
-
         await i.response.defer()
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         setattr(guild_settings, self.attr_name, not self.current_toggle)
@@ -501,9 +500,6 @@ class DomainSelector(ui.Select[GuildSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if self.view is None:
-            return
-
         await i.response.defer()
 
         self.view.domain_id = DomainId(int(self.values[0]))
@@ -546,9 +542,6 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        if self.view is None:
-            return
-
         await i.response.defer()
 
         await GuildFixMethod.update_or_create(
