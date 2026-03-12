@@ -41,9 +41,7 @@ class MediaDownloader:
             return
 
         if media_type:
-            filename = (
-                f"{url.rsplit('/', maxsplit=1)[-1].split('.')[0]}.{media_type.split('/')[-1]}"
-            )
+            filename = f"{url.rsplit('/', maxsplit=1)[-1].split('.', maxsplit=1)[0]}.{media_type.split('/')[-1]}"
         else:
             filename = url.rsplit("/", maxsplit=1)[-1]
 

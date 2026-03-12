@@ -860,7 +860,7 @@ class FixerCog(commands.Cog):
             capture_exception(e)
 
     @commands.Cog.listener("on_raw_reaction_add")
-    async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:
+    async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
         if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
