@@ -59,7 +59,7 @@ async def run_ci() -> None:
     await translator.load()
 
     updated_settings = [
-        f"**{translator.translate(s.value, lang=LANG)}**: {translator.translate(s.value, lang=LANG + '_desc')}"
+        f"**{translator.translate(s.value, lang=LANG)}**: {translator.translate(f'{s.value}_desc', lang=LANG)}"
         for s in GuildSetting
     ]
     update_readme_bullet_points(
