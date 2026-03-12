@@ -9,10 +9,11 @@ from discord.ext import commands
 
 from embed_fixer.core.translator import Translator, translator
 from embed_fixer.fixes import DomainId
-from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
+from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.settings import GuildSetting
 from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
 from embed_fixer.ui.reset_settings import ResetSettingsView
+from embed_fixer.ui.user_settings import UserSettingsView
 
 if TYPE_CHECKING:
     from embed_fixer.bot import EmbedFixer, Interaction
@@ -87,15 +88,13 @@ class SettingsCog(commands.Cog):
             return
 
         await self._db_migration(i.guild.id)
+        settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
 
-        if setting is Setting.DELETE_MSG_EMOJI:
-            settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-            await i.response.send_modal(
-                DeleteMsgEmojiModal(i.guild, self.bot.translator, settings=settings)
-            )
+        if setting is GuildSetting.DELETE_MSG_EMOJI:
+            await i.response.send_modal(DeleteMsgEmojiModal(settings=settings))
             return
 
-        view = GuildSettingsView(i.guild, self.bot.translator)
+        view = GuildSettingsView(guild=i.guild, lang=settings.lang)
         await view.start(i, setting=setting)
 
     @commands.is_owner()
@@ -175,7 +174,8 @@ class SettingsCog(commands.Cog):
         if i.guild is None:
             return
 
-        view = ResetSettingsView(i.guild, self.bot.translator)
+        lang = await Translator.get_guild_lang(i.guild)
+        view = ResetSettingsView(lang=lang)
         await view.start(i)
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
@@ -195,6 +195,20 @@ class SettingsCog(commands.Cog):
             await i.followup.send(
                 translator.translate("ignore_me_disabled", lang=lang), ephemeral=True
             )
+
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.command(name="user-settings", description=locale_str("user_settings_cmd_desc"))
+    async def user_settings_command(self, i: Interaction) -> None:
+        await i.response.defer(ephemeral=True)
+
+        settings, _ = await UserSettings.get_or_create(id=i.user.id)
+        view = UserSettingsView(
+            app_emojis=self.bot.app_emojis,
+            settings=settings,
+            lang=await Translator.get_user_lang(i.user.id),
+        )
+        await i.followup.send(view=view, ephemeral=True)
 
 
 async def setup(bot: EmbedFixer) -> None:
