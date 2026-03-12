@@ -40,9 +40,11 @@ ENV PATH="/app/.venv/bin:$PATH" \
     ENV=prod \
     DB_URI=sqlite:///data/embed_fixer.db
 
+RUN chmod +x /app/entrypoint.sh
+
 VOLUME [ "/data", "/app/logs" ]
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
-CMD ["python", "run.py"]
+ENTRYPOINT ["/app/entrypoint.sh"]
