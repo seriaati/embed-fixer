@@ -122,22 +122,22 @@ All settings are unique to each server, you can use `/reset` to reset them to de
 
 Below are settings you can change with the `/settings` command:
 
-- **Language**: Change the language of the bot
-- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites
-- **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
-- **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist
-- **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist
-- **Toggle Webhook Reply**: Toggle the ping to the original author when replying to a webhook
-- **Disable Automatic Spoilering in NSFW Channels**: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered
-- **Toggle Delete Message Reaction**: Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting
-- **Show Post Content Channels**: If media extraction is enabled, channels selected here will show the content of the post
-- **Change Delete Message Reaction Emoji**: Change the emoji used to delete messages
-- **Choose embed fix service**: Choose the embed fix service to use for different websites
-- **Bot Visibility**: If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users.
-- **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
-- **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
-- **Toggle Original Link Button**: Whether to show a button linking to the original post in fixed embed messages
-- **Toggle Deleting Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. Enabling this will delete the original message in threads after sending the fixed embed.
+- **Language**: Language
+- **Disable Embed Fixes for Websites**: Disable Embed Fixes for Websites
+- **Media Extraction Channels**: Media Extraction Channels
+- **Embed Fix Channel Blacklist**: Embed Fix Channel Blacklist
+- **Embed Fix Channel Whitelist**: Embed Fix Channel Whitelist
+- **Toggle Webhook Reply**: Toggle Webhook Reply
+- **Disable Automatic Spoilering in NSFW Channels**: Disable Automatic Spoilering in NSFW Channels
+- **Toggle Delete Message Reaction**: Toggle Delete Message Reaction
+- **Show Post Content Channels**: Show Post Content Channels
+- **Change Delete Message Reaction Emoji**: Change Delete Message Reaction Emoji
+- **Choose embed fix service**: Choose embed fix service
+- **Bot Visibility**: Bot Visibility
+- **Funnel to Target Channel**: Funnel to Target Channel
+- **Whitelist Roles**: Whitelist Roles
+- **Toggle Original Link Button**: Toggle Original Link Button
+- **Toggle Deleting Original Messages in Threads**: Toggle Deleting Original Messages in Threads
 
 ## Post Content Translation
 
