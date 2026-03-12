@@ -14,7 +14,7 @@ from pydantic import BaseModel, field_validator
 
 from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
-from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
+from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
@@ -859,8 +859,66 @@ class FixerCog(commands.Cog):
                 return
             capture_exception(e)
 
-    @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
+    @commands.Cog.listener("on_raw_reaction_add")
+    async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:
+        if payload.guild_id is None or payload.user_id == self.bot.user.id:
+            return
+
+        channel_id = payload.channel_id
+        channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
+        if isinstance(
+            channel, discord.ForumChannel | discord.CategoryChannel | discord.abc.PrivateChannel
+        ):
+            return
+
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except discord.NotFound:
+            return
+        except discord.Forbidden:
+            logger.warning(
+                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
+            )
+            return
+
+        is_webhook = (
+            message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
+        )
+
+        if (guild := message.guild) is None or not is_webhook:
+            return
+
+        if is_webhook:
+            author = await self._get_original_author(message, guild)
+            if author is None or author.id == payload.user_id:
+                return
+        else:
+            return
+
+        settings, _ = await UserSettings.get_or_create(id=author.id)
+        if not settings.notify_on_react:
+            return
+
+        try:
+            user = self.bot.get_user(author.id) or await self.bot.fetch_user(author.id)
+        except Exception as e:
+            logger.error(f"Failed to fetch user with ID {author.id}: {e}")
+            return
+
+        try:
+            dm_message = translator.translate(
+                "notify_on_react_msg",
+                lang=settings.lang or DEFAULT_LANG,
+                emoji=payload.emoji,
+                user=f"<@{payload.user_id}>",
+                message_link=f"https://discord.com/channels/{payload.guild_id}/{payload.channel_id}/{payload.message_id}",
+            )
+            await user.send(dm_message)
+        except Exception as e:
+            logger.error(f"Failed to send notification DM to user {payload.user_id}: {e}")
+
+    @commands.Cog.listener("on_raw_reaction_add")
+    async def manage_reaction_removal(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
         if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 

@@ -94,3 +94,7 @@ fix_url_param: link
 fix_url_param_desc: The URL to fix
 fix_url_extract_media_param: extract-media
 fix_url_extract_media_param_desc: "Whether to extract media from the URL (default: False)"
+notify_on_react: Notify on React
+notify_on_react_desc: "Whether the bot should DM you when your fixed message receives a reaction."
+notify_on_react_msg: "{user} reacted {emoji} to you ({message_link})"
+user_settings_cmd_desc: Change your personal settings for the bot
