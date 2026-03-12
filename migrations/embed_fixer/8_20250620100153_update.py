@@ -5,7 +5,7 @@ RUN_IN_TRANSACTION = True
 
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
-        ALTER TABLE "guild_settings" ADD "funnel_target_channel" INT;"""
+        ALTER TABLE "guild_settings" ADD COLUMN IF NOT EXISTS "funnel_target_channel" INT;"""
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:

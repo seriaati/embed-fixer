@@ -26,7 +26,7 @@ FACEBOOK: 11
 BILIBILI: 12
 TUMBLR: 13
 THREADS: 14';
-        ALTER TABLE "guild_settings" ADD "disabled_domains" JSONB NOT NULL DEFAULT '[]';"""
+        ALTER TABLE "guild_settings" ADD COLUMN IF NOT EXISTS "disabled_domains" JSONB NOT NULL DEFAULT '[]';"""
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:

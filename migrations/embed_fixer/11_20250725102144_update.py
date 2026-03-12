@@ -5,7 +5,7 @@ RUN_IN_TRANSACTION = True
 
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
-        ALTER TABLE "guild_settings" ADD "translate_target_lang" VARCHAR(5);"""
+        ALTER TABLE "guild_settings" ADD COLUMN IF NOT EXISTS "translate_target_lang" VARCHAR(5);"""
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:

@@ -5,7 +5,7 @@ RUN_IN_TRANSACTION = True
 
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
-        ALTER TABLE "guild_settings" ADD "show_post_content_channels" JSONB DEFAULT '[]' NOT NULL;"""
+        ALTER TABLE "guild_settings" ADD COLUMN IF NOT EXISTS "show_post_content_channels" JSONB DEFAULT '[]' NOT NULL;"""
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:

@@ -5,7 +5,7 @@ RUN_IN_TRANSACTION = True
 
 async def upgrade(db: BaseDBAsyncClient) -> str:
     return """
-        ALTER TABLE "guild_settings" ADD "delete_msg_emoji" VARCHAR(100)NOT NULL DEFAULT '❌';"""
+        ALTER TABLE "guild_settings" ADD COLUMN IF NOT EXISTS "delete_msg_emoji" VARCHAR(100)NOT NULL DEFAULT '❌';"""
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:
