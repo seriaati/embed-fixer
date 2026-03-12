@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 from discord import ui
+from discord.ui.view import BaseView
 from loguru import logger
 
 from embed_fixer.core.translator import DEFAULT_LANG, translator
@@ -104,3 +105,27 @@ class Modal(ui.Modal):
 
 class Label[C: ui.Item](ui.Label):
     component: C
+
+
+class Select[V: BaseView](ui.Select):
+    view: V
+
+
+class Button[V: BaseView](ui.Button):
+    view: V
+
+
+class ChannelSelect[V: BaseView](ui.ChannelSelect):
+    view: V
+
+
+class RoleSelect[V: BaseView](ui.RoleSelect):
+    view: V
+
+
+class TextInput(ui.TextInput):
+    pass
+
+
+class Container(ui.Container):
+    pass
