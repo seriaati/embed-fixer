@@ -10,7 +10,7 @@ from discord.ext import commands
 from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe
-from embed_fixer.settings import Setting
+from embed_fixer.settings import GuildSetting
 from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
 from embed_fixer.ui.reset_settings import ResetSettingsView
 
@@ -76,13 +76,13 @@ class SettingsCog(commands.Cog):
     @app_commands.default_permissions()
     @app_commands.choices(
         setting=[
-            app_commands.Choice(name=locale_str(setting), value=setting) for setting in Setting
+            app_commands.Choice(name=locale_str(setting), value=setting) for setting in GuildSetting
         ]
     )
     @app_commands.rename(setting=locale_str("setting_param"))
     @app_commands.describe(setting=locale_str("setting_param_desc"))
     @app_commands.command(name="settings", description=locale_str("settings_cmd_desc"))
-    async def settings(self, i: Interaction, setting: Setting) -> None:
+    async def settings(self, i: Interaction, setting: GuildSetting) -> None:
         if i.guild is None:
             return
 

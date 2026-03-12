@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import StrEnum
 
 
-class Setting(StrEnum):
+class GuildSetting(StrEnum):
     LANG = "lang"
     DISABLE_FIXES = "disable_fixes"
     EXTRACT_MEDIA_CHANNELS = "extract_media_channels"

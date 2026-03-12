@@ -7,7 +7,7 @@ from loguru import logger
 
 from embed_fixer.core.translator import Translator
 from embed_fixer.fixes import DOMAINS
-from embed_fixer.settings import Setting
+from embed_fixer.settings import GuildSetting
 
 README = Path(__file__).parent / "README.md"
 LANG = "en_US"
@@ -59,8 +59,8 @@ async def run_ci() -> None:
     await translator.load()
 
     updated_settings = [
-        f"**{translator.get(LANG, s.value)}**: {translator.get(LANG, f'{s.value}_desc')}"
-        for s in Setting
+        f"**{translator.translate(s.value, lang=LANG)}**: {translator.translate(s.value, lang=LANG + '_desc')}"
+        for s in GuildSetting
     ]
     update_readme_bullet_points(
         updated_settings,

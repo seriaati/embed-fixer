@@ -8,7 +8,7 @@ from discord import ButtonStyle, ChannelType, Embed, Guild, SelectOption, Thread
 
 from embed_fixer.fixes import DOMAINS, Domain, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
-from embed_fixer.settings import Setting
+from embed_fixer.settings import GuildSetting
 from embed_fixer.utils.embed import DefaultEmbed
 
 from .components import Label, Modal, View
@@ -171,7 +171,7 @@ class GuildSettingsView(View):
             value="\n".join([f"- {role.mention}" for role in valid_roles]),
         )
 
-    async def start(self, i: Interaction, *, setting: Setting) -> None:  # noqa: C901, PLR0912, PLR0915
+    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:  # noqa: C901, PLR0912, PLR0915
         await i.response.defer(ephemeral=True)
         await super().start()
 
@@ -185,7 +185,7 @@ class GuildSettingsView(View):
         channel_ids: list[int] | None = None
         role_ids: list[int] | None = None
 
-        if setting is Setting.DISABLE_FIXES:
+        if setting is GuildSetting.DISABLE_FIXES:
             fix_selector = FixSelector(guild_settings.disabled_domains)
             fix_selector.placeholder = self.translate("fix_selector_placeholder")
             self.add_item(fix_selector)
@@ -195,31 +195,31 @@ class GuildSettingsView(View):
             lang_selector.placeholder = self.translate("lang_selector_placeholder")
             self.add_item(lang_selector)
 
-        elif setting is Setting.EXTRACT_MEDIA_CHANNELS:
+        elif setting is GuildSetting.EXTRACT_MEDIA_CHANNELS:
             selector = ChannelSelect("extract_media_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.extract_media_channels
 
-        elif setting is Setting.DISABLE_FIX_CHANNELS:
+        elif setting is GuildSetting.DISABLE_FIX_CHANNELS:
             selector = ChannelSelect("disable_fix_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.disable_fix_channels
 
-        elif setting is Setting.ENABLE_FIX_CHANNELS:
+        elif setting is GuildSetting.ENABLE_FIX_CHANNELS:
             selector = ChannelSelect("enable_fix_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.enable_fix_channels
 
-        elif setting is Setting.DISABLE_IMAGE_SPOILERS:
+        elif setting is GuildSetting.DISABLE_IMAGE_SPOILERS:
             selector = ChannelSelect("disable_image_spoilers", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.disable_image_spoilers
 
-        elif setting is Setting.TOGGLE_WEBHOOK_REPLY:
+        elif setting is GuildSetting.TOGGLE_WEBHOOK_REPLY:
             toggle_btn = ToggleButton(
                 current_toggle=guild_settings.disable_webhook_reply,
                 labels={True: "enable_webhook_reply", False: "disable_webhook_reply"},
@@ -229,7 +229,7 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
-        elif setting is Setting.TOGGLE_DELETE_REACTION:
+        elif setting is GuildSetting.TOGGLE_DELETE_REACTION:
             toggle_btn = ToggleButton(
                 current_toggle=guild_settings.disable_delete_reaction,
                 labels={True: "enable_delete_reaction", False: "disable_delete_reaction"},
@@ -239,7 +239,7 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
-        elif setting is Setting.BOT_VISIBILITY:
+        elif setting is GuildSetting.BOT_VISIBILITY:
             toggle_btn = ToggleButton(
                 current_toggle=guild_settings.bot_visibility,
                 labels={True: "disable_bot_visibility", False: "enable_bot_visibility"},
@@ -249,13 +249,13 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
-        elif setting is Setting.SHOW_POST_CONTENT_CHANNELS:
+        elif setting is GuildSetting.SHOW_POST_CONTENT_CHANNELS:
             selector = ChannelSelect("show_post_content_channels", select_type="multiple")
             selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(selector)
             channel_ids = guild_settings.show_post_content_channels
 
-        elif setting is Setting.CHOOSE_FIX_SERVICE:
+        elif setting is GuildSetting.CHOOSE_FIX_SERVICE:
             self.domain_id = DOMAINS[0].id
             embed = await self._get_domain_embed()
 
@@ -268,20 +268,20 @@ class GuildSettingsView(View):
             )
             self.add_item(fix_method_selector)
 
-        elif setting is Setting.FUNNEL_TARGET_CHANNEL:
+        elif setting is GuildSetting.FUNNEL_TARGET_CHANNEL:
             channel_selector = ChannelSelect("funnel_target_channel", select_type="single")
             channel_selector.placeholder = self.translate("channel_selector_placeholder")
             self.add_item(channel_selector)
             if guild_settings.funnel_target_channel is not None:
                 channel_ids = [guild_settings.funnel_target_channel]
 
-        elif setting is Setting.WHITELIST_ROLE_IDS:
+        elif setting is GuildSetting.WHITELIST_ROLE_IDS:
             role_selector = RoleSelect("whitelist_role_ids")
             role_selector.placeholder = self.translate("role_selector_placeholder")
             self.add_item(role_selector)
             role_ids = guild_settings.whitelist_role_ids
 
-        elif setting is Setting.SHOW_ORIGINAL_LINK_BUTTON:
+        elif setting is GuildSetting.SHOW_ORIGINAL_LINK_BUTTON:
             toggle_btn = ToggleButton(
                 current_toggle=guild_settings.show_original_link_btn,
                 labels={True: "disable_original_link_btn", False: "enable_original_link_btn"},
@@ -291,7 +291,7 @@ class GuildSettingsView(View):
             toggle_btn.set_style(self)
             self.add_item(toggle_btn)
 
-        elif setting is Setting.DELETE_ORIGINAL_MESSAGE_IN_THREADS:
+        elif setting is GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS:
             toggle_btn = ToggleButton(
                 current_toggle=guild_settings.delete_original_message_in_threads,
                 labels={
