@@ -11,7 +11,6 @@ from embed_fixer.core.translator import translator
 from ..utils.embed import DefaultEmbed
 
 if TYPE_CHECKING:
-
     from embed_fixer.bot import EmbedFixer
 
     from ..bot import Interaction

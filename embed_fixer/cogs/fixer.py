@@ -29,7 +29,6 @@ from embed_fixer.utils.misc import (
 )
 
 if TYPE_CHECKING:
-
     from collections.abc import Sequence
 
     from embed_fixer.bot import EmbedFixer, Interaction
