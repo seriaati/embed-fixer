@@ -3,11 +3,10 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING, Literal
 
-import discord
-from discord import ButtonStyle, ChannelType, Embed, SelectOption, Thread
+from discord import ButtonStyle, ChannelType, SelectOption
 
 from embed_fixer.core.translator import DEFAULT_LANG, translator
-from embed_fixer.fixes import DOMAINS, Domain, DomainId
+from embed_fixer.fixes import DOMAINS, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import GuildSetting
 from embed_fixer.utils.embed import DefaultEmbed
@@ -15,9 +14,12 @@ from embed_fixer.utils.embed import DefaultEmbed
 from . import components as ui
 
 if TYPE_CHECKING:
+    import discord
+    from discord import Embed, Thread
     from discord.abc import GuildChannel
 
     from embed_fixer.bot import Interaction
+    from embed_fixer.fixes import Domain
 
 ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
 

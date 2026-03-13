@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import re
 from dataclasses import dataclass
 from enum import IntEnum
@@ -29,6 +27,36 @@ class DomainId(IntEnum):
 
 
 @dataclass(kw_only=True)
+class ReplaceFix:
+    old_domain: str
+    new_domain: str
+
+
+@dataclass(kw_only=True)
+class AppendURLFix:
+    domain: str
+
+
+@dataclass(kw_only=True)
+class FixMethod:
+    id: int
+    name: str
+    fixes: list[ReplaceFix | AppendURLFix]
+    repo_url: str | None = None
+    default: bool = False
+    has_ads: bool = False
+
+
+@dataclass
+class Website:
+    pattern: str
+    skip_method_ids: list[int] | None = None
+
+    def match(self, url: str) -> bool:
+        return re.match(self.pattern, url) is not None
+
+
+@dataclass(kw_only=True)
 class Domain:
     id: DomainId
     name: str
@@ -47,36 +75,6 @@ class Domain:
             if method.id == fix_id:
                 return method
         return None
-
-
-@dataclass
-class Website:
-    pattern: str
-    skip_method_ids: list[int] | None = None
-
-    def match(self, url: str) -> bool:
-        return re.match(self.pattern, url) is not None
-
-
-@dataclass(kw_only=True)
-class FixMethod:
-    id: int
-    name: str
-    fixes: list[ReplaceFix | AppendURLFix]
-    repo_url: str | None = None
-    default: bool = False
-    has_ads: bool = False
-
-
-@dataclass(kw_only=True)
-class ReplaceFix:
-    old_domain: str
-    new_domain: str
-
-
-@dataclass(kw_only=True)
-class AppendURLFix:
-    domain: str
 
 
 DOMAINS: Final[list[Domain]] = [

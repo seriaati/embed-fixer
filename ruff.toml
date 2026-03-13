@@ -2,6 +2,7 @@ line-length = 100
 target-version = "py312"
 
 [lint]
+future-annotations=true
 preview = true
 select = [
   "F",
@@ -59,7 +60,6 @@ ignore = [
 "migrations/*.py" = ["ALL"]
 
 [lint.flake8-type-checking]
-quote-annotations = true
 runtime-evaluated-base-classes = [
   "pydantic.BaseModel",
   "pydantic_settings.BaseSettings",
@@ -72,7 +72,6 @@ max-complexity = 15
 convention = "google"
 
 [lint.isort]
-required-imports = ["from __future__ import annotations"]
 split-on-trailing-comma = false
 
 [format]

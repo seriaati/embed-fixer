@@ -4,7 +4,7 @@ import asyncio
 import io
 import re
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
 import sentry_sdk
@@ -12,6 +12,9 @@ import tomli
 from loguru import logger
 
 from embed_fixer.core.config import settings
+
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
 
 
 def remove_html_tags(input_string: str) -> str:
@@ -83,7 +86,7 @@ def wrap_task_factory() -> None:
     original_factory = loop.get_task_factory()
 
     def new_factory(
-        loop: asyncio.AbstractEventLoop, coro: asyncio._CoroutineLike[Any], **kwargs: Any
+        loop: asyncio.AbstractEventLoop, coro: Coroutine, **kwargs: Any
     ) -> asyncio.Task[Any] | asyncio.Future[Any]:
         if original_factory is not None:
             t = original_factory(loop, coro, **kwargs)

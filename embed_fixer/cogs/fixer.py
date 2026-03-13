@@ -13,7 +13,7 @@ from loguru import logger
 from pydantic import BaseModel, field_validator
 
 from embed_fixer.core.translator import DEFAULT_LANG, translator
-from embed_fixer.fixes import DOMAINS, AppendURLFix, Domain, DomainId, FixMethod, Website
+from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
@@ -29,9 +29,11 @@ from embed_fixer.utils.misc import (
 )
 
 if TYPE_CHECKING:
+
     from collections.abc import Sequence
 
     from embed_fixer.bot import EmbedFixer, Interaction
+    from embed_fixer.fixes import Domain, FixMethod, Website
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
