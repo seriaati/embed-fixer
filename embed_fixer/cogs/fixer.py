@@ -444,7 +444,6 @@ class FixerCog(commands.Cog):
         filesize_limit: int,
         interaction: Interaction | None = None,
     ) -> SendType | None:
-        silent = False
         medias, sauces = result.medias, result.sauces
         medias.extend([Media(url=a.url, file=await a.to_file()) for a in message.attachments])
 
@@ -481,7 +480,6 @@ class FixerCog(commands.Cog):
                 url=resolved_ref.jump_url,
             )
             message.content = f"{replying_to}\n{message.content}"
-            silent = True
 
         if medias:
             return await self._send_files(
@@ -491,15 +489,10 @@ class FixerCog(commands.Cog):
                 guild_settings=guild_settings,
                 filesize_limit=filesize_limit,
                 interaction=interaction,
-                silent=silent,
             )
 
         return await self._send_message(
-            message,
-            urls=result.urls,
-            guild_settings=guild_settings,
-            interaction=interaction,
-            silent=silent,
+            message, urls=result.urls, guild_settings=guild_settings, interaction=interaction
         )
 
     @staticmethod
@@ -537,14 +530,13 @@ class FixerCog(commands.Cog):
         guild_settings: GuildSettings | None,
         filesize_limit: int,
         interaction: Interaction | None = None,
-        silent: bool = False,
     ) -> SendType | None:
         """Send multiple files in batches of 10 and within filesize limit."""
         guild_lang: str | None = None
         send_type: SendType | None = None
 
         for chunk in self._batch_medias(medias, filesize_limit):
-            kwargs: dict[str, Any] = {"silent": silent}
+            kwargs: dict[str, Any] = {}
             if sauces:
                 if guild_lang is None:
                     guild_lang = await translator.get_guild_lang(message.guild)
@@ -795,6 +787,7 @@ class FixerCog(commands.Cog):
             tts=message.tts,
             wait=True,
             files=files,
+            silent=True,
             **kwargs,
         )
 
