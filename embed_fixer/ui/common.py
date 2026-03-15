@@ -85,9 +85,14 @@ class SettingsToggleButton(discord.ui.Button):
             self.label = "ON" if self.value else "OFF"
 
     async def callback(self, i: Interaction) -> None:
+        if self.settings_type == "guild" and i.guild_id is None:
+            return
+
         await i.response.defer()
         settings_cls = GuildSettings if self.settings_type == "guild" else UserSettings
-        settings, _ = await settings_cls.get_or_create(id=i.user.id)
+        settings, _ = await settings_cls.get_or_create(
+            id=i.user.id if self.settings_type == "user" else i.guild_id  # pyright: ignore[reportArgumentType]
+        )
         self.value = not self.value
         self.update_style()
         setattr(settings, self.settings_key, self.value)
