@@ -1,8 +1,5 @@
 name: 简体中文
 replying_to: "⬅️ 回复 {user} ({url})"
-delete: 删除
-delete_no_perms: 只有发布者或者服务器管理员可以删除此消息。
-settings_embed_footer: "-# 每个服务器的设置都是独立的\n-# 在下拉菜单中输入文字来来搜索频道\n-# 选择已选的频道会被移除"
 disable_fixes: 关闭网站的预览嵌入
 disable_fixes_desc: 关闭特定网站的预览嵌入。
 lang: 语言
@@ -19,8 +16,6 @@ toggle_webhook_reply: 切换 Webhook 回复
 toggle_webhook_reply_desc: 开关回复 Webhook 时对原发布者的@。
 sauce: 出处
 settings_cmd_desc: 更改此服务器的机器人设置
-disable_webhook_reply: 关闭 Webhook 回复
-enable_webhook_reply: 启用 Webhook 回复
 setting_param: 设置
 setting_param_desc: 要更改的设置
 info_cmd_desc: 获取有关机器人的信息
@@ -28,8 +23,6 @@ info_embed_desc: |
   这个机器人由 [@seria_ati](<discord://-/users/410036441129943050>) 制作，且在 [GitHub](https://github.com/seriaati/embed-fixer) 有开源。有关此机器人的疑问或者问题，请在 DIscord 上与我联系，或在 Github 上提交 Issue。
   如有意愿贡献（比如翻译），请与我联系或者在 Github 上提交 PR。
 selected_channels: 已选频道
-enable_delete_reaction: 开启删除消息反应
-disable_delete_reaction: 关闭删除消息反应
 toggle_delete_reaction: 开关删除消息反应
 toggle_delete_reaction_desc: "添加表情反应到webhook消息，便于发布者通过反应表情删除。"
 show_post_content_channels: 显示贴文内容频道
@@ -49,12 +42,8 @@ using_fix_service: "正在使用 {service}"
 fix_embed: 预览嵌入
 extract_medias: 提取媒体
 no_fixes_found: 未发现嵌入/媒体于此消息
-next: 下一页
-previous: 上一页
 bot_visibility: 机器人能见度
 bot_visibility_desc: "开启后， Embed Fixer 将会对来自其他机器人链接进行预览嵌入。关闭后，将只会对来自用户的链接进行预览嵌入。"
-enable_bot_visibility: 开启机器人能见度
-disable_bot_visibility: 关闭机器人能见度
 funnel_target_channel: 引流目标频道
 funnel_target_channel_desc: "若已设置，所有的预览嵌入和媒体提取都会发送到被设置的频道，而非原消息的频道。"
 whitelist_role_ids: 白名单身份组
@@ -74,14 +63,10 @@ reset_done: 所有设置已还原至默认值
 original_link: 原链接
 show_original_link_btn: 开关原链接按钮
 show_original_link_btn_desc: "是否在预览嵌入的消息中显示链接至原帖子的按钮。"
-enable_original_link_btn: 打开原链接按钮
-disable_original_link_btn: 关闭原链接按钮
 recommend_original_link_btn: 推荐在 /setting 中启用“原链接按钮”，因为此修复网站含有广告。
 ignore_me_enabled: 从现在起，机器人将忽略你，你的连结预览将不会被修复。
-ignore_me_disabled: 从现在启，机器人将不再忽略你，你的连结预览将会被修复。
+ignore_me_disabled: 从现在起，机器人将不再忽略你，你的链接预览将会被修复。
 ignore_me_cmd_desc: 开关 Embed Fixer 是否要忽略你的消息
-disable_delete_original_message_in_threads: 保留主题串中的原消息
-enable_delete_original_message_in_threads: 删除主题串中的原消息
 delete_original_message_in_threads: 开关删除主题串中的原消息
 delete_original_message_in_threads_desc: "因为主题串无法使用 Webhook，原消息会被保留以识别发送者。启用此选项后，在发送修复后的链接预览后将删除主题串中的原消息。"
 fix_url_command_desc: 修复链接并获取适合嵌入的版本
@@ -89,3 +74,9 @@ fix_url_param: 链接
 fix_url_param_desc: 要修复的链接
 fix_url_extract_media_param: 提取媒体
 fix_url_extract_media_param_desc: "是否从链接中提取媒体（默认：不提取）"
+notify_on_react: 反应表情时通知
+notify_on_react_desc: "当已转换消息收到表情反应时，Embed Fixer将私信通知你。"
+notify_on_react_msg: "{user}对你的消息反应了{emoji} ({message_link})"
+user_settings_cmd_desc: 更改你的Embed Fixer个性设置
+reply_instead_of_delete: 转换时以回复替代删除
+reply_instead_of_delete_desc: "该功能启用时，Embed Fixer将不会删除原始消息，通过Webhook重发，而是通过对你的原始消息回复并预览嵌入。"
