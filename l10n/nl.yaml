@@ -75,9 +75,9 @@ reset_done: Alle instellingen zijn teruggezet naar standaard waarden
 original_link: Originele link
 show_original_link_btn: Schakel de knop "Originele link" in
 show_original_link_btn_desc: "Of er een knop moet worden weergegeven die naar het originele bericht linkt in fixed embed berichten."
-enable_original_link_btn: "\"Originele link\" knop inschakelen"
-disable_original_link_btn: "\"Originele link\" knop uitschakelen"
-recommend_original_link_btn: "Het wordt aanbevolen om de \"Originele Link Button\" in /settings voor deze fix in te schakelen, omdat deze advertenties bevat."
+enable_original_link_btn: '"Originele link" knop inschakelen'
+disable_original_link_btn: '"Originele link" knop uitschakelen'
+recommend_original_link_btn: 'Het wordt aanbevolen om de "Originele Link Button" in /settings voor deze fix in te schakelen, omdat deze advertenties bevat.'
 ignore_me_enabled: Je wordt nu genegeerd door de bot. Je embeds worden niet meer gefixt.
 ignore_me_disabled: Je wordt niet meer genegeerd door de bot. Je embeds worden gefixt.
 ignore_me_cmd_desc: Schakel of Embed Fixer je berichten moet negeren

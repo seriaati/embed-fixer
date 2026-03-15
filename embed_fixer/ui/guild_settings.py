@@ -275,32 +275,20 @@ class GuildSettingsView(ui.LayoutView):
         self, container: ui.Container, *, guild_settings: GuildSettings, attr_name: str
     ) -> list[int]:
         selector = ChannelSelect(attr_name, select_type="multiple")
-        self._add_selector_action_row(
-            container,
-            selector,
-            action_row_id=CHANNEL_SELECTOR_ROW_ID,
-        )
+        self._add_selector_action_row(container, selector, action_row_id=CHANNEL_SELECTOR_ROW_ID)
         return cast("list[int]", getattr(guild_settings, attr_name))
 
     def _add_single_channel_selector_for_setting(
         self, container: ui.Container, *, attr_name: str
     ) -> None:
         selector = ChannelSelect(attr_name, select_type="single")
-        self._add_selector_action_row(
-            container,
-            selector,
-            action_row_id=CHANNEL_SELECTOR_ROW_ID,
-        )
+        self._add_selector_action_row(container, selector, action_row_id=CHANNEL_SELECTOR_ROW_ID)
 
     def _add_role_selector_for_setting(
         self, container: ui.Container, *, guild_settings: GuildSettings, attr_name: str
     ) -> list[int]:
         selector = RoleSelect(attr_name)
-        self._add_selector_action_row(
-            container,
-            selector,
-            action_row_id=ROLE_SELECTOR_ROW_ID,
-        )
+        self._add_selector_action_row(container, selector, action_row_id=ROLE_SELECTOR_ROW_ID)
         return cast("list[int]", getattr(guild_settings, attr_name))
 
     async def start(self, i: Interaction, *, setting: GuildSetting) -> None:
@@ -324,17 +312,13 @@ class GuildSettingsView(ui.LayoutView):
         if setting is GuildSetting.DISABLE_FIXES:
             fix_selector = DisableDomainSelect(guild_settings.disabled_domains)
             self._add_selector_action_row(
-                container,
-                fix_selector,
-                action_row_id=FIX_SELECTOR_ROW_ID,
+                container, fix_selector, action_row_id=FIX_SELECTOR_ROW_ID
             )
 
         elif setting is GuildSetting.LANG:
             lang_selector = LangSelector(current=self.lang or DEFAULT_LANG)
             self._add_selector_action_row(
-                container,
-                lang_selector,
-                action_row_id=LANG_SELECTOR_ROW_ID,
+                container, lang_selector, action_row_id=LANG_SELECTOR_ROW_ID
             )
 
         elif setting in MULTI_CHANNEL_SETTING_ATTRS:

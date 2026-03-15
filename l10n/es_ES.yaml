@@ -74,7 +74,7 @@ reset_yes: "Si"
 reset_done: Todos los ajustes han sido reestablecido a valores predeterminados
 original_link: Enlace original
 show_original_link_btn: Habilitar/Deshabilitar Botón de "Enlace Original"
-show_original_link_btn_desc: "Se mostrará un botón de \"Enlace original\" en los mensajes de Embed Fixer."
+show_original_link_btn_desc: 'Se mostrará un botón de "Enlace original" en los mensajes de Embed Fixer.'
 enable_original_link_btn: Botón de "Enlace original" habilitado
 disable_original_link_btn: Botón de "Enlace original" deshabilitado
 recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace original" en /ajustes para este fix porque contiene anuncios.
