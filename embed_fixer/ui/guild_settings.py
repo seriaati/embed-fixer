@@ -39,6 +39,7 @@ NO_HEADER_SETTINGS = {
     GuildSetting.BOT_VISIBILITY,
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON,
     GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS,
+    GuildSetting.REPLY_INSTEAD_OF_DELETE,
 }
 
 MULTI_CHANNEL_SETTING_ATTRS: dict[GuildSetting, str] = {
@@ -63,6 +64,7 @@ TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
     GuildSetting.BOT_VISIBILITY: "bot_visibility",
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON: "show_original_link_btn",
     GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS: "delete_original_message_in_threads",
+    GuildSetting.REPLY_INSTEAD_OF_DELETE: "reply_instead_of_delete",
 }
 
 

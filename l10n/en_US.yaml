@@ -83,3 +83,5 @@ notify_on_react: Notify on React
 notify_on_react_desc: "Whether the bot should DM you when your fixed message receives a reaction."
 notify_on_react_msg: "{user} reacted {emoji} to you ({message_link})"
 user_settings_cmd_desc: Change your personal settings for the bot
+reply_instead_of_delete: Reply Instead of Delete
+reply_instead_of_delete_desc: "When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook"

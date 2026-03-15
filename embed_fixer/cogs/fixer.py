@@ -635,33 +635,40 @@ class FixerCog(commands.Cog):
         | discord.abc.PrivateChannel,
         files: list[discord.File],
         guild_settings: GuildSettings | None,
+        *,
+        reply_instead_of_delete: bool = False,
         **kwargs: Any,
     ) -> tuple[discord.Message | None, SendType]:
         """Send message via webhook or reply."""
-        webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
+        if not reply_instead_of_delete:
+            webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
 
-        if webhook is not None:
-            try:
-                return await self._send_webhook(message, webhook, files=files, **kwargs), "webhook"
-            except Exception as e:
-                err_message = translator.translate(
-                    "failed_to_send_webhook", lang=await translator.get_guild_lang(message.guild)
+            if webhook is not None:
+                try:
+                    return await self._send_webhook(
+                        message, webhook, files=files, **kwargs
+                    ), "webhook"
+                except Exception as e:
+                    err_message = translator.translate(
+                        "failed_to_send_webhook",
+                        lang=await translator.get_guild_lang(message.guild),
+                    )
+                    await message.channel.send(
+                        f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
+                    )
+                    raise
+            elif guild_settings is not None and guild_settings.delete_original_message_in_threads:
+                return (
+                    await message.channel.send(
+                        message.content, tts=message.tts, files=files, **kwargs
+                    ),
+                    "channel",
                 )
-                await message.channel.send(
-                    f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
-                )
-                raise
-        elif guild_settings is not None and guild_settings.delete_original_message_in_threads:
-            return (
-                await message.channel.send(message.content, tts=message.tts, files=files, **kwargs),
-                "channel",
-            )
-        else:
-            # In a thread or something that doesn't have webhook, then reply (and suppress embed
-            # of the original message later)
-            return await message.reply(
-                message.content, tts=message.tts, files=files, mention_author=False, **kwargs
-            ), "reply"
+
+        # reply_instead_of_delete is True, or no webhook is available
+        return await message.reply(
+            message.content, tts=message.tts, files=files, mention_author=False, **kwargs
+        ), "reply"
 
     async def _handle_http_exception(
         self,
@@ -706,6 +713,12 @@ class FixerCog(commands.Cog):
             False if guild_settings is None else guild_settings.show_original_link_btn
         )
 
+        # Determine if reply mode should be forced (guild or user setting)
+        user_settings = await UserSettings.get_or_none(id=message.author.id)
+        reply_instead_of_delete = (
+            guild_settings is not None and guild_settings.reply_instead_of_delete
+        ) or (user_settings is not None and user_settings.reply_instead_of_delete)
+
         # Add original link button if needed
         if show_original_link_btn and urls:
             guild_lang = await translator.get_guild_lang(message.guild)
@@ -719,7 +732,12 @@ class FixerCog(commands.Cog):
             try:
                 webhook_channel = await self._get_target_channel(message, funnel_target_channel)
                 fix_message, send_type = await self._send_via_webhook_or_reply(
-                    message, webhook_channel, files, guild_settings=guild_settings, **kwargs
+                    message,
+                    webhook_channel,
+                    files,
+                    guild_settings=guild_settings,
+                    reply_instead_of_delete=reply_instead_of_delete,
+                    **kwargs,
                 )
             except discord.HTTPException as e:
                 await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)

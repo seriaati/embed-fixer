@@ -102,6 +102,7 @@ class UserSettings(BaseSettings):
 
     notify_on_react: bool = False
     lang: str | None = None
+    reply_instead_of_delete: bool = False
 
 
 class GuildSettings(BaseSettings):
@@ -125,6 +126,7 @@ class GuildSettings(BaseSettings):
     translate_target_lang: str | None = None
     show_original_link_btn: bool = True
     delete_original_message_in_threads: bool = False
+    reply_instead_of_delete: bool = False
 
 
 # Deprecated, only for migration, new fields should be added to GuildSettings
