@@ -156,7 +156,7 @@ class SettingsCog(commands.Cog):
         self, _: Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         choices = [
-            app_commands.Choice(name="Disable", value="disable"),
+            app_commands.Choice(name=locale_str("translang_disable"), value="disable"),
             *[app_commands.Choice(name=name, value=code) for code, name in ISO639_LANGS.items()],
         ]
         return [
