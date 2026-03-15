@@ -2,26 +2,23 @@ name: Tiếng Việt
 replying_to: "⬅️ Đang trả lời {user} ({url})"
 delete: Xóa
 delete_no_perms: Chỉ người gửi tin nhắn hoặc quản trị viên máy chủ mới có thể xóa tin nhắn này.
-fix_selector_placeholder: Chọn (các) Nhúng Sữa để tắt...
-lang_selector_placeholder: Chọn Ngôn Ngữ...
 settings_embed_footer: "-# Cài đặt này chỉ áp dụng cho máy chủ hiện tại\n-# Nhập vào danh sách thả xuống để tìm kiếm kênh\n-# Việc chọn một kênh đã được chọn sẽ bỏ chọn kênh đó"
-disable_fixes: Tắt Sửa Nhúng cho các trang web
-disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể
+disable_fixes: Tắt Sửa Nhúng Cho Các Trang Web
+disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể.
 lang: Ngôn Ngữ
-lang_desc: Thay đổi ngôn ngữ của bot
-extract_media_channels: Kênh trích xuất phương tiện
-extract_media_channels_desc: Hình ảnh/Video từ các liên kết Twitter/X/Pixiv được gửi trong các kênh này sẽ được trích xuất
-disable_fix_channels: Danh sách đen kênh Nhúng Sửa
-disable_fix_channels_desc: "Chỉ các kênh được đặt ở đây sẽ không nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen"
-enable_fix_channels: Danh sách trắng kênh Nhúng Sửa
-enable_fix_channels_desc: "Chỉ các kênh được đặt ở đây mới nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen"
-disable_image_spoilers: Tắt tự động ẩn nội dung trong kênh NSFW
-disable_image_spoilers_desc: "Với tính năng Trình Xuất Phương Tiện, kênh NSFW được chọn sẽ không có Phượng tiện tự động ẩn"
-toggle_webhook_reply: Bật/tắt trả lời Webhook
-toggle_webhook_reply_desc: Bật/tắt Đề cập chủ tin nhắn gốc khi trả lời qua Webhook
+lang_desc: Thay đổi ngôn ngữ của bot.
+extract_media_channels: Kênh Trích Xuất Phương Tiện
+extract_media_channels_desc: Hình ảnh/Video từ các liên kết Twitter/X/Pixiv được gửi trong các kênh này sẽ được trích xuất.
+disable_fix_channels: Danh Sách Đen Kênh Nhúng Sửa
+disable_fix_channels_desc: "Chỉ các kênh được đặt ở đây sẽ không nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen."
+enable_fix_channels: Danh Sách Trắng Kênh Nhúng Sửa
+enable_fix_channels_desc: "Chỉ các kênh được đặt ở đây mới nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen."
+disable_image_spoilers: Tắt Tự Động Ẩn Nội Dung Trong Kênh NSFW
+disable_image_spoilers_desc: "Với tính năng Trình Xuất Phương Tiện, kênh NSFW được chọn sẽ không có Phượng tiện tự động ẩn."
+toggle_webhook_reply: Bật/Tắt Trả Lời Webhook
+toggle_webhook_reply_desc: Bật/Tắt đề cập chủ tin nhắn gốc khi trả lời qua Webhook.
 sauce: Nguồn
 settings_cmd_desc: Thay đổi cài đặt bot cho máy chủ này
-channel_selector_placeholder: Chọn (các) kênh...
 disable_webhook_reply: Tắt trả lời webhook
 enable_webhook_reply: Bật trả lời webhook
 setting_param: cài-đặt
@@ -34,37 +31,36 @@ info_embed_desc: |
 selected_channels: Kênh được chọn
 enable_delete_reaction: Bật biểu cảm Xóa
 disable_delete_reaction: Tắt biểu cảm Xóa
-toggle_delete_reaction: Bật/tắt biểu cảm Xóa
-toggle_delete_reaction_desc: "Có nên thêm biểu cảm vào tin nhắn webhook để tác giả gốc có thể xóa chúng bằng biểu cảm xóa"
-show_post_content_channels: Hiển thị kênh nội dung bài đăng
-show_post_content_channels_desc: "Nếu trích xuất phương tiện được bật, các kênh được chọn ở đây sẽ hiển thị nội dung của bài đăng"
+toggle_delete_reaction: Bật/Tắt Biểu Cảm Xóa
+toggle_delete_reaction_desc: "Có nên thêm biểu cảm vào tin nhắn webhook để tác giả gốc có thể xóa chúng bằng biểu cảm xóa."
+show_post_content_channels: Hiển Thị Kênh Nội Dung Bài Đăng
+show_post_content_channels_desc: "Nếu trích xuất phương tiện được bật, các kênh được chọn ở đây sẽ hiển thị nội dung của bài đăng."
 no_perms_to_delete_msg: Bot không có quyền xóa tin nhắn
 no_perms_to_manage_webhooks: Bot không có quyền quản lý webhook
 no_perms_to_add_reactions: Bot không có quyền thêm biểu cảm
 add_reaction_error: "Không thêm được phản ứng '{emoji}', hãy đảm bảo rằng phản ứng đó hợp lệ"
 failed_to_send_webhook: Không thể gửi webhook
-delete_msg_emoji: Thay đổi biểu cảm Xóa tin nhắn
-delete_msg_emoji_desc: "Biểu cảm được sử dụng để xóa tin nhắn"
+delete_msg_emoji: Thay Đổi Biểu Cảm Xóa Tin Nhắn
+delete_msg_emoji_desc: "Biểu cảm được sử dụng để xóa tin nhắn."
 emoji: Biểu cảm
 emoji_changed: "Biểu cảm được sử dụng để xóa tin nhắn đã được thay đổi thành {emoji}"
-choose_fix_service: Chọn dịch vụ Nhúng Sửa
-choose_fix_service_desc: Chọn dịch vụ Nhúng Sửa cho các trang web khác nhau
+choose_fix_service: Chọn Dịch Vụ Nhúng Sửa
+choose_fix_service_desc: Chọn dịch vụ Nhúng Sửa cho các trang web khác nhau.
 using_fix_service: "Đang sử dụng {service}"
 fix_embed: Sữa Nhúng
 extract_medias: Xuất Phương tiện
 no_fixes_found: Không tìm thấy nhúng sửa/phương tiện nào cho tin nhắn này
 next: Tiếp theo
 previous: Quay lại
-bot_visibility: Hiển thị của Bot
+bot_visibility: Hiển Thị Của Bot
 bot_visibility_desc: "Nếu được bật, Embed Fixer sẽ sửa các bản nhúng do bot khác gửi. Nếu bị tắt, nó sẽ chỉ sửa các bản nhúng do người dùng gửi."
 enable_bot_visibility: Bật Hiển thị của Bot
 disable_bot_visibility: Tắt Hiển thị của Bot
-funnel_target_channel: Phễu đến kênh mục tiêu
+funnel_target_channel: Phễu Đến Kênh Mục Tiêu
 funnel_target_channel_desc: "Nếu được thiết lập, tất cả các nội dung nhúng sửa và trích xuất phương tiện sẽ được gửi đến kênh đích thay vì kênh gốc."
-whitelist_role_ids: Danh sách trắng Vai trò
+whitelist_role_ids: Danh Sách Trắng Vai Trò
 whitelist_role_ids_desc: "Nếu được thiết lập, chỉ những người dùng có một trong những vai trò này mới có thể sửa nhúng của họ. Để trống để tắt."
 selected_roles: Vai trò được chọn
-role_selector_placeholder: Chọn vai trò...
 translang_disable: Tắt
 translang_set: "Ngôn ngữ đích cho máy chủ này được đặt là {lang_name}"
 invalid_translang: Ngôn ngữ tùy chọn không hợp lệ
@@ -77,8 +73,8 @@ reset_confirm: "Bạn có muốn đặt lại tất cả cài đặt cho máy ch
 reset_yes: "Có"
 reset_done: Tất cả cài đặt đã được đặt lại về ban đầu
 original_link: Link gốc
-show_original_link_btn: Bặt/Tắt nút Link Gốc
-show_original_link_btn_desc: "Hiển thị nút liên kết đến bài đăng gốc trong tin nhắn nhúng cố định không"
+show_original_link_btn: Bật/Tắt Nút Link Gốc
+show_original_link_btn_desc: "Hiển thị nút liên kết đến bài đăng gốc trong tin nhắn nhúng cố định không."
 enable_original_link_btn: Bật nút Link Gốc
 disable_original_link_btn: Tắt nút Link Gốc
 recommend_original_link_btn: Nên bật "Nút Link Gốc" trong /settings cho bản sửa này vì nó có quảng cáo.
@@ -87,7 +83,7 @@ ignore_me_disabled: Bạn không còn bị bot bỏ qua nữa. Các nhúng của
 ignore_me_cmd_desc: Bật/tắt việc Embed Fixer bỏ qua tin nhắn của bạn
 disable_delete_original_message_in_threads: Giữ tin nhắn gốc trong chủ đề
 enable_delete_original_message_in_threads: Xóa tin nhắn gốc trong chủ đề
-delete_original_message_in_threads: Bật/tắt Xóa tin nhắn gốc trong chủ đề
+delete_original_message_in_threads: Bật/Tắt Xóa Tin Nhắn Gốc Trong Chủ Đề
 delete_original_message_in_threads_desc: "Vì chủ đề không thể có webhook, tin nhắn gốc được giữ lại để biết ai đã gửi. Bật tính năng này sẽ xóa tin nhắn gốc trong chủ đề sau khi gửi nhúng đã sửa."
 fix_url_command_desc: Sửa một URL và nhận phiên bản thân thiện với nhúng
 fix_url_param: liên-kết

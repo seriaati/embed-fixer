@@ -135,10 +135,8 @@ class GuildSettingsView(ui.LayoutView):
         container: ui.Container,
         selector: discord.ui.Item[Any],
         *,
-        placeholder_key: str,
         action_row_id: int | None = None,
     ) -> None:
-        cast("Any", selector).placeholder = self.translate(placeholder_key)
         container.add_item(discord.ui.ActionRow(selector, id=action_row_id))
 
     async def _hard_rerender(self, i: Interaction) -> None:
@@ -280,7 +278,6 @@ class GuildSettingsView(ui.LayoutView):
         self._add_selector_action_row(
             container,
             selector,
-            placeholder_key="channel_selector_placeholder",
             action_row_id=CHANNEL_SELECTOR_ROW_ID,
         )
         return cast("list[int]", getattr(guild_settings, attr_name))
@@ -292,7 +289,6 @@ class GuildSettingsView(ui.LayoutView):
         self._add_selector_action_row(
             container,
             selector,
-            placeholder_key="channel_selector_placeholder",
             action_row_id=CHANNEL_SELECTOR_ROW_ID,
         )
 
@@ -303,7 +299,6 @@ class GuildSettingsView(ui.LayoutView):
         self._add_selector_action_row(
             container,
             selector,
-            placeholder_key="role_selector_placeholder",
             action_row_id=ROLE_SELECTOR_ROW_ID,
         )
         return cast("list[int]", getattr(guild_settings, attr_name))
@@ -331,7 +326,6 @@ class GuildSettingsView(ui.LayoutView):
             self._add_selector_action_row(
                 container,
                 fix_selector,
-                placeholder_key="fix_selector_placeholder",
                 action_row_id=FIX_SELECTOR_ROW_ID,
             )
 
@@ -340,7 +334,6 @@ class GuildSettingsView(ui.LayoutView):
             self._add_selector_action_row(
                 container,
                 lang_selector,
-                placeholder_key="lang_selector_placeholder",
                 action_row_id=LANG_SELECTOR_ROW_ID,
             )
 

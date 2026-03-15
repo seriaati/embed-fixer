@@ -2,26 +2,23 @@ name: Español
 replying_to: "⬅️ En respuesta a {user} ({url})"
 delete: Eliminar
 delete_no_perms: Sólo el autor o los administradores del servidor pueden borrar este mensaje.
-fix_selector_placeholder: Selecciona el sitio(s) a desactivar...
-lang_selector_placeholder: Seleccionar idioma...
 settings_embed_footer: "-# Los ajustes son exclusivos para éste servidor\n-# Escribe en el menú plegable para buscar el/los canales.\n-# Al seleccionar un canal existente en la lista, éste será eliminado."
-disable_fixes: Deshabilitar Embed Fixer para sitios web
-disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos
+disable_fixes: Deshabilitar Embed Fixer Para Sitios Web
+disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos.
 lang: Idioma
-lang_desc: Cambiar el idioma del bot
-extract_media_channels: Canales con extracción multimedia
+lang_desc: Cambiar el idioma del bot.
+extract_media_channels: Canales Con Extracción Multimedia
 extract_media_channels_desc: La extracción de multimedia para los enlaces de Twitter/X/Pixiv está habilitada para los siguientes canales.
-disable_fix_channels: Ajustar canales no permitidos para Embed Fixer
+disable_fix_channels: Ajustar Canales No Permitidos Para Embed Fixer
 disable_fix_channels_desc: "Embed Fixer no corregirá en los canales de la lista de no permitidos. No tiene prioridad sobre la lista de permitidos."
-enable_fix_channels: Ajustar canales permitidos para Embed Fixer
+enable_fix_channels: Ajustar Canales Permitidos Para Embed Fixer
 enable_fix_channels_desc: "Embed Fixer corregirá en los canales de la lista de permitidos. Tiene prioridad sobre la lista de no permitidos."
-disable_image_spoilers: Deshabilitar marcar como spoiler automáticamente en canales NSFW
+disable_image_spoilers: Deshabilitar Marcar Como Spoiler Automáticamente en Canales NSFW
 disable_image_spoilers_desc: "Habilita la función de marcar como Spoiler de forma automática en archivos multimedia en estos canales."
-toggle_webhook_reply: Habilitar/deshabilitar mención al webhook
-toggle_webhook_reply_desc: Habilitar/Deshabilitar la mención al autor original si respondes al webhook
+toggle_webhook_reply: Habilitar/Deshabilitar Mención al Webhook
+toggle_webhook_reply_desc: Habilitar/Deshabilitar la mención al autor original si respondes al webhook.
 sauce: Fuente
 settings_cmd_desc: Cambiar los ajustes del bot para este servidor
-channel_selector_placeholder: Seleccionar canal(es)...
 disable_webhook_reply: Deshabilitar la respuesta de webhook
 enable_webhook_reply: Habilitar respuesta de webhook
 setting_param: ajustes
@@ -34,37 +31,36 @@ info_embed_desc: |
 selected_channels: Canales seleccionados
 enable_delete_reaction: Habilitar reacción para eliminar
 disable_delete_reaction: Deshabilitar reacción para eliminar
-toggle_delete_reaction: Habilitar/deshabilitar reacción para eliminar mensajes
+toggle_delete_reaction: Habilitar/Deshabilitar Reacción Para Eliminar Mensajes
 toggle_delete_reaction_desc: "Añade reacciones a los mensajes del webhook permitiendo así al autor original eliminarlos con dicha reacción."
-show_post_content_channels: Mostrar contenido multimedia en ciertos canales
+show_post_content_channels: Mostrar Contenido Multimedia en Ciertos Canales
 show_post_content_channels_desc: "Mientras la extracción de multimedia esté activa, estos canales mostrarán el contenido de la publicación."
 no_perms_to_delete_msg: El bot no tiene permiso para eliminar mensajes
 no_perms_to_manage_webhooks: El bot no tiene permiso para gestionar webhooks
 no_perms_to_add_reactions: El bot no tiene permiso para agregar reacciones
 add_reaction_error: "Error al añadir la reacción '{emoji}', asegúrate de que es válida"
 failed_to_send_webhook: Error al enviar webhook
-delete_msg_emoji: Elige emoji para eliminar mensaje
-delete_msg_emoji_desc: "Elegir el emoji usado para eliminar el mensaje"
+delete_msg_emoji: Elegir Emoji Para Eliminar Mensaje
+delete_msg_emoji_desc: "Elegir el emoji usado para eliminar el mensaje."
 emoji: Emoji
 emoji_changed: "Emoji para eliminar mensajes ha sido cambiado a {emoji}"
-choose_fix_service: Elije en que servicio se usará embed fix
-choose_fix_service_desc: Elegir que tipo de embed fix se usará para los distintos sitios web
+choose_fix_service: Elegir Servicio de Embed Fix
+choose_fix_service_desc: Elegir qué tipo de embed fix se usará para los distintos sitios web.
 using_fix_service: "Actualmente usando {service}"
 fix_embed: Fix Embed
 extract_medias: Extraer multimedia
 no_fixes_found: No se encontró ningún fixes/multimedia para este mensaje
 next: Siguiente
 previous: Anterior
-bot_visibility: Visibilidad hacia otros bots
+bot_visibility: Visibilidad Hacia Otros Bots
 bot_visibility_desc: "Embed Fixer actuará sobre otros bots si está habilitado. Si no lo está, solo actuará sobre los usuarios."
 enable_bot_visibility: Habilitar visibilidad hacia otros bots
 disable_bot_visibility: Deshabilitar visibilidad hacia otros bots
-funnel_target_channel: Canal de destino para redirecciones
+funnel_target_channel: Canal de Destino Para Redirecciones
 funnel_target_channel_desc: "Configurando esta opción, se enviarán los enlaces al canal establecido independientemente del canal de origen."
-whitelist_role_ids: Roles permitidos
+whitelist_role_ids: Roles Permitidos
 whitelist_role_ids_desc: "Corregir los enlaces de los usuarios si poseen cualquier rol de esta lista. Déjalo en blanco para desactivarlo."
 selected_roles: Seleccionar roles
-role_selector_placeholder: Seleccionar rol(es)...
 translang_disable: Deshabilitar
 translang_set: "El idioma de del bot para este servidor se ha establecido en {lang_name}"
 invalid_translang: Idioma seleccionado no válido
@@ -77,7 +73,7 @@ reset_confirm: "¿Estás seguro que quieres reiniciar todos los ajustes para est
 reset_yes: "Si"
 reset_done: Todos los ajustes han sido reestablecido a valores predeterminados
 original_link: Enlace original
-show_original_link_btn: Habilitar/deshabilitar botón de "Enlace original"
+show_original_link_btn: Habilitar/Deshabilitar Botón de "Enlace Original"
 show_original_link_btn_desc: "Se mostrará un botón de \"Enlace original\" en los mensajes de Embed Fixer."
 enable_original_link_btn: Botón de "Enlace original" habilitado
 disable_original_link_btn: Botón de "Enlace original" deshabilitado
@@ -87,7 +83,7 @@ ignore_me_disabled: El bot ya no te está ignorando. Tus embeds serán corregido
 ignore_me_cmd_desc: Habilitar/Deshabilitar si Embed Fixer debe ignorar tus mensajes
 disable_delete_original_message_in_threads: Mantener mensajes originales en hilos
 enable_delete_original_message_in_threads: Eliminar mensajes originales en hilos
-delete_original_message_in_threads: Habilitad/Deshabilitar el borrado del mensaje original en hilos
+delete_original_message_in_threads: Habilitar/Deshabilitar el Borrado del Mensaje Original en Hilos
 delete_original_message_in_threads_desc: "Por limitaciones técnicas, los hilos no soportan webhooks; por lo tanto el mensaje original se mantendrá. Activando esta opción hará que el mensaje sea eliminado y posteriormente se publicará el enlace corregido."
 fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
 fix_url_param: enlace

@@ -1,24 +1,21 @@
 name: English
 replying_to: "⬅️ Replying to {user} ({url})"
-fix_selector_placeholder: Select embed fix(es) to disable...
-lang_selector_placeholder: Select a language...
 disable_fixes: Disable Embed Fixes for Websites
-disable_fixes_desc: Disable embed fixes for specific websites
+disable_fixes_desc: Disable embed fixes for specific websites.
 lang: Language
-lang_desc: Change the language of the bot
+lang_desc: Change the language of the bot.
 extract_media_channels: Media Extraction Channels
-extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted
+extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
 disable_fix_channels: Embed Fix Channel Blacklist
-disable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist"
+disable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist."
 enable_fix_channels: Embed Fix Channel Whitelist
-enable_fix_channels_desc: "Only channels set here will receive embed fixes, whitelist has priority over blacklist"
+enable_fix_channels_desc: "Only channels set here will receive embed fixes, whitelist has priority over blacklist."
 disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
-disable_image_spoilers_desc: "For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered"
+disable_image_spoilers_desc: "For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered."
 toggle_webhook_reply: Toggle Webhook Reply
-toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook
+toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook.
 sauce: Sauce
 settings_cmd_desc: Change the bot's settings for this server
-channel_selector_placeholder: Select channel(s)...
 setting_param: setting
 setting_param_desc: Setting to change
 info_cmd_desc: Get information about the bot
@@ -28,20 +25,20 @@ info_embed_desc: |
   To contribute (such as translations), DM me or open a PR on GitHub.
 selected_channels: Selected channels
 toggle_delete_reaction: Toggle Delete Message Reaction
-toggle_delete_reaction_desc: "Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting"
+toggle_delete_reaction_desc: "Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting."
 show_post_content_channels: Show Post Content Channels
-show_post_content_channels_desc: "If media extraction is enabled, channels selected here will show the content of the post"
+show_post_content_channels_desc: "If media extraction is enabled, channels selected here will show the content of the post."
 no_perms_to_delete_msg: The bot is missing permission to delete messages
 no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
 no_perms_to_add_reactions: The bot is missing permission to add reactions
 add_reaction_error: "Failed to add reaction '{emoji}', make sure it's valid"
 failed_to_send_webhook: Failed to send webhook
 delete_msg_emoji: Change Delete Message Reaction Emoji
-delete_msg_emoji_desc: "Change the emoji used to delete messages"
+delete_msg_emoji_desc: "Change the emoji used to delete messages."
 emoji: Emoji
 emoji_changed: "Emoji used for deleting messages has been changed to {emoji}"
-choose_fix_service: Choose embed fix service
-choose_fix_service_desc: Choose the embed fix service to use for different websites
+choose_fix_service: Choose Embed Fix Service
+choose_fix_service_desc: Choose the embed fix service to use for different websites.
 using_fix_service: "Using {service}"
 fix_embed: Fix Embed
 extract_medias: Extract Medias
@@ -53,7 +50,6 @@ funnel_target_channel_desc: "If set, all fixed embeds and extract medias will be
 whitelist_role_ids: Whitelist Roles
 whitelist_role_ids_desc: "If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable."
 selected_roles: Selected roles
-role_selector_placeholder: Select role(s)...
 translang_disable: Disable
 translang_set: "The translate target language for this server has been set to {lang_name}"
 invalid_translang: Invalid language chosen
@@ -67,7 +63,7 @@ reset_yes: "Yes"
 reset_done: All settings have been reset to default values
 original_link: Original link
 show_original_link_btn: Toggle Original Link Button
-show_original_link_btn_desc: "Whether to show a button linking to the original post in fixed embed messages"
+show_original_link_btn_desc: "Whether to show a button linking to the original post in fixed embed messages."
 recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.
 ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
 ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
@@ -84,4 +80,4 @@ notify_on_react_desc: "Whether the bot should DM you when your fixed message rec
 notify_on_react_msg: "{user} reacted {emoji} to you ({message_link})"
 user_settings_cmd_desc: Change your personal settings for the bot
 reply_instead_of_delete: Reply Instead of Delete
-reply_instead_of_delete_desc: "When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook"
+reply_instead_of_delete_desc: "When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook."
