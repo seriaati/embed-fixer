@@ -1,10 +1,7 @@
 name: English
 replying_to: "⬅️ Replying to {user} ({url})"
-delete: Delete
-delete_no_perms: Only the author or server administrators can delete this message.
 fix_selector_placeholder: Select embed fix(es) to disable...
 lang_selector_placeholder: Select a language...
-settings_embed_footer: "-# Settings are unique to this server\n-# Type in the dropdown to search for channels\n-# Selecting a channel that is already selected will remove it"
 disable_fixes: Disable Embed Fixes for Websites
 disable_fixes_desc: Disable embed fixes for specific websites
 lang: Language
@@ -22,8 +19,6 @@ toggle_webhook_reply_desc: Toggle the ping to the original author when replying 
 sauce: Sauce
 settings_cmd_desc: Change the bot's settings for this server
 channel_selector_placeholder: Select channel(s)...
-disable_webhook_reply: Disable webhook reply
-enable_webhook_reply: Enable webhook reply
 setting_param: setting
 setting_param_desc: Setting to change
 info_cmd_desc: Get information about the bot
@@ -32,8 +27,6 @@ info_embed_desc: |
   For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
   To contribute (such as translations), DM me or open a PR on GitHub.
 selected_channels: Selected channels
-enable_delete_reaction: Enable delete reaction
-disable_delete_reaction: Disable delete reaction
 toggle_delete_reaction: Toggle Delete Message Reaction
 toggle_delete_reaction_desc: "Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting"
 show_post_content_channels: Show Post Content Channels
@@ -53,12 +46,8 @@ using_fix_service: "Using {service}"
 fix_embed: Fix Embed
 extract_medias: Extract Medias
 no_fixes_found: No fixes/medias found for this message
-next: Next
-previous: Previous
 bot_visibility: Bot Visibility
 bot_visibility_desc: "If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users."
-enable_bot_visibility: Enable bot visibility
-disable_bot_visibility: Disable bot visibility
 funnel_target_channel: Funnel to Target Channel
 funnel_target_channel_desc: "If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel."
 whitelist_role_ids: Whitelist Roles
@@ -79,14 +68,10 @@ reset_done: All settings have been reset to default values
 original_link: Original link
 show_original_link_btn: Toggle Original Link Button
 show_original_link_btn_desc: "Whether to show a button linking to the original post in fixed embed messages"
-enable_original_link_btn: Enable original link button
-disable_original_link_btn: Disable original link button
 recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.
 ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
 ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
 ignore_me_cmd_desc: Toggle whether Embed Fixer should ignore your messages
-disable_delete_original_message_in_threads: Keep original messages in threads
-enable_delete_original_message_in_threads: Delete original messages in threads
 delete_original_message_in_threads: Toggle Deleting Original Messages in Threads
 delete_original_message_in_threads_desc: "Because threads can't have webhooks, the original message is kept to know who sent it. Enabling this will delete the original message in threads after sending the fixed embed."
 fix_url_command_desc: Fix a URL and get the embed-friendly version
