@@ -138,6 +138,7 @@ Below are settings you can change with the `/settings` command:
 - **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
 - **Toggle Original Link Button**: Whether to show a button linking to the original post in fixed embed messages
 - **Toggle Deleting Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. Enabling this will delete the original message in threads after sending the fixed embed.
+- **Reply Instead of Delete**: When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook
 
 ## Post Content Translation
 
