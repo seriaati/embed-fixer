@@ -1,27 +1,69 @@
 from __future__ import annotations
 
 import itertools
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
+import discord
 from discord import ButtonStyle, ChannelType, SelectOption
 
 from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import GuildSetting
-from embed_fixer.utils.embed import DefaultEmbed
+from embed_fixer.ui.common import SettingsSection
 
 from . import components as ui
 
 if TYPE_CHECKING:
-    import discord
-    from discord import Embed, Thread
+    from discord import Thread
     from discord.abc import GuildChannel
 
     from embed_fixer.bot import Interaction
     from embed_fixer.fixes import Domain
 
 ITEM_IDS_PER_PAGE = 10  # Channel/Role IDs to show per page
+
+SELECTED_ITEMS_TEXT_ID = 1
+FIX_METHOD_SELECTOR_ROW_ID = 2
+DOMAIN_TEXT_DISPLAY_ID = 3
+PAGINATOR_ACTION_ROW_ID = 4
+DOMAIN_SELECTOR_ROW_ID = 5
+FIX_SELECTOR_ROW_ID = 6
+LANG_SELECTOR_ROW_ID = 7
+CHANNEL_SELECTOR_ROW_ID = 8
+ROLE_SELECTOR_ROW_ID = 9
+
+NO_HEADER_SETTINGS = {
+    GuildSetting.TOGGLE_WEBHOOK_REPLY,
+    GuildSetting.TOGGLE_DELETE_REACTION,
+    GuildSetting.BOT_VISIBILITY,
+    GuildSetting.SHOW_ORIGINAL_LINK_BUTTON,
+    GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS,
+}
+
+MULTI_CHANNEL_SETTING_ATTRS: dict[GuildSetting, str] = {
+    GuildSetting.EXTRACT_MEDIA_CHANNELS: "extract_media_channels",
+    GuildSetting.DISABLE_FIX_CHANNELS: "disable_fix_channels",
+    GuildSetting.ENABLE_FIX_CHANNELS: "enable_fix_channels",
+    GuildSetting.DISABLE_IMAGE_SPOILERS: "disable_image_spoilers",
+    GuildSetting.SHOW_POST_CONTENT_CHANNELS: "show_post_content_channels",
+}
+
+SINGLE_CHANNEL_SETTING_ATTRS: dict[GuildSetting, str] = {
+    GuildSetting.FUNNEL_TARGET_CHANNEL: "funnel_target_channel"
+}
+
+ROLE_SETTING_ATTRS: dict[GuildSetting, str] = {
+    GuildSetting.WHITELIST_ROLE_IDS: "whitelist_role_ids"
+}
+
+TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
+    GuildSetting.TOGGLE_WEBHOOK_REPLY: "disable_webhook_reply",
+    GuildSetting.TOGGLE_DELETE_REACTION: "disable_delete_reaction",
+    GuildSetting.BOT_VISIBILITY: "bot_visibility",
+    GuildSetting.SHOW_ORIGINAL_LINK_BUTTON: "show_original_link_btn",
+    GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS: "delete_original_message_in_threads",
+}
 
 
 class DeleteMsgEmojiModal(ui.Modal):
@@ -50,13 +92,16 @@ class DeleteMsgEmojiModal(ui.Modal):
         )
 
 
-class GuildSettingsView(ui.View):
-    def __init__(self, *, guild: discord.Guild, lang: str | None) -> None:
+class GuildSettingsView(ui.LayoutView):
+    def __init__(
+        self, *, guild: discord.Guild, lang: str | None, app_emojis: dict[str, discord.Emoji]
+    ) -> None:
         super().__init__(lang=lang)
 
         self.domain_id: DomainId | None = None
         self.guild = guild
         self.guild_id = guild.id
+        self.app_emojis = app_emojis
 
         self.page = 0
         self.item_ids: list[int] = []
@@ -83,15 +128,40 @@ class GuildSettingsView(ui.View):
         self.page = max(min(self.page, len(batched) - 1), 0)
         return batched[self.page]
 
-    async def _update_page(self, i: Interaction) -> None:
-        embed = self.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        if self.item_type == "role":
-            embed = self._add_selected_roles_field(embed)
-        elif self.item_type == "channel":
-            embed = self._add_selected_channels_field(embed)
+    def _add_selector_action_row(
+        self,
+        container: ui.Container,
+        selector: discord.ui.Item[Any],
+        *,
+        placeholder_key: str,
+        action_row_id: int | None = None,
+    ) -> None:
+        cast("Any", selector).placeholder = self.translate(placeholder_key)
+        container.add_item(discord.ui.ActionRow(selector, id=action_row_id))
 
-        await i.response.edit_message(embed=embed, view=None)
+    async def _hard_rerender(self, i: Interaction) -> None:
+        view = ui.LayoutView(lang=None)
+        view.add_item(
+            ui.Container(discord.ui.TextDisplay("..."), accent_color=discord.Color.blurple())
+        )
+
+        if i.response.is_done():
+            await i.edit_original_response(view=view)
+        else:
+            await i.response.edit_message(view=view)
+
         await i.edit_original_response(view=self)
+
+    async def _update_page(self, i: Interaction) -> None:
+        container = self.children[0]
+        container = cast("ui.Container", container)
+
+        if self.item_type == "role":
+            container = self._add_selected_roles_field(container)
+        elif self.item_type == "channel":
+            container = self._add_selected_channels_field(container)
+
+        await i.response.edit_message(view=self)
 
     async def _get_current_fix(self) -> GuildFixMethod | None:
         if self.domain_id is None:
@@ -100,7 +170,7 @@ class GuildSettingsView(ui.View):
 
         return await GuildFixMethod.get_or_none(guild_id=self.guild_id, domain_id=self.domain_id)
 
-    async def _get_domain_embed(self) -> DefaultEmbed:
+    async def _get_domain_text_display(self) -> discord.ui.TextDisplay:
         if self.domain_id is None:
             msg = "Domain ID is not set."
             raise ValueError(msg)
@@ -116,8 +186,9 @@ class GuildSettingsView(ui.View):
                 raise ValueError(msg)
 
         service_str = fix.name if fix.repo_url is None else f"[{fix.name}]({fix.repo_url})"
-        return DefaultEmbed(
-            title=domain.name, description=self.translate("using_fix_service", service=service_str)
+        return discord.ui.TextDisplay(
+            f"## {domain.name}\n{self.translate('using_fix_service', service=service_str)}",
+            id=DOMAIN_TEXT_DISPLAY_ID,
         )
 
     def _get_guild_channel_ids(self) -> list[int]:
@@ -148,42 +219,95 @@ class GuildSettingsView(ui.View):
         if updated_fields:
             await guild_settings.save()
 
-    def _add_selected_channels_field(self, embed: Embed) -> Embed:
-        channel_ids = self.page_item_ids
-        if not channel_ids:
-            embed.clear_fields()
-            return embed
+    def _add_selected_items_field(
+        self, container: ui.Container, *, title_key: str, lines: list[str]
+    ) -> ui.Container:
+        self.remove_child_by_id(
+            container, item_type=discord.ui.TextDisplay, item_id=SELECTED_ITEMS_TEXT_ID
+        )
+        paginator_action_row = self.remove_child_by_id(
+            container, item_type=discord.ui.ActionRow, item_id=PAGINATOR_ACTION_ROW_ID
+        )
 
+        container.add_item(
+            discord.ui.TextDisplay(
+                f"## {self.translate(title_key)}\n{'\n'.join(lines)}", id=SELECTED_ITEMS_TEXT_ID
+            )
+        )
+        if paginator_action_row is not None:
+            container.add_item(paginator_action_row)
+
+        return container
+
+    def _add_selected_channels_field(self, container: ui.Container) -> ui.Container:
+        channel_ids = self.page_item_ids
         guild_channel_ids = self._get_guild_channel_ids()
         valid_channel_ids: list[int] = [x for x in guild_channel_ids if x in channel_ids]
+        lines = [f"- <#{channel_id}>" for channel_id in valid_channel_ids]
+        return self._add_selected_items_field(container, title_key="selected_channels", lines=lines)
 
-        embed.clear_fields()
-        return embed.add_field(
-            name=self.translate("selected_channels"),
-            value="\n".join([f"- <#{channel_id}>" for channel_id in valid_channel_ids]),
-        )
-
-    def _add_selected_roles_field(self, embed: Embed) -> Embed:
+    def _add_selected_roles_field(self, container: ui.Container) -> ui.Container:
         role_ids = self.page_item_ids
-        if not role_ids:
-            embed.clear_fields()
-            return embed
-
         guild_roles = self.guild.roles
         valid_roles = [role for role in guild_roles if role.id in role_ids]
+        lines = [f"- {role.mention}" for role in valid_roles]
+        return self._add_selected_items_field(container, title_key="selected_roles", lines=lines)
 
-        embed.clear_fields()
-        return embed.add_field(
-            name=self.translate("selected_roles"),
-            value="\n".join([f"- {role.mention}" for role in valid_roles]),
+    def _add_toggle_section(
+        self,
+        container: ui.Container,
+        *,
+        setting: GuildSetting,
+        guild_settings: GuildSettings,
+        settings_attr: str,
+    ) -> None:
+        section = SettingsSection(
+            title=self.translate(setting.value),
+            description=self.translate(f"{setting.value}_desc"),
+            app_emojis=self.app_emojis,
+            value=cast("bool", getattr(guild_settings, settings_attr)),
+            settings_key=settings_attr,
+            settings_type="guild",
+        )
+        container.add_item(section)
+
+    def _add_multi_channel_selector_for_setting(
+        self, container: ui.Container, *, guild_settings: GuildSettings, attr_name: str
+    ) -> list[int]:
+        selector = ChannelSelect(attr_name, select_type="multiple")
+        self._add_selector_action_row(
+            container,
+            selector,
+            placeholder_key="channel_selector_placeholder",
+            action_row_id=CHANNEL_SELECTOR_ROW_ID,
+        )
+        return cast("list[int]", getattr(guild_settings, attr_name))
+
+    def _add_single_channel_selector_for_setting(
+        self, container: ui.Container, *, attr_name: str
+    ) -> None:
+        selector = ChannelSelect(attr_name, select_type="single")
+        self._add_selector_action_row(
+            container,
+            selector,
+            placeholder_key="channel_selector_placeholder",
+            action_row_id=CHANNEL_SELECTOR_ROW_ID,
         )
 
-    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:  # noqa: C901, PLR0912, PLR0915
+    def _add_role_selector_for_setting(
+        self, container: ui.Container, *, guild_settings: GuildSettings, attr_name: str
+    ) -> list[int]:
+        selector = RoleSelect(attr_name)
+        self._add_selector_action_row(
+            container,
+            selector,
+            placeholder_key="role_selector_placeholder",
+            action_row_id=ROLE_SELECTOR_ROW_ID,
+        )
+        return cast("list[int]", getattr(guild_settings, attr_name))
+
+    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:
         await i.response.defer(ephemeral=True)
-
-        embed = DefaultEmbed(
-            title=self.translate(setting), description=self.translate(f"{setting}_desc")
-        )
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
         await self._remove_invalid_channels(guild_settings)
@@ -191,149 +315,102 @@ class GuildSettingsView(ui.View):
         channel_ids: list[int] | None = None
         role_ids: list[int] | None = None
 
+        container = ui.Container(accent_color=discord.Color.blurple())
+
+        if setting not in NO_HEADER_SETTINGS:
+            container.add_item(
+                discord.ui.TextDisplay(
+                    f"# {self.translate(setting)}\n{self.translate(f'{setting}_desc')}"
+                )
+            )
+
         if setting is GuildSetting.DISABLE_FIXES:
-            fix_selector = FixSelector(guild_settings.disabled_domains)
-            fix_selector.placeholder = self.translate("fix_selector_placeholder")
-            self.add_item(fix_selector)
+            fix_selector = DisableDomainSelect(guild_settings.disabled_domains)
+            self._add_selector_action_row(
+                container,
+                fix_selector,
+                placeholder_key="fix_selector_placeholder",
+                action_row_id=FIX_SELECTOR_ROW_ID,
+            )
 
         elif setting is GuildSetting.LANG:
             lang_selector = LangSelector(current=self.lang or DEFAULT_LANG)
-            lang_selector.placeholder = self.translate("lang_selector_placeholder")
-            self.add_item(lang_selector)
-
-        elif setting is GuildSetting.EXTRACT_MEDIA_CHANNELS:
-            selector = ChannelSelect("extract_media_channels", select_type="multiple")
-            selector.placeholder = self.translate("channel_selector_placeholder")
-            self.add_item(selector)
-            channel_ids = guild_settings.extract_media_channels
-
-        elif setting is GuildSetting.DISABLE_FIX_CHANNELS:
-            selector = ChannelSelect("disable_fix_channels", select_type="multiple")
-            selector.placeholder = self.translate("channel_selector_placeholder")
-            self.add_item(selector)
-            channel_ids = guild_settings.disable_fix_channels
-
-        elif setting is GuildSetting.ENABLE_FIX_CHANNELS:
-            selector = ChannelSelect("enable_fix_channels", select_type="multiple")
-            selector.placeholder = self.translate("channel_selector_placeholder")
-            self.add_item(selector)
-            channel_ids = guild_settings.enable_fix_channels
-
-        elif setting is GuildSetting.DISABLE_IMAGE_SPOILERS:
-            selector = ChannelSelect("disable_image_spoilers", select_type="multiple")
-            selector.placeholder = self.translate("channel_selector_placeholder")
-            self.add_item(selector)
-            channel_ids = guild_settings.disable_image_spoilers
-
-        elif setting is GuildSetting.TOGGLE_WEBHOOK_REPLY:
-            toggle_btn = ToggleButton(
-                current_toggle=guild_settings.disable_webhook_reply,
-                labels={True: "enable_webhook_reply", False: "disable_webhook_reply"},
-                attr_name="disable_webhook_reply",
-                reverse_color=False,
+            self._add_selector_action_row(
+                container,
+                lang_selector,
+                placeholder_key="lang_selector_placeholder",
+                action_row_id=LANG_SELECTOR_ROW_ID,
             )
-            toggle_btn.set_style(self)
-            self.add_item(toggle_btn)
 
-        elif setting is GuildSetting.TOGGLE_DELETE_REACTION:
-            toggle_btn = ToggleButton(
-                current_toggle=guild_settings.disable_delete_reaction,
-                labels={True: "enable_delete_reaction", False: "disable_delete_reaction"},
-                attr_name="disable_delete_reaction",
-                reverse_color=False,
+        elif setting in MULTI_CHANNEL_SETTING_ATTRS:
+            channel_ids = self._add_multi_channel_selector_for_setting(
+                container,
+                guild_settings=guild_settings,
+                attr_name=MULTI_CHANNEL_SETTING_ATTRS[setting],
             )
-            toggle_btn.set_style(self)
-            self.add_item(toggle_btn)
 
-        elif setting is GuildSetting.BOT_VISIBILITY:
-            toggle_btn = ToggleButton(
-                current_toggle=guild_settings.bot_visibility,
-                labels={True: "disable_bot_visibility", False: "enable_bot_visibility"},
-                attr_name="bot_visibility",
-                reverse_color=True,
+        elif setting in TOGGLE_SETTING_ATTRS:
+            self._add_toggle_section(
+                container,
+                setting=setting,
+                guild_settings=guild_settings,
+                settings_attr=TOGGLE_SETTING_ATTRS[setting],
             )
-            toggle_btn.set_style(self)
-            self.add_item(toggle_btn)
-
-        elif setting is GuildSetting.SHOW_POST_CONTENT_CHANNELS:
-            selector = ChannelSelect("show_post_content_channels", select_type="multiple")
-            selector.placeholder = self.translate("channel_selector_placeholder")
-            self.add_item(selector)
-            channel_ids = guild_settings.show_post_content_channels
 
         elif setting is GuildSetting.CHOOSE_FIX_SERVICE:
             self.domain_id = DOMAINS[0].id
-            embed = await self._get_domain_embed()
+            text_display = await self._get_domain_text_display()
+            container.add_item(text_display)
 
             domain_selector = DomainSelector(self.domain_id or DomainId.TWITTER)
-            self.add_item(domain_selector)
+            container.add_item(discord.ui.ActionRow(domain_selector, id=DOMAIN_SELECTOR_ROW_ID))
 
             current = await self._get_current_fix()
             fix_method_selector = FixMethodSelector(
                 self.domain, None if current is None else current.fix_id
             )
-            self.add_item(fix_method_selector)
-
-        elif setting is GuildSetting.FUNNEL_TARGET_CHANNEL:
-            channel_selector = ChannelSelect("funnel_target_channel", select_type="single")
-            channel_selector.placeholder = self.translate("channel_selector_placeholder")
-            self.add_item(channel_selector)
-            if guild_settings.funnel_target_channel is not None:
-                channel_ids = [guild_settings.funnel_target_channel]
-
-        elif setting is GuildSetting.WHITELIST_ROLE_IDS:
-            role_selector = RoleSelect("whitelist_role_ids")
-            role_selector.placeholder = self.translate("role_selector_placeholder")
-            self.add_item(role_selector)
-            role_ids = guild_settings.whitelist_role_ids
-
-        elif setting is GuildSetting.SHOW_ORIGINAL_LINK_BUTTON:
-            toggle_btn = ToggleButton(
-                current_toggle=guild_settings.show_original_link_btn,
-                labels={True: "disable_original_link_btn", False: "enable_original_link_btn"},
-                attr_name="show_original_link_btn",
-                reverse_color=True,
+            container.add_item(
+                discord.ui.ActionRow(fix_method_selector, id=FIX_METHOD_SELECTOR_ROW_ID)
             )
-            toggle_btn.set_style(self)
-            self.add_item(toggle_btn)
 
-        elif setting is GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS:
-            toggle_btn = ToggleButton(
-                current_toggle=guild_settings.delete_original_message_in_threads,
-                labels={
-                    True: "disable_delete_original_message_in_threads",
-                    False: "enable_delete_original_message_in_threads",
-                },
-                attr_name="delete_original_message_in_threads",
-                reverse_color=True,
+        elif setting in SINGLE_CHANNEL_SETTING_ATTRS:
+            self._add_single_channel_selector_for_setting(
+                container, attr_name=SINGLE_CHANNEL_SETTING_ATTRS[setting]
             )
-            toggle_btn.set_style(self)
-            self.add_item(toggle_btn)
+
+        elif setting in ROLE_SETTING_ATTRS:
+            role_ids = self._add_role_selector_for_setting(
+                container, guild_settings=guild_settings, attr_name=ROLE_SETTING_ATTRS[setting]
+            )
 
         else:
             msg = f"Unknown setting: {setting!r}"
             raise ValueError(msg)
 
+        if channel_ids is not None or role_ids is not None:
+            container.add_item(
+                discord.ui.ActionRow(
+                    PreviousButton(emoji=self.app_emojis["ARROW_BACK"]),
+                    NextButton(emoji=self.app_emojis["ARROW_FORWARD"]),
+                    id=PAGINATOR_ACTION_ROW_ID,
+                )
+            )
+
         if channel_ids is not None:
             self.item_ids = channel_ids
             self.item_type = "channel"
-            embed = self._add_selected_channels_field(embed)
+            container = self._add_selected_channels_field(container)
         elif role_ids is not None:
             self.item_ids = role_ids
             self.item_type = "role"
-            embed = self._add_selected_roles_field(embed)
+            container = self._add_selected_roles_field(container)
 
-        if channel_ids is not None or role_ids is not None:
-            self.add_item(PreviousButton(label=self.translate("previous")))
-            self.add_item(NextButton(label=self.translate("next")))
-
-        await i.followup.send(
-            content=self.translate("settings_embed_footer"), embed=embed, view=self
-        )
+        self.add_item(container)
+        await i.followup.send(view=self, ephemeral=True)
         self.message = await i.original_response()
 
 
-class FixSelector(ui.Select[GuildSettingsView]):
+class DisableDomainSelect(ui.Select[GuildSettingsView]):
     def __init__(self, current: list[int]) -> None:
         super().__init__(
             options=[
@@ -353,6 +430,7 @@ class FixSelector(ui.Select[GuildSettingsView]):
             return
 
         await i.response.defer()
+
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
         guild_settings.disabled_domains = [int(domain) for domain in self.values]
         await guild_settings.save(update_fields=("disabled_domains",))
@@ -369,6 +447,7 @@ class LangSelector(ui.Select[GuildSettingsView]):
 
     async def callback(self, i: Interaction) -> None:
         await i.response.defer()
+
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
         guild_settings.lang = self.values[0]
         await guild_settings.save(update_fields=("lang",))
@@ -387,47 +466,51 @@ class ChannelSelect(ui.ChannelSelect[GuildSettingsView]):
         )
 
         self.attr_name = attr_name
-        self.select_type = select_type
+        self.select_type: Literal["single", "multiple"] = select_type
 
     async def callback(self, i: Interaction) -> None:
-        assert self.view is not None
+        await i.response.defer()
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
-        channel_ids = [channel.id for channel in self.values]
-
-        current_channel_ids: list[int | None]
 
         if self.select_type == "multiple":
             current_channel_ids = getattr(guild_settings, self.attr_name, [])
-        else:
-            current_channel_ids = [getattr(guild_settings, self.attr_name)]
+            for channel_id in [channel.id for channel in self.values]:
+                if channel_id in current_channel_ids:
+                    current_channel_ids.remove(channel_id)
+                else:
+                    current_channel_ids.append(channel_id)
 
-        current_channel_ids = [x for x in current_channel_ids if x is not None]
-
-        for channel_id in channel_ids:
-            if channel_id in current_channel_ids:
-                current_channel_ids.remove(channel_id)
-            else:
-                current_channel_ids.append(channel_id)
-
-        self.view.page = 0
-        self.view.item_ids = current_channel_ids  # pyright: ignore[reportAttributeAccessIssue]
-
-        if self.select_type == "multiple":
             setattr(guild_settings, self.attr_name, current_channel_ids)
+
+            self.view.page = 0
+            self.view.item_ids = current_channel_ids
         else:
-            setattr(
-                guild_settings,
-                self.attr_name,
-                current_channel_ids[0] if current_channel_ids else None,
-            )
+            setattr(guild_settings, self.attr_name, self.values[0].id if self.values else None)
 
         await guild_settings.save(update_fields=(self.attr_name,))
 
-        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view._add_selected_channels_field(embed)
-        await i.response.edit_message(embed=embed, view=None)
-        await i.edit_original_response(view=self.view)
+        if self.select_type == "multiple":
+            container = self.view.children[0]
+            container = cast("ui.Container", container)
+            container = self.view._add_selected_channels_field(container)
+
+            await self.view._hard_rerender(i)
+        else:
+            channel_id: int | None = getattr(guild_settings, self.attr_name)
+            if channel_id is None:
+                self.default_values = []
+            else:
+                self.default_values = (
+                    [
+                        discord.SelectDefaultValue(
+                            id=channel_id, type=discord.SelectDefaultValueType.channel
+                        )
+                    ]
+                    if channel_id
+                    else []
+                )
+            await i.edit_original_response(view=self.view)
 
 
 class RoleSelect(ui.RoleSelect[GuildSettingsView]):
@@ -455,78 +538,52 @@ class RoleSelect(ui.RoleSelect[GuildSettingsView]):
         setattr(guild_settings, self.attr_name, current_role_ids)
         await guild_settings.save(update_fields=(self.attr_name,))
 
-        embed = self.view.message.embeds[0]  # pyright: ignore[reportOptionalMemberAccess]
-        embed = self.view._add_selected_roles_field(embed)
-        await i.response.edit_message(embed=embed, view=None)
-        await i.edit_original_response(view=self.view)
+        container = self.view.children[0]
+        container = cast("ui.Container", container)
+        container = self.view._add_selected_roles_field(container)
 
-
-class ToggleButton(ui.Button[GuildSettingsView]):
-    def __init__(
-        self, *, current_toggle: bool, labels: dict[bool, str], attr_name: str, reverse_color: bool
-    ) -> None:
-        self.current_toggle = current_toggle
-        self.labels = labels
-        self.attr_name = attr_name
-        self.reverse_color = reverse_color
-        super().__init__()
-
-    def set_style(self, view: ui.View) -> None:
-        if self.reverse_color:
-            self.style = ButtonStyle.red if self.current_toggle else ButtonStyle.green
-        else:
-            self.style = ButtonStyle.green if self.current_toggle else ButtonStyle.red
-        self.label = view.translate(self.labels[self.current_toggle])
-
-    async def callback(self, i: Interaction) -> None:
-        await i.response.defer()
-        guild_settings, _ = await GuildSettings.get_or_create(id=self.view.guild.id)
-        setattr(guild_settings, self.attr_name, not self.current_toggle)
-        await guild_settings.save(update_fields=(self.attr_name,))
-
-        self.current_toggle = not self.current_toggle
-        self.set_style(self.view)
-        await i.edit_original_response(view=self.view)
+        await self.view._hard_rerender(i)
 
 
 class DomainSelector(ui.Select[GuildSettingsView]):
     def __init__(self, domain_id: DomainId) -> None:
-        super().__init__(
-            options=[
-                SelectOption(
-                    label=domain.name, value=str(domain.id.value), default=domain.id == domain_id
-                )
-                for domain in DOMAINS
-                if domain.fix_methods
-            ]
-        )
+        super().__init__(options=self._get_options(domain_id))
 
-    async def callback(self, i: Interaction) -> None:
-        await i.response.defer()
-
-        self.view.domain_id = DomainId(int(self.values[0]))
-        embed = await self.view._get_domain_embed()
-
-        self.options = [
+    @staticmethod
+    def _get_options(domain_id: DomainId) -> list[SelectOption]:
+        return [
             SelectOption(
-                label=domain.name,
-                value=str(domain.id.value),
-                default=domain.id == self.view.domain_id,
+                label=domain.name, value=str(domain.id.value), default=domain.id == domain_id
             )
             for domain in DOMAINS
             if domain.fix_methods
         ]
 
+    async def callback(self, i: Interaction) -> None:
+        self.view.domain_id = DomainId(int(self.values[0]))
+        self.options = self._get_options(self.view.domain_id)
+
         current = await self.view._get_current_fix()
         fix_method_selector = FixMethodSelector(
             self.view.domain, None if current is None else current.fix_id
         )
-        current_selector = self.view.get_item("guild_settings:fix_method_selector")
-        if current_selector is not None:
-            self.view.remove_item(current_selector)
 
-        self.view.add_item(fix_method_selector)
-        await i.edit_original_response(embed=embed, view=self.view)
+        container = self.view.children[0]
+        container = cast("ui.Container", container)
+        self.view.replace_child_by_id(
+            container,
+            item_type=discord.ui.TextDisplay,
+            item_id=DOMAIN_TEXT_DISPLAY_ID,
+            new_child=await self.view._get_domain_text_display(),
+        )
+        self.view.replace_child_by_id(
+            container,
+            item_type=discord.ui.ActionRow,
+            item_id=FIX_METHOD_SELECTOR_ROW_ID,
+            new_child=discord.ui.ActionRow(fix_method_selector, id=FIX_METHOD_SELECTOR_ROW_ID),
+        )
+
+        await i.response.edit_message(view=self.view)
 
 
 class FixMethodSelector(ui.Select[GuildSettingsView]):
@@ -544,24 +601,30 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
         )
 
     async def callback(self, i: Interaction) -> None:
-        await i.response.defer()
-
         await GuildFixMethod.update_or_create(
             guild_id=self.view.guild.id,
             domain_id=self.view.domain_id,
             defaults={"fix_id": int(self.values[0])},
         )
 
-        embed = await self.view._get_domain_embed()
-        for option in self.options:
-            option.default = option.value == self.values[0]
+        text_display = await self.view._get_domain_text_display()
 
-        await i.edit_original_response(embed=embed, view=self.view)
+        container = self.view.children[0]
+        container = cast("ui.Container", container)
+
+        self.view.replace_child_by_id(
+            container,
+            item_type=discord.ui.TextDisplay,
+            item_id=DOMAIN_TEXT_DISPLAY_ID,
+            new_child=text_display,
+        )
+
+        await i.response.edit_message(view=self.view)
 
 
 class NextButton(ui.Button[GuildSettingsView]):
-    def __init__(self, *, label: str) -> None:
-        super().__init__(label=label, style=ButtonStyle.primary)
+    def __init__(self, *, emoji: discord.Emoji) -> None:
+        super().__init__(emoji=emoji, style=ButtonStyle.primary)
 
     async def callback(self, i: Interaction) -> None:
         assert self.view is not None
@@ -570,8 +633,8 @@ class NextButton(ui.Button[GuildSettingsView]):
 
 
 class PreviousButton(ui.Button[GuildSettingsView]):
-    def __init__(self, *, label: str) -> None:
-        super().__init__(label=label, style=ButtonStyle.primary)
+    def __init__(self, *, emoji: discord.Emoji) -> None:
+        super().__init__(emoji=emoji, style=ButtonStyle.primary)
 
     async def callback(self, i: Interaction) -> None:
         assert self.view is not None

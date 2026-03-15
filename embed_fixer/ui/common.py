@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import discord
 
@@ -21,14 +21,40 @@ class LangSelector(ui.Select):
                 for lang, lang_name in translator.langs.items()
             ]
         )
-        self.settings_type = settings_type
+        self.settings_type: Literal["guild", "user"] = settings_type
 
     async def callback(self, i: Interaction) -> None:
-        await i.response.defer()
         settings_cls = GuildSettings if self.settings_type == "guild" else UserSettings
         settings, _ = await settings_cls.get_or_create(id=i.user.id)
         settings.lang = self.values[0]
         await settings.save()
+
+        # If this select is rendered inside one of our LayoutView-based settings screens,
+        # recreate the select and force a full rerender to clear Discord's stale selected state.
+        if isinstance(self.view, ui.LayoutView) and self.view.children:
+            container = cast("ui.Container", self.view.children[0])
+            selector_row = next(
+                (
+                    row
+                    for row in container.children
+                    if isinstance(row, discord.ui.ActionRow) and self in row.children
+                ),
+                None,
+            )
+            if selector_row is not None:
+                selector = LangSelector(current=settings.lang, settings_type=self.settings_type)
+                self.view.replace_child(
+                    container,
+                    old_child=selector_row,
+                    new_child=discord.ui.ActionRow(selector, id=getattr(selector_row, "id", None)),
+                )
+
+                hard_rerender = getattr(self.view, "_hard_rerender", None)
+                if callable(hard_rerender):
+                    await cast("Any", hard_rerender)(i)
+                    return
+
+        await i.response.defer()
 
 
 class SettingsToggleButton(discord.ui.Button):
@@ -80,8 +106,10 @@ class SettingsSection(discord.ui.Section):
         settings_key: str,
         settings_type: Literal["guild", "user"],
     ) -> None:
+        heading_level = 1 if settings_type == "guild" else 2
+        heading_md = "#" * heading_level
         super().__init__(
-            discord.ui.TextDisplay(f"## {title}\n{description}"),
+            discord.ui.TextDisplay(f"{heading_md} {title}\n{description}"),
             accessory=SettingsToggleButton(
                 value=value,
                 app_emojis=app_emojis,

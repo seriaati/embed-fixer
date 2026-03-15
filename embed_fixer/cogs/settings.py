@@ -94,7 +94,7 @@ class SettingsCog(commands.Cog):
             await i.response.send_modal(DeleteMsgEmojiModal(settings=settings))
             return
 
-        view = GuildSettingsView(guild=i.guild, lang=settings.lang)
+        view = GuildSettingsView(guild=i.guild, lang=settings.lang, app_emojis=self.bot.app_emojis)
         await view.start(i, setting=setting)
 
     @commands.is_owner()

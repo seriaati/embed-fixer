@@ -17,7 +17,7 @@ class ResetSettingsView(ui.View):
     async def start(self, i: Interaction) -> None:
         embed = DefaultEmbed(title=self.translate("reset_confirm"))
         self.add_item(ConfirmButton(label=self.translate("reset_yes")))
-        await i.response.send_message(embed=embed, view=self)
+        await i.response.send_message(embed=embed, view=self, ephemeral=True)
 
 
 class ConfirmButton(ui.Button[ResetSettingsView]):

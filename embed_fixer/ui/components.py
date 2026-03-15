@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import discord
 from discord import ui
@@ -14,6 +14,9 @@ from embed_fixer.utils.misc import capture_exception
 
 if TYPE_CHECKING:
     from embed_fixer.bot import Interaction
+
+
+TItem = TypeVar("TItem", bound=discord.ui.Item[Any])
 
 
 class ViewMixin:
@@ -80,6 +83,80 @@ class LayoutView(ui.LayoutView, ViewMixin):
 
         with contextlib.suppress(discord.NotFound, discord.HTTPException):
             await self.message.edit(view=self)
+
+    @staticmethod
+    def find_child_by_id(
+        container: ui.Container, *, item_type: type[TItem], item_id: int
+    ) -> TItem | None:
+        return next(
+            (
+                child
+                for child in container.children
+                if isinstance(child, item_type) and getattr(child, "id", None) == item_id
+            ),
+            None,
+        )
+
+    @classmethod
+    def remove_child_by_id(
+        cls, container: ui.Container, *, item_type: type[TItem], item_id: int
+    ) -> TItem | None:
+        child = cls.find_child_by_id(container, item_type=item_type, item_id=item_id)
+        if child is not None:
+            container.remove_item(child)
+        return child
+
+    @staticmethod
+    def replace_child(
+        container: ui.Container, *, old_child: discord.ui.Item[Any], new_child: discord.ui.Item[Any]
+    ) -> bool:
+        children = list(container.children)
+        with contextlib.suppress(ValueError):
+            idx = children.index(old_child)
+            children[idx] = new_child
+
+            for child in list(container.children):
+                container.remove_item(child)
+
+            for child in children:
+                container.add_item(child)
+
+            return True
+
+        return False
+
+    @classmethod
+    def replace_child_by_id(
+        cls,
+        container: ui.Container,
+        *,
+        item_type: type[TItem],
+        item_id: int,
+        new_child: discord.ui.Item[Any],
+    ) -> bool:
+        old_child = cls.find_child_by_id(container, item_type=item_type, item_id=item_id)
+        if old_child is None:
+            return False
+
+        return cls.replace_child(container, old_child=old_child, new_child=new_child)
+
+    def replace_view_child(
+        self, *, old_child: discord.ui.Item[Any], new_child: discord.ui.Item[Any]
+    ) -> bool:
+        children = list(self.children)
+        with contextlib.suppress(ValueError):
+            idx = children.index(old_child)
+            children[idx] = new_child
+
+            for child in list(self.children):
+                self.remove_item(child)
+
+            for child in children:
+                self.add_item(child)
+
+            return True
+
+        return False
 
 
 class Modal(ui.Modal):
