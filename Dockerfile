@@ -8,6 +8,10 @@ ENV UV_PYTHON_DOWNLOADS=0
 # Build argument for optional dependencies (e.g., "pgsql")
 ARG EXTRA_DEPENDENCIES=""
 
+# Required for git-based Python dependencies during `uv sync`
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Install dependencies
@@ -26,8 +30,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Then, use a final image without uv
 FROM python:3.12-slim-bookworm
 
-# Install curl for healthcheck and git for runtime operations
-RUN apt-get update && apt-get install -y --no-install-recommends curl git \
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
