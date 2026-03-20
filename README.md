@@ -12,6 +12,8 @@
 
 # Embed Fixer
 
+Official website: https://ef.seria.moe
+
 ## Add Bot
 
 [**Bot invitation link**](https://discord.com/oauth2/authorize?client_id=770144963735453696)
