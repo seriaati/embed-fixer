@@ -1,6 +1,8 @@
 **/*
 !embed_fixer/**/*
 !l10n/**/*
+!migrations/**/*
+!entrypoint.sh
 !pyproject.toml
 !run.py
 !uv.lock
