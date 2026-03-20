@@ -9,17 +9,17 @@ dependencies = [
   "uvloop>=0.20.0; platform_system == 'Linux'",
   "discord-py>=2.4.0",
   "loguru>=0.7.2",
-  "aerich[toml]>=0.8.0",
+  "aerich[toml]",
   "pydantic>=2.10.4",
   "redis[hiredis]>=6.2.0",
   "aiohttp-client-cache>=0.13.0",
   "aiosqlite==0.22.1",
   "iso639-lang>=2.6.3",
-  "anyio>=4.10.0",                              # Temporarily added, see aerich/#480
   "emoji>=2.15.0",
   "sentry-sdk>=2.39.0",
   "tomli>=2.2.1",
   "pydantic-settings>=2.11.0",
+  "anyio>=4.12.1",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }
@@ -45,3 +45,6 @@ typeCheckingMode = "standard"
 tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"
 location = "./migrations"
 src_folder = "./."
+
+[tool.uv.sources]
+aerich = { git = "https://github.com/tortoise/aerich" }
