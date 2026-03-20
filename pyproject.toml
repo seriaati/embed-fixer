@@ -9,7 +9,6 @@ dependencies = [
   "uvloop>=0.20.0; platform_system == 'Linux'",
   "discord-py>=2.4.0",
   "loguru>=0.7.2",
-  "aerich[toml]",
   "pydantic>=2.10.4",
   "redis[hiredis]>=6.2.0",
   "aiohttp-client-cache>=0.13.0",
@@ -40,11 +39,3 @@ reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
 typeCheckingMode = "standard"
-
-[tool.aerich]
-tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"
-location = "./migrations"
-src_folder = "./."
-
-[tool.uv.sources]
-aerich = { git = "https://github.com/tortoise/aerich" }
