@@ -1,8 +1,5 @@
 name: 繁體中文
 replying_to: "⬅️ 回覆 {user} ({url})"
-delete: 刪除
-delete_no_perms: 只有作者或伺服器管理員可以刪除此訊息。
-settings_embed_footer: "-# 每個伺服器的設定都是獨立的\n-# 在下拉選單中輸入文字以搜尋頻道\n-# 選擇已選擇過的頻道將會移除該頻道"
 disable_fixes: 停用網站的連結預覽修復
 disable_fixes_desc: 停用特定網站的連結預覽修復。
 lang: 語言
@@ -19,8 +16,6 @@ toggle_webhook_reply: 開關 Webhook 回覆
 toggle_webhook_reply_desc: 開關回覆 Webhook 時對原始作者的提及。
 sauce: 醬汁
 settings_cmd_desc: 更改此伺服器的機器人設置
-disable_webhook_reply: 禁用 Webhook 回覆
-enable_webhook_reply: 啟用
 setting_param: 設置
 setting_param_desc: 要更改的設置
 info_cmd_desc: 獲取有關機器人的信息
@@ -29,8 +24,6 @@ info_embed_desc: |
   有關此機器人的問題或問題，請在 Discord 上與我聯繫，或在 GitHub 上提出 Issue。
   如有意願貢獻（例如翻譯），請與我聯繫，或在 GitHub 上提交 PR。
 selected_channels: 已選擇的頻道
-enable_delete_reaction: 啟用刪除訊息反應
-disable_delete_reaction: 禁用刪除訊息反應
 toggle_delete_reaction: 開關刪除訊息反應
 toggle_delete_reaction_desc: "是否要為 Webhook 訊息新增表情符號反應，原訊息作者可以反應來刪除該訊息。"
 show_post_content_channels: 顯示貼文內容頻道
@@ -50,12 +43,8 @@ using_fix_service: "正在使用 {service}"
 fix_embed: 修復連結預覽
 extract_medias: 提取媒體
 no_fixes_found: 找不到此訊息的連結預覽修復/媒體
-next: 下一頁
-previous: 上一頁
 bot_visibility: 機器人能見度
 bot_visibility_desc: "啟用後，Embed Fixer 會修復來自其他機器人的連結預覽。如果停用，它將只修復來自使用者的連結預覽。"
-enable_bot_visibility: 啟用機器人能見度
-disable_bot_visibility: 停用機器人能見度
 funnel_target_channel: 引流目標頻道
 funnel_target_channel_desc: "有設置的話，所有被修復的連結預覽和提取的媒體都會被發送至設置的頻道，而不是原訊息的頻道。"
 whitelist_role_ids: 身份組白名單
@@ -75,14 +64,10 @@ reset_done: 所有設置已被還原為預設值
 original_link: 原連結
 show_original_link_btn: 開關原連結按鈕
 show_original_link_btn_desc: "是否要在修復訊息的下方顯示前往原貼文連結的按鈕。"
-enable_original_link_btn: 開啟原連結按鈕
-disable_original_link_btn: 關閉原連結按鈕
 recommend_original_link_btn: 推薦在 /settings 中啟用「原連結按鈕」，因為此修復網站帶有廣告。
 ignore_me_enabled: 從現在起，機器人將不再忽略你的訊息，你的連結預覽將會被修復。
 ignore_me_disabled: 從現在起，機器人將忽略你的訊息，你的連結預覽將不會被修復。
 ignore_me_cmd_desc: 開關 Embed Fixer 是否要忽略你的訊息
-disable_delete_original_message_in_threads: 在討論串中保留原訊息
-enable_delete_original_message_in_threads: 在討論串中刪除原訊息
 delete_original_message_in_threads: 開關是否要再討論串中刪除原訊息
 delete_original_message_in_threads_desc: "由於討論串中不能有 Webhook，原訊息將被保留，以用於展示誰傳送了原本的訊息。開啟此選項將在討論串中修復連結預覽後刪除原訊息。"
 fix_url_command_desc: 修復一個連結的連結預覽
@@ -90,3 +75,9 @@ fix_url_param: 連結
 fix_url_param_desc: 要修復的連結
 fix_url_extract_media_param: 提取媒體
 fix_url_extract_media_param_desc: "是否要從連結中提取媒體（預設：不提取）"
+notify_on_react: 獲得表情符號反應時通知
+notify_on_react_desc: "機器人是否要在你的已修復訊息獲得一個表情符號反應時通過私訊通知你。"
+notify_on_react_msg: "{user}對你的訊息反應了{emoji} ({message_link})"
+user_settings_cmd_desc: 變更你在機器人的個人設置
+reply_instead_of_delete: 以回覆代替刪除
+reply_instead_of_delete_desc: "若啟用，機器人將在修復訊息時回覆你的訊息，而非刪除訊息並通過 webhook 重新發送修復。"
