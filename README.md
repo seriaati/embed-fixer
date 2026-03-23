@@ -122,6 +122,8 @@ Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the e
 
 ## Very Customizable
 
+The most powerful part about Embed Fixer is that almost every behavior of the bot can be customized or toggled to your likings. It also supports some niche features derived from real user demands that you probably won't find in other bots.
+
 All settings are unique to each server, you can use `/reset` to reset them to default values.
 
 Below are settings you can change with the `/settings` command:
