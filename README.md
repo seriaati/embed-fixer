@@ -12,7 +12,7 @@
 
 # Embed Fixer
 
-Official website: https://ef.seria.moe
+Official website: <https://ef.seria.moe>
 
 ## Add Bot
 
@@ -66,7 +66,9 @@ Fixings are currently available for:
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
 - **DeviantArt**: [fxdeviantart](https://github.com/Tschrock/fixdeviantart)
 
-If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with the `/settings` command.
+If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. You can customize this behavior to reply instead of delete with `/settings`.
+
+If webhook mode was used, a ❌ reaction will be added to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with `/settings`.
 
 ![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)
 
@@ -89,7 +91,7 @@ Use the `/ignore-me` command.
 
 ### Fixing Manually
 
-Use the `/fix` command or right click a message and use the "Fix Embed" context menu.
+Use the `/fix` command or right click a message and click "Fix Embed".
 
 ## Webhook Replying
 
