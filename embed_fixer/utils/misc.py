@@ -122,3 +122,7 @@ def capture_exception(e: Exception) -> None:
 
 def sanitize_username(username: str) -> str:
     return re.sub(r"(?i)discord", "discorɗ", username)
+
+
+def unsanitize_username(username: str) -> str:
+    return re.sub(r"(?i)discorɗ", "discord", username)

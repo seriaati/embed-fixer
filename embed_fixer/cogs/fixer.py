@@ -26,6 +26,7 @@ from embed_fixer.utils.misc import (
     remove_query_params,
     replace_domain,
     sanitize_username,
+    unsanitize_username,
 )
 
 if TYPE_CHECKING:
@@ -163,8 +164,10 @@ class FixerCog(commands.Cog):
     async def _get_original_author(
         message: discord.Message, guild: discord.Guild
     ) -> discord.Member | None:
-        query = message.author.display_name.removesuffix(USERNAME_SUFFIX)
-        authors = await guild.query_members(query, limit=100)
+        query = unsanitize_username(
+            message.author.display_name.removesuffix(USERNAME_SUFFIX)
+        ).strip()
+        authors = await guild.query_members(query)
         if not authors:
             return None
 
