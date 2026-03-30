@@ -133,17 +133,17 @@ Below are settings you can change with the `/settings` command:
 - **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
 - **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist.
 - **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist.
-- **Toggle Webhook Reply**: Toggle the ping to the original author when replying to a webhook.
+- **Disable Webhook Reply**: Disable the ping to the original author when replying to a webhook.
 - **Disable Automatic Spoilering in NSFW Channels**: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered.
-- **Toggle Delete Message Reaction**: Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting.
+- **Disable Delete Message Reaction**: Disable the emoji reaction on webhook messages that lets the original author delete them by reacting.
 - **Show Post Content Channels**: If media extraction is enabled, channels selected here will show the content of the post.
 - **Change Delete Message Reaction Emoji**: Change the emoji used to delete messages.
 - **Choose Embed Fix Service**: Choose the embed fix service to use for different websites.
 - **Bot Visibility**: If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users.
 - **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
 - **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
-- **Toggle Original Link Button**: Whether to show a button linking to the original post in fixed embed messages.
-- **Toggle Deleting Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. Enabling this will delete the original message in threads after sending the fixed embed.
+- **Original Link Button**: Show a button linking to the original post in fixed embed messages.
+- **Delete Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed.
 - **Reply Instead of Delete**: When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook.
 - **Remove Delete Reaction After**: Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable.
 
