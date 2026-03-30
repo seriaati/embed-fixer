@@ -90,3 +90,10 @@ fix_url_param: enlace
 fix_url_param_desc: La URL a corregir
 fix_url_extract_media_param: extraer-multimedia
 fix_url_extract_media_param_desc: "Extraer multimedia de la URL (predeterminado: Deshabilitado)"
+remove_delete_reaction_after: Remove Delete Reaction After
+remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
+seconds: Seconds
+remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
+remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
+invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
+seconds_placeholder: "{min} - {max} (leave empty to disable)"

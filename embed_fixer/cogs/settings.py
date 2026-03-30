@@ -11,7 +11,11 @@ from embed_fixer.core.translator import Translator, translator
 from embed_fixer.fixes import DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.settings import GuildSetting
-from embed_fixer.ui.guild_settings import DeleteMsgEmojiModal, GuildSettingsView
+from embed_fixer.ui.guild_settings import (
+    DeleteMsgEmojiModal,
+    GuildSettingsView,
+    RemoveDeleteReactionAfterModal,
+)
 from embed_fixer.ui.reset_settings import ResetSettingsView
 from embed_fixer.ui.user_settings import UserSettingsView
 
@@ -92,6 +96,10 @@ class SettingsCog(commands.Cog):
 
         if setting is GuildSetting.DELETE_MSG_EMOJI:
             await i.response.send_modal(DeleteMsgEmojiModal(settings=settings))
+            return
+
+        if setting is GuildSetting.REMOVE_DELETE_REACTION_AFTER:
+            await i.response.send_modal(RemoveDeleteReactionAfterModal(settings=settings))
             return
 
         view = GuildSettingsView(guild=i.guild, lang=settings.lang, app_emojis=self.bot.app_emojis)

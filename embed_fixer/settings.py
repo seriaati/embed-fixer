@@ -19,6 +19,7 @@ class GuildSetting(StrEnum):
     SHOW_ORIGINAL_LINK_BUTTON = "show_original_link_btn"
     DELETE_ORIGINAL_MESSAGE_IN_THREADS = "delete_original_message_in_threads"
     REPLY_INSTEAD_OF_DELETE = "reply_instead_of_delete"
+    REMOVE_DELETE_REACTION_AFTER = "remove_delete_reaction_after"
 
 
 class UserSetting(StrEnum):

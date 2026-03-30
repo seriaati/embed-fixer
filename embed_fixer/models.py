@@ -127,6 +127,7 @@ class GuildSettings(BaseSettings):
     show_original_link_btn: bool = True
     delete_original_message_in_threads: bool = False
     reply_instead_of_delete: bool = False
+    remove_delete_reaction_after: int | None = None
 
 
 # Deprecated, only for migration, new fields should be added to GuildSettings

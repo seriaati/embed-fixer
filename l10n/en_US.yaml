@@ -81,3 +81,10 @@ notify_on_react_msg: "{user} reacted {emoji} to you ({message_link})"
 user_settings_cmd_desc: Change your personal settings for the bot
 reply_instead_of_delete: Reply Instead of Delete
 reply_instead_of_delete_desc: "When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook."
+remove_delete_reaction_after: Remove Delete Reaction After
+remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
+seconds: Seconds
+remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
+remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
+invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
+seconds_placeholder: "{min} - {max} (leave empty to disable)"

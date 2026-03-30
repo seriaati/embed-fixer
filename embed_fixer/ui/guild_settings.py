@@ -94,6 +94,77 @@ class DeleteMsgEmojiModal(ui.Modal):
         )
 
 
+MIN_SECONDS = 1
+MAX_SECONDS = 3600  # 1 hour
+
+
+class RemoveDeleteReactionAfterModal(ui.Modal):
+    seconds = ui.Label(
+        text="seconds", component=ui.TextInput(max_length=19, placeholder="...", required=False)
+    )
+
+    def __init__(self, *, settings: GuildSettings) -> None:
+        self.lang = lang = settings.lang or DEFAULT_LANG
+        super().__init__(title_key="remove_delete_reaction_after", lang=settings.lang)
+
+        self.seconds.text = translator.translate("seconds", lang=lang)
+        self.seconds.component.placeholder = translator.translate(
+            "seconds_placeholder", lang=lang, min=MIN_SECONDS, max=MAX_SECONDS
+        )
+        self.seconds.component.default = (
+            str(settings.remove_delete_reaction_after)
+            if settings.remove_delete_reaction_after is not None
+            else None
+        )
+        self.settings = settings
+
+    async def on_submit(self, i: Interaction) -> None:
+        raw = self.seconds.component.value.strip()
+
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.settings.id)
+
+        if not raw:
+            guild_settings.remove_delete_reaction_after = None
+            await guild_settings.save(update_fields=("remove_delete_reaction_after",))
+            await i.response.send_message(
+                content=translator.translate(
+                    "remove_delete_reaction_after_disabled", lang=self.lang
+                ),
+                ephemeral=True,
+            )
+            return
+
+        try:
+            seconds = int(raw)
+        except ValueError:
+            await i.response.send_message(
+                content=translator.translate(
+                    "invalid_seconds", lang=self.lang, min=MIN_SECONDS, max=MAX_SECONDS
+                ),
+                ephemeral=True,
+            )
+            return
+
+        if seconds < MIN_SECONDS or seconds > MAX_SECONDS:
+            await i.response.send_message(
+                content=translator.translate(
+                    "invalid_seconds", lang=self.lang, min=MIN_SECONDS, max=MAX_SECONDS
+                ),
+                ephemeral=True,
+            )
+            return
+
+        guild_settings.remove_delete_reaction_after = seconds
+        await guild_settings.save(update_fields=("remove_delete_reaction_after",))
+
+        await i.response.send_message(
+            content=translator.translate(
+                "remove_delete_reaction_after_changed", lang=self.lang, seconds=seconds
+            ),
+            ephemeral=True,
+        )
+
+
 class GuildSettingsView(ui.LayoutView):
     def __init__(
         self, *, guild: discord.Guild, lang: str | None, app_emojis: dict[str, discord.Emoji]

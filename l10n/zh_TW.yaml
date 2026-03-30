@@ -81,3 +81,10 @@ notify_on_react_msg: "{user}對你的訊息反應了{emoji} ({message_link})"
 user_settings_cmd_desc: 變更你在機器人的個人設置
 reply_instead_of_delete: 以回覆代替刪除
 reply_instead_of_delete_desc: "若啟用，機器人將在修復訊息時回覆你的訊息，而非刪除訊息並通過 webhook 重新發送修復。"
+remove_delete_reaction_after: Remove Delete Reaction After
+remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
+seconds: Seconds
+remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
+remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
+invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
+seconds_placeholder: "{min} - {max} (leave empty to disable)"

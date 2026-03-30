@@ -715,6 +715,9 @@ class FixerCog(commands.Cog):
         show_original_link_btn = (
             False if guild_settings is None else guild_settings.show_original_link_btn
         )
+        remove_delete_reaction_after = (
+            None if guild_settings is None else guild_settings.remove_delete_reaction_after
+        )
 
         # Determine if reply mode should be forced (guild or user setting)
         user_settings = await UserSettings.get_or_none(id=message.author.id)
@@ -747,17 +750,24 @@ class FixerCog(commands.Cog):
                 return None
 
         await self._add_delete_reaction(
-            message, interaction, fix_message, disable_delete_reaction, delete_msg_emoji
+            message,
+            interaction,
+            fix_message,
+            disable_delete_reaction=disable_delete_reaction,
+            delete_msg_emoji=delete_msg_emoji,
+            remove_delete_reaction_after=remove_delete_reaction_after,
         )
         return send_type
 
-    async def _add_delete_reaction(
+    async def _add_delete_reaction(  # noqa: PLR0913
         self,
         message: discord.Message,
         interaction: Interaction | None,
         fix_message: discord.Message | None,
+        *,
         disable_delete_reaction: bool | None,
         delete_msg_emoji: str | None,
+        remove_delete_reaction_after: int | None = None,
     ) -> None:
         if (
             not disable_delete_reaction
@@ -792,6 +802,22 @@ class FixerCog(commands.Cog):
                         ),
                         delete_after=ERROR_MSG_DELETE_AFTER,
                     )
+            else:
+                if remove_delete_reaction_after is not None:
+                    asyncio.create_task(
+                        self._schedule_remove_delete_reaction(
+                            fix_message, delete_msg_emoji, remove_delete_reaction_after
+                        )
+                    )
+
+    @staticmethod
+    async def _schedule_remove_delete_reaction(
+        message: discord.Message, emoji: str, seconds: int
+    ) -> None:
+        await asyncio.sleep(seconds)
+        with contextlib.suppress(discord.HTTPException):
+            if message.guild is not None:
+                await message.remove_reaction(emoji, message.guild.me)
 
     async def _send_webhook(
         self,
