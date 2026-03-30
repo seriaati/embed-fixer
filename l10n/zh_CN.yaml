@@ -12,8 +12,8 @@ enable_fix_channels: 预览嵌入频道白名单
 enable_fix_channels_desc: "只有在这里设置的频道将接受预览嵌入，白名单优先于黑名单。"
 disable_image_spoilers: 关闭 NSFW 频道的自动剧透
 disable_image_spoilers_desc: "对于媒体提取功能，在这里选择的 NSFW 频道内的媒体将不会自动标为剧透。"
-toggle_webhook_reply: 切换 Webhook 回复
-toggle_webhook_reply_desc: 开关回复 Webhook 时对原发布者的@。
+disable_webhook_reply: 停用 Webhook 回复
+disable_webhook_reply_desc: 停用回复 Webhook 时对原发布者的@。
 sauce: 出处
 settings_cmd_desc: 更改此服务器的机器人设置
 setting_param: 设置
@@ -23,8 +23,8 @@ info_embed_desc: |
   这个机器人由 [@seria_ati](<discord://-/users/410036441129943050>) 制作，且在 [GitHub](https://github.com/seriaati/embed-fixer) 有开源。有关此机器人的疑问或者问题，请在 DIscord 上与我联系，或在 Github 上提交 Issue。
   如有意愿贡献（比如翻译），请与我联系或者在 Github 上提交 PR。
 selected_channels: 已选频道
-toggle_delete_reaction: 开关删除消息反应
-toggle_delete_reaction_desc: "添加表情反应到webhook消息，便于发布者通过反应表情删除。"
+disable_delete_reaction: 停用删除消息反应
+disable_delete_reaction_desc: "停用 Webhook 消息上的表情反应，使发布者无法通过反应表情删除。"
 show_post_content_channels: 显示贴文内容频道
 show_post_content_channels_desc: "如果媒体提取已开启，则在这里的已选频道将显示帖子内容。"
 no_perms_to_delete_msg: 机器人缺少删除消息的权限
@@ -61,14 +61,14 @@ reset_confirm: "你确定要还原此服务器的所有设置吗？"
 reset_yes: "确认"
 reset_done: 所有设置已还原至默认值
 original_link: 原链接
-show_original_link_btn: 开关原链接按钮
-show_original_link_btn_desc: "是否在预览嵌入的消息中显示链接至原帖子的按钮。"
+show_original_link_btn: 原链接按钮
+show_original_link_btn_desc: "在预览嵌入的消息中显示链接至原帖子的按钮。"
 recommend_original_link_btn: 推荐在 /setting 中启用“原链接按钮”，因为此修复网站含有广告。
 ignore_me_enabled: 从现在起，机器人将忽略你，你的连结预览将不会被修复。
 ignore_me_disabled: 从现在起，机器人将不再忽略你，你的链接预览将会被修复。
 ignore_me_cmd_desc: 开关 Embed Fixer 是否要忽略你的消息
-delete_original_message_in_threads: 开关删除主题串中的原消息
-delete_original_message_in_threads_desc: "因为主题串无法使用 Webhook，原消息会被保留以识别发送者。启用此选项后，在发送修复后的链接预览后将删除主题串中的原消息。"
+delete_original_message_in_threads: 删除主题串中的原消息
+delete_original_message_in_threads_desc: "因为主题串无法使用 Webhook，原消息会被保留以识别发送者。启用后，在发送修复后的链接预览后将删除主题串中的原消息。"
 fix_url_command_desc: 修复链接并获取适合嵌入的版本
 fix_url_param: 链接
 fix_url_param_desc: 要修复的链接

@@ -12,8 +12,8 @@ enable_fix_channels: Embed Fix Channel Whitelist
 enable_fix_channels_desc: "Only channels set here will receive embed fixes, whitelist has priority over blacklist."
 disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
 disable_image_spoilers_desc: "For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered."
-toggle_webhook_reply: Toggle Webhook Reply
-toggle_webhook_reply_desc: Toggle the ping to the original author when replying to a webhook.
+disable_webhook_reply: Disable Webhook Reply
+disable_webhook_reply_desc: Disable the ping to the original author when replying to a webhook.
 sauce: Sauce
 settings_cmd_desc: Change the bot's settings for this server
 setting_param: setting
@@ -24,8 +24,8 @@ info_embed_desc: |
   For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
   To contribute (such as translations), DM me or open a PR on GitHub.
 selected_channels: Selected channels
-toggle_delete_reaction: Toggle Delete Message Reaction
-toggle_delete_reaction_desc: "Whether to add emoji reactions to webhook messages, so the original author can delete them by reacting."
+disable_delete_reaction: Disable Delete Message Reaction
+disable_delete_reaction_desc: "Disable the emoji reaction on webhook messages that lets the original author delete them by reacting."
 show_post_content_channels: Show Post Content Channels
 show_post_content_channels_desc: "If media extraction is enabled, channels selected here will show the content of the post."
 no_perms_to_delete_msg: The bot is missing permission to delete messages
@@ -62,14 +62,14 @@ reset_confirm: "Are you sure you want to reset all settings for this server?"
 reset_yes: "Yes"
 reset_done: All settings have been reset to default values
 original_link: Original link
-show_original_link_btn: Toggle Original Link Button
-show_original_link_btn_desc: "Whether to show a button linking to the original post in fixed embed messages."
+show_original_link_btn: Original Link Button
+show_original_link_btn_desc: "Show a button linking to the original post in fixed embed messages."
 recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.
 ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
 ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
 ignore_me_cmd_desc: Toggle whether Embed Fixer should ignore your messages
-delete_original_message_in_threads: Toggle Deleting Original Messages in Threads
-delete_original_message_in_threads_desc: "Because threads can't have webhooks, the original message is kept to know who sent it. Enabling this will delete the original message in threads after sending the fixed embed."
+delete_original_message_in_threads: Delete Original Messages in Threads
+delete_original_message_in_threads_desc: "Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed."
 fix_url_command_desc: Fix a URL and get the embed-friendly version
 fix_url_param: link
 fix_url_param_desc: The URL to fix

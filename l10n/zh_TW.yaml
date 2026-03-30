@@ -12,8 +12,8 @@ enable_fix_channels: 連結預覽修復頻道白名單
 enable_fix_channels_desc: "僅在這裡設置的頻道將接收連結預覽修復，白名單優先於黑名單。"
 disable_image_spoilers: 在 NSFW 頻道中禁用自動模糊
 disable_image_spoilers_desc: "對於媒體提取功能，在這裡選擇的 NSFW 頻道內的媒體將不會被自動模糊。"
-toggle_webhook_reply: 開關 Webhook 回覆
-toggle_webhook_reply_desc: 開關回覆 Webhook 時對原始作者的提及。
+disable_webhook_reply: 停用 Webhook 回覆
+disable_webhook_reply_desc: 停用回覆 Webhook 時對原始作者的提及。
 sauce: 醬汁
 settings_cmd_desc: 更改此伺服器的機器人設置
 setting_param: 設置
@@ -24,8 +24,8 @@ info_embed_desc: |
   有關此機器人的問題或問題，請在 Discord 上與我聯繫，或在 GitHub 上提出 Issue。
   如有意願貢獻（例如翻譯），請與我聯繫，或在 GitHub 上提交 PR。
 selected_channels: 已選擇的頻道
-toggle_delete_reaction: 開關刪除訊息反應
-toggle_delete_reaction_desc: "是否要為 Webhook 訊息新增表情符號反應，原訊息作者可以反應來刪除該訊息。"
+disable_delete_reaction: 停用刪除訊息反應
+disable_delete_reaction_desc: "停用 Webhook 訊息上的表情符號反應，使原訊息作者無法透過反應來刪除該訊息。"
 show_post_content_channels: 顯示貼文內容頻道
 show_post_content_channels_desc: "如果媒體提取已啟用，則在此處選擇的頻道將顯示貼文的內容。"
 no_perms_to_delete_msg: 機器人缺少刪除訊息的權限
@@ -62,14 +62,14 @@ reset_confirm: "你確定要重設此伺服器的所有設置嗎？"
 reset_yes: "確認"
 reset_done: 所有設置已被還原為預設值
 original_link: 原連結
-show_original_link_btn: 開關原連結按鈕
-show_original_link_btn_desc: "是否要在修復訊息的下方顯示前往原貼文連結的按鈕。"
+show_original_link_btn: 原連結按鈕
+show_original_link_btn_desc: "在修復訊息的下方顯示前往原貼文連結的按鈕。"
 recommend_original_link_btn: 推薦在 /settings 中啟用「原連結按鈕」，因為此修復網站帶有廣告。
 ignore_me_enabled: 從現在起，機器人將不再忽略你的訊息，你的連結預覽將會被修復。
 ignore_me_disabled: 從現在起，機器人將忽略你的訊息，你的連結預覽將不會被修復。
 ignore_me_cmd_desc: 開關 Embed Fixer 是否要忽略你的訊息
-delete_original_message_in_threads: 開關是否要再討論串中刪除原訊息
-delete_original_message_in_threads_desc: "由於討論串中不能有 Webhook，原訊息將被保留，以用於展示誰傳送了原本的訊息。開啟此選項將在討論串中修復連結預覽後刪除原訊息。"
+delete_original_message_in_threads: 刪除討論串中的原訊息
+delete_original_message_in_threads_desc: "由於討論串中不能有 Webhook，原訊息將被保留，以用於展示誰傳送了原本的訊息。啟用後將在討論串中修復連結預覽後刪除原訊息。"
 fix_url_command_desc: 修復一個連結的連結預覽
 fix_url_param: 連結
 fix_url_param_desc: 要修復的連結

@@ -34,8 +34,8 @@ CHANNEL_SELECTOR_ROW_ID = 8
 ROLE_SELECTOR_ROW_ID = 9
 
 NO_HEADER_SETTINGS = {
-    GuildSetting.TOGGLE_WEBHOOK_REPLY,
-    GuildSetting.TOGGLE_DELETE_REACTION,
+    GuildSetting.DISABLE_WEBHOOK_REPLY,
+    GuildSetting.DISABLE_DELETE_REACTION,
     GuildSetting.BOT_VISIBILITY,
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON,
     GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS,
@@ -59,8 +59,8 @@ ROLE_SETTING_ATTRS: dict[GuildSetting, str] = {
 }
 
 TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
-    GuildSetting.TOGGLE_WEBHOOK_REPLY: "disable_webhook_reply",
-    GuildSetting.TOGGLE_DELETE_REACTION: "disable_delete_reaction",
+    GuildSetting.DISABLE_WEBHOOK_REPLY: "disable_webhook_reply",
+    GuildSetting.DISABLE_DELETE_REACTION: "disable_delete_reaction",
     GuildSetting.BOT_VISIBILITY: "bot_visibility",
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON: "show_original_link_btn",
     GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS: "delete_original_message_in_threads",
