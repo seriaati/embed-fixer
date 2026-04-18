@@ -431,6 +431,12 @@ DOMAINS: Final[list[Domain]] = [
                 repo_url=EMBEDEZ_REPO_URL,
                 has_ads=True,
             ),
+            FixMethod(
+                id=33,
+                name="FixEmbed",
+                fixes=[AppendURLFix(domain="fixembed.app/embed")],
+                repo_url="https://fixembed.app",
+            ),
         ],
     ),
     Domain(
