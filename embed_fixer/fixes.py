@@ -208,7 +208,6 @@ DOMAINS: Final[list[Domain]] = [
                 name="InstaFix",
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="eeinstagram.com")],
                 repo_url="https://github.com/Wikidepia/InstaFix",
-                default=True,
             ),
             FixMethod(
                 id=9,
@@ -223,6 +222,13 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[ReplaceFix(old_domain="instagram.com", new_domain="kkinstagram.com")],
                 has_ads=True,
                 repo_url="https://kkscript.com/",
+            ),
+            FixMethod(
+                id=34,
+                name="vxinstagram",
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="vxinstagram.com")],
+                repo_url="https://github.com/Lainmode/InstagramEmbed-vxinstagram",
+                default=True,
             ),
         ],
     ),
