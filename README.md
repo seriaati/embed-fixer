@@ -53,7 +53,7 @@ Fixings are currently available for:
 - **Pixiv**: [Phixiv](https://github.com/thelaao/phixiv)
 - **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[EmbedEZ](https://embedez.com)/[KKTikTok](https://kkscript.com/)
 - **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://embedez.com)
-- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com)/[KKInstagram](https://kkscript.com/)
+- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com)/[KKInstagram](https://kkscript.com/)/[vxinstagram](https://github.com/Lainmode/InstagramEmbed-vxinstagram)
 - **FurAffinity**: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)/[fxraffinity](https://fxraffinity.net/)
 - **Twitch Clips**: [fxtwitch](https://github.com/seriaati/fxtwitch)
 - **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
