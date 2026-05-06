@@ -226,7 +226,7 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=34,
                 name="vxinstagram",
-                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="vxinstagram.com")],
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="fxig.seria.moe")],
                 repo_url="https://github.com/Lainmode/InstagramEmbed-vxinstagram",
                 default=True,
             ),
