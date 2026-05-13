@@ -669,6 +669,14 @@ class FixMethodSelector(ui.Select[GuildSettingsView]):
             new_child=text_display,
         )
 
+        new_select = FixMethodSelector(self.view.domain, int(self.values[0]))
+        self.view.replace_child_by_id(
+            container,
+            item_type=discord.ui.ActionRow,
+            item_id=FIX_METHOD_SELECTOR_ROW_ID,
+            new_child=discord.ui.ActionRow(new_select, id=FIX_METHOD_SELECTOR_ROW_ID),
+        )
+
         await i.response.edit_message(view=self.view)
 
 
