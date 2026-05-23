@@ -5,5 +5,5 @@ repos:
       - id: ruff
       - id: ruff-format
 ci:
-  autoupdate_commit_msg: "ci: Update pre-commit hooks"
-  autofix_commit_msg: "fix: Auto-fix from pre-commit hooks"
+  autoupdate_commit_msg: "ci: update pre-commit hooks"
+  autofix_commit_msg: "fix: auto-fix from pre-commit hooks"
