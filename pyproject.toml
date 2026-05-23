@@ -31,6 +31,8 @@ version = "1.8.29"
 asyncpg = ["asyncpg>=0.31.0"]
 
 [tool.pyright]
+venvPath = "."
+venv = ".venv"
 enableTypeIgnoreComments = false
 reportIncompatibleMethodOverride = false
 reportIncompatibleVariableOverride = false
