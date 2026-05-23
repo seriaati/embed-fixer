@@ -146,6 +146,7 @@ Below are settings you can change with the `/settings` command:
 - **Delete Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed.
 - **Reply Instead of Delete**: When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook.
 - **Remove Delete Reaction After**: Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable.
+- **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
 
 ## Post Content Translation
 
