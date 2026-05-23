@@ -77,7 +77,7 @@ if __name__ == "__main__":
     logger.info(f"Starting EmbedFixer {get_project_version()} in {settings.env!r} environment.")
 
     try:
-        import uvloop  # pyright: ignore [reportMissingImports]
+        import uvloop
     except ImportError:
         asyncio.run(main())
     else:
