@@ -20,6 +20,7 @@ class GuildSetting(StrEnum):
     DELETE_ORIGINAL_MESSAGE_IN_THREADS = "delete_original_message_in_threads"
     REPLY_INSTEAD_OF_DELETE = "reply_instead_of_delete"
     REMOVE_DELETE_REACTION_AFTER = "remove_delete_reaction_after"
+    ROTATE_FIX_REACTION = "rotate_fix_reaction"
 
 
 class UserSetting(StrEnum):

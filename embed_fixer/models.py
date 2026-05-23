@@ -128,6 +128,7 @@ class GuildSettings(BaseSettings):
     delete_original_message_in_threads: bool = False
     reply_instead_of_delete: bool = False
     remove_delete_reaction_after: int | None = None
+    rotate_fix_reaction: bool = False
 
 
 # Deprecated, only for migration, new fields should be added to GuildSettings

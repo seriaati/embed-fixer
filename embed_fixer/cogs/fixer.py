@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 from typing import TYPE_CHECKING, Any, Final, Literal, cast
+from urllib.parse import parse_qs, urlparse, urlunparse
 
 import discord
 import emoji
@@ -33,11 +34,12 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from embed_fixer.bot import EmbedFixer, Interaction
-    from embed_fixer.fixes import Domain, FixMethod, Website
+    from embed_fixer.fixes import Domain, FixMethod, ReplaceFix, Website
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
 DEFAULT_FILESIZE_LIMIT: Final[int] = 10 * 1024 * 1024  # 10 MB
+ROTATE_FIX_EMOJI: Final[str] = "🔄"
 
 type SendType = Literal["webhook", "reply", "channel", "interaction"]
 
@@ -88,6 +90,84 @@ class FindFixResult(BaseModel):
     content: str
     author_md: str
     urls: list[str]
+
+
+def _parse_new_domain_parts(new_domain: str) -> tuple[str, str]:
+    """Split 'host/path' into (netloc, '/path'), or (netloc, '') if no path."""
+    if "/" in new_domain:
+        host, path_part = new_domain.split("/", 1)
+        return host, "/" + path_part
+    return new_domain, ""
+
+
+def _reverse_parse_fixed_url(url: str) -> tuple[Domain, FixMethod, str] | None:
+    """Given a fixed URL from a bot message, return (Domain, FixMethod, original_url).
+
+    Iterates over all DOMAINS/fix_methods and reverses the fix transformation.
+    Returns None if the URL doesn't match any known fix.
+    """
+    parsed = urlparse(url)
+
+    def path_prefix_len(fix: ReplaceFix | AppendURLFix) -> int:
+        if isinstance(fix, AppendURLFix):
+            _, prefix = _parse_new_domain_parts(fix.domain)
+        else:
+            _, prefix = _parse_new_domain_parts(fix.new_domain)
+        return len(prefix)
+
+    for domain in DOMAINS:
+        for fix_method in domain.fix_methods:
+            # Check more-specific (longer path prefix) fixes first to avoid ambiguity
+            for fix in sorted(fix_method.fixes, key=path_prefix_len, reverse=True):
+                if isinstance(fix, AppendURLFix):
+                    fix_netloc, fix_path = _parse_new_domain_parts(fix.domain)
+                    if parsed.netloc != fix_netloc or parsed.path != fix_path:
+                        continue
+                    params = parse_qs(parsed.query)
+                    if "url" not in params:
+                        continue
+                    return domain, fix_method, params["url"][0]
+
+                fix_netloc, fix_path_prefix = _parse_new_domain_parts(fix.new_domain)
+                if parsed.netloc != fix_netloc:
+                    continue
+                if fix_path_prefix and not parsed.path.startswith(fix_path_prefix):
+                    continue
+                original_path = (
+                    parsed.path[len(fix_path_prefix) :] if fix_path_prefix else parsed.path
+                )
+                original_url = urlunparse(
+                    parsed._replace(netloc=fix.old_domain, path=original_path or "/")
+                )
+                return domain, fix_method, original_url
+
+    return None
+
+
+def _get_next_fix_method(domain: Domain, current_fix_id: int) -> FixMethod | None:
+    """Return the next fix method in the domain's list (wrapping). None if only one exists."""
+    if len(domain.fix_methods) <= 1:
+        return None
+    current_idx = next(
+        (i for i, m in enumerate(domain.fix_methods) if m.id == current_fix_id), None
+    )
+    if current_idx is None:
+        return None
+    return domain.fix_methods[(current_idx + 1) % len(domain.fix_methods)]
+
+
+def _apply_fix_to_url(original_url: str, fix_method: FixMethod, domain_id: DomainId) -> str | None:
+    """Apply a FixMethod to original_url, returning the new fixed URL."""
+    for fix in fix_method.fixes:
+        if isinstance(fix, AppendURLFix):
+            new_url = f"https://{fix.domain}?url={original_url}"
+            if domain_id == DomainId.FACEBOOK:
+                new_url = new_url.replace("/v/", "/r/")
+            return new_url
+        if not domain_in_url(original_url, fix.old_domain):
+            continue
+        return replace_domain(original_url, fix.old_domain, fix.new_domain)
+    return None
 
 
 async def add_reaction_safe(message: discord.Message, emoji: str) -> None:
@@ -718,6 +798,9 @@ class FixerCog(commands.Cog):
         remove_delete_reaction_after = (
             None if guild_settings is None else guild_settings.remove_delete_reaction_after
         )
+        rotate_fix_reaction = (
+            False if guild_settings is None else guild_settings.rotate_fix_reaction
+        )
 
         # Determine if reply mode should be forced (guild or user setting)
         user_settings = await UserSettings.get_or_none(id=message.author.id)
@@ -756,6 +839,7 @@ class FixerCog(commands.Cog):
             disable_delete_reaction=disable_delete_reaction,
             delete_msg_emoji=delete_msg_emoji,
             remove_delete_reaction_after=remove_delete_reaction_after,
+            rotate_fix_reaction=rotate_fix_reaction,
         )
         return send_type
 
@@ -768,7 +852,12 @@ class FixerCog(commands.Cog):
         disable_delete_reaction: bool | None,
         delete_msg_emoji: str | None,
         remove_delete_reaction_after: int | None = None,
+        rotate_fix_reaction: bool = False,
     ) -> None:
+        if interaction is None and fix_message is not None and rotate_fix_reaction:
+            with contextlib.suppress(discord.Forbidden, discord.HTTPException):
+                await fix_message.add_reaction(ROTATE_FIX_EMOJI)
+
         if (
             not disable_delete_reaction
             and delete_msg_emoji
@@ -1020,6 +1109,121 @@ class FixerCog(commands.Cog):
                         ),
                         delete_after=ERROR_MSG_DELETE_AFTER,
                     )
+
+    @commands.Cog.listener("on_raw_reaction_add")
+    async def manage_rotate_fix_reaction(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
+        if payload.guild_id is None or payload.user_id == self.bot.user.id:
+            return
+
+        if str(payload.emoji) != ROTATE_FIX_EMOJI:
+            return
+
+        settings, _ = await GuildSettings.get_or_create(id=payload.guild_id)
+        if not settings.rotate_fix_reaction:
+            return
+
+        channel_id = payload.channel_id
+        channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
+        if isinstance(
+            channel, discord.ForumChannel | discord.CategoryChannel | discord.abc.PrivateChannel
+        ):
+            return
+
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except discord.NotFound:
+            return
+        except discord.Forbidden:
+            logger.warning(
+                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
+            )
+            return
+
+        is_webhook = (
+            message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
+        )
+        is_reply = (
+            message.reference is not None
+            and isinstance(message.reference.resolved, discord.Message)
+            and message.author.id == self.bot.user.id
+        )
+
+        if (guild := message.guild) is None or not (is_webhook or is_reply):
+            return
+
+        if is_webhook:
+            author = await self._get_original_author(message, guild)
+            if author is None:
+                return
+        else:
+            message_ref = cast("discord.MessageReference", message.reference)
+            resolved_ref = cast("discord.Message", message_ref.resolved)
+            author = resolved_ref.author
+
+        if payload.user_id != author.id:
+            return
+
+        # Find the first domain that has a next fix method to rotate to
+        urls = extract_urls(message.content)
+        first_domain: Domain | None = None
+        next_fix: FixMethod | None = None
+
+        for url, _ in urls:
+            parsed_result = _reverse_parse_fixed_url(url)
+            if parsed_result is None:
+                continue
+            domain, current_fix_method, _ = parsed_result
+            if first_domain is None:
+                first_domain = domain
+                next_fix = _get_next_fix_method(domain, current_fix_method.id)
+                if next_fix is None:
+                    return  # Domain has only one fix method
+                break
+
+        if first_domain is None or next_fix is None:
+            return
+
+        # Replace every URL that belongs to the same domain with the new fix applied
+        new_content = message.content
+        for url, _ in urls:
+            parsed_result = _reverse_parse_fixed_url(url)
+            if parsed_result is None:
+                continue
+            domain, _, original_url = parsed_result
+            if domain.id != first_domain.id:
+                continue
+
+            new_url = _apply_fix_to_url(original_url, next_fix, domain.id)
+            if new_url is None:
+                continue
+
+            if next_fix.id == 1 and settings.translate_target_lang:
+                new_url = self._apply_fxembed_translation(
+                    new_url, translang=settings.translate_target_lang
+                )
+
+            new_content = new_content.replace(url, new_url)
+
+        if new_content == message.content:
+            return
+
+        try:
+            if is_webhook:
+                webhook = await self._get_or_create_webhook(message.channel, guild)
+                if webhook is None:
+                    return
+                await webhook.edit_message(message.id, content=new_content)
+            else:
+                await message.edit(
+                    content=new_content,
+                    allowed_mentions=discord.AllowedMentions(replied_user=False),
+                )
+        except (discord.Forbidden, discord.HTTPException) as e:
+            logger.warning(f"Failed to edit message for fix rotation in {guild.id=}: {e}")
+            return
+
+        if payload.member is not None:
+            await remove_reaction_safe(message, ROTATE_FIX_EMOJI, payload.member)
 
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
