@@ -41,3 +41,6 @@ reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
 typeCheckingMode = "standard"
+
+[dependency-groups]
+dev = ["asyncpg>=0.31.0"]

@@ -389,6 +389,11 @@ asyncpg = [
     { name = "asyncpg" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "asyncpg" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
@@ -412,6 +417,9 @@ requires-dist = [
     { name = "uvloop", marker = "sys_platform == 'linux'", specifier = ">=0.20.0" },
 ]
 provides-extras = ["asyncpg"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "asyncpg", specifier = ">=0.31.0" }]
 
 [[package]]
 name = "emoji"
