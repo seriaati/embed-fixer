@@ -89,4 +89,4 @@ remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been di
 invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
 seconds_placeholder: "{min} - {max} (leave empty to disable)"
 rotate_fix_reaction: Rotate Fix Reaction
-rotate_fix_reaction_desc: "When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service."
+rotate_fix_reaction_desc: "When enabled, the bot adds a \U0001F504 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service."
