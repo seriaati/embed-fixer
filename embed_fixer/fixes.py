@@ -230,6 +230,12 @@ DOMAINS: Final[list[Domain]] = [
                 repo_url="https://github.com/Lainmode/InstagramEmbed-vxinstagram",
                 default=True,
             ),
+            FixMethod(
+                id=35,
+                name="InstaEmbedRouter",
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="zzinstagram.com")],
+                repo_url="https://github.com/Knoppiix/InstaEmbedRouter",
+            ),
         ],
     ),
     Domain(
