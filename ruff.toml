@@ -2,7 +2,7 @@ line-length = 100
 target-version = "py312"
 
 [lint]
-future-annotations=true
+future-annotations = true
 preview = true
 select = [
   "F",
@@ -52,6 +52,7 @@ ignore = [
   "S311",    # Standard pseudo-random generators are not suitable for security/cryptographic purposes
 
   "RUF006",
+  "PLW0717",
 ]
 
 [lint.per-file-ignores]
