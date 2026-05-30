@@ -991,7 +991,15 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener("on_raw_reaction_add")
     async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
-        if payload.guild_id is None or payload.user_id == self.bot.user.id:
+        if (
+            payload.guild_id is None
+            or payload.user_id == self.bot.user.id
+            or payload.message_author_id is None
+        ):
+            return
+
+        settings, _ = await UserSettings.get_or_create(id=payload.message_author_id)
+        if not settings.notify_on_react:
             return
 
         channel_id = payload.channel_id
@@ -1023,10 +1031,6 @@ class FixerCog(commands.Cog):
             if author is None or author.id == payload.user_id:
                 return
         else:
-            return
-
-        settings, _ = await UserSettings.get_or_create(id=author.id)
-        if not settings.notify_on_react:
             return
 
         try:
