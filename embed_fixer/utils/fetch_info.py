@@ -157,7 +157,7 @@ class PostInfoFetcher:
 
 class PixivArtwork(BaseModel):
     image_urls: list[str] = Field(alias="image_proxy_urls", default_factory=list)
-    title: str
+    title: str = Field(default="無題")
     ai_generated: bool
     description: str
     tags: list[str]
