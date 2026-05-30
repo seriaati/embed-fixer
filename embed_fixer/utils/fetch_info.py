@@ -62,7 +62,7 @@ class PostInfoFetcher:
         if artwork_id is None:
             return None
 
-        api_url = f"https://phixiv.net/api/info?id={artwork_id}"
+        api_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}?lang=jp"
         async with self.session.get(api_url) as response:
             if response.status != 200:
                 return None
