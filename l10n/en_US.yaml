@@ -1,0 +1,92 @@
+name: English
+replying_to: "⬅️ Replying to {user} ({url})"
+disable_fixes: Disable Embed Fixes for Websites
+disable_fixes_desc: Disable embed fixes for specific websites.
+lang: Language
+lang_desc: Change the language of the bot.
+extract_media_channels: Media Extraction Channels
+extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
+disable_fix_channels: Embed Fix Channel Blacklist
+disable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist."
+enable_fix_channels: Embed Fix Channel Whitelist
+enable_fix_channels_desc: "Only channels set here will receive embed fixes, whitelist has priority over blacklist."
+disable_image_spoilers: Disable Automatic Spoilering in NSFW Channels
+disable_image_spoilers_desc: "For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered."
+disable_webhook_reply: Disable Webhook Reply
+disable_webhook_reply_desc: Disable the ping to the original author when replying to a webhook.
+sauce: Sauce
+settings_cmd_desc: Change the bot's settings for this server
+setting_param: setting
+setting_param_desc: Setting to change
+info_cmd_desc: Get information about the bot
+info_embed_desc: |
+  This bot is made by [@seria_ati](<discord://-/users/410036441129943050>) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
+  For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
+  To contribute (such as translations), DM me or open a PR on GitHub.
+selected_channels: Selected channels
+disable_delete_reaction: Disable Delete Message Reaction
+disable_delete_reaction_desc: "Disable the emoji reaction on webhook messages that lets the original author delete them by reacting."
+show_post_content_channels: Show Post Content Channels
+show_post_content_channels_desc: "If media extraction is enabled, channels selected here will show the content of the post."
+no_perms_to_delete_msg: The bot is missing permission to delete messages
+no_perms_to_manage_webhooks: The bot is missing permission to manage webhooks
+no_perms_to_add_reactions: The bot is missing permission to add reactions
+add_reaction_error: "Failed to add reaction '{emoji}', make sure it's valid"
+failed_to_send_webhook: Failed to send webhook
+delete_msg_emoji: Change Delete Message Reaction Emoji
+delete_msg_emoji_desc: "Change the emoji used to delete messages."
+emoji: Emoji
+emoji_changed: "Emoji used for deleting messages has been changed to {emoji}"
+choose_fix_service: Choose Embed Fix Service
+choose_fix_service_desc: Choose the embed fix service to use for different websites.
+using_fix_service: "Using {service}"
+fix_embed: Fix Embed
+extract_medias: Extract Medias
+no_fixes_found: No fixes/medias found for this message
+bot_visibility: Bot Visibility
+bot_visibility_desc: "If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users."
+funnel_target_channel: Funnel to Target Channel
+funnel_target_channel_desc: "If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel."
+whitelist_role_ids: Whitelist Roles
+whitelist_role_ids_desc: "If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable."
+selected_roles: Selected roles
+translang_disable: Disable
+translang_set: "The translate target language for this server has been set to {lang_name}"
+invalid_translang: Invalid language chosen
+translang_param: target-lang
+translang_param_desc: Target language
+translang_cmd_desc: Change the target language for post content translation
+translang_disabled: Post content translation has been disabled
+reset_cmd_desc: Reset all settings for this server to default values
+reset_confirm: "Are you sure you want to reset all settings for this server?"
+reset_yes: "Yes"
+reset_done: All settings have been reset to default values
+original_link: Original link
+show_original_link_btn: Original Link Button
+show_original_link_btn_desc: "Show a button linking to the original post in fixed embed messages."
+recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.
+ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
+ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
+ignore_me_cmd_desc: Toggle whether Embed Fixer should ignore your messages
+delete_original_message_in_threads: Delete Original Messages in Threads
+delete_original_message_in_threads_desc: "Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed."
+fix_url_command_desc: Fix a URL and get the embed-friendly version
+fix_url_param: link
+fix_url_param_desc: The URL to fix
+fix_url_extract_media_param: extract-media
+fix_url_extract_media_param_desc: "Whether to extract media from the URL (default: False)"
+notify_on_react: Notify on React
+notify_on_react_desc: "Whether the bot should DM you when your fixed message receives a reaction."
+notify_on_react_msg: "{user} reacted {emoji} to you ({message_link})"
+user_settings_cmd_desc: Change your personal settings for the bot
+reply_instead_of_delete: Reply Instead of Delete
+reply_instead_of_delete_desc: "When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook."
+remove_delete_reaction_after: Remove Delete Reaction After
+remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
+seconds: Seconds
+remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
+remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
+invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
+seconds_placeholder: "{min} - {max} (leave empty to disable)"
+rotate_fix_reaction: Rotate Fix Reaction
+rotate_fix_reaction_desc: "When enabled, the bot adds a \U0001F504 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service."

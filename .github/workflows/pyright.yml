@@ -1,0 +1,39 @@
+name: Pyright
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - embed_fixer/**.py
+      - run.py
+      - ci.py
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/pyright.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - embed_fixer/**.py
+      - run.py
+      - ci.py
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/pyright.yml
+
+jobs:
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+
+      - name: Install Project
+        run: uv sync --frozen --no-dev && uv pip install pyright[nodejs]
+
+      - name: Run Pyright
+        run: uv run pyright embed_fixer

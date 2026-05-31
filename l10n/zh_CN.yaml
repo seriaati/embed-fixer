@@ -1,0 +1,89 @@
+name: 简体中文
+replying_to: "⬅️ 回复 {user} ({url})"
+disable_fixes: 关闭网站的预览嵌入
+disable_fixes_desc: 关闭特定网站的预览嵌入。
+lang: 语言
+lang_desc: 更改机器人的语言。
+extract_media_channels: 媒体提取频道
+extract_media_channels_desc: 在这个频道里发送的 Twitter/X/Pixiv 链接的图片/视频都会被提取。
+disable_fix_channels: 预览嵌入频道黑名单
+disable_fix_channels_desc: "这里的频道将不会接收预览嵌入，白名单优先于黑名单。"
+enable_fix_channels: 预览嵌入频道白名单
+enable_fix_channels_desc: "只有在这里设置的频道将接受预览嵌入，白名单优先于黑名单。"
+disable_image_spoilers: 关闭 NSFW 频道的自动剧透
+disable_image_spoilers_desc: "对于媒体提取功能，在这里选择的 NSFW 频道内的媒体将不会自动标为剧透。"
+disable_webhook_reply: 停用 Webhook 回复
+disable_webhook_reply_desc: 停用回复 Webhook 时对原发布者的@。
+sauce: 出处
+settings_cmd_desc: 更改此服务器的机器人设置
+setting_param: 设置
+setting_param_desc: 要更改的设置
+info_cmd_desc: 获取有关机器人的信息
+info_embed_desc: |
+  这个机器人由 [@seria_ati](<discord://-/users/410036441129943050>) 制作，且在 [GitHub](https://github.com/seriaati/embed-fixer) 有开源。有关此机器人的疑问或者问题，请在 DIscord 上与我联系，或在 Github 上提交 Issue。
+  如有意愿贡献（比如翻译），请与我联系或者在 Github 上提交 PR。
+selected_channels: 已选频道
+disable_delete_reaction: 停用删除消息反应
+disable_delete_reaction_desc: "停用 Webhook 消息上的表情反应，使发布者无法通过反应表情删除。"
+show_post_content_channels: 显示贴文内容频道
+show_post_content_channels_desc: "如果媒体提取已开启，则在这里的已选频道将显示帖子内容。"
+no_perms_to_delete_msg: 机器人缺少删除消息的权限
+no_perms_to_manage_webhooks: 机器人缺少管理 Webhook 的权限
+no_perms_to_add_reactions: 机器人缺少添加反应的权限
+add_reaction_error: "无法添加反应 '{emoji}'，请确认是否有效"
+failed_to_send_webhook: 发送 Webhook 失败
+delete_msg_emoji: 更改删除消息反应表情
+delete_msg_emoji_desc: "更改用于删除消息的表情。"
+emoji: 表情符号
+emoji_changed: "用于删除消息的表情符号已更改 {emoji}"
+choose_fix_service: 选择预览嵌入服务
+choose_fix_service_desc: 选择用于不同网站的预览嵌入。
+using_fix_service: "正在使用 {service}"
+fix_embed: 预览嵌入
+extract_medias: 提取媒体
+no_fixes_found: 未发现嵌入/媒体于此消息
+bot_visibility: 机器人能见度
+bot_visibility_desc: "开启后， Embed Fixer 将会对来自其他机器人链接进行预览嵌入。关闭后，将只会对来自用户的链接进行预览嵌入。"
+funnel_target_channel: 引流目标频道
+funnel_target_channel_desc: "若已设置，所有的预览嵌入和媒体提取都会发送到被设置的频道，而非原消息的频道。"
+whitelist_role_ids: 白名单身份组
+whitelist_role_ids_desc: "如有设置，则只有拥有这些身份组之一的用户才有预览嵌入。留空则关闭。"
+selected_roles: 已选身份组
+translang_disable: 关闭
+translang_set: "此服务器的翻译目标语言已设置为{lang_name}"
+invalid_translang: 无效语言选择
+translang_param: 目标语言
+translang_param_desc: 目标语言
+translang_cmd_desc: 更改帖子内容翻译的目标语言
+translang_disabled: 已关闭帖文内容翻译
+reset_cmd_desc: 将此服务器所有设置还原为默认值
+reset_confirm: "你确定要还原此服务器的所有设置吗？"
+reset_yes: "确认"
+reset_done: 所有设置已还原至默认值
+original_link: 原链接
+show_original_link_btn: 原链接按钮
+show_original_link_btn_desc: "在预览嵌入的消息中显示链接至原帖子的按钮。"
+recommend_original_link_btn: 推荐在 /setting 中启用“原链接按钮”，因为此修复网站含有广告。
+ignore_me_enabled: 从现在起，机器人将忽略你，你的连结预览将不会被修复。
+ignore_me_disabled: 从现在起，机器人将不再忽略你，你的链接预览将会被修复。
+ignore_me_cmd_desc: 开关 Embed Fixer 是否要忽略你的消息
+delete_original_message_in_threads: 删除主题串中的原消息
+delete_original_message_in_threads_desc: "因为主题串无法使用 Webhook，原消息会被保留以识别发送者。启用后，在发送修复后的链接预览后将删除主题串中的原消息。"
+fix_url_command_desc: 修复链接并获取适合嵌入的版本
+fix_url_param: 链接
+fix_url_param_desc: 要修复的链接
+fix_url_extract_media_param: 提取媒体
+fix_url_extract_media_param_desc: "是否从链接中提取媒体（默认：不提取）"
+notify_on_react: 反应表情时通知
+notify_on_react_desc: "当已转换消息收到表情反应时，Embed Fixer将私信通知你。"
+notify_on_react_msg: "{user}对你的消息反应了{emoji} ({message_link})"
+user_settings_cmd_desc: 更改你的Embed Fixer个性设置
+reply_instead_of_delete: 转换时以回复替代删除
+reply_instead_of_delete_desc: "该功能启用时，Embed Fixer将不会删除原始消息，通过Webhook重发，而是通过对你的原始消息回复并预览嵌入。"
+remove_delete_reaction_after: Remove Delete Reaction After
+remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
+seconds: Seconds
+remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
+remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
+invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
+seconds_placeholder: "{min} - {max} (leave empty to disable)"

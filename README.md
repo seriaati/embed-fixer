@@ -1,26 +1,44 @@
-![Embed Fixer](https://i.imgur.com/919Gum1.png)  
+![Embed Fixer](https://i.imgur.com/919Gum1.png)
 
 ![GitHub issues](https://img.shields.io/github/issues/seriaati/embed-fixer)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/seriaati/embed-fixer)
 ![GitHub Repo stars](https://img.shields.io/github/stars/seriaati/embed-fixer)
 ![GitHub forks](https://img.shields.io/github/forks/seriaati/embed-fixer)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/seriaati/embed-fixer)
+![Lines of code](https://tokei.rs/b1/github/seriaati/embed-fixer?style=flat&category=code&type=Python)
 ![GitHub](https://img.shields.io/github/license/seriaati/embed-fixer)
 ![Discord](https://img.shields.io/discord/1000727526194298910?label=Support%20Server&color=5865F2)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 # Embed Fixer
 
+Official website: <https://ef.seria.moe>
+
+## Add Bot
+
 [**Bot invitation link**](https://discord.com/oauth2/authorize?client_id=770144963735453696)
 
-As we know, social media embeds on Discord are bad:  
+Available as both a user and server app.  
+When installed as a user app, you can right click a message to fix its embed or extract its media.
+
+## Support
+
+- [Request new fix](https://github.com/seriaati/embed-fixer/issues/new?template=new-embed-fix-request.md)
+- [Report a bug](https://github.com/seriaati/embed-fixer/issues/new?template=bug_report.md)
+- [Request a new feature](https://github.com/seriaati/embed-fixer/issues/new?template=feature_request.md)
+- [Contribute to translations](https://app.transifex.com/seria/embed-fixer/)
+- [Contact me on Discord](https://discord.com/invite/b22kMKuwbS) (my username is @seria_ati)
+
+## Motive
+
+As we know, social media embeds on Discord are bad:
 
 - Pixiv embeds don't show the full artwork
-- X/Twitter sometimes doesn't even embed
+- X/Twitter sometimes doesn't embed
 - Instagram doesn't show the image/video
-- Reddit doesn't show the full thread
+- Reddit doesn't show the images
 - Tiktok doesn't show the video
-- Twitch clip embeds don't play the clips
+- Twitch clip doesn't play the clips
 - And so on...
   
 Worry no more, this Discord bot fixes all of those issues.
@@ -29,63 +47,114 @@ Worry no more, this Discord bot fixes all of those issues.
 
 ## Embed Fixing
 
-Fixings are currently available for:  
+Fixings are currently available for:
 
-- Pixiv with [phixiv](https://github.com/HazelTheWitch/phixiv)
-- Twitter/X with [fxtwitter](https://github.com/FixTweet/FxTwitter)
-- Instagram with ~~[instafix](https://github.com/Wikidepia/InstaFix)~~ [InstagramEZ](https://embedez.com/) (Not open sourced but a lot more stable)
-- Reddit with [fxreddit](https://github.com/MinnDevelopment/fxreddit)
-- Tiktok wtih [vxtiktok](https://github.com/dylanpdx/vxtiktok)
-- Furaffinity with [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)
-- Twitch clips with [fxtwitch](https://github.com/seriaati/fxtwitch)
-- Iwara with [fxiwara](https://github.com/seriaati/fxiwara)
-- Bluesky with [VixBluesky](https://github.com/Rapougnac/VixBluesky)
+- **Twitter/X**: [FxEmbed](https://github.com/FxEmbed/FxEmbed)/[BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)/[EmbedEZ](https://embedez.com)
+- **Pixiv**: [Phixiv](https://github.com/thelaao/phixiv)
+- **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[EmbedEZ](https://embedez.com)/[KKTikTok](https://kkscript.com/)
+- **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://embedez.com)
+- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com)/[KKInstagram](https://kkscript.com/)/[vxinstagram](https://github.com/Lainmode/InstagramEmbed-vxinstagram)/[InstaEmbedRouter](https://github.com/Knoppiix/InstaEmbedRouter)
+- **FurAffinity**: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)/[fxraffinity](https://fxraffinity.net/)
+- **Twitch Clips**: [fxtwitch](https://github.com/seriaati/fxtwitch)
+- **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
+- **Bluesky**: [VixBluesky](https://github.com/Lexedia/VixBluesky)/[FxEmbed](https://github.com/FxEmbed/FxEmbed)
+- **Kemono**: Media extraction only, no embed fixing
+- **Facebook**: [EmbedEZ](https://embedez.com)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
+- **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://embedez.com)/[BiliFix](https://vxbilibili.com)
+- **Tumblr**: [fxtumblr](https://github.com/knuxify/fxtumblr)
+- **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)/[EmbedEZ](https://embedez.com)/[FixEmbed](https://fixembed.app)
+- **PTT**: [fxptt](https://github.com/seriaati/fxptt)
+- **DeviantArt**: [fxdeviantart](https://github.com/Tschrock/fixdeviantart)
 
-If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. There is also a ❌ reaction made to the message, so that the author of the message can click on and delete the message.
+If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. You can customize this behavior to reply instead of delete with `/settings`.
 
-![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)  
+If webhook mode was used, a ❌ reaction will be added to the message, so that the author of the message can click on and delete the message. The emoji used can be changed with `/settings`.
 
-> [!NOTE]
-> If the link is sent in a non-NSFW channel AND is from Pixiv AND the artwork contains the "#R-18" tag, the Embed Fixer will **NOT** fix the embed as this will show the NSFW image.
+![image](https://github.com/user-attachments/assets/e7c4469b-c5dd-44e8-b923-c8137397a64b)
+
+> [!TIP]
+> You can disable embed fixing for a specific link by adding `$` at the beginning of the link, or wrapping the link with `<>`. For example, `$https://twitter.com/...` and `<https://twitter.com/...>` will not be fixed.
+
+### About NSFW Embed Fixing
+
+For Pixiv and Twitter/X links, the bot checks if the artwork/post is marked as NSFW. For kemono links, posts are always assumed to be NSFW. If the channel doesn't have NSFW turned on and the artwork/post is marked as NSFW, the bot will not fix the embed.
+
+### About EmbedEZ
+
+Turn on "Show original link button" in `/settings` when using EmbedEZ fixes if you want to go to the original post without seeing the ads.
+
+EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. I originally made a [proxy](https://github.com/seriaati/embedez) to it to bypass the ads, but it stopped working after the site owner changed some stuff.
+
+### Opt Out of Embed Fixing
+
+Use the `/ignore-me` command.
+
+### Fixing Manually
+
+Use the `/fix` command or right click a message and click "Fix Embed".
 
 ## Webhook Replying
 
-When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.  
+When you reply to a webhook, it replies to the webhook, not the original author. The bot fixes this by tagging the original author with the same name of the webhook.
+
 ![image](https://iili.io/2RPjJ0Q.png)
+
+> [!TIP]
+> Add `$` at the beginning of your message to disable this feature.
 
 ## Media Extracting
 
-The following platforms are supported:  
+The following platforms are supported:
 
 - Twitter/X
 - Pixiv
 - Iwara
 - Kemono
+- Bluesky
 
 When you send a link that is from one of the platforms above in channel(s) with this feature on, the bot resends all of the images/videos in the link in a nice gallery-like layout.  
 
-![image](https://iili.io/2RPwDMb.png)  
+![image](https://github.com/user-attachments/assets/2b66ed5c-bbe2-450b-92f6-d36f01bf9102)
 
-> [!NOTE]
-> If the link is sent in a NSFW channel then the extracted media will be spoilered automatically.
+If the link is sent in a NSFW channel, then the extracted media will be spoilered automatically (changeable).
+
+Also, if you wrap the URL with spoiler tags, like ||<https://x.com/...>||, the extracted image(s) will be spoilered automatically.
 
 ## Very Customizable
 
-*All settings are unique to each server*  
-  
-Below are settings you can change with the `/settings` command:  
+The most powerful part about Embed Fixer is that almost every behavior of the bot can be customized or toggled to your likings. It also supports some niche features derived from real user demands that you probably won't find in other bots.
 
-- Disable embed fixes: Disable specific embed fixes
-- Language: Change language of the bot
-- Media extraction channels: Channels to enable the media extraction feature mentioned above
-- Disable embed fix channels: Channels to disable embed fixing
-- Disable webhook reply: Disable the webhook reply feature mentioned above  
-- Disable auto spoiler in NSFW channels: For channels with the media extraction feature on, disable automatic spoilering extracted media in NSFW channels
+All settings are unique to each server, you can use `/reset` to reset them to default values.
 
-# Questions, Issues, Feedback, Contributions
+Below are settings you can change with the `/settings` command:
 
-Whether you want a new fix to be added, to request a new feature, to report a bug, or to contribute to translations. You can do so by creating an issue or a pull request.  
-If GitHub is not your type, you can find me on [Discord](https://discord.com/invite/b22kMKuwbS), my username is @seria_ati.
+- **Language**: Change the language of the bot.
+- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites.
+- **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
+- **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist.
+- **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist.
+- **Disable Webhook Reply**: Disable the ping to the original author when replying to a webhook.
+- **Disable Automatic Spoilering in NSFW Channels**: For the media extraction feature, NSFW channels selected here will not have medias automatically spoilered.
+- **Disable Delete Message Reaction**: Disable the emoji reaction on webhook messages that lets the original author delete them by reacting.
+- **Show Post Content Channels**: If media extraction is enabled, channels selected here will show the content of the post.
+- **Change Delete Message Reaction Emoji**: Change the emoji used to delete messages.
+- **Choose Embed Fix Service**: Choose the embed fix service to use for different websites.
+- **Bot Visibility**: If enabled, Embed Fixer will fix embeds sent by other bots. If disabled, it will only fix embeds sent by users.
+- **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
+- **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
+- **Original Link Button**: Show a button linking to the original post in fixed embed messages.
+- **Delete Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed.
+- **Reply Instead of Delete**: When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook.
+- **Remove Delete Reaction After**: Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable.
+- **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
+
+## Post Content Translation
+
+![Post content translation](readme-images/translate.png)
+
+Currently only supports Twitter/X, and only when fix provider is [FxEmbed](https://github.com/FxEmbed/FxEmbed).
+
+Use `/translang` to set the target language, choose "Disable" to disable.
 
 # Self Hosting
 
@@ -94,11 +163,30 @@ If GitHub is not your type, you can find me on [Discord](https://discord.com/inv
 1. Enable **Message Content Intent**
 1. Run the application with your bot token as the `DISCORD_TOKEN` environment variable
 1. Invite your bot with the invite link in the logs
+1. Sync the commands
+
+## Syncing Commands
+
+The command prefix is the bot's mention by default. For example, if your bot's name is `Embed Fixer`, the prefix would be `@Embed Fixer`.  
+Run `@Embed Fixer sync` to sync the commands, you need to restart your client to see the changes.
+
+## Database Migrations
+
+Changes to the database schema can be found in `/migrations/embed_fixer`.  
+To apply the changes, run `aerich upgrade` (only supports PostgreSQL; for other databases like SQLite, you need to migrate manually).
 
 ## Docker
 
+With SQLite:
+
 ```sh
-docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk ghcr.io/seriaati/embed-fixer:latest
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN ghcr.io/seriaati/embed-fixer:latest
+```
+
+With PostgreSQL:
+
+```sh
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN -e DB_URI=postgres://USERNAME:PASSWORD@DBHOST:PORT/DBNAME ghcr.io/seriaati/embed-fixer:latest-asyncpg
 ```
 
 ### Volumes
@@ -110,6 +198,8 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=Your
 
 - `DISCORD_TOKEN`: your Discord bot token
 - `DB_URI`: defaults to `sqlite:///data/embed_fixer.db`, available to customize the database location
+- `ENV`: defaults to `prod`, can be set to `dev` for development mode
+- `REDIS_URL`: if set, uses Redis for caching instead of SQLite
 
 ## Local
 
@@ -117,9 +207,9 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=Your
 1. Clone the repository
 1. Create a `.env` file:
 
-   ```env
-   DISCORD_TOKEN=YourDiscordBotToken.Example.SomeExampleBase64Junk
-   ENV=dev
-   ```
+```env
+DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
+ENV=prod
+```
 
 1. `uv run run.py`

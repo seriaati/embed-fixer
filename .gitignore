@@ -156,3 +156,6 @@ cython_debug/
 *.sqlite
 .vscode/
 test.py
+
+.serena/
+.roo/

@@ -1,0 +1,12 @@
+[main]
+host = https://app.transifex.com
+
+[o:seria:p:embed-fixer:r:696919d5c2ea62a77031bf8b9ea3160e]
+file_filter            = l10n/<lang>.yaml
+source_file            = l10n/en_US.yaml
+type                   = YAML_GENERIC
+minimum_perc           = 0
+resource_name          = Bot
+replace_edited_strings = false
+keep_translations      = false
+lang_map = zh_CN: zh-CN, zh_TW: zh-TW, es_ES: es-ES
