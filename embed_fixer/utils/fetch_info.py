@@ -184,7 +184,6 @@ class PixivArtwork(BaseModel):
     id: int = Field(alias="illustId")
     image_urls: list[str] = Field(alias="image_proxy_urls", default_factory=list)
     title: str
-    ai_generated: bool = Field(alias="aiType", default=False)
     description: str
     tags: list[str]
     author_name: str = Field(alias="userName")
