@@ -13,6 +13,7 @@ from discord.ext import commands
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
+from embed_fixer.core.config import settings
 from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
@@ -454,12 +455,14 @@ class FixerCog(commands.Cog):
         media_urls: list[str] = []
         content = ""
         info = None
+        headers = None
 
         try:
             if domain_id is DomainId.PIXIV:
                 info = await self.fetch_info.pixiv(url)
                 content = "" if info is None else info.description
                 media_urls = [] if info is None else info.image_urls
+                headers = settings.pixiv_headers
             elif domain_id is DomainId.TWITTER:
                 info = await self.fetch_info.twitter(url)
                 content = "" if info is None else info.text
@@ -478,7 +481,7 @@ class FixerCog(commands.Cog):
 
         logger.debug(f"Extracted media URLs: {media_urls}")
 
-        downloader = MediaDownloader(self.bot.session, media_urls=media_urls)
+        downloader = MediaDownloader(self.bot.session, media_urls=media_urls, headers=headers)
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
         medias: list[Media] = []

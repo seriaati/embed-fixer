@@ -200,6 +200,7 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR
 - `DB_URI`: defaults to `sqlite:///data/embed_fixer.db`, available to customize the database location
 - `ENV`: defaults to `prod`, can be set to `dev` for development mode
 - `REDIS_URL`: if set, uses Redis for caching instead of SQLite
+- `PIXIV_SESSION_ID`: if set, the bot will use it to access Pixiv's API, which is required for fixing R18 Pixiv links.
 
 ## Local
 

@@ -15,6 +15,14 @@ class Settings(BaseSettings):
     user_agent: str = USER_AGENT
     proxy_url: str | None = None
     heartbeat_url: str | None = None
+    pixiv_session_id: str | None = None
+
+    @property
+    def pixiv_headers(self) -> dict[str, str]:
+        headers = {"Referer": "https://www.pixiv.net/", "User-Agent": self.user_agent}
+        if self.pixiv_session_id:
+            headers["Cookie"] = f"PHPSESSID={self.pixiv_session_id}"
+        return headers
 
 
 load_dotenv()

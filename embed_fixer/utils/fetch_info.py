@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 load_dotenv()
 
-PIXIV_R18_TAG: Final[str] = "#R-18"
+PIXIV_R18_TAG: Final[str] = "R-18"
 TWITTER_MEDIA_TYPES = {"photo", "video", "gif"}
 
 
@@ -62,12 +62,28 @@ class PostInfoFetcher:
         if artwork_id is None:
             return None
 
+        headers = settings.pixiv_headers
         api_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}?lang=jp"
-        async with self.session.get(api_url) as response:
+
+        async with self.session.get(api_url, headers=headers) as response:
             if response.status != 200:
                 return None
 
-            data = await response.json()
+            data = (await response.json()).get("body")
+            if data is None:
+                return None
+
+        pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
+
+        logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
+        async with self.session.get(pages_url, headers=headers) as response:
+            logger.debug(f"Received response with status code: {response.status}")
+            if response.status == 200:
+                pages_data = (await response.json()).get("body", [])
+                data["image_proxy_urls"] = [
+                    page.get("urls", {}).get("original", "") for page in pages_data
+                ]
+                logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
 
         return PixivArtwork(**data)
 
@@ -156,22 +172,25 @@ class PostInfoFetcher:
 
 
 class PixivArtwork(BaseModel):
+    id: int = Field(alias="illustId")
     image_urls: list[str] = Field(alias="image_proxy_urls", default_factory=list)
     title: str
-    ai_generated: bool
+    ai_generated: bool = Field(alias="aiType", default=False)
     description: str
     tags: list[str]
-    url: str
-    author_name: str
-    author_id: str
-    is_ugoira: bool
-    created_at: datetime.datetime = Field(alias="create_date")
-    profile_image_url: str | None = None
+    author_name: str = Field(alias="userName")
+    author_id: str = Field(alias="userId")
+    created_at: datetime.datetime = Field(alias="createDate")
 
     @field_validator("description", mode="after")
     @classmethod
     def __format_description(cls, v: str) -> str:
         return remove_html_tags(v.replace("  ", "\n"))
+
+    @field_validator("tags", mode="before")
+    @classmethod
+    def __format_tags(cls, v: dict) -> list[str]:
+        return [tag.get("tag", "") for tag in v.get("tags", [])]
 
     @property
     def author_md(self) -> str:
