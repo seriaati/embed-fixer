@@ -65,7 +65,7 @@ class PostInfoFetcher:
         headers = settings.pixiv_headers
         api_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}?lang=jp"
 
-        async with self.session.get(api_url, headers=headers) as response:
+        async with self.session.get(api_url, headers=headers, proxy=settings.proxy_url) as response:
             if response.status != 200:
                 return None
 
@@ -76,7 +76,9 @@ class PostInfoFetcher:
         pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
 
         logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
-        async with self.session.get(pages_url, headers=headers) as response:
+        async with self.session.get(
+            pages_url, headers=headers, proxy=settings.proxy_url
+        ) as response:
             logger.debug(f"Received response with status code: {response.status}")
             if response.status == 200:
                 pages_data = (await response.json()).get("body", [])
