@@ -346,7 +346,7 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=25,
                 name="facebed",
-                fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebed.com")],
+                fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebed.seria.moe")],
                 repo_url="https://github.com/4pii4/facebed",
                 default=True,
             ),
