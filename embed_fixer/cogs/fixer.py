@@ -13,6 +13,7 @@ from discord.ext import commands
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
+from embed_fixer.core.config import settings
 from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
@@ -454,12 +455,16 @@ class FixerCog(commands.Cog):
         media_urls: list[str] = []
         content = ""
         info = None
+        headers = None
+        proxy = None
 
         try:
             if domain_id is DomainId.PIXIV:
                 info = await self.fetch_info.pixiv(url)
                 content = "" if info is None else info.description
                 media_urls = [] if info is None else info.image_urls
+                headers = settings.pixiv_headers
+                proxy = settings.proxy_url
             elif domain_id is DomainId.TWITTER:
                 info = await self.fetch_info.twitter(url)
                 content = "" if info is None else info.text
@@ -478,7 +483,9 @@ class FixerCog(commands.Cog):
 
         logger.debug(f"Extracted media URLs: {media_urls}")
 
-        downloader = MediaDownloader(self.bot.session, media_urls=media_urls)
+        downloader = MediaDownloader(
+            self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy
+        )
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
         medias: list[Media] = []
@@ -991,7 +998,15 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener("on_raw_reaction_add")
     async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
-        if payload.guild_id is None or payload.user_id == self.bot.user.id:
+        if (
+            payload.guild_id is None
+            or payload.user_id == self.bot.user.id
+            or payload.message_author_id is None
+        ):
+            return
+
+        settings, _ = await UserSettings.get_or_create(id=payload.message_author_id)
+        if not settings.notify_on_react:
             return
 
         channel_id = payload.channel_id
@@ -1023,10 +1038,6 @@ class FixerCog(commands.Cog):
             if author is None or author.id == payload.user_id:
                 return
         else:
-            return
-
-        settings, _ = await UserSettings.get_or_create(id=author.id)
-        if not settings.notify_on_react:
             return
 
         try:

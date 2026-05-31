@@ -230,6 +230,12 @@ DOMAINS: Final[list[Domain]] = [
                 repo_url="https://github.com/Lainmode/InstagramEmbed-vxinstagram",
                 default=True,
             ),
+            FixMethod(
+                id=35,
+                name="InstaEmbedRouter",
+                fixes=[ReplaceFix(old_domain="instagram.com", new_domain="zzinstagram.com")],
+                repo_url="https://github.com/Knoppiix/InstaEmbedRouter",
+            ),
         ],
     ),
     Domain(
@@ -340,7 +346,7 @@ DOMAINS: Final[list[Domain]] = [
             FixMethod(
                 id=25,
                 name="facebed",
-                fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebed.com")],
+                fixes=[ReplaceFix(old_domain="facebook.com", new_domain="facebed.seria.moe")],
                 repo_url="https://github.com/4pii4/facebed",
                 default=True,
             ),

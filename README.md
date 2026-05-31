@@ -53,7 +53,7 @@ Fixings are currently available for:
 - **Pixiv**: [Phixiv](https://github.com/thelaao/phixiv)
 - **TikTok**: [fxTikTok](https://github.com/okdargy/fxTikTok)/[EmbedEZ](https://embedez.com)/[KKTikTok](https://kkscript.com/)
 - **Reddit**: [FixReddit](https://github.com/MinnDevelopment/fxreddit)/[vxReddit](https://github.com/dylanpdx/vxReddit)/[EmbedEZ](https://embedez.com)
-- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com)/[KKInstagram](https://kkscript.com/)/[vxinstagram](https://github.com/Lainmode/InstagramEmbed-vxinstagram)
+- **Instagram**: [InstaFix](https://github.com/Wikidepia/InstaFix)/[EmbedEZ](https://embedez.com)/[KKInstagram](https://kkscript.com/)/[vxinstagram](https://github.com/Lainmode/InstagramEmbed-vxinstagram)/[InstaEmbedRouter](https://github.com/Knoppiix/InstaEmbedRouter)
 - **FurAffinity**: [xfuraffinity](https://github.com/FirraWoof/xfuraffinity)/[fxraffinity](https://fxraffinity.net/)
 - **Twitch Clips**: [fxtwitch](https://github.com/seriaati/fxtwitch)
 - **Iwara**: [fxiwara](https://github.com/seriaati/fxiwara)
@@ -200,6 +200,7 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR
 - `DB_URI`: defaults to `sqlite:///data/embed_fixer.db`, available to customize the database location
 - `ENV`: defaults to `prod`, can be set to `dev` for development mode
 - `REDIS_URL`: if set, uses Redis for caching instead of SQLite
+- `PIXIV_SESSION_ID`: if set, the bot will use it to access Pixiv's API, which is required for fixing R18 Pixiv links.
 
 ## Local
 
