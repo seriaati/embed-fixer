@@ -94,6 +94,8 @@ class EmbedFixer(commands.AutoShardedBot):
         await Tortoise.init(TORTOISE_ORM)
         await Tortoise.generate_schemas()
         await self._migrate_guild_settings()
+        await self.tree.sync()
+        logger.info("Slash commands synced to Discord")
 
     async def _migrate_guild_settings(self) -> None:
         old_gs = await GuildSettingsOld.exclude(
