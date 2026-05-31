@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import asyncio
 import contextlib
 import logging
 import sys
+from typing import TYPE_CHECKING
 
 import discord
 import sentry_sdk
@@ -19,6 +22,9 @@ from embed_fixer.health import HealthCheckServer
 from embed_fixer.utils.logging import InterceptHandler
 from embed_fixer.utils.misc import get_project_version, wrap_task_factory
 
+if TYPE_CHECKING:
+    from sentry_sdk.types import Event, Hint
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
 }
@@ -31,6 +37,31 @@ def setup_logger() -> None:
     logger.add(sys.stderr, level="INFO" if settings.env == "prod" else "DEBUG")
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO, force=True)
     logger.add("logs/embed_fixer.log", level="DEBUG", rotation="1 week", retention="2 weeks")
+
+
+def _is_discord_503(hint: Hint, event: Event) -> bool:
+    """Return True if the event is a Discord API 503 Service Unavailable error.
+
+    These are transient upstream failures from Discord and not actionable, so they
+    should be dropped instead of cluttering Sentry (e.g. EMBED-FIXER-1W/39/V).
+    """
+    exc_info = hint.get("exc_info")
+    if exc_info is not None and isinstance(exc_info[1], discord.DiscordServerError):
+        return exc_info[1].status == 503
+
+    # Fallback for events captured without exc_info (e.g. serialized log records).
+    for value in event.get("exception", {}).get("values", []):
+        if value.get("type") == "DiscordServerError" and "503" in (value.get("value") or ""):
+            return True
+
+    return False
+
+
+def before_send(event: Event, hint: Hint) -> Event | None:
+    if _is_discord_503(hint, event):
+        logger.warning("Ignoring Discord API 503 Service Unavailable error.")
+        return None
+    return event
 
 
 def setup_sentry() -> None:
@@ -46,6 +77,7 @@ def setup_sentry() -> None:
         release=get_project_version(),
         enable_logs=True,
         ignore_errors=[CommandNotFound],
+        before_send=before_send,
     )
 
 
