@@ -260,13 +260,47 @@ class FixerCog(commands.Cog):
 
     async def _fetch_pixiv_artwork_info(self, url: str) -> PixivArtworkInfo | None:
         artwork_id = url.split("/")[-1]
-        api_url = f"https://phixiv.net/api/info?id={artwork_id}"
-        async with self.bot.session.get(api_url) as response:
+
+        #Phixiv api now returning this error {"message":"The phixiv API is no longer available, you can call the Pixiv API directly, it has the same information. Example: https://www.pixiv.net/ajax/illust/145286282?lang=jp"}
+        info_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}"
+        pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
+
+        async with self.bot.session.get(info_url) as response:
             if response.status != 200:
                 return None
 
             data = await response.json()
-        return PixivArtworkInfo(tags=data["tags"], image_urls=data["image_proxy_urls"])
+
+        if data.get("error") or "body" not in data:
+            return None
+
+        body = data["body"]
+
+        tags = [
+            tag["tag"]
+            for tag in body.get("tags", {}).get("tags", [])
+        ]
+
+        async with self.bot.session.get(pages_url) as response:
+            if response.status != 200:
+                return None
+
+            pages_data = await response.json()
+
+        if pages_data.get("error") or "body" not in pages_data:
+            return None
+
+        image_urls = [
+            page["urls"]["original"]
+            for page in pages_data["body"]
+            if "urls" in page and "original" in page["urls"]
+        ]
+
+        # new structure
+        return PixivArtworkInfo(
+            tags=tags,
+            image_urls=image_urls,
+        ) 
 
     async def _fetch_twitter_media_urls(self, url: str) -> list[str]:
         if "twitter.com" in url:
