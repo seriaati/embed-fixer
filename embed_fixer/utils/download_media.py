@@ -19,17 +19,21 @@ class MediaDownloader:
         *,
         media_urls: Sequence[str],
         headers: dict[str, str] | None = None,
+        proxy: str | None = None,
     ) -> None:
         self.media_urls = media_urls
         self.session = session
         self.headers = headers or {}
         self.files: dict[str, discord.File] = {}
+        self.proxy = proxy
 
     async def _download(self, url: str, *, spoiler: bool, filesize_limit: int) -> None:
         timeout = aiohttp.ClientTimeout(total=10)
 
         try:
-            async with self.session.get(url, timeout=timeout, headers=self.headers) as resp:
+            async with self.session.get(
+                url, timeout=timeout, headers=self.headers, proxy=self.proxy
+            ) as resp:
                 if resp.status != 200:
                     return
 

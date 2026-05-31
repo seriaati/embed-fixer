@@ -456,6 +456,7 @@ class FixerCog(commands.Cog):
         content = ""
         info = None
         headers = None
+        proxy = None
 
         try:
             if domain_id is DomainId.PIXIV:
@@ -463,6 +464,7 @@ class FixerCog(commands.Cog):
                 content = "" if info is None else info.description
                 media_urls = [] if info is None else info.image_urls
                 headers = settings.pixiv_headers
+                proxy = settings.proxy_url
             elif domain_id is DomainId.TWITTER:
                 info = await self.fetch_info.twitter(url)
                 content = "" if info is None else info.text
@@ -481,7 +483,9 @@ class FixerCog(commands.Cog):
 
         logger.debug(f"Extracted media URLs: {media_urls}")
 
-        downloader = MediaDownloader(self.bot.session, media_urls=media_urls, headers=headers)
+        downloader = MediaDownloader(
+            self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy
+        )
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
         medias: list[Media] = []
