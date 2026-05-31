@@ -86,7 +86,8 @@ class PostInfoFetcher:
         artwork_info = await self.pixiv(url)
         if artwork_info is None:
             return False
-        return PIXIV_R18_TAG in artwork_info.tags
+        return False
+        # return PIXIV_R18_TAG in artwork_info.tags
 
     async def twitter_is_nsfw(self, url: str) -> bool:
         info = await self.twitter(url)
@@ -168,7 +169,7 @@ class PostInfoFetcher:
 
 class PixivArtwork(BaseModel):
     title: str = Field(alias="illustTitle")
-    ai_generated: bool = Field(False)
+    ai_generated: bool = False
     description: str = Field(alias="illustComment")
     url: str = Field(alias="extraData__meta__canonical", default="")
     author_name: str = Field(alias="userName")
