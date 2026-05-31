@@ -67,6 +67,9 @@ class PostInfoFetcher:
 
         async with self.session.get(api_url, headers=headers, proxy=settings.proxy_url) as response:
             if response.status != 200:
+                logger.warning(
+                    f"Failed to fetch Pixiv artwork info for ID {artwork_id}, status code: {response.status}"
+                )
                 return None
 
             data = (await response.json()).get("body")
@@ -79,13 +82,17 @@ class PostInfoFetcher:
         async with self.session.get(
             pages_url, headers=headers, proxy=settings.proxy_url
         ) as response:
-            logger.debug(f"Received response with status code: {response.status}")
-            if response.status == 200:
-                pages_data = (await response.json()).get("body", [])
-                data["image_proxy_urls"] = [
-                    page.get("urls", {}).get("original", "") for page in pages_data
-                ]
-                logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
+            if response.status != 200:
+                logger.warning(
+                    f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}"
+                )
+                return None
+
+            pages_data = (await response.json()).get("body", [])
+            data["image_proxy_urls"] = [
+                page.get("urls", {}).get("original", "") for page in pages_data
+            ]
+            logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
 
         return PixivArtwork(**data)
 
