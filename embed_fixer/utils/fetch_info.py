@@ -70,7 +70,9 @@ class PostInfoFetcher:
 
         async with self.session.get(api_url, headers=headers, proxy=settings.proxy_url) as response:
             if response.status != 200:
-                logger.warning(f"Failed to fetch Pixiv artwork info for ID {artwork_id}, status code: {response.status}")
+                logger.warning(
+                    f"Failed to fetch Pixiv artwork info for ID {artwork_id}, status code: {response.status}"
+                )
                 return None
             data = (await response.json()).get("body")
             if data is None:

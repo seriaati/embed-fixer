@@ -415,7 +415,6 @@ class FixerCog(commands.Cog):
                         sauces.append(clean_url)
                     continue  # skip normal fix loop for this URL
 
-
             for fix in fix_method.fixes:
                 if isinstance(fix, AppendURLFix):
                     new_url = f"https://{fix.domain}?url={clean_url}"
