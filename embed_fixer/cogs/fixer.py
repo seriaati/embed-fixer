@@ -415,7 +415,6 @@ class FixerCog(commands.Cog):
                         sauces.append(clean_url)
                     continue  # skip normal fix loop for this URL
 
-
             for fix in fix_method.fixes:
                 if isinstance(fix, AppendURLFix):
                     new_url = f"https://{fix.domain}?url={clean_url}"
@@ -504,12 +503,16 @@ class FixerCog(commands.Cog):
                     if gif_bytes is None:
                         return PostExtractionResult(medias=[], content="", author_md="")
 
-                    gif_file = discord.File(io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler)
+                    gif_file = discord.File(
+                        io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
+                    )
                     media_urls = info.image_urls
                     headers = settings.pixiv_headers
                     proxy = settings.proxy_url
 
-                    downloader = MediaDownloader(self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy)
+                    downloader = MediaDownloader(
+                        self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy
+                    )
                     await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
                     medias = []
@@ -519,7 +522,9 @@ class FixerCog(commands.Cog):
 
                     medias.append(Media(url=url, file=gif_file))
 
-                    return PostExtractionResult(medias=medias, content=content[:2000], author_md=info.author_md)
+                    return PostExtractionResult(
+                        medias=medias, content=content[:2000], author_md=info.author_md
+                    )
 
                 media_urls = info.image_urls
                 headers = settings.pixiv_headers
