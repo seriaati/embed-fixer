@@ -240,7 +240,7 @@ class UgoiraFrame(BaseModel):
 
 
 class UgoiraMeta(BaseModel):
-    src: str  # added to switch to 600x600 resolution
+    src: str  # added to switch to 600x600 resolution to avoid error 413
     original_src: str = Field(alias="originalSrc")
     mime_type: str
     frames: list[UgoiraFrame]
