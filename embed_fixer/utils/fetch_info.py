@@ -70,11 +70,8 @@ class PostInfoFetcher:
 
         async with self.session.get(api_url, headers=headers, proxy=settings.proxy_url) as response:
             if response.status != 200:
-                logger.warning(
-                    f"Failed to fetch Pixiv artwork info for ID {artwork_id}, status code: {response.status}"
-                )
+                logger.warning(f"Failed to fetch Pixiv artwork info for ID {artwork_id}, status code: {response.status}")
                 return None
-
             data = (await response.json()).get("body")
             if data is None:
                 return None
@@ -82,33 +79,23 @@ class PostInfoFetcher:
         if data.get("illustType") == 2:
             ugoira_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/ugoira_meta"
             logger.debug(f"Fetching Pixiv ugoira meta from URL: {ugoira_url}")
-            async with self.session.get(
-                ugoira_url, headers=headers, proxy=settings.proxy_url
-            ) as response:
+            async with self.session.get(ugoira_url, headers=headers, proxy=settings.proxy_url) as response:
                 if response.status != 200:
-                    logger.warning(
-                        f"Failed to fetch Pixiv ugoira meta for ID {artwork_id}, status code: {response.status}"
-                    )
+                    logger.warning(f"Failed to fetch Pixiv ugoira meta for ID {artwork_id}, status code: {response.status}")
                     return None
                 ugoira_body = (await response.json()).get("body")
                 if ugoira_body:
                     data["ugoira_meta"] = ugoira_body
-        else:
-            pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
-            logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
-            async with self.session.get(
-                pages_url, headers=headers, proxy=settings.proxy_url
-            ) as response:
-                if response.status != 200:
-                    logger.warning(
-                        f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}"
-                    )
-                    return None
-                pages_data = (await response.json()).get("body", [])
-                data["image_proxy_urls"] = [
-                    page.get("urls", {}).get("original", "") for page in pages_data
-                ]
-                logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
+
+        pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
+        logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
+        async with self.session.get(pages_url, headers=headers, proxy=settings.proxy_url) as response:
+            if response.status != 200:
+                logger.warning(f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}")
+                return None
+            pages_data = (await response.json()).get("body", [])
+            data["image_proxy_urls"] = [page.get("urls", {}).get("original", "") for page in pages_data]
+            logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
 
         return PixivArtwork(**data)
 
@@ -121,7 +108,8 @@ class PostInfoFetcher:
     async def ugoira_to_gif(self, meta: UgoiraMeta) -> bytes | None:
 
         async with self.session.get(
-            meta.original_src, headers=settings.pixiv_headers, proxy=settings.proxy_url
+            meta.src,  # changed from meta.original_src, to lower resolution
+            headers=settings.pixiv_headers, proxy=settings.proxy_url
         ) as response:
             if response.status != 200:
                 logger.warning(f"Failed to fetch ugoira ZIP: {response.status}")
@@ -235,6 +223,7 @@ class UgoiraFrame(BaseModel):
 
 
 class UgoiraMeta(BaseModel):
+    src: str # added to switch to 600x600 resolution
     original_src: str = Field(alias="originalSrc")
     mime_type: str
     frames: list[UgoiraFrame]
