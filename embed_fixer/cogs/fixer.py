@@ -477,51 +477,8 @@ class FixerCog(commands.Cog):
         try:
             if domain_id is DomainId.PIXIV:
                 info = await self.fetch_info.pixiv(url)
-                if info is None:
-                    return PostExtractionResult(medias=[], content="", author_md="")
-
-                content = info.description
-
-                # if info.is_ugoira and info.ugoira_meta:
-                #     gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
-                #     if gif_bytes is None:
-                #         return PostExtractionResult(medias=[], content="", author_md="")
-
-                #     file = discord.File(
-                #         io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
-                #     )
-                #     return PostExtractionResult(
-                #         medias=[Media(url=url, file=file)],
-                #         content=content[:2000],
-                #         author_md=info.author_md,
-                #     )
-
-                # media_urls = info.image_urls
-                # headers = settings.pixiv_headers
-                # proxy = settings.proxy_url
-                if info.is_ugoira and info.ugoira_meta:
-                    gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
-                    if gif_bytes is None:
-                        return PostExtractionResult(medias=[], content="", author_md="")
-
-                    gif_file = discord.File(io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler)
-                    media_urls = info.image_urls
-                    headers = settings.pixiv_headers
-                    proxy = settings.proxy_url
-
-                    downloader = MediaDownloader(self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy)
-                    await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
-
-                    medias = []
-                    for media_url in media_urls:
-                        file_ = downloader.files.get(media_url)
-                        medias.append(Media(url=media_url, file=file_))
-
-                    medias.append(Media(url=url, file=gif_file))
-
-                    return PostExtractionResult(medias=medias, content=content[:2000], author_md=info.author_md)
-
-                media_urls = info.image_urls
+                content = "" if info is None else info.description
+                media_urls = [] if info is None else info.image_urls
                 headers = settings.pixiv_headers
                 proxy = settings.proxy_url
             elif domain_id is DomainId.TWITTER:
