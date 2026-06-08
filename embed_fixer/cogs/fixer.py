@@ -188,6 +188,7 @@ async def remove_reaction_safe(
 ) -> None:
     try:
         await message.remove_reaction(emoji, member)
+
     except discord.Forbidden:
         logger.warning(
             f"Failed to remove reaction from message {message.id} in channel {message.channel.id}"
@@ -480,24 +481,6 @@ class FixerCog(commands.Cog):
                     return PostExtractionResult(medias=[], content="", author_md="")
 
                 content = info.description
-
-                # if info.is_ugoira and info.ugoira_meta:
-                #     gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
-                #     if gif_bytes is None:
-                #         return PostExtractionResult(medias=[], content="", author_md="")
-
-                #     file = discord.File(
-                #         io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
-                #     )
-                #     return PostExtractionResult(
-                #         medias=[Media(url=url, file=file)],
-                #         content=content[:2000],
-                #         author_md=info.author_md,
-                #     )
-
-                # media_urls = info.image_urls
-                # headers = settings.pixiv_headers
-                # proxy = settings.proxy_url
                 if info.is_ugoira and info.ugoira_meta:
                     gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
                     if gif_bytes is None:
