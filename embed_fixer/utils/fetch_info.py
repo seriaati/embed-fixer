@@ -5,7 +5,6 @@ import io
 import io
 import re
 import zipfile
-from PIL import Image
 from typing import TYPE_CHECKING, Any, Final
 
 from dotenv import load_dotenv
