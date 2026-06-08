@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import datetime
-import re
 import io
+import re
 import zipfile
 from PIL import Image
 from typing import TYPE_CHECKING, Any, Final
