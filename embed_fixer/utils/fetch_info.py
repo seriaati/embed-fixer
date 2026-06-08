@@ -82,9 +82,7 @@ class PostInfoFetcher:
         if data.get("illustType") == 2:
             ugoira_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/ugoira_meta"
             logger.debug(f"Fetching Pixiv ugoira meta from URL: {ugoira_url}")
-            async with self.session.get(
-                ugoira_url, headers=headers, proxy=settings.proxy_url
-            ) as response:
+            async with self.session.get(ugoira_url, headers=headers, proxy=settings.proxy_url) as response:
                 if response.status != 200:
                     logger.warning(
                         f"Failed to fetch Pixiv ugoira meta for ID {artwork_id}, status code: {response.status}"
@@ -96,9 +94,7 @@ class PostInfoFetcher:
         else:
             pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
             logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
-            async with self.session.get(
-                pages_url, headers=headers, proxy=settings.proxy_url
-            ) as response:
+            async with self.session.get(pages_url, headers=headers, proxy=settings.proxy_url) as response:
                 if response.status != 200:
                     logger.warning(
                         f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}"
@@ -119,6 +115,9 @@ class PostInfoFetcher:
         return PIXIV_R18_TAG in artwork_info.tags
 
     async def ugoira_to_gif(self, meta: UgoiraMeta) -> bytes | None:
+        import io
+        import zipfile
+        from PIL import Image
 
         async with self.session.get(
             meta.original_src, headers=settings.pixiv_headers, proxy=settings.proxy_url
@@ -128,32 +127,28 @@ class PostInfoFetcher:
                 return None
             zip_bytes = await response.read()
 
-        frames: list[Image.Image] = []
-        durations: list[int] = []
-        try:
-            with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
-                for frame in meta.frames:
-                    img = Image.open(io.BytesIO(zf.read(frame.file))).convert("RGBA")
-                    frames.append(img)
-                    durations.append(frame.delay)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+            frames: list[Image.Image] = []
+            durations: list[int] = []
+            for frame in meta.frames:
+                img = Image.open(io.BytesIO(zf.read(frame.file))).convert("RGBA")
+                frames.append(img)
+                durations.append(frame.delay)
 
-            if not frames:
-                return None
+        if not frames:
+            return None
 
-            output = io.BytesIO()
-            frames[0].save(
-                output,
-                format="GIF",
-                save_all=True,
-                append_images=frames[1:],
-                duration=durations,
-                loop=0,
-                optimize=False,
-            )
-            return output.getvalue()
-        finally:
-            for img in frames:
-                img.close()
+        output = io.BytesIO()
+        frames[0].save(
+            output,
+            format="GIF",
+            save_all=True,
+            append_images=frames[1:],
+            duration=durations,
+            loop=0,
+            optimize=False,
+        )
+        return output.getvalue()
 
     async def twitter_is_nsfw(self, url: str) -> bool:
         info = await self.twitter(url)
@@ -232,17 +227,14 @@ class PostInfoFetcher:
 
         return urls
 
-
 class UgoiraFrame(BaseModel):
     file: str
     delay: int  # milliseconds
-
 
 class UgoiraMeta(BaseModel):
     original_src: str = Field(alias="originalSrc")
     mime_type: str
     frames: list[UgoiraFrame]
-
 
 class PixivArtwork(BaseModel):
     id: int = Field(alias="illustId")
