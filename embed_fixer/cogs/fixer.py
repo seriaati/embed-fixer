@@ -8,7 +8,6 @@ from urllib.parse import parse_qs, urlparse, urlunparse
 
 import discord
 import emoji
-import io
 from discord import app_commands
 from discord.app_commands import locale_str
 from discord.ext import commands

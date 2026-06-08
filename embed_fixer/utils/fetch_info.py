@@ -3,7 +3,9 @@ from __future__ import annotations
 import datetime
 import io
 import re
+import io
 import zipfile
+from PIL import Image
 from typing import TYPE_CHECKING, Any, Final
 
 from dotenv import load_dotenv
@@ -115,9 +117,6 @@ class PostInfoFetcher:
         return PIXIV_R18_TAG in artwork_info.tags
 
     async def ugoira_to_gif(self, meta: UgoiraMeta) -> bytes | None:
-        import io
-        import zipfile
-        from PIL import Image
 
         async with self.session.get(
             meta.original_src, headers=settings.pixiv_headers, proxy=settings.proxy_url
