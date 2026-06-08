@@ -79,7 +79,9 @@ class PostInfoFetcher:
         if data.get("illustType") == 2:
             ugoira_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/ugoira_meta"
             logger.debug(f"Fetching Pixiv ugoira meta from URL: {ugoira_url}")
-            async with self.session.get(ugoira_url, headers=headers, proxy=settings.proxy_url) as response:
+            async with self.session.get(
+                ugoira_url, headers=headers, proxy=settings.proxy_url
+            ) as response:
                 if response.status != 200:
                     logger.warning(
                         f"Failed to fetch Pixiv ugoira meta for ID {artwork_id}, status code: {response.status}"
@@ -91,7 +93,9 @@ class PostInfoFetcher:
         else:
             pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
             logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
-            async with self.session.get(pages_url, headers=headers, proxy=settings.proxy_url) as response:
+            async with self.session.get(
+                pages_url, headers=headers, proxy=settings.proxy_url
+            ) as response:
                 if response.status != 200:
                     logger.warning(
                         f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}"
@@ -224,14 +228,17 @@ class PostInfoFetcher:
 
         return urls
 
+
 class UgoiraFrame(BaseModel):
     file: str
     delay: int  # milliseconds
+
 
 class UgoiraMeta(BaseModel):
     original_src: str = Field(alias="originalSrc")
     mime_type: str
     frames: list[UgoiraFrame]
+
 
 class PixivArtwork(BaseModel):
     id: int = Field(alias="illustId")

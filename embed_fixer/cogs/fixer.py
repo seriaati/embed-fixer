@@ -472,7 +472,9 @@ class FixerCog(commands.Cog):
                     if gif_bytes is None:
                         return PostExtractionResult(medias=[], content="", author_md="")
 
-                    file = discord.File(io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler)
+                    file = discord.File(
+                        io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
+                    )
                     return PostExtractionResult(
                         medias=[Media(url=url, file=file)],
                         content=content[:2000],
