@@ -4,11 +4,11 @@ import datetime
 import io
 import re
 import zipfile
-from PIL import Image
 from typing import TYPE_CHECKING, Any, Final
 
 from dotenv import load_dotenv
 from loguru import logger
+from PIL import Image
 from pydantic import BaseModel, Field, field_validator
 
 from embed_fixer.core.config import settings
