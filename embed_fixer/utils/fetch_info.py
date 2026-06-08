@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import datetime
+import io
 import re
+import zipfile
 from typing import TYPE_CHECKING, Any, Final
 
 from dotenv import load_dotenv
 from loguru import logger
+from PIL import Image
 from pydantic import BaseModel, Field, field_validator
 
 from embed_fixer.core.config import settings
@@ -76,23 +79,36 @@ class PostInfoFetcher:
             if data is None:
                 return None
 
-        pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
-
-        logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
-        async with self.session.get(
-            pages_url, headers=headers, proxy=settings.proxy_url
-        ) as response:
-            if response.status != 200:
-                logger.warning(
-                    f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}"
-                )
-                return None
-
-            pages_data = (await response.json()).get("body", [])
-            data["image_proxy_urls"] = [
-                page.get("urls", {}).get("original", "") for page in pages_data
-            ]
-            logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
+        if data.get("illustType") == 2:
+            ugoira_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/ugoira_meta"
+            logger.debug(f"Fetching Pixiv ugoira meta from URL: {ugoira_url}")
+            async with self.session.get(
+                ugoira_url, headers=headers, proxy=settings.proxy_url
+            ) as response:
+                if response.status != 200:
+                    logger.warning(
+                        f"Failed to fetch Pixiv ugoira meta for ID {artwork_id}, status code: {response.status}"
+                    )
+                    return None
+                ugoira_body = (await response.json()).get("body")
+                if ugoira_body:
+                    data["ugoira_meta"] = ugoira_body
+        else:
+            pages_url = f"https://www.pixiv.net/ajax/illust/{artwork_id}/pages"
+            logger.debug(f"Fetching Pixiv artwork pages from URL: {pages_url}")
+            async with self.session.get(
+                pages_url, headers=headers, proxy=settings.proxy_url
+            ) as response:
+                if response.status != 200:
+                    logger.warning(
+                        f"Failed to fetch Pixiv artwork pages for ID {artwork_id}, status code: {response.status}"
+                    )
+                    return None
+                pages_data = (await response.json()).get("body", [])
+                data["image_proxy_urls"] = [
+                    page.get("urls", {}).get("original", "") for page in pages_data
+                ]
+                logger.debug(f"Extracted image proxy URLs: {data['image_proxy_urls']}")
 
         return PixivArtwork(**data)
 
@@ -101,6 +117,43 @@ class PostInfoFetcher:
         if artwork_info is None:
             return False
         return PIXIV_R18_TAG in artwork_info.tags
+
+    async def ugoira_to_gif(self, meta: UgoiraMeta) -> bytes | None:
+
+        async with self.session.get(
+            meta.original_src, headers=settings.pixiv_headers, proxy=settings.proxy_url
+        ) as response:
+            if response.status != 200:
+                logger.warning(f"Failed to fetch ugoira ZIP: {response.status}")
+                return None
+            zip_bytes = await response.read()
+
+        frames: list[Image.Image] = []
+        durations: list[int] = []
+        try:
+            with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+                for frame in meta.frames:
+                    img = Image.open(io.BytesIO(zf.read(frame.file))).convert("RGBA")
+                    frames.append(img)
+                    durations.append(frame.delay)
+
+            if not frames:
+                return None
+
+            output = io.BytesIO()
+            frames[0].save(
+                output,
+                format="GIF",
+                save_all=True,
+                append_images=frames[1:],
+                duration=durations,
+                loop=0,
+                optimize=False,
+            )
+            return output.getvalue()
+        finally:
+            for img in frames:
+                img.close()
 
     async def twitter_is_nsfw(self, url: str) -> bool:
         info = await self.twitter(url)
@@ -180,12 +233,25 @@ class PostInfoFetcher:
         return urls
 
 
+class UgoiraFrame(BaseModel):
+    file: str
+    delay: int  # milliseconds
+
+
+class UgoiraMeta(BaseModel):
+    original_src: str = Field(alias="originalSrc")
+    mime_type: str
+    frames: list[UgoiraFrame]
+
+
 class PixivArtwork(BaseModel):
     id: int = Field(alias="illustId")
     image_urls: list[str] = Field(alias="image_proxy_urls", default_factory=list)
     title: str
     description: str
     tags: list[str]
+    illust_type: int = Field(alias="illustType", default=0)
+    ugoira_meta: UgoiraMeta | None = None
     author_name: str = Field(alias="userName")
     author_id: str = Field(alias="userId")
     created_at: datetime.datetime = Field(alias="createDate")
@@ -203,6 +269,10 @@ class PixivArtwork(BaseModel):
     @property
     def author_md(self) -> str:
         return f"[{self.author_name}](<https://www.pixiv.net/users/{self.author_id}>)"
+
+    @property
+    def is_ugoira(self) -> bool:
+        return self.illust_type == 2
 
 
 class TwitterPostMedia(BaseModel):

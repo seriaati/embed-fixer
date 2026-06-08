@@ -19,6 +19,7 @@ dependencies = [
   "tomli>=2.2.1",
   "pydantic-settings>=2.11.0",
   "anyio>=4.12.1",
+  "pillow>=11.0.0",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }

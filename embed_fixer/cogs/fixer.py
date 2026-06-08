@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import io
 from typing import TYPE_CHECKING, Any, Final, Literal, cast
 from urllib.parse import parse_qs, urlparse, urlunparse
 
@@ -461,8 +462,26 @@ class FixerCog(commands.Cog):
         try:
             if domain_id is DomainId.PIXIV:
                 info = await self.fetch_info.pixiv(url)
-                content = "" if info is None else info.description
-                media_urls = [] if info is None else info.image_urls
+                if info is None:
+                    return PostExtractionResult(medias=[], content="", author_md="")
+
+                content = info.description
+
+                if info.is_ugoira and info.ugoira_meta:
+                    gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
+                    if gif_bytes is None:
+                        return PostExtractionResult(medias=[], content="", author_md="")
+
+                    file = discord.File(
+                        io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
+                    )
+                    return PostExtractionResult(
+                        medias=[Media(url=url, file=file)],
+                        content=content[:2000],
+                        author_md=info.author_md,
+                    )
+
+                media_urls = info.image_urls
                 headers = settings.pixiv_headers
                 proxy = settings.proxy_url
             elif domain_id is DomainId.TWITTER:
