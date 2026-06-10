@@ -7,7 +7,6 @@ import tempfile
 import zipfile
 from typing import TYPE_CHECKING
 
-
 import aiohttp
 import discord
 import ffmpeg
@@ -58,7 +57,7 @@ class MediaDownloader:
                 zf.extractall(tmp)
 
             concat_path = f"{tmp}/concat.txt"
-            with pathlib.Path(concat_path).open("w") as f:
+            with pathlib.Path(concat_path).open("w", encoding="utf-8") as f:
                 f.writelines(
                     f"file '{tmp}/{frame.file}'\nduration {frame.delay / 1000}\n"
                     for frame in frames
@@ -78,8 +77,9 @@ class MediaDownloader:
                 logger.error(f"ffmpeg error: {e.stderr}")
                 return None
 
-            with pathlib.Path(output_path).open("rb") as f:
-                return f.read()
+            # with pathlib.Path(output_path).open("rb") as f:
+            #     return f.read()
+            return pathlib.Path(output_path).read_bytes()
 
     async def _download_ugoira(
         self, meta: UgoiraMeta, *, spoiler: bool, filesize_limit: int
