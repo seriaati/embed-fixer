@@ -57,7 +57,7 @@ class MediaDownloader:
                 zf.extractall(tmp)
 
             concat_path = f"{tmp}/concat.txt"
-             with pathlib.Path(concat_path).open("w") as f:
+            with pathlib.Path(concat_path).open("w") as f:
                 f.writelines(f"file '{tmp}/{frame.file}'\nduration {frame.delay / 1000}\n" for frame in frames)
                 f.write(f"file '{tmp}/{frames[-1].file}'\n")
 

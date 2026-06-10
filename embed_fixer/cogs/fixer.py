@@ -18,7 +18,7 @@ from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.utils.download_media import MediaDownloader
-from embed_fixer.utils.fetch_info import PostInfoFetcher, PixivArtwork
+from embed_fixer.utils.fetch_info import PixivArtwork, PostInfoFetcher
 from embed_fixer.utils.misc import (
     append_path_to_url,
     capture_exception,
