@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 import aiohttp
 import discord
 import ffmpeg
-from loguru import loggeruv run ruff check --fix .
+from loguru import logger
 from PIL import Image
 
 if TYPE_CHECKING:
