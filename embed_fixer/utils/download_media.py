@@ -2,16 +2,17 @@ from __future__ import annotations
 
 import asyncio
 import io
+import pathlib
 import tempfile
 import zipfile
 from typing import TYPE_CHECKING
-from PIL import Image
+
 
 import aiohttp
 import discord
 import ffmpeg
-from loguru import logger
-import pathlib
+from loguru import loggeruv run ruff check --fix .
+from PIL import Image
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
