@@ -147,7 +147,7 @@ class MediaDownloader:
 
         for scale in (0.9, 0.8, 0.7):
             new_size = (int(img.width * scale), int(img.height * scale))
-            resized = img.resize(new_size, Image.LANCZOS)
+            resized = img.resize(new_size, Image.Resampling.LANCZOS)
             output = io.BytesIO()
             resized.save(output, format=fmt)
             result = output.getvalue()
