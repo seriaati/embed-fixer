@@ -59,7 +59,10 @@ class MediaDownloader:
 
             concat_path = f"{tmp}/concat.txt"
             with pathlib.Path(concat_path).open("w") as f:
-                f.writelines(f"file '{tmp}/{frame.file}'\nduration {frame.delay / 1000}\n" for frame in frames)
+                f.writelines(
+                    f"file '{tmp}/{frame.file}'\nduration {frame.delay / 1000}\n"
+                    for frame in frames
+                )
                 f.write(f"file '{tmp}/{frames[-1].file}'\n")
 
             output_path = f"{tmp}/output.mp4"
