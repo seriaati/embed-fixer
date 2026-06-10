@@ -127,12 +127,37 @@ class MediaDownloader:
             logger.exception(f"Failed to download media {url}")
             return
 
+        # if len(data) > filesize_limit:
+        #     data = await asyncio.get_running_loop().run_in_executor(
+        #         None, self._downscale_image, data, filesize_limit
+        #     )
+        #     if data is None:
+        #         return
+
         if media_type:
             filename = f"{url.rsplit('/', maxsplit=1)[-1].split('.', maxsplit=1)[0]}.{media_type.split('/')[-1]}"
         else:
             filename = url.rsplit("/", maxsplit=1)[-1]
 
         self.files[url] = discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
+
+    @staticmethod
+    def _downscale_image(data: bytes, filesize_limit: int) -> bytes | None:
+        from PIL import Image
+
+        img = Image.open(io.BytesIO(data))
+        fmt = img.format or "JPEG"
+
+        for scale in (0.9, 0.8, 0.7):
+            new_size = (int(img.width * scale), int(img.height * scale))
+            resized = img.resize(new_size, Image.LANCZOS)
+            output = io.BytesIO()
+            resized.save(output, format=fmt)
+            result = output.getvalue()
+            if len(result) <= filesize_limit:
+                return result
+
+        return None
 
     async def start(self, *, spoiler: bool, filesize_limit: int) -> None:
         async with asyncio.TaskGroup() as tg:
