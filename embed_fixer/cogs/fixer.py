@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from embed_fixer.bot import EmbedFixer, Interaction
+    from embed_fixer.utils.fetch_info import PixivArtwork
     from embed_fixer.fixes import Domain, FixMethod, ReplaceFix, Website
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
@@ -406,7 +407,8 @@ class FixerCog(commands.Cog):
                 artwork = await self.fetch_info.pixiv(url)
                 if artwork is not None and artwork.is_ugoira and artwork.ugoira_meta:
                     result = await self._extract_post_info(
-                        domain.id, url, spoiler=spoilered, filesize_limit=filesize_limit
+                        domain.id, url, spoiler=spoilered, filesize_limit=filesize_limit,
+                        pixiv_info=artwork,
                     )
                     medias.extend(result.medias)
                     content, author_md = result.content, result.author_md
@@ -414,7 +416,7 @@ class FixerCog(commands.Cog):
                         fix_found = True
                         message.content = message.content.replace(url, "")
                         sauces.append(clean_url)
-                    continue  # skip normal fix loop for this URL
+                    continue
 
             for fix in fix_method.fixes:
                 if isinstance(fix, AppendURLFix):
@@ -464,7 +466,8 @@ class FixerCog(commands.Cog):
         )
 
     async def _extract_post_info(
-        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int
+        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int,
+        pixiv_info: PixivArtwork | None = None,
     ) -> PostExtractionResult:
         logger.debug(f"Extracting post info from {url} for domain {domain_id!r}")
 
@@ -476,39 +479,11 @@ class FixerCog(commands.Cog):
 
         try:
             if domain_id is DomainId.PIXIV:
-                info = await self.fetch_info.pixiv(url)
+                # info = await self.fetch_info.pixiv(url)
+                info = pixiv_info or await self.fetch_info.pixiv(url)
                 if info is None:
                     return PostExtractionResult(medias=[], content="", author_md="")
-
                 content = info.description
-                if info.is_ugoira and info.ugoira_meta:
-                    gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
-                    if gif_bytes is None:
-                        return PostExtractionResult(medias=[], content="", author_md="")
-
-                    gif_file = discord.File(
-                        io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
-                    )
-                    media_urls = info.image_urls
-                    headers = settings.pixiv_headers
-                    proxy = settings.proxy_url
-
-                    downloader = MediaDownloader(
-                        self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy
-                    )
-                    await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
-
-                    medias = []
-                    for media_url in media_urls:
-                        file_ = downloader.files.get(media_url)
-                        medias.append(Media(url=media_url, file=file_))
-
-                    medias.append(Media(url=url, file=gif_file))
-
-                    return PostExtractionResult(
-                        medias=medias, content=content[:2000], author_md=info.author_md
-                    )
-
                 media_urls = info.image_urls
                 headers = settings.pixiv_headers
                 proxy = settings.proxy_url
@@ -531,11 +506,18 @@ class FixerCog(commands.Cog):
         logger.debug(f"Extracted media URLs: {media_urls}")
 
         downloader = MediaDownloader(
-            self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy
+            self.bot.session,
+            media_urls=media_urls,
+            headers=headers,
+            proxy=proxy,
+            ugoira_meta=info.ugoira_meta if domain_id is DomainId.PIXIV and info is not None else None,
         )
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
         medias: list[Media] = []
+
+        if ugoira_file := downloader.files.get("ugoira"):
+            medias.append(Media(url=url, file=ugoira_file))
 
         for media_url in media_urls:
             file_ = downloader.files.get(media_url)
