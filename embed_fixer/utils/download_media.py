@@ -70,8 +70,7 @@ class MediaDownloader:
                 #     .run(quiet=True)
                 # )
                 (
-                    ffmpeg
-                    .input(concat_path, format="concat", safe=0)
+                    ffmpeg.input(concat_path, format="concat", safe=0)
                     .output(output_path, vcodec="libx264", pix_fmt="yuv420p", movflags="faststart")
                     .global_args("-an")
                     .overwrite_output()
