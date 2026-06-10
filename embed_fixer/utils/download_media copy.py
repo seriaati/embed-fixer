@@ -58,11 +58,12 @@ class MediaDownloader:
 
         self.files[url] = discord.File(io.BytesIO(data), filename=filename, spoiler=spoiler)
 
-    async def _download_ugoira(self, meta: UgoiraMeta, *, spoiler: bool, filesize_limit: int) -> None:
+    async def _download_ugoira(
+        self, meta: UgoiraMeta, *, spoiler: bool, filesize_limit: int
+    ) -> None:
         # 1. Fetch both ZIPs in parallel
         original_bytes, src_bytes = await asyncio.gather(
-            self._fetch_bytes(meta.original_src),
-            self._fetch_bytes(meta.src),
+            self._fetch_bytes(meta.original_src), self._fetch_bytes(meta.src)
         )
 
         # 2. Try originalSrc first, fall back to src
