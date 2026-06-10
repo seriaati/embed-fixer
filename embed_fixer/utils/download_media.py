@@ -88,19 +88,18 @@ class MediaDownloader:
         self, meta: UgoiraMeta, *, spoiler: bool, filesize_limit: int
     ) -> None:
         original_bytes, src_bytes = await asyncio.gather(
-            self._fetch_bytes(meta.original_src),
-            self._fetch_bytes(meta.src),
+            self._fetch_bytes(meta.original_src), self._fetch_bytes(meta.src)
         )
 
         loop = asyncio.get_running_loop()
         for zip_bytes in (original_bytes, src_bytes):
             if zip_bytes is None:
                 continue
-            mp4_bytes = await loop.run_in_executor(
-                None, self._zip_to_mp4, zip_bytes, meta.frames
-            )
+            mp4_bytes = await loop.run_in_executor(None, self._zip_to_mp4, zip_bytes, meta.frames)
             if mp4_bytes and len(mp4_bytes) <= filesize_limit:
-                logger.debug(f"Using ugoira ZIP: {'originalSrc' if zip_bytes is original_bytes else 'src'}")
+                logger.debug(
+                    f"Using ugoira ZIP: {'originalSrc' if zip_bytes is original_bytes else 'src'}"
+                )
                 self.files["ugoira"] = discord.File(
                     io.BytesIO(mp4_bytes), filename="ugoira.mp4", spoiler=spoiler
                 )
