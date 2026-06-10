@@ -19,6 +19,7 @@ from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.utils.download_media import MediaDownloader
+from embed_fixer.utils.fetch_info import PixivArtwork
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
     append_path_to_url,
@@ -36,7 +37,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from embed_fixer.bot import EmbedFixer, Interaction
-    from embed_fixer.utils.fetch_info import PixivArtwork
     from embed_fixer.fixes import Domain, FixMethod, ReplaceFix, Website
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
