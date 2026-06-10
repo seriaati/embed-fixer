@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import io
 from typing import TYPE_CHECKING, Any, Final, Literal, cast
 from urllib.parse import parse_qs, urlparse, urlunparse
 
@@ -19,8 +18,7 @@ from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.utils.download_media import MediaDownloader
-from embed_fixer.utils.fetch_info import PixivArtwork
-from embed_fixer.utils.fetch_info import PostInfoFetcher
+from embed_fixer.utils.fetch_info import PostInfoFetcher, PixivArtwork
 from embed_fixer.utils.misc import (
     append_path_to_url,
     capture_exception,

@@ -5,11 +5,13 @@ import io
 import tempfile
 import zipfile
 from typing import TYPE_CHECKING
+from PIL import Image
 
 import aiohttp
 import discord
 import ffmpeg
 from loguru import logger
+import pathlib
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -55,20 +57,12 @@ class MediaDownloader:
                 zf.extractall(tmp)
 
             concat_path = f"{tmp}/concat.txt"
-            with open(concat_path, "w") as f:
-                for frame in frames:
-                    f.write(f"file '{tmp}/{frame.file}'\nduration {frame.delay / 1000}\n")
+             with pathlib.Path(concat_path).open("w") as f:
+                f.writelines(f"file '{tmp}/{frame.file}'\nduration {frame.delay / 1000}\n" for frame in frames)
                 f.write(f"file '{tmp}/{frames[-1].file}'\n")
 
             output_path = f"{tmp}/output.mp4"
             try:
-                # (
-                #     ffmpeg
-                #     .input(concat_path, format="concat", safe=0)
-                #     .output(output_path, vcodec="libx264", pix_fmt="yuv420p", an=None)
-                #     .overwrite_output()
-                #     .run(quiet=True)
-                # )
                 (
                     ffmpeg.input(concat_path, format="concat", safe=0)
                     .output(output_path, vcodec="libx264", pix_fmt="yuv420p", movflags="faststart")
@@ -80,7 +74,7 @@ class MediaDownloader:
                 logger.error(f"ffmpeg error: {e.stderr}")
                 return None
 
-            with open(output_path, "rb") as f:
+            with pathlib.Path(output_path).open("rb") as f:
                 return f.read()
 
     async def _download_ugoira(
@@ -143,7 +137,6 @@ class MediaDownloader:
 
     @staticmethod
     def _downscale_image(data: bytes, filesize_limit: int) -> bytes | None:
-        from PIL import Image
 
         img = Image.open(io.BytesIO(data))
         fmt = img.format or "JPEG"
