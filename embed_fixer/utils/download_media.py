@@ -103,7 +103,7 @@ class MediaDownloader:
                 return
 
     async def _download(self, url: str, *, spoiler: bool, filesize_limit: int) -> None:
-        timeout = aiohttp.ClientTimeout(total=10)
+        timeout = aiohttp.ClientTimeout(total=15)
 
         try:
             async with self.session.get(
