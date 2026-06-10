@@ -407,10 +407,7 @@ class FixerCog(commands.Cog):
                 artwork = await self.fetch_info.pixiv(url)
                 if artwork is not None and artwork.is_ugoira and artwork.ugoira_meta:
                     result = await self._extract_post_info(
-                        domain.id,
-                        url,
-                        spoiler=spoilered,
-                        filesize_limit=filesize_limit,
+                        domain.id, url, spoiler=spoilered, filesize_limit=filesize_limit,
                         pixiv_info=artwork,
                     )
                     medias.extend(result.medias)
@@ -469,12 +466,7 @@ class FixerCog(commands.Cog):
         )
 
     async def _extract_post_info(
-        self,
-        domain_id: DomainId,
-        url: str,
-        *,
-        spoiler: bool = False,
-        filesize_limit: int,
+        self, domain_id: DomainId, url: str, *, spoiler: bool = False, filesize_limit: int,
         pixiv_info: PixivArtwork | None = None,
     ) -> PostExtractionResult:
         logger.debug(f"Extracting post info from {url} for domain {domain_id!r}")
@@ -519,7 +511,7 @@ class FixerCog(commands.Cog):
             headers=headers,
             proxy=proxy,
             # ugoira_meta=info.ugoira_meta if domain_id is DomainId.PIXIV and info is not None else None,
-            info.ugoira_meta if isinstance(info, PixivArtwork) else None,
+            ugoira_meta=info.ugoira_meta if isinstance(info, PixivArtwork) else None,
         )
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
