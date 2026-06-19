@@ -516,7 +516,6 @@ class FixerCog(commands.Cog):
             media_urls=media_urls,
             headers=headers,
             proxy=proxy,
-            # ugoira_meta=info.ugoira_meta if domain_id is DomainId.PIXIV and info is not None else None,
             ugoira_meta=info.ugoira_meta if isinstance(info, PixivArtwork) else None,
         )
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)

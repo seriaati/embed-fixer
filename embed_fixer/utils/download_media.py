@@ -77,8 +77,6 @@ class MediaDownloader:
                 logger.error(f"ffmpeg error: {e.stderr}")
                 return None
 
-            # with pathlib.Path(output_path).open("rb") as f:
-            #     return f.read()
             return pathlib.Path(output_path).read_bytes()
 
     async def _download_ugoira(
@@ -125,12 +123,7 @@ class MediaDownloader:
             logger.exception(f"Failed to download media {url}")
             return
 
-        # if len(data) > filesize_limit:
-        #     data = await asyncio.get_running_loop().run_in_executor(
-        #         None, self._downscale_image, data, filesize_limit
-        #     )
-        #     if data is None:
-        #         return
+
 
         if media_type:
             filename = f"{url.rsplit('/', maxsplit=1)[-1].split('.', maxsplit=1)[0]}.{media_type.split('/')[-1]}"
