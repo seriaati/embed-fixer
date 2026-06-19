@@ -123,8 +123,6 @@ class MediaDownloader:
             logger.exception(f"Failed to download media {url}")
             return
 
-
-
         if media_type:
             filename = f"{url.rsplit('/', maxsplit=1)[-1].split('.', maxsplit=1)[0]}.{media_type.split('/')[-1]}"
         else:
