@@ -53,6 +53,10 @@ class MediaDownloader:
     @staticmethod
     def _zip_to_mp4(zip_bytes: bytes, frames: Sequence[UgoiraFrame]) -> bytes | None:
         """Convert an ugoira frame ZIP into an MP4, returning its bytes (or None on failure)."""
+        if not frames:
+            logger.warning("No ugoira frames to convert")
+            return None
+
         with tempfile.TemporaryDirectory() as tmp:
             tmp_dir = pathlib.Path(tmp)
             with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
