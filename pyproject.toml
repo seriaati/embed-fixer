@@ -20,6 +20,7 @@ dependencies = [
   "pydantic-settings>=2.11.0",
   "anyio>=4.12.1",
   "pillow>=11.0.0",
+  "ffmpeg-python>=0.2.0",
 ]
 description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }

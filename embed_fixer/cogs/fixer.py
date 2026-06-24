@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import io
 from typing import TYPE_CHECKING, Any, Final, Literal, cast
 from urllib.parse import parse_qs, urlparse, urlunparse
 
@@ -37,6 +36,7 @@ if TYPE_CHECKING:
 
     from embed_fixer.bot import EmbedFixer, Interaction
     from embed_fixer.fixes import Domain, FixMethod, ReplaceFix, Website
+    from embed_fixer.utils.fetch_info import UgoiraMeta
 
 USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
@@ -458,6 +458,7 @@ class FixerCog(commands.Cog):
         info = None
         headers = None
         proxy = None
+        ugoira_meta: UgoiraMeta | None = None
 
         try:
             if domain_id is DomainId.PIXIV:
@@ -466,24 +467,11 @@ class FixerCog(commands.Cog):
                     return PostExtractionResult(medias=[], content="", author_md="")
 
                 content = info.description
-
-                if info.is_ugoira and info.ugoira_meta:
-                    gif_bytes = await self.fetch_info.ugoira_to_gif(info.ugoira_meta)
-                    if gif_bytes is None:
-                        return PostExtractionResult(medias=[], content="", author_md="")
-
-                    file = discord.File(
-                        io.BytesIO(gif_bytes), filename="ugoira.gif", spoiler=spoiler
-                    )
-                    return PostExtractionResult(
-                        medias=[Media(url=url, file=file)],
-                        content=content[:2000],
-                        author_md=info.author_md,
-                    )
-
                 media_urls = info.image_urls
                 headers = settings.pixiv_headers
                 proxy = settings.proxy_url
+                if info.is_ugoira:
+                    ugoira_meta = info.ugoira_meta
             elif domain_id is DomainId.TWITTER:
                 info = await self.fetch_info.twitter(url)
                 content = "" if info is None else info.text
@@ -503,11 +491,18 @@ class FixerCog(commands.Cog):
         logger.debug(f"Extracted media URLs: {media_urls}")
 
         downloader = MediaDownloader(
-            self.bot.session, media_urls=media_urls, headers=headers, proxy=proxy
+            self.bot.session,
+            media_urls=media_urls,
+            headers=headers,
+            proxy=proxy,
+            ugoira_meta=ugoira_meta,
         )
         await downloader.start(spoiler=spoiler, filesize_limit=filesize_limit)
 
         medias: list[Media] = []
+
+        if downloader.ugoira_file is not None:
+            medias.append(Media(url=url, file=downloader.ugoira_file))
 
         for media_url in media_urls:
             file_ = downloader.files.get(media_url)
