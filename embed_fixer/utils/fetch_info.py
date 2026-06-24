@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import datetime
-import io
 import re
-import zipfile
 from typing import TYPE_CHECKING, Any, Final
 
 from dotenv import load_dotenv
 from loguru import logger
-from PIL import Image
 from pydantic import BaseModel, Field, field_validator
 
 from embed_fixer.core.config import settings
@@ -118,43 +115,6 @@ class PostInfoFetcher:
             return False
         return PIXIV_R18_TAG in artwork_info.tags
 
-    async def ugoira_to_gif(self, meta: UgoiraMeta) -> bytes | None:
-
-        async with self.session.get(
-            meta.original_src, headers=settings.pixiv_headers, proxy=settings.proxy_url
-        ) as response:
-            if response.status != 200:
-                logger.warning(f"Failed to fetch ugoira ZIP: {response.status}")
-                return None
-            zip_bytes = await response.read()
-
-        frames: list[Image.Image] = []
-        durations: list[int] = []
-        try:
-            with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
-                for frame in meta.frames:
-                    img = Image.open(io.BytesIO(zf.read(frame.file))).convert("RGBA")
-                    frames.append(img)
-                    durations.append(frame.delay)
-
-            if not frames:
-                return None
-
-            output = io.BytesIO()
-            frames[0].save(
-                output,
-                format="GIF",
-                save_all=True,
-                append_images=frames[1:],
-                duration=durations,
-                loop=0,
-                optimize=False,
-            )
-            return output.getvalue()
-        finally:
-            for img in frames:
-                img.close()
-
     async def twitter_is_nsfw(self, url: str) -> bool:
         info = await self.twitter(url)
         if info is None:
@@ -239,6 +199,7 @@ class UgoiraFrame(BaseModel):
 
 
 class UgoiraMeta(BaseModel):
+    src: str  # 600x600 ZIP, used as a fallback when the original is too large
     original_src: str = Field(alias="originalSrc")
     mime_type: str
     frames: list[UgoiraFrame]
