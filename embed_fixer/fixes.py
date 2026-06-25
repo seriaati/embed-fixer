@@ -24,6 +24,7 @@ class DomainId(IntEnum):
     THREADS = 14
     PTT = 15
     DEVIANTART = 16
+    BILIBILI_OPUS = 17
 
 
 @dataclass(kw_only=True)
@@ -388,6 +389,23 @@ DOMAINS: Final[list[Domain]] = [
                 ],
                 repo_url="https://vxbilibili.com",
             ),
+        ],
+    ),
+    Domain(
+        id=DomainId.BILIBILI_OPUS,
+        name="Bilibili Opus",
+        websites=[
+            Website(r"https://(www.|m.)?bilibili.com/opus/\d+/?"),
+            Website(r"https://t.bilibili.com/\d+/?"),
+        ],
+        fix_methods=[
+            FixMethod(
+                id=36,
+                name="BiliFix",
+                fixes=[ReplaceFix(old_domain="bilibili.com", new_domain="vxbilibili.com")],
+                repo_url="https://vxbilibili.com",
+                default=True,
+            )
         ],
     ),
     Domain(
