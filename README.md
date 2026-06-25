@@ -61,6 +61,7 @@ Fixings are currently available for:
 - **Kemono**: Media extraction only, no embed fixing
 - **Facebook**: [EmbedEZ](https://embedez.com)/[fxfacebook](https://github.com/seriaati/fxfacebook)/[facebed](https://github.com/4pii4/facebed)
 - **Bilibili**: [fxbilibili](https://github.com/seriaati/fxbilibili)/[EmbedEZ](https://embedez.com)/[BiliFix](https://vxbilibili.com)
+- **Bilibili Opus**: [BiliFix](https://vxbilibili.com)
 - **Tumblr**: [fxtumblr](https://github.com/knuxify/fxtumblr)
 - **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)/[EmbedEZ](https://embedez.com)/[FixEmbed](https://fixembed.app)
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
