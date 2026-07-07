@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import io
+import json
 from typing import TYPE_CHECKING, Final
 
+import discord
 import iso639
 from discord import app_commands
 from discord.app_commands import locale_str
@@ -185,6 +188,74 @@ class SettingsCog(commands.Cog):
         lang = await Translator.get_guild_lang(i.guild)
         view = ResetSettingsView(lang=lang)
         await view.start(i)
+
+    @app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+    @app_commands.allowed_installs(guilds=True, users=False)
+    @app_commands.guild_only()
+    @app_commands.default_permissions()
+    @app_commands.command(name="export", description=locale_str("export_cmd_desc"))
+    async def export_settings_command(self, i: Interaction) -> None:
+        if i.guild is None:
+            return
+
+        await i.response.defer(ephemeral=True)
+
+        settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
+        fix_methods = await GuildFixMethod.filter(guild_id=i.guild.id)
+        data = {
+            "guild_settings": settings.model_dump(exclude={"id"}),
+            "fix_methods": [
+                {"domain_id": fm.domain_id.value, "fix_id": fm.fix_id} for fm in fix_methods
+            ],
+        }
+
+        lang = await Translator.get_guild_lang(i.guild)
+        file_ = discord.File(
+            io.BytesIO(json.dumps(data, indent=2).encode()),
+            filename=f"embed_fixer_settings_{i.guild.id}.json",
+        )
+        await i.followup.send(
+            translator.translate("export_done", lang=lang), file=file_, ephemeral=True
+        )
+
+    @app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+    @app_commands.allowed_installs(guilds=True, users=False)
+    @app_commands.guild_only()
+    @app_commands.default_permissions()
+    @app_commands.rename(file=locale_str("import_file_param"))
+    @app_commands.describe(file=locale_str("import_file_param_desc"))
+    @app_commands.command(name="import", description=locale_str("import_cmd_desc"))
+    async def import_settings_command(self, i: Interaction, file: discord.Attachment) -> None:
+        if i.guild is None:
+            return
+
+        await i.response.defer(ephemeral=True)
+        lang = await Translator.get_guild_lang(i.guild)
+
+        if file.size > 1024 * 1024:
+            await i.followup.send(
+                translator.translate("import_invalid_file", lang=lang), ephemeral=True
+            )
+            return
+
+        try:
+            data = json.loads(await file.read())
+            settings = GuildSettings(id=i.guild.id, **data["guild_settings"])
+            fix_methods = {
+                (DomainId(fm["domain_id"]), int(fm["fix_id"])) for fm in data.get("fix_methods", [])
+            }
+        except (ValueError, TypeError, KeyError):
+            await i.followup.send(
+                translator.translate("import_invalid_file", lang=lang), ephemeral=True
+            )
+            return
+
+        await settings.save()
+        await GuildFixMethod.filter(guild_id=i.guild.id).delete()
+        for domain_id, fix_id in fix_methods:
+            await GuildFixMethod.create(guild_id=i.guild.id, domain_id=domain_id, fix_id=fix_id)
+
+        await i.followup.send(translator.translate("import_done", lang=lang), ephemeral=True)
 
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     @app_commands.allowed_installs(guilds=True, users=True)
