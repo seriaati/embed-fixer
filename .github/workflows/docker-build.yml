@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v*"
     paths:
       - "embed_fixer/**.py"
       - "l10n/*.yaml"
@@ -49,7 +51,7 @@ jobs:
             type=semver,pattern={{version}},suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{major}},suffix=${{ matrix.variant.suffix }}
-            type=sha,prefix={{branch}}-,suffix=${{ matrix.variant.suffix }}
+            type=sha,prefix={{branch}}-,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_type == 'branch' }}
             type=raw,value=latest${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
 
       - name: Set up QEMU
