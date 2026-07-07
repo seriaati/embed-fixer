@@ -27,7 +27,7 @@ license = { file = "LICENSE" }
 name = "embed-fixer"
 readme = "README.md"
 requires-python = ">=3.11"
-version = "1.8.32"
+version = "1.9.0"
 
 [project.optional-dependencies]
 asyncpg = ["asyncpg>=0.31.0"]
