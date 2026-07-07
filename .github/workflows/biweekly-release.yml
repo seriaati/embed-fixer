@@ -1,5 +1,9 @@
 name: Biweekly Release
 
+permissions:
+  contents: write
+  actions: write
+
 on:
   schedule:
     - cron: '0 0 1,15 * *'
@@ -21,3 +25,12 @@ jobs:
         
       - name: Create release
         uses: seriaati/create-release@main
+
+      # Tags pushed with GITHUB_TOKEN don't trigger workflows, so
+      # dispatch the Docker build on the new tag explicitly
+      - name: Trigger Docker build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch --tags --quiet
+          gh workflow run docker-build.yml --ref "$(git describe --tags --abbrev=0)"
