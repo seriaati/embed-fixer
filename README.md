@@ -173,8 +173,10 @@ Run `@Embed Fixer sync` to sync the commands, you need to restart your client to
 
 ## Database Migrations
 
-Changes to the database schema can be found in `/migrations/embed_fixer`.  
-To apply the changes, run `aerich upgrade` (only supports PostgreSQL; for other databases like SQLite, you need to migrate manually).
+Changes to the database schema can be found in `/migrations`.  
+Migrations are applied automatically on startup for both SQLite and PostgreSQL, no manual steps are needed — including when upgrading an instance created before the migration system existed.
+
+If an upgrade ever goes wrong, pin your Docker image to the previous release tag (e.g. `ghcr.io/seriaati/embed-fixer:1.9.0`), then use `/export` and `/import` to move your settings to a fresh instance.
 
 ## Docker
 
