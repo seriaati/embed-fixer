@@ -228,11 +228,6 @@ class FixerCog(commands.Cog):
         if deleted:
             logger.info(f"Purged {deleted} fixed message records")
 
-    @_purge_fixed_message_records.before_loop
-    async def _wait_for_db(self) -> None:
-        # Cogs are loaded before Tortoise is initialized in setup_hook.
-        await self.bot.wait_until_ready()
-
     @staticmethod
     def _skip_channel(settings: GuildSettings | None, channel_id: int) -> bool:
         if settings is None:

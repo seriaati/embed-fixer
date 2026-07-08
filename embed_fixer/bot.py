@@ -71,6 +71,13 @@ class EmbedFixer(commands.AutoShardedBot):
         self.app_emojis: dict[str, discord.Emoji] = {}
 
     async def setup_hook(self) -> None:
+        # Tortoise stores its state in a ContextVar; tasks spawned during cog loading
+        # (e.g. tasks.loop) only see it if the database is initialized before them.
+        await Tortoise.init(TORTOISE_ORM)
+        await self._apply_migrations()
+        await Tortoise.generate_schemas()
+        await self._migrate_guild_settings()
+
         async for filepath in anyio.Path("embed_fixer/cogs").glob("**/*.py"):
             cog_name = Path(filepath).stem
             if self.env == "dev" and cog_name == "health":
@@ -91,11 +98,6 @@ class EmbedFixer(commands.AutoShardedBot):
         await self._load_app_emojis()
 
         logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
-
-        await Tortoise.init(TORTOISE_ORM)
-        await self._apply_migrations()
-        await Tortoise.generate_schemas()
-        await self._migrate_guild_settings()
 
     async def _apply_migrations(self) -> None:
         if await self._is_pre_migration_db():
