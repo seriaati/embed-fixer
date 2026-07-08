@@ -2,21 +2,22 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from typing import TYPE_CHECKING, Any, Final, Literal, cast
+import datetime
+from typing import TYPE_CHECKING, Any, Final, Literal
 from urllib.parse import parse_qs, urlparse, urlunparse
 
 import discord
 import emoji
 from discord import app_commands
 from discord.app_commands import locale_str
-from discord.ext import commands
+from discord.ext import commands, tasks
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
 from embed_fixer.core.config import settings
 from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
-from embed_fixer.models import GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
+from embed_fixer.models import FixedMessage, GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
@@ -42,6 +43,7 @@ USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
 DEFAULT_FILESIZE_LIMIT: Final[int] = 10 * 1024 * 1024  # 10 MB
 ROTATE_FIX_EMOJI: Final[str] = "🔄"
+FIXED_MESSAGE_RETENTION_DAYS: Final[int] = 90
 
 type SendType = Literal["webhook", "reply", "channel", "interaction"]
 
@@ -210,12 +212,26 @@ class FixerCog(commands.Cog):
     async def cog_load(self) -> None:
         self.bot.tree.add_command(self.fix_embed_ctx)
         self.bot.tree.add_command(self.extract_medias_ctx)
+        self._purge_fixed_message_records.start()
 
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(self.fix_embed_ctx.name, type=self.fix_embed_ctx.type)
         self.bot.tree.remove_command(
             self.extract_medias_ctx.name, type=self.extract_medias_ctx.type
         )
+        self._purge_fixed_message_records.cancel()
+
+    @tasks.loop(hours=24)
+    async def _purge_fixed_message_records(self) -> None:
+        cutoff = discord.utils.utcnow() - datetime.timedelta(days=FIXED_MESSAGE_RETENTION_DAYS)
+        deleted = await FixedMessage.filter(created_at__lt=cutoff).delete()
+        if deleted:
+            logger.info(f"Purged {deleted} fixed message records")
+
+    @_purge_fixed_message_records.before_loop
+    async def _wait_for_db(self) -> None:
+        # Cogs are loaded before Tortoise is initialized in setup_hook.
+        await self.bot.wait_until_ready()
 
     @staticmethod
     def _skip_channel(settings: GuildSettings | None, channel_id: int) -> bool:
@@ -254,6 +270,64 @@ class FixerCog(commands.Cog):
             return None
 
         return next((a for a in authors if a.display_name == query), None)
+
+    async def _get_fixed_message_author(
+        self, message: discord.Message, guild: discord.Guild
+    ) -> discord.Member | None:
+        """Resolve the original author of a fixed message as a guild member.
+
+        Uses the database record when available, falling back to display name matching
+        for messages sent before fixed messages were tracked.
+        """
+        fixed = await FixedMessage.get_or_none(id=message.id)
+        if fixed is not None:
+            member = guild.get_member(fixed.author_id)
+            if member is None:
+                with contextlib.suppress(discord.HTTPException):
+                    member = await guild.fetch_member(fixed.author_id)
+            return member
+
+        return await self._get_original_author(message, guild)
+
+    @staticmethod
+    def _is_fixed_webhook_message(message: discord.Message) -> bool:
+        """Whether this message is a fixed message sent through an Embed Fixer webhook."""
+        return message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
+
+    async def _resolve_fixed_message(self, message: discord.Message) -> tuple[str, int] | None:
+        """Recognize a fixed message sent by Embed Fixer and resolve its original author.
+
+        Looks up the fixed message record in the database first, then falls back to
+        heuristics for messages sent before fixed messages were tracked: a fixed message
+        is either sent through a webhook impersonating the original author, or sent by
+        the bot as a reply to the original message.
+
+        Returns:
+            The send type of the fixed message and its original author's ID, or `None`
+            if the message is not recognized as a fixed message or the author cannot be
+            resolved.
+        """
+        fixed = await FixedMessage.get_or_none(id=message.id)
+        if fixed is not None:
+            return fixed.send_type, fixed.author_id
+
+        if (guild := message.guild) is None:
+            return None
+
+        if self._is_fixed_webhook_message(message):
+            author = await self._get_original_author(message, guild)
+            if author is None:
+                return None
+            return "webhook", author.id
+
+        if (
+            message.author.id == self.bot.user.id
+            and message.reference is not None
+            and isinstance(message.reference.resolved, discord.Message)
+        ):
+            return "reply", message.reference.resolved.author.id
+
+        return None
 
     @staticmethod
     async def _determine_fix_method(
@@ -521,7 +595,7 @@ class FixerCog(commands.Cog):
 
         # Replying to a webhook message
         if resolved_ref.webhook_id is not None:
-            author = await self._get_original_author(resolved_ref, message.guild)
+            author = await self._get_fixed_message_author(resolved_ref, message.guild)
 
             if author is None:
                 return resolved_ref.author.display_name
@@ -853,6 +927,15 @@ class FixerCog(commands.Cog):
                 await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
                 return None
 
+        if fix_message is not None and message.guild is not None:
+            await FixedMessage.create(
+                id=fix_message.id,
+                guild_id=message.guild.id,
+                channel_id=fix_message.channel.id,
+                author_id=message.author.id,
+                send_type=send_type,
+            )
+
         await self._add_delete_reaction(
             message,
             interaction,
@@ -987,7 +1070,7 @@ class FixerCog(commands.Cog):
         if guild is None:
             return
 
-        author = await self._get_original_author(resolved_ref, guild)
+        author = await self._get_fixed_message_author(resolved_ref, guild)
         # Can't find author or author is a bot or the author is the same as the message author
         if author is None or author.bot or author.id == message.author.id:
             return
@@ -1012,52 +1095,56 @@ class FixerCog(commands.Cog):
 
     @commands.Cog.listener("on_raw_reaction_add")
     async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
-        if (
-            payload.guild_id is None
-            or payload.user_id == self.bot.user.id
-            or payload.message_author_id is None
-        ):
+        if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
-        settings, _ = await UserSettings.get_or_create(id=payload.message_author_id)
+        fixed = await FixedMessage.get_or_none(id=payload.message_id)
+        if fixed is not None:
+            author_id = fixed.author_id
+        else:
+            # Legacy detection for messages sent before fixed messages were tracked.
+            # Fixed messages are either webhook messages (Discord doesn't include
+            # message_author_id for those) or replies sent by the bot itself.
+            if (
+                payload.message_author_id is not None
+                and payload.message_author_id != self.bot.user.id
+            ):
+                return
+
+            channel_id = payload.channel_id
+            channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
+            if isinstance(
+                channel, discord.ForumChannel | discord.CategoryChannel | discord.abc.PrivateChannel
+            ):
+                return
+
+            try:
+                message = await channel.fetch_message(payload.message_id)
+            except discord.NotFound:
+                return
+            except discord.Forbidden:
+                logger.warning(
+                    f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
+                )
+                return
+
+            fixed_message = await self._resolve_fixed_message(message)
+            if fixed_message is None:
+                return
+
+            _, author_id = fixed_message
+
+        if author_id == payload.user_id:
+            return
+
+        settings, _ = await UserSettings.get_or_create(id=author_id)
         if not settings.notify_on_react:
             return
 
-        channel_id = payload.channel_id
-        channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
-        if isinstance(
-            channel, discord.ForumChannel | discord.CategoryChannel | discord.abc.PrivateChannel
-        ):
-            return
-
         try:
-            message = await channel.fetch_message(payload.message_id)
-        except discord.NotFound:
-            return
-        except discord.Forbidden:
-            logger.warning(
-                f"Failed to fetch message in {channel!r}, bot perms: {channel.permissions_for(channel.guild.me)}"
-            )
-            return
-
-        is_webhook = (
-            message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
-        )
-
-        if (guild := message.guild) is None or not is_webhook:
-            return
-
-        if is_webhook:
-            author = await self._get_original_author(message, guild)
-            if author is None or author.id == payload.user_id:
-                return
-        else:
-            return
-
-        try:
-            user = self.bot.get_user(author.id) or await self.bot.fetch_user(author.id)
+            user = self.bot.get_user(author_id) or await self.bot.fetch_user(author_id)
         except Exception as e:
-            logger.error(f"Failed to fetch user with ID {author.id}: {e}")
+            logger.error(f"Failed to fetch user with ID {author_id}: {e}")
             return
 
         try:
@@ -1098,31 +1185,16 @@ class FixerCog(commands.Cog):
             )
             return
 
-        # The emoji is added to a webhook message which also has the USERNAME_SUFFIX,
-        is_webhook = (
-            message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
-        )
-        # The emoji is added to a message sent by the bot, and is also replying to
-        # another message.
-        is_reply = (
-            message.reference is not None
-            and isinstance(message.reference.resolved, discord.Message)
-            and message.author.id == self.bot.user.id
-        )
-
-        if (guild := message.guild) is None or not (is_webhook or is_reply):
+        if (guild := message.guild) is None:
             return
 
-        if is_webhook:
-            author = await self._get_original_author(message, guild)
-            if author is None:
-                return
-        else:
-            message_ref = cast("discord.MessageReference", message.reference)
-            resolved_ref = cast("discord.Message", message_ref.resolved)
-            author = resolved_ref.author
+        fixed_message = await self._resolve_fixed_message(message)
+        if fixed_message is None:
+            return
 
-        if payload.user_id == author.id:
+        _, author_id = fixed_message
+
+        if payload.user_id == author_id:
             try:
                 await message.delete()
             except discord.Forbidden:
@@ -1164,28 +1236,16 @@ class FixerCog(commands.Cog):
             )
             return
 
-        is_webhook = (
-            message.webhook_id is not None and USERNAME_SUFFIX in message.author.display_name
-        )
-        is_reply = (
-            message.reference is not None
-            and isinstance(message.reference.resolved, discord.Message)
-            and message.author.id == self.bot.user.id
-        )
-
-        if (guild := message.guild) is None or not (is_webhook or is_reply):
+        if (guild := message.guild) is None:
             return
 
-        if is_webhook:
-            author = await self._get_original_author(message, guild)
-            if author is None:
-                return
-        else:
-            message_ref = cast("discord.MessageReference", message.reference)
-            resolved_ref = cast("discord.Message", message_ref.resolved)
-            author = resolved_ref.author
+        fixed_message = await self._resolve_fixed_message(message)
+        if fixed_message is None:
+            return
 
-        if payload.user_id != author.id:
+        send_type, author_id = fixed_message
+
+        if payload.user_id != author_id:
             return
 
         # Find the first domain that has a next fix method to rotate to
@@ -1233,7 +1293,7 @@ class FixerCog(commands.Cog):
             return
 
         try:
-            if is_webhook:
+            if send_type == "webhook":
                 webhook = await self._get_or_create_webhook(message.channel, guild)
                 if webhook is None:
                     return
@@ -1250,6 +1310,16 @@ class FixerCog(commands.Cog):
         if payload.member is not None:
             await remove_reaction_safe(message, ROTATE_FIX_EMOJI, payload.member)
 
+    @commands.Cog.listener("on_raw_message_delete")
+    async def remove_fixed_message_record(self, payload: discord.RawMessageDeleteEvent) -> None:
+        await FixedMessage.filter(id=payload.message_id).delete()
+
+    @commands.Cog.listener("on_raw_bulk_message_delete")
+    async def remove_fixed_message_records(
+        self, payload: discord.RawBulkMessageDeleteEvent
+    ) -> None:
+        await FixedMessage.filter(id__in=payload.message_ids).delete()
+
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
         if message.content.startswith(f"{self.bot.user.mention} jsk py"):
@@ -1258,7 +1328,7 @@ class FixerCog(commands.Cog):
         channel, guild, author = message.channel, message.guild, message.author
 
         if (
-            (message.webhook_id is not None and USERNAME_SUFFIX in author.display_name)
+            self._is_fixed_webhook_message(message)
             or self.bot.user.id == author.id
             or guild is None
             or await IgnoreMe.contains(author.id)

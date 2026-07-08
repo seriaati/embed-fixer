@@ -87,6 +87,20 @@ class IgnoreMe(Model):
         return True
 
 
+class FixedMessage(Model):
+    """A fixed message sent by the bot, used to recognize it and its original author later."""
+
+    id = fields.BigIntField(pk=True, generated=False)
+    guild_id = fields.BigIntField()
+    channel_id = fields.BigIntField()
+    author_id = fields.BigIntField()
+    send_type = fields.CharField(max_length=16)
+    created_at = fields.DatetimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        table = "fixed_messages"
+
+
 class GuildSettingsTable(SettingsTable):
     class Meta:
         table = "guild_settings_v2"
