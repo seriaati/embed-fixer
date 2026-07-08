@@ -6,5 +6,11 @@ load_dotenv()
 
 TORTOISE_ORM = {
     "connections": {"default": settings.db_uri or "sqlite://embed_fixer.db"},
-    "apps": {"embed_fixer": {"models": ["embed_fixer.models"]}},
+    "apps": {
+        "embed_fixer": {
+            "models": ["embed_fixer.models"],
+            "default_connection": "default",
+            "migrations": "migrations",
+        }
+    },
 }

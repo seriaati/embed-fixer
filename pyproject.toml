@@ -43,6 +43,10 @@ reportUnnecessaryContains = true
 reportUnnecessaryIsInstance = true
 reportUnnecessaryTypeIgnoreComment = true
 typeCheckingMode = "standard"
+exclude = ["migrations", "**/node_modules", "**/__pycache__", "**/.*", ".venv"]
 
 [dependency-groups]
 dev = ["asyncpg>=0.31.0"]
+
+[tool.tortoise]
+tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"

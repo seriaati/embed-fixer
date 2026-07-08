@@ -9,8 +9,9 @@ import discord
 from discord.ext import commands
 from loguru import logger
 from tortoise import Tortoise
-from tortoise.exceptions import IntegrityError
+from tortoise.exceptions import IntegrityError, OperationalError
 from tortoise.expressions import Subquery
+from tortoise.migrations.api.migrate import migrate
 
 from embed_fixer.core.command_tree import CommandTree
 from embed_fixer.core.db_config import TORTOISE_ORM
@@ -92,8 +93,48 @@ class EmbedFixer(commands.AutoShardedBot):
         logger.info(f"Invite: {discord.utils.oauth_url(self.user.id, permissions=permissions)}")
 
         await Tortoise.init(TORTOISE_ORM)
+        await self._apply_migrations()
         await Tortoise.generate_schemas()
         await self._migrate_guild_settings()
+
+    async def _apply_migrations(self) -> None:
+        if await self._is_pre_migration_db():
+            # Existing database from before the migration system was (re)introduced:
+            # record the initial migration as applied without executing it.
+            logger.info("Existing pre-migration database detected, baselining migration history")
+            await migrate(
+                config=TORTOISE_ORM,
+                target="embed_fixer.0001_initial",
+                fake=True,
+                direction="forward",
+            )
+
+        await migrate(config=TORTOISE_ORM, direction="forward", progress=self._report_migration)
+
+    @staticmethod
+    def _report_migration(event: str, app_label: str, name: str) -> None:
+        if event == "apply_start":
+            logger.info(f"Applying migration {app_label}.{name}")
+
+    @staticmethod
+    async def _is_pre_migration_db() -> bool:
+        conn = Tortoise.get_connection("default")
+
+        try:
+            recorded = await conn.execute_query_dict(
+                "SELECT COUNT(*) AS c FROM tortoise_migrations"
+            )
+        except OperationalError:
+            recorded = []
+        if recorded and recorded[0]["c"]:
+            return False
+
+        for table in ("guild_settings_v2", "guild_settings"):
+            with contextlib.suppress(OperationalError):
+                await conn.execute_query(f"SELECT 1 FROM {table} LIMIT 1")  # noqa: S608
+                return True
+
+        return False
 
     async def _migrate_guild_settings(self) -> None:
         old_gs = await GuildSettingsOld.exclude(
