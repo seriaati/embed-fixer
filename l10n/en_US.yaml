@@ -94,6 +94,6 @@ import_cmd_desc: Import server settings from a JSON file exported with /export
 import_file_param: file
 import_file_param_desc: The JSON settings file exported with /export
 import_done: Settings have been imported successfully.
-import_invalid_file: Invalid settings file, please upload a file exported with /export.
+import_invalid_file: "Invalid settings file, please upload a file exported with /export."
 rotate_fix_reaction: Rotate Fix Reaction
 rotate_fix_reaction_desc: "When enabled, the bot adds a \U0001F504 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service."
