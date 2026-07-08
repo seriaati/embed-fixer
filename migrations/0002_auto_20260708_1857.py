@@ -13,7 +13,12 @@ class Migration(migrations.Migration):
         ops.CreateModel(
             name="FixedMessage",
             fields=[
-                ("id", fields.BigIntField(primary_key=True, unique=True, db_index=True, generated=False)),
+                (
+                    "id",
+                    fields.BigIntField(
+                        primary_key=True, unique=True, db_index=True, generated=False
+                    ),
+                ),
                 ("guild_id", fields.BigIntField()),
                 ("channel_id", fields.BigIntField()),
                 ("author_id", fields.BigIntField()),
