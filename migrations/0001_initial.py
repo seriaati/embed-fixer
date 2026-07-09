@@ -16,7 +16,12 @@ class Migration(migrations.Migration):
         ops.CreateModel(
             name="GuildSettingsOld",
             fields=[
-                ("id", fields.BigIntField(primary_key=True, unique=True, db_index=True, generated=False)),
+                (
+                    "id",
+                    fields.BigIntField(
+                        primary_key=True, unique=True, db_index=True, generated=False
+                    ),
+                ),
                 ("disable_webhook_reply", fields.BooleanField(default=False)),
                 (
                     "disabled_fixes",
@@ -97,7 +102,12 @@ class Migration(migrations.Migration):
         ops.CreateModel(
             name="GuildSettingsTable",
             fields=[
-                ("id", fields.BigIntField(primary_key=True, unique=True, db_index=True, generated=False)),
+                (
+                    "id",
+                    fields.BigIntField(
+                        primary_key=True, unique=True, db_index=True, generated=False
+                    ),
+                ),
                 (
                     "data",
                     fields.JSONField(
@@ -148,14 +158,26 @@ class Migration(migrations.Migration):
         ),
         ops.CreateModel(
             name="IgnoreMe",
-            fields=[("id", fields.BigIntField(primary_key=True, unique=True, db_index=True, generated=False))],
+            fields=[
+                (
+                    "id",
+                    fields.BigIntField(
+                        primary_key=True, unique=True, db_index=True, generated=False
+                    ),
+                )
+            ],
             options={"table": "ignore_me", "app": "embed_fixer", "pk_attr": "id"},
             bases=["Model"],
         ),
         ops.CreateModel(
             name="UserSettingsTable",
             fields=[
-                ("id", fields.BigIntField(primary_key=True, unique=True, db_index=True, generated=False)),
+                (
+                    "id",
+                    fields.BigIntField(
+                        primary_key=True, unique=True, db_index=True, generated=False
+                    ),
+                ),
                 (
                     "data",
                     fields.JSONField(
