@@ -5,7 +5,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/seriaati/embed-fixer)
 ![GitHub forks](https://img.shields.io/github/forks/seriaati/embed-fixer)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/seriaati/embed-fixer)
-![Lines of code](https://tokei.rs/b1/github/seriaati/embed-fixer?style=flat&category=code&type=Python)
+![Lines of code](https://tokei.queeniemella.cc/b1/github/seriaati/embed-fixer?style=flat&category=code&type=Python)
 ![GitHub](https://img.shields.io/github/license/seriaati/embed-fixer)
 ![Discord](https://img.shields.io/discord/1000727526194298910?label=Support%20Server&color=5865F2)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -66,6 +66,7 @@ Fixings are currently available for:
 - **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)/[EmbedEZ](https://embedez.com)/[FixEmbed](https://fixembed.app)
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
 - **DeviantArt**: [fxdeviantart](https://github.com/Tschrock/fixdeviantart)
+- **Pinterest**: [EmbedEZ](https://embedez.com)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. You can customize this behavior to reply instead of delete with `/settings`.
 

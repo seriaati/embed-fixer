@@ -25,6 +25,7 @@ class DomainId(IntEnum):
     PTT = 15
     DEVIANTART = 16
     BILIBILI_OPUS = 17
+    PINTEREST = 18
 
 
 @dataclass(kw_only=True)
@@ -499,6 +500,19 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[ReplaceFix(old_domain="deviantart.com", new_domain="fixdeviantart.com")],
                 repo_url="https://github.com/Tschrock/fixdeviantart",
                 default=True,
+            )
+        ],
+    ),
+    Domain(
+        id=DomainId.PINTEREST,
+        name="Pinterest",
+        websites=[Website(r"https://(www.)?pinterest.com/pin/\d+/?")],
+        fix_methods=[
+            FixMethod(
+                id=38,
+                name=EMBEDEZ_NAME,
+                fixes=[ReplaceFix(old_domain="pinterest.com", new_domain="pinterestez.com")],
+                repo_url=EMBEDEZ_REPO_URL,
             )
         ],
     ),
