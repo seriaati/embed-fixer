@@ -66,6 +66,7 @@ Fixings are currently available for:
 - **Threads**: [FixThreads](https://github.com/milanmdev/fixthreads)/[vxThreads](https://github.com/everettsouthwick/vxThreads)/[EmbedEZ](https://embedez.com)/[FixEmbed](https://fixembed.app)
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
 - **DeviantArt**: [fxdeviantart](https://github.com/Tschrock/fixdeviantart)
+- **Pinterest**: [EmbedEZ](https://embedez.com)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. You can customize this behavior to reply instead of delete with `/settings`.
 
