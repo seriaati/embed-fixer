@@ -26,6 +26,7 @@ class DomainId(IntEnum):
     DEVIANTART = 16
     BILIBILI_OPUS = 17
     PINTEREST = 18
+    YOUTUBE = 19
 
 
 @dataclass(kw_only=True)
@@ -517,5 +518,26 @@ DOMAINS: Final[list[Domain]] = [
                 has_ads=True,
             )
         ],
+    ),
+    Domain(
+        id=DomainId.YOUTUBE,
+        name="YouTube",
+        websites=[
+            Website(r"https://(www.)?youtube.com/watch\?v=[\w-]+/?"),
+            Website(r"https://(www.)?youtu.be/[\w-]+/?"),
+        ],
+        fix_methods=[
+            FixMethod(
+                id=39,
+                name="Koutube",
+                fixes=[
+                    ReplaceFix(old_domain="youtube.com", new_domain="koutube.com"),
+                    ReplaceFix(old_domain="youtu.be", new_domain="koutu.be"),
+                ],
+                repo_url="https://github.com/iGerman00/koutube",
+                default=True,
+            )
+        ],
+        enabled_by_default=False,
     ),
 ]

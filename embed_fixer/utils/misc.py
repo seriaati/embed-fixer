@@ -4,8 +4,8 @@ import asyncio
 import io
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-from urllib.parse import urlparse, urlunparse
+from typing import TYPE_CHECKING, Any, Final
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import sentry_sdk
 import tomli
@@ -42,8 +42,18 @@ def get_filesize(fp: io.BufferedIOBase) -> int:
     return size
 
 
+# Query params that identify content (rather than track shares) and must survive cleaning
+KEEP_QUERY_PARAMS: Final[dict[str, set[str]]] = {"youtube.com": {"v"}}
+
+
 def remove_query_params(url: str) -> str:
     parsed_url = urlparse(url)
+
+    query = ""
+    for domain, keep in KEEP_QUERY_PARAMS.items():
+        if domain_in_url(url, domain):
+            query = urlencode([(k, v) for k, v in parse_qsl(parsed_url.query) if k in keep])
+            break
 
     return urlunparse(
         (
@@ -51,7 +61,7 @@ def remove_query_params(url: str) -> str:
             parsed_url.netloc,
             parsed_url.path,
             parsed_url.params,
-            "",
+            query,
             parsed_url.fragment,
         )
     )
