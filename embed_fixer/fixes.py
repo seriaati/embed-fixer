@@ -64,6 +64,7 @@ class Domain:
     name: str
     websites: list[Website]
     fix_methods: list[FixMethod]
+    enabled_by_default: bool = True
 
     @property
     def default_fix_method(self) -> FixMethod | None:

@@ -383,7 +383,9 @@ class GuildSettingsView(ui.LayoutView):
             )
 
         if setting is GuildSetting.DISABLE_FIXES:
-            fix_selector = DisableDomainSelect(guild_settings.disabled_domains)
+            fix_selector = DisableDomainSelect(
+                guild_settings.disabled_domains, guild_settings.enabled_domains
+            )
             self._add_selector_action_row(
                 container, fix_selector, action_row_id=FIX_SELECTOR_ROW_ID
             )
@@ -463,13 +465,15 @@ class GuildSettingsView(ui.LayoutView):
 
 
 class DisableDomainSelect(ui.Select[GuildSettingsView]):
-    def __init__(self, current: list[int]) -> None:
+    def __init__(self, disabled: list[int], enabled: list[int]) -> None:
         super().__init__(
             options=[
                 SelectOption(
                     label=domain.name,
                     value=str(domain.id.value),
-                    default=domain.id.value in current,
+                    default=domain.id.value in disabled
+                    if domain.enabled_by_default
+                    else domain.id.value not in enabled,
                 )
                 for domain in DOMAINS
             ],
@@ -483,9 +487,13 @@ class DisableDomainSelect(ui.Select[GuildSettingsView]):
 
         await i.response.defer()
 
+        selected = {int(domain) for domain in self.values}
         guild_settings, _ = await GuildSettings.get_or_create(id=i.guild.id)
-        guild_settings.disabled_domains = [int(domain) for domain in self.values]
-        await guild_settings.save(update_fields=("disabled_domains",))
+        guild_settings.disabled_domains = [d.id.value for d in DOMAINS if d.id.value in selected]
+        guild_settings.enabled_domains = [
+            d.id.value for d in DOMAINS if not d.enabled_by_default and d.id.value not in selected
+        ]
+        await guild_settings.save(update_fields=("disabled_domains", "enabled_domains"))
 
 
 class LangSelector(ui.Select[GuildSettingsView]):

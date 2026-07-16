@@ -356,7 +356,10 @@ class FixerCog(commands.Cog):
         website: Website | None = None
 
         for d in DOMAINS:
-            if settings is not None and d.id in settings.disabled_domains:
+            if settings is not None and (
+                d.id in settings.disabled_domains
+                or (not d.enabled_by_default and d.id not in settings.enabled_domains)
+            ):
                 continue
 
             for w in d.websites:

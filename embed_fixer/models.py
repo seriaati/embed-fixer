@@ -125,6 +125,7 @@ class GuildSettings(BaseSettings):
     disable_webhook_reply: bool = False
     disabled_fixes: list[str] = pydantic.Field(default_factory=list)
     disabled_domains: list[int] = pydantic.Field(default_factory=list)
+    enabled_domains: list[int] = pydantic.Field(default_factory=list)
     disable_fix_channels: list[int] = pydantic.Field(default_factory=list)
     enable_fix_channels: list[int] = pydantic.Field(default_factory=list)
     extract_media_channels: list[int] = pydantic.Field(default_factory=list)
