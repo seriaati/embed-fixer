@@ -513,6 +513,7 @@ DOMAINS: Final[list[Domain]] = [
                 name=EMBEDEZ_NAME,
                 fixes=[ReplaceFix(old_domain="pinterest.com", new_domain="pinterestez.com")],
                 repo_url=EMBEDEZ_REPO_URL,
+                has_ads=True,
             )
         ],
     ),
