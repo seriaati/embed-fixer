@@ -1,7 +1,7 @@
 name: Nederlands
 replying_to: "⬅️ Reageert op {user} ({url})"
 disable_fixes: Schakel Embed Fixes Voor Websites Uit
-disable_fixes_desc: Schakel Embed Fixes uit voor specifieke websites.
+disable_fixes_desc: Schakel Embed Fixes uit voor specifieke websites. [YouTube is standaard uitgeschakeld](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
 lang: Taal
 lang_desc: Verander de taal van de bot.
 extract_media_channels: Media Extractie Kanalen

@@ -1,7 +1,7 @@
 name: 简体中文
 replying_to: "⬅️ 回复 {user} ({url})"
 disable_fixes: 关闭网站的预览嵌入
-disable_fixes_desc: 关闭特定网站的预览嵌入。
+disable_fixes_desc: 关闭特定网站的预览嵌入。[YouTube 默认处于关闭状态](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing)。
 lang: 语言
 lang_desc: 更改机器人的语言。
 extract_media_channels: 媒体提取频道

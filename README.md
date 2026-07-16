@@ -67,6 +67,7 @@ Fixings are currently available for:
 - **PTT**: [fxptt](https://github.com/seriaati/fxptt)
 - **DeviantArt**: [fxdeviantart](https://github.com/Tschrock/fixdeviantart)
 - **Pinterest**: [EmbedEZ](https://embedez.com)
+- **YouTube**: [Koutube](https://github.com/iGerman00/koutube) ([disabled by default](#about-youtube-embed-fixing))
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. You can customize this behavior to reply instead of delete with `/settings`.
 
@@ -86,6 +87,10 @@ For Pixiv and Twitter/X links, the bot checks if the artwork/post is marked as N
 Turn on "Show original link button" in `/settings` when using EmbedEZ fixes if you want to go to the original post without seeing the ads.
 
 EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. I originally made a [proxy](https://github.com/seriaati/embedez) to it to bypass the ads, but it stopped working after the site owner changed some stuff.
+
+## About YouTube Embed Fixing
+
+YouTube embed fixing (using [Koutube](https://github.com/iGerman00/koutube)) is disabled by default. Despite having ads and a shitty player, YouTube's embed is guaranteed to work all of the time, while Koutube's embed, at least at the time of testing, sometimes doesn't get generated, or if it does, sometimes doesn't contain the video. If you want to enable it, use `/settings` and go to "Disable Embed Fixes for Websites" and uncheck YouTube.
 
 ### Opt Out of Embed Fixing
 
@@ -131,7 +136,7 @@ All settings are unique to each server, you can use `/reset` to reset them to de
 Below are settings you can change with the `/settings` command:
 
 - **Language**: Change the language of the bot.
-- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites.
+- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
 - **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
 - **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist.
 - **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist.

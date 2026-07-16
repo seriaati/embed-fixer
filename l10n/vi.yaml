@@ -1,7 +1,7 @@
 name: Tiếng Việt
 replying_to: "⬅️ Đang trả lời {user} ({url})"
 disable_fixes: Tắt Sửa Nhúng Cho Các Trang Web
-disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể.
+disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể. [YouTube bị tắt theo mặc định](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
 lang: Ngôn Ngữ
 lang_desc: Thay đổi ngôn ngữ của bot.
 extract_media_channels: Kênh Trích Xuất Phương Tiện

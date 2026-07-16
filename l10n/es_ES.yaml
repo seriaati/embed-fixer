@@ -1,7 +1,7 @@
 name: Español
 replying_to: "⬅️ En respuesta a {user} ({url})"
 disable_fixes: Deshabilitar Embed Fixer Para Sitios Web
-disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos.
+disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos. [YouTube está desactivado por defecto](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
 lang: Idioma
 lang_desc: Cambiar el idioma del bot.
 extract_media_channels: Canales Con Extracción Multimedia

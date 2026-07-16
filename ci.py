@@ -67,10 +67,16 @@ async def run_ci() -> None:
     )
     logger.success("Successfully updated settings in README.")
 
-    updated_domains = [
-        f"**{domain.name}**: {'/'.join(f'[{fix.name}]({fix.repo_url})' if fix.repo_url else fix.name for fix in domain.fix_methods) or 'Media extraction only, no embed fixing'}"
-        for domain in DOMAINS
-    ]
+    updated_domains = []
+    for domain in DOMAINS:
+        fixes_md = "/".join(
+            f"[{fix.name}]({fix.repo_url})" if fix.repo_url else fix.name
+            for fix in domain.fix_methods
+        )
+        bullet = f"**{domain.name}**: {fixes_md or 'Media extraction only, no embed fixing'}"
+        if not domain.enabled_by_default:
+            bullet += " ([disabled by default](#about-youtube-embed-fixing))"
+        updated_domains.append(bullet)
     update_readme_bullet_points(
         updated_domains,
         section_start_marker="## Embed Fixing",
