@@ -1,7 +1,7 @@
 name: English
 replying_to: "⬅️ Replying to {user} ({url})"
 disable_fixes: Disable Embed Fixes for Websites
-disable_fixes_desc: Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
+disable_fixes_desc: "Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing)."
 lang: Language
 lang_desc: Change the language of the bot.
 extract_media_channels: Media Extraction Channels
