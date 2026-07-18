@@ -151,7 +151,7 @@ Below are settings you can change with the `/settings` command:
 - **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
 - **Original Link Button**: Show a button linking to the original post in fixed embed messages.
 - **Delete Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed.
-- **Reply Instead of Delete**: When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook.
+- **Fix Mode**: How fixed embeds are sent. **Delete and Resend** (default) deletes the original message and resends it via webhook, mimicking the author; **Reply** replies to the original message with the fix, keeping the original; **Resend as Bot** sends the fix as the bot itself, keeping the original message. Users can override the server's mode for their own messages in `/user-settings`.
 - **Remove Delete Reaction After**: Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable.
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
 
