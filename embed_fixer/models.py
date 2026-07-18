@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, ClassVar, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Self
 
 import pydantic
 from tortoise import fields
@@ -10,6 +10,7 @@ from tortoise.exceptions import IntegrityError
 from tortoise.models import Model
 
 from embed_fixer.fixes import DomainId
+from embed_fixer.settings import FixMode
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -116,7 +117,15 @@ class UserSettings(BaseSettings):
 
     notify_on_react: bool = False
     lang: str | None = None
-    reply_instead_of_delete: bool = False
+    fix_mode: FixMode | None = None
+    """Fix mode forced by the user, `None` means follow the guild's setting."""
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def __migrate_reply_instead_of_delete(cls, values: dict[str, Any]) -> dict[str, Any]:
+        if "fix_mode" not in values and values.get("reply_instead_of_delete"):
+            values["fix_mode"] = FixMode.REPLY
+        return values
 
 
 class GuildSettings(BaseSettings):
@@ -141,9 +150,16 @@ class GuildSettings(BaseSettings):
     translate_target_lang: str | None = None
     show_original_link_btn: bool = True
     delete_original_message_in_threads: bool = False
-    reply_instead_of_delete: bool = False
+    fix_mode: FixMode = FixMode.DELETE_AND_RESEND
     remove_delete_reaction_after: int | None = None
     rotate_fix_reaction: bool = False
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def __migrate_reply_instead_of_delete(cls, values: dict[str, Any]) -> dict[str, Any]:
+        if "fix_mode" not in values and values.get("reply_instead_of_delete"):
+            values["fix_mode"] = FixMode.REPLY
+        return values
 
 
 # Deprecated, only for migration, new fields should be added to GuildSettings

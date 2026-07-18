@@ -18,6 +18,7 @@ from embed_fixer.core.config import settings
 from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, AppendURLFix, DomainId
 from embed_fixer.models import FixedMessage, GuildFixMethod, GuildSettings, IgnoreMe, UserSettings
+from embed_fixer.settings import FixMode
 from embed_fixer.utils.download_media import MediaDownloader
 from embed_fixer.utils.fetch_info import PostInfoFetcher
 from embed_fixer.utils.misc import (
@@ -45,7 +46,7 @@ DEFAULT_FILESIZE_LIMIT: Final[int] = 10 * 1024 * 1024  # 10 MB
 ROTATE_FIX_EMOJI: Final[str] = "🔄"
 FIXED_MESSAGE_RETENTION_DAYS: Final[int] = 90
 
-type SendType = Literal["webhook", "reply", "channel", "interaction"]
+type SendType = Literal["webhook", "reply", "channel", "resend", "interaction"]
 
 
 class MockMessage:
@@ -803,7 +804,7 @@ class FixerCog(commands.Cog):
             funnel_target_channel
         )
 
-    async def _send_via_webhook_or_reply(
+    async def _send_via_fix_mode(
         self,
         message: discord.Message,
         webhook_channel: discord.abc.GuildChannel
@@ -812,11 +813,17 @@ class FixerCog(commands.Cog):
         files: list[discord.File],
         guild_settings: GuildSettings | None,
         *,
-        reply_instead_of_delete: bool = False,
+        fix_mode: FixMode = FixMode.DELETE_AND_RESEND,
         **kwargs: Any,
     ) -> tuple[discord.Message | None, SendType]:
-        """Send message via webhook or reply."""
-        if not reply_instead_of_delete:
+        """Send message via webhook, reply, or plain resend depending on the fix mode."""
+        if fix_mode is FixMode.RESEND:
+            return (
+                await message.channel.send(message.content, tts=message.tts, files=files, **kwargs),
+                "resend",
+            )
+
+        if fix_mode is FixMode.DELETE_AND_RESEND:
             webhook = await self._get_or_create_webhook(webhook_channel, message.guild)
 
             if webhook is not None:
@@ -841,7 +848,7 @@ class FixerCog(commands.Cog):
                     "channel",
                 )
 
-        # reply_instead_of_delete is True, or no webhook is available
+        # fix_mode is REPLY, or no webhook is available
         return await message.reply(
             message.content, tts=message.tts, files=files, mention_author=False, **kwargs
         ), "reply"
@@ -895,11 +902,11 @@ class FixerCog(commands.Cog):
             False if guild_settings is None else guild_settings.rotate_fix_reaction
         )
 
-        # Determine if reply mode should be forced (guild or user setting)
+        # Determine the fix mode, the user's setting overrides the guild's
         user_settings = await UserSettings.get_or_none(id=message.author.id)
-        reply_instead_of_delete = (
-            guild_settings is not None and guild_settings.reply_instead_of_delete
-        ) or (user_settings is not None and user_settings.reply_instead_of_delete)
+        fix_mode = FixMode.DELETE_AND_RESEND if guild_settings is None else guild_settings.fix_mode
+        if user_settings is not None and user_settings.fix_mode is not None:
+            fix_mode = user_settings.fix_mode
 
         # Add original link button if needed
         if show_original_link_btn and urls:
@@ -913,12 +920,12 @@ class FixerCog(commands.Cog):
         else:
             try:
                 webhook_channel = await self._get_target_channel(message, funnel_target_channel)
-                fix_message, send_type = await self._send_via_webhook_or_reply(
+                fix_message, send_type = await self._send_via_fix_mode(
                     message,
                     webhook_channel,
                     files,
                     guild_settings=guild_settings,
-                    reply_instead_of_delete=reply_instead_of_delete,
+                    fix_mode=fix_mode,
                     **kwargs,
                 )
             except discord.HTTPException as e:
@@ -1373,9 +1380,9 @@ class FixerCog(commands.Cog):
 
             if send_type in {"webhook", "channel"}:
                 # send_type is only "channel" when delete_original_message_in_threads is enabled
-                # this is checked in _send_via_webhook_or_reply.
+                # this is checked in _send_via_fix_mode.
                 await self.delete_message_safe(message, channel, guild)
-            elif send_type == "reply":
+            elif send_type in {"reply", "resend"}:
                 await self.suppress_embed_safe(message, channel, guild)
                 await remove_reaction_safe(message, "⌛", guild.me)
 

@@ -10,7 +10,7 @@ from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import GuildSetting
-from embed_fixer.ui.common import SettingsSection
+from embed_fixer.ui.common import FixModeSelector, SettingsSection
 
 from . import components as ui
 
@@ -39,7 +39,6 @@ NO_HEADER_SETTINGS = {
     GuildSetting.BOT_VISIBILITY,
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON,
     GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS,
-    GuildSetting.REPLY_INSTEAD_OF_DELETE,
     GuildSetting.ROTATE_FIX_REACTION,
 }
 
@@ -65,7 +64,6 @@ TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
     GuildSetting.BOT_VISIBILITY: "bot_visibility",
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON: "show_original_link_btn",
     GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS: "delete_original_message_in_threads",
-    GuildSetting.REPLY_INSTEAD_OF_DELETE: "reply_instead_of_delete",
     GuildSetting.ROTATE_FIX_REACTION: "rotate_fix_reaction",
 }
 
@@ -364,7 +362,7 @@ class GuildSettingsView(ui.LayoutView):
         self._add_selector_action_row(container, selector, action_row_id=ROLE_SELECTOR_ROW_ID)
         return cast("list[int]", getattr(guild_settings, attr_name))
 
-    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:
+    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:  # noqa: PLR0912
         await i.response.defer(ephemeral=True)
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)
@@ -410,6 +408,14 @@ class GuildSettingsView(ui.LayoutView):
                 guild_settings=guild_settings,
                 settings_attr=TOGGLE_SETTING_ATTRS[setting],
             )
+
+        elif setting is GuildSetting.FIX_MODE:
+            selector = FixModeSelector(
+                current=guild_settings.fix_mode,
+                lang=self.lang or DEFAULT_LANG,
+                settings_type="guild",
+            )
+            self._add_selector_action_row(container, selector)
 
         elif setting is GuildSetting.CHOOSE_FIX_SERVICE:
             self.domain_id = DOMAINS[0].id

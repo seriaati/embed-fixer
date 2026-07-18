@@ -6,7 +6,7 @@ import discord
 
 from embed_fixer.core.translator import DEFAULT_LANG
 from embed_fixer.settings import UserSetting
-from embed_fixer.ui.common import LangSelector, SettingsSection
+from embed_fixer.ui.common import FixModeSelector, LangSelector, SettingsSection
 
 from . import components as ui
 
@@ -27,7 +27,7 @@ class UserSettingsView(ui.LayoutView):
 
         container = ui.Container(accent_color=discord.Color.blurple())
         for setting in UserSetting:
-            if setting is UserSetting.LANG:
+            if setting in {UserSetting.LANG, UserSetting.FIX_MODE}:
                 continue
 
             container.add_item(
@@ -40,6 +40,20 @@ class UserSettingsView(ui.LayoutView):
                     settings_type="user",
                 )
             )
+
+        container.add_item(
+            discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large)
+        )
+        container.add_item(
+            discord.ui.TextDisplay(
+                f"## {self.translate('fix_mode')}\n{self.translate('fix_mode_desc')}"
+            )
+        )
+        container.add_item(
+            discord.ui.ActionRow(
+                FixModeSelector(current=settings.fix_mode, lang=lang, settings_type="user")
+            )
+        )
 
         container.add_item(
             discord.ui.Separator(visible=True, spacing=discord.SeparatorSpacing.large)

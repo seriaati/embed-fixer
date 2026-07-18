@@ -18,7 +18,7 @@ class GuildSetting(StrEnum):
     WHITELIST_ROLE_IDS = "whitelist_role_ids"
     SHOW_ORIGINAL_LINK_BUTTON = "show_original_link_btn"
     DELETE_ORIGINAL_MESSAGE_IN_THREADS = "delete_original_message_in_threads"
-    REPLY_INSTEAD_OF_DELETE = "reply_instead_of_delete"
+    FIX_MODE = "fix_mode"
     REMOVE_DELETE_REACTION_AFTER = "remove_delete_reaction_after"
     ROTATE_FIX_REACTION = "rotate_fix_reaction"
 
@@ -26,4 +26,10 @@ class GuildSetting(StrEnum):
 class UserSetting(StrEnum):
     LANG = "lang"
     NOTIFY_ON_REACT = "notify_on_react"
-    REPLY_INSTEAD_OF_DELETE = "reply_instead_of_delete"
+    FIX_MODE = "fix_mode"
+
+
+class FixMode(StrEnum):
+    DELETE_AND_RESEND = "delete_and_resend"
+    REPLY = "reply"
+    RESEND = "resend"

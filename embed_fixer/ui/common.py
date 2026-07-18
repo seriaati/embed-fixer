@@ -6,11 +6,14 @@ import discord
 
 from embed_fixer.core.translator import translator
 from embed_fixer.models import GuildSettings, UserSettings
+from embed_fixer.settings import FixMode
 
 from . import components as ui
 
 if TYPE_CHECKING:
     from embed_fixer.bot import Interaction
+
+FOLLOW_GUILD_VALUE = "follow_guild"
 
 
 class LangSelector(ui.Select):
@@ -55,6 +58,51 @@ class LangSelector(ui.Select):
                     return
 
         await i.response.defer()
+
+
+class FixModeSelector(ui.Select):
+    def __init__(
+        self, *, current: FixMode | None, lang: str, settings_type: Literal["guild", "user"]
+    ) -> None:
+        options: list[discord.SelectOption] = []
+        if settings_type == "user":
+            options.append(
+                discord.SelectOption(
+                    label=translator.translate("fix_mode_follow_server", lang=lang),
+                    value=FOLLOW_GUILD_VALUE,
+                    default=current is None,
+                )
+            )
+        options.extend(
+            discord.SelectOption(
+                label=translator.translate(f"fix_mode_{mode.value}", lang=lang),
+                description=translator.translate(f"fix_mode_{mode.value}_desc", lang=lang),
+                value=mode.value,
+                default=mode is current,
+            )
+            for mode in FixMode
+        )
+        super().__init__(options=options)
+        self.settings_type: Literal["guild", "user"] = settings_type
+
+    async def callback(self, i: Interaction) -> None:
+        value = self.values[0]
+
+        if self.settings_type == "guild":
+            if i.guild_id is None:
+                return
+            guild_settings, _ = await GuildSettings.get_or_create(id=i.guild_id)
+            guild_settings.fix_mode = FixMode(value)
+            await guild_settings.save(update_fields=("fix_mode",))
+        else:
+            user_settings, _ = await UserSettings.get_or_create(id=i.user.id)
+            user_settings.fix_mode = None if value == FOLLOW_GUILD_VALUE else FixMode(value)
+            await user_settings.save(update_fields=("fix_mode",))
+
+        for option in self.options:
+            option.default = option.value == value
+
+        await i.response.edit_message(view=self.view)
 
 
 class SettingsToggleButton(discord.ui.Button):

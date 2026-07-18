@@ -79,8 +79,15 @@ notify_on_react: Notify on React
 notify_on_react_desc: "Whether the bot should DM you when your fixed message receives a reaction."
 notify_on_react_msg: "{user} reacted {emoji} to you ({message_link})"
 user_settings_cmd_desc: Change your personal settings for the bot
-reply_instead_of_delete: Reply Instead of Delete
-reply_instead_of_delete_desc: "When enabled, the bot will reply to the original message with the fixed embed instead of deleting it and resending via webhook."
+fix_mode: Fix Mode
+fix_mode_desc: "How fixed embeds are sent."
+fix_mode_delete_and_resend: Delete and Resend
+fix_mode_delete_and_resend_desc: "Delete the original message and resend it via webhook, mimicking the author."
+fix_mode_reply: Reply
+fix_mode_reply_desc: "Reply to the original message with the fix, keeping the original."
+fix_mode_resend: Resend as Bot
+fix_mode_resend_desc: "Send the fix as the bot itself, keeping the original message."
+fix_mode_follow_server: Follow Server Setting
 remove_delete_reaction_after: Remove Delete Reaction After
 remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
 seconds: Seconds
