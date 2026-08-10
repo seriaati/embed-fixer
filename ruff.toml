@@ -42,21 +42,21 @@ select = [
   "RUF",
 ]
 ignore = [
-  "S101",    # Assert used
-  "PLR2004", # Magic value used
-  "RUF003",  # Comment contains ambiguous character
-  "PLR6301", # Method could be a function, class method, or static method
-  "ANN401",  # typing.Any used
-  "DTZ007",  # Naive datetime constructed
-  "E501",    # Line too long
-  "S311",    # Standard pseudo-random generators are not suitable for security/cryptographic purposes
+  "assert",    # Assert used
+  "magic-value-comparison", # Magic value used
+  "ambiguous-unicode-character-comment",  # Comment contains ambiguous character
+  "no-self-use", # Method could be a function, class method, or static method
+  "any-type",  # typing.Any used
+  "call-datetime-strptime-without-zone",  # Naive datetime constructed
+  "line-too-long",    # Line too long
+  "suspicious-non-cryptographic-random-usage",    # Standard pseudo-random generators are not suitable for security/cryptographic purposes
 
-  "RUF006",
-  "PLW0717",
+  "asyncio-dangling-task",
+  "too-many-statements-in-try-clause",
 ]
 
 [lint.per-file-ignores]
-"**/__init__.py" = ["F403", "F401"] # Wildcard imports used
+"**/__init__.py" = ["undefined-local-with-import-star", "unused-import"] # Wildcard imports used
 "test.py" = ["ALL"]
 "migrations/*.py" = ["ALL"]
 

@@ -364,7 +364,7 @@ class GuildSettingsView(ui.LayoutView):
         self._add_selector_action_row(container, selector, action_row_id=ROLE_SELECTOR_ROW_ID)
         return cast("list[int]", getattr(guild_settings, attr_name))
 
-    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:  # noqa: PLR0912
+    async def start(self, i: Interaction, *, setting: GuildSetting) -> None:  # ruff: ignore[too-many-branches]
         await i.response.defer(ephemeral=True)
 
         guild_settings, _ = await GuildSettings.get_or_create(id=self.guild.id)

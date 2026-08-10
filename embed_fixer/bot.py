@@ -133,7 +133,7 @@ class EmbedFixer(commands.AutoShardedBot):
 
         for table in ("guild_settings_v2", "guild_settings"):
             with contextlib.suppress(OperationalError):
-                await conn.execute_query(f"SELECT 1 FROM {table} LIMIT 1")  # noqa: S608
+                await conn.execute_query(f"SELECT 1 FROM {table} LIMIT 1")  # ruff: ignore[hardcoded-sql-expression]
                 return True
 
         return False

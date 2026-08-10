@@ -29,7 +29,7 @@ class BaseSettings(pydantic.BaseModel):
     _table_class: ClassVar[type[SettingsTable]]
 
     @classmethod
-    async def get_or_create(cls, id: int) -> tuple[Self, bool]:  # noqa: A002
+    async def get_or_create(cls, id: int) -> tuple[Self, bool]:  # ruff: ignore[builtin-argument-shadowing]
         obj, created = await cls._table_class.get_or_create(id=id)
         if created or not obj.data:
             settings = cls(id=id)
@@ -38,23 +38,23 @@ class BaseSettings(pydantic.BaseModel):
         return cls(id=id, **obj.data), created
 
     @classmethod
-    async def get_or_none(cls, id: int) -> Self | None:  # noqa: A002
+    async def get_or_none(cls, id: int) -> Self | None:  # ruff: ignore[builtin-argument-shadowing]
         obj = await cls._table_class.get_or_none(id=id)
         if obj is None or not obj.data:
             return None
         return cls(id=id, **obj.data)
 
     @classmethod
-    async def create(cls, id: int) -> Self:  # noqa: A002
+    async def create(cls, id: int) -> Self:  # ruff: ignore[builtin-argument-shadowing]
         settings = cls(id=id)
         await settings.save()
         return settings
 
     @classmethod
-    async def delete(cls, id: int) -> None:  # noqa: A002
+    async def delete(cls, id: int) -> None:  # ruff: ignore[builtin-argument-shadowing]
         await cls._table_class.filter(id=id).delete()
 
-    async def save(self, *, update_fields: Iterable[str] | None = None) -> None:  # noqa: ARG002
+    async def save(self, *, update_fields: Iterable[str] | None = None) -> None:  # ruff: ignore[unused-method-argument]
         obj, _ = await self.__class__._table_class.get_or_create(id=self.id)
         obj.data = self.model_dump(exclude={"id"})
         await obj.save()
@@ -67,20 +67,20 @@ class IgnoreMe(Model):
         table = "ignore_me"
 
     @classmethod
-    async def add(cls, id: int) -> None:  # noqa: A002
+    async def add(cls, id: int) -> None:  # ruff: ignore[builtin-argument-shadowing]
         with contextlib.suppress(IntegrityError):
             await cls.create(id=id)
 
     @classmethod
-    async def remove(cls, id: int) -> None:  # noqa: A002
+    async def remove(cls, id: int) -> None:  # ruff: ignore[builtin-argument-shadowing]
         await cls.filter(id=id).delete()
 
     @classmethod
-    async def contains(cls, id: int) -> bool:  # noqa: A002
+    async def contains(cls, id: int) -> bool:  # ruff: ignore[builtin-argument-shadowing]
         return await cls.filter(id=id).exists()
 
     @classmethod
-    async def toggle(cls, id: int) -> bool:  # noqa: A002
+    async def toggle(cls, id: int) -> bool:  # ruff: ignore[builtin-argument-shadowing]
         if await cls.contains(id):
             await cls.remove(id)
             return False

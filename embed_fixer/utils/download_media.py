@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class MediaDownloader:
-    def __init__(  # noqa: PLR0913
+    def __init__(  # ruff: ignore[too-many-arguments]
         self,
         session: aiohttp.ClientSession,
         *,

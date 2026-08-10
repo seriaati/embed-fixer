@@ -149,7 +149,7 @@ class SettingsToggleButton(discord.ui.Button):
 
 
 class SettingsSection(discord.ui.Section):
-    def __init__(  # noqa: PLR0913
+    def __init__(  # ruff: ignore[too-many-arguments]
         self,
         *,
         title: str,

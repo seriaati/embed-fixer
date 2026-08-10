@@ -20,7 +20,7 @@ class HealthCheckServer:
         await self.start()
         return self
 
-    async def __aexit__(self, exc_type, exc, tb) -> None:  # noqa: ANN001
+    async def __aexit__(self, exc_type, exc, tb) -> None:  # ruff: ignore[missing-type-function-argument]
         await self.stop()
 
     async def health(self, _request: web.Request) -> web.Response:

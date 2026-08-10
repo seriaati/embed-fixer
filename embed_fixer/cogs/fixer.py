@@ -381,7 +381,7 @@ class FixerCog(commands.Cog):
         # See https://github.com/FxEmbed/FxEmbed#translate-posts-xtwitter for more info
         return append_path_to_url(url, f"/{translang}")
 
-    async def _find_fixes(  # noqa: C901, PLR0912, PLR0914, PLR0915
+    async def _find_fixes(  # ruff: ignore[complex-structure, too-many-branches, too-many-locals, too-many-statements]
         self,
         message: discord.Message | MockMessage,
         *,
@@ -707,7 +707,7 @@ class FixerCog(commands.Cog):
 
         return batches
 
-    async def _send_files(  # noqa: PLR0913
+    async def _send_files(  # ruff: ignore[too-many-arguments]
         self,
         message: discord.Message,
         medias: list[Media],
@@ -961,7 +961,7 @@ class FixerCog(commands.Cog):
         )
         return send_type
 
-    async def _add_delete_reaction(  # noqa: PLR0913
+    async def _add_delete_reaction(  # ruff: ignore[too-many-arguments]
         self,
         message: discord.Message,
         interaction: Interaction | None,
@@ -1108,7 +1108,7 @@ class FixerCog(commands.Cog):
             capture_exception(e)
 
     @commands.Cog.listener("on_raw_reaction_add")
-    async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
+    async def notify_user_on_react(self, payload: discord.RawReactionActionEvent) -> None:  # ruff: ignore[too-many-return-statements]
         if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
@@ -1174,7 +1174,7 @@ class FixerCog(commands.Cog):
             logger.error(f"Failed to send notification DM to user {payload.user_id}: {e}")
 
     @commands.Cog.listener("on_raw_reaction_add")
-    async def manage_reaction_removal(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: PLR0911
+    async def manage_reaction_removal(self, payload: discord.RawReactionActionEvent) -> None:  # ruff: ignore[too-many-return-statements]
         if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
@@ -1222,7 +1222,7 @@ class FixerCog(commands.Cog):
                     )
 
     @commands.Cog.listener("on_raw_reaction_add")
-    async def manage_rotate_fix_reaction(self, payload: discord.RawReactionActionEvent) -> None:  # noqa: C901, PLR0911, PLR0912, PLR0914, PLR0915
+    async def manage_rotate_fix_reaction(self, payload: discord.RawReactionActionEvent) -> None:  # ruff: ignore[complex-structure, too-many-return-statements, too-many-branches, too-many-locals, too-many-statements]
         if payload.guild_id is None or payload.user_id == self.bot.user.id:
             return
 
