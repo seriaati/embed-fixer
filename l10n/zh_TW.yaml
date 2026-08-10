@@ -88,3 +88,5 @@ remove_delete_reaction_after_changed: "Delete reaction will be removed after {se
 remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
 invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
 seconds_placeholder: "{min} - {max} (leave empty to disable)"
+disable_embed_suppression: 停用隱藏原訊息預覽
+disable_embed_suppression_desc: "在「回覆」與「以機器人身分重新傳送」修復模式下，機器人會隱藏原訊息的連結預覽。啟用後將保留原訊息的預覽，是否移除交由使用者與管理員自行決定。"

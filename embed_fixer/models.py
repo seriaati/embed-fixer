@@ -153,6 +153,7 @@ class GuildSettings(BaseSettings):
     fix_mode: FixMode = FixMode.DELETE_AND_RESEND
     remove_delete_reaction_after: int | None = None
     rotate_fix_reaction: bool = False
+    disable_embed_suppression: bool = False
 
     @pydantic.model_validator(mode="before")
     @classmethod

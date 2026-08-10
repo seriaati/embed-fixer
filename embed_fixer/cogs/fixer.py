@@ -1392,7 +1392,8 @@ class FixerCog(commands.Cog):
                 # this is checked in _send_via_fix_mode.
                 await self.delete_message_safe(message, channel, guild)
             elif send_type in {"reply", "resend"}:
-                await self.suppress_embed_safe(message, channel, guild)
+                if not guild_settings.disable_embed_suppression:
+                    await self.suppress_embed_safe(message, channel, guild)
                 await remove_reaction_safe(message, "⌛", guild.me)
 
         # If this is a normal message (no embed fix found) replying to a webhook message,

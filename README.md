@@ -154,6 +154,7 @@ Below are settings you can change with the `/settings` command:
 - **Fix Mode**: How fixed embeds are sent.
 - **Remove Delete Reaction After**: Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable.
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
+- **Disable Original Embed Suppression**: For the "reply" and "resend as bot" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators.
 
 ## Post Content Translation
 

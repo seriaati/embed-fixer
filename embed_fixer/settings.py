@@ -21,6 +21,7 @@ class GuildSetting(StrEnum):
     FIX_MODE = "fix_mode"
     REMOVE_DELETE_REACTION_AFTER = "remove_delete_reaction_after"
     ROTATE_FIX_REACTION = "rotate_fix_reaction"
+    DISABLE_EMBED_SUPPRESSION = "disable_embed_suppression"
 
 
 class UserSetting(StrEnum):

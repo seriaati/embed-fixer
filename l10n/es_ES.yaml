@@ -82,3 +82,5 @@ remove_delete_reaction_after_changed: "Delete reaction will be removed after {se
 remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
 invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
 seconds_placeholder: "{min} - {max} (leave empty to disable)"
+disable_embed_suppression: Deshabilitar Ocultación de Embeds Originales
+disable_embed_suppression_desc: 'En los modos de corrección "responder" y "reenviar como bot", el bot oculta los embeds del mensaje original. Al activar esta opción, los embeds originales se mantendrán, y su eliminación quedará a cargo de los usuarios y moderadores.'

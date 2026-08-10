@@ -82,3 +82,5 @@ remove_delete_reaction_after_changed: "Delete reaction will be removed after {se
 remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
 invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
 seconds_placeholder: "{min} - {max} (leave empty to disable)"
+disable_embed_suppression: Tắt Ẩn Nhúng Của Tin Nhắn Gốc
+disable_embed_suppression_desc: 'Ở chế độ sửa "trả lời" và "gửi lại bằng bot", bot sẽ ẩn nhúng của tin nhắn gốc. Khi bật, nhúng của tin nhắn gốc sẽ được giữ lại, và việc xóa chúng do người dùng và quản trị viên tự quyết định.'

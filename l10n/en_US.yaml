@@ -104,3 +104,5 @@ import_done: Settings have been imported successfully.
 import_invalid_file: "Invalid settings file, please upload a file exported with /export."
 rotate_fix_reaction: Rotate Fix Reaction
 rotate_fix_reaction_desc: "When enabled, the bot adds a \U0001F504 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service."
+disable_embed_suppression: Disable Original Embed Suppression
+disable_embed_suppression_desc: "For the \"reply\" and \"resend as bot\" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators."

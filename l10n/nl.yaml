@@ -82,3 +82,5 @@ remove_delete_reaction_after_changed: "Delete reaction will be removed after {se
 remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
 invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
 seconds_placeholder: "{min} - {max} (leave empty to disable)"
+disable_embed_suppression: Onderdrukken van Originele Embeds Uitschakelen
+disable_embed_suppression_desc: 'Bij de fixmodi "reply" en "resend as bot" onderdrukt de bot de embeds van het originele bericht. Indien ingeschakeld blijven de originele embeds behouden en wordt het verwijderen ervan overgelaten aan gebruikers en moderators.'
