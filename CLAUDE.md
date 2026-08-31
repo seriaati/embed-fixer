@@ -78,6 +78,7 @@ Use helpers from `embed_fixer/utils/misc.py` instead of raw string methods:
 
 ```python
 from embed_fixer.utils.misc import domain_in_url, replace_domain, extract_urls, remove_query_params
+
 domain_in_url(url, "twitter.com")  # handles subdomains correctly
 replace_domain(url, "twitter.com", "fxtwitter.com")
 ```
