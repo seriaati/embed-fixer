@@ -88,7 +88,7 @@ Turn on "Show original link button" in `/settings` when using EmbedEZ fixes if y
 
 EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. I originally made a [proxy](https://github.com/seriaati/embedez) to it to bypass the ads, but it stopped working after the site owner changed some stuff.
 
-## About YouTube Embed Fixing
+### About YouTube Embed Fixing
 
 YouTube embed fixing (using [Koutube](https://github.com/iGerman00/koutube)) is disabled by default. Despite having ads and a shitty player, YouTube's embed is guaranteed to work all of the time, while Koutube's embed, at least at the time of testing, sometimes doesn't get generated, or if it does, sometimes doesn't contain the video. If you want to enable it, use `/settings` and go to "Disable Embed Fixes for Websites" and uncheck YouTube.
 
@@ -118,6 +118,7 @@ The following platforms are supported:
 - Iwara
 - Kemono
 - Bluesky
+- Instagram
 
 When you send a link that is from one of the platforms above in channel(s) with this feature on, the bot resends all of the images/videos in the link in a nice gallery-like layout.  
 
