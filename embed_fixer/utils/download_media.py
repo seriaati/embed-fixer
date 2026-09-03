@@ -169,7 +169,7 @@ class MediaDownloader:
             logger.exception(f"Failed to download media {url}")
             return None
 
-        if media_type:
+        if media_type and media_type != "application/octet-stream":
             filename = f"{url.rsplit('/', maxsplit=1)[-1].split('.', maxsplit=1)[0]}.{media_type.split('/')[-1]}"
         else:
             filename = url.rsplit("/", maxsplit=1)[-1]
