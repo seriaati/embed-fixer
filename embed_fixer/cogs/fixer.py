@@ -909,6 +909,9 @@ class FixerCog(commands.Cog):
         remove_delete_reaction_after = (
             None if guild_settings is None else guild_settings.remove_delete_reaction_after
         )
+        remove_rotate_reaction_after = (
+            None if guild_settings is None else guild_settings.remove_rotate_reaction_after
+        )
         rotate_fix_reaction = (
             False if guild_settings is None else guild_settings.rotate_fix_reaction
         )
@@ -959,6 +962,7 @@ class FixerCog(commands.Cog):
             disable_delete_reaction=disable_delete_reaction,
             delete_msg_emoji=delete_msg_emoji,
             remove_delete_reaction_after=remove_delete_reaction_after,
+            remove_rotate_reaction_after=remove_rotate_reaction_after,
             rotate_fix_reaction=rotate_fix_reaction,
         )
         return send_type
@@ -972,11 +976,18 @@ class FixerCog(commands.Cog):
         disable_delete_reaction: bool | None,
         delete_msg_emoji: str | None,
         remove_delete_reaction_after: int | None = None,
+        remove_rotate_reaction_after: int | None = None,
         rotate_fix_reaction: bool = False,
     ) -> None:
         if interaction is None and fix_message is not None and rotate_fix_reaction:
             with contextlib.suppress(discord.Forbidden, discord.HTTPException):
                 await fix_message.add_reaction(ROTATE_FIX_EMOJI)
+                if remove_rotate_reaction_after is not None:
+                    asyncio.create_task(
+                        self._schedule_remove_reaction(
+                            fix_message, ROTATE_FIX_EMOJI, remove_rotate_reaction_after
+                        )
+                    )
 
         if (
             not disable_delete_reaction
@@ -1014,15 +1025,13 @@ class FixerCog(commands.Cog):
             else:
                 if remove_delete_reaction_after is not None:
                     asyncio.create_task(
-                        self._schedule_remove_delete_reaction(
+                        self._schedule_remove_reaction(
                             fix_message, delete_msg_emoji, remove_delete_reaction_after
                         )
                     )
 
     @staticmethod
-    async def _schedule_remove_delete_reaction(
-        message: discord.Message, emoji: str, seconds: int
-    ) -> None:
+    async def _schedule_remove_reaction(message: discord.Message, emoji: str, seconds: int) -> None:
         await asyncio.sleep(seconds)
         with contextlib.suppress(discord.HTTPException):
             if message.guild is not None:

@@ -152,6 +152,7 @@ class GuildSettings(BaseSettings):
     delete_original_message_in_threads: bool = False
     fix_mode: FixMode = FixMode.DELETE_AND_RESEND
     remove_delete_reaction_after: int | None = None
+    remove_rotate_reaction_after: int | None = None
     rotate_fix_reaction: bool = False
     disable_embed_suppression: bool = False
 

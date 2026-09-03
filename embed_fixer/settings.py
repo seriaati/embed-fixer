@@ -19,7 +19,7 @@ class GuildSetting(StrEnum):
     SHOW_ORIGINAL_LINK_BUTTON = "show_original_link_btn"
     DELETE_ORIGINAL_MESSAGE_IN_THREADS = "delete_original_message_in_threads"
     FIX_MODE = "fix_mode"
-    REMOVE_DELETE_REACTION_AFTER = "remove_delete_reaction_after"
+    REMOVE_REACTIONS_AFTER = "remove_reactions_after"
     ROTATE_FIX_REACTION = "rotate_fix_reaction"
     DISABLE_EMBED_SUPPRESSION = "disable_embed_suppression"
 

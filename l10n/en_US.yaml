@@ -88,11 +88,13 @@ fix_mode_reply_desc: "Reply to the original message with the fix, keeping the or
 fix_mode_resend: Resend as Bot
 fix_mode_resend_desc: "Send the fix as the bot itself, keeping the original message."
 fix_mode_follow_server: Follow Server Setting
-remove_delete_reaction_after: Remove Delete Reaction After
-remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
-seconds: Seconds
-remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
-remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
+remove_reactions_after: Remove Reactions After
+remove_reactions_after_desc: "Set the number of seconds after which the delete and switch fix reaction emojis are automatically removed. Leave a field empty to disable."
+delete_reaction_seconds: Delete Reaction (Seconds)
+rotate_reaction_seconds: Switch Fix Reaction (Seconds)
+remove_reactions_after_changed: "Delete reaction: {delete}\nSwitch fix reaction: {rotate}"
+reaction_removed_after: "removed after {seconds} second(s)"
+reaction_removal_disabled: "auto-removal disabled"
 invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
 seconds_placeholder: "{min} - {max} (leave empty to disable)"
 export_cmd_desc: Export this server's settings to a JSON file

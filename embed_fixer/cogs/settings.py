@@ -17,7 +17,7 @@ from embed_fixer.settings import GuildSetting
 from embed_fixer.ui.guild_settings import (
     DeleteMsgEmojiModal,
     GuildSettingsView,
-    RemoveDeleteReactionAfterModal,
+    RemoveReactionsAfterModal,
 )
 from embed_fixer.ui.reset_settings import ResetSettingsView
 from embed_fixer.ui.user_settings import UserSettingsView
@@ -101,8 +101,8 @@ class SettingsCog(commands.Cog):
             await i.response.send_modal(DeleteMsgEmojiModal(settings=settings))
             return
 
-        if setting is GuildSetting.REMOVE_DELETE_REACTION_AFTER:
-            await i.response.send_modal(RemoveDeleteReactionAfterModal(settings=settings))
+        if setting is GuildSetting.REMOVE_REACTIONS_AFTER:
+            await i.response.send_modal(RemoveReactionsAfterModal(settings=settings))
             return
 
         view = GuildSettingsView(guild=i.guild, lang=settings.lang, app_emojis=self.bot.app_emojis)

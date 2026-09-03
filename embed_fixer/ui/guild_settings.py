@@ -100,44 +100,48 @@ MIN_SECONDS = 1
 MAX_SECONDS = 3600  # 1 hour
 
 
-class RemoveDeleteReactionAfterModal(ui.Modal):
-    seconds = ui.Label(
-        text="seconds", component=ui.TextInput(max_length=19, placeholder="...", required=False)
+class RemoveReactionsAfterModal(ui.Modal):
+    delete_seconds = ui.Label(
+        text="delete_reaction_seconds",
+        component=ui.TextInput(max_length=19, placeholder="...", required=False),
+    )
+    rotate_seconds = ui.Label(
+        text="rotate_reaction_seconds",
+        component=ui.TextInput(max_length=19, placeholder="...", required=False),
     )
 
     def __init__(self, *, settings: GuildSettings) -> None:
         self.lang = lang = settings.lang or DEFAULT_LANG
-        super().__init__(title_key="remove_delete_reaction_after", lang=settings.lang)
+        super().__init__(title_key="remove_reactions_after", lang=settings.lang)
 
-        self.seconds.text = translator.translate("seconds", lang=lang)
-        self.seconds.component.placeholder = translator.translate(
+        placeholder = translator.translate(
             "seconds_placeholder", lang=lang, min=MIN_SECONDS, max=MAX_SECONDS
         )
-        self.seconds.component.default = (
-            str(settings.remove_delete_reaction_after)
-            if settings.remove_delete_reaction_after is not None
-            else None
-        )
+        for label, value in (
+            (self.delete_seconds, settings.remove_delete_reaction_after),
+            (self.rotate_seconds, settings.remove_rotate_reaction_after),
+        ):
+            label.text = translator.translate(label.text, lang=lang)
+            label.component.placeholder = placeholder
+            label.component.default = str(value) if value is not None else None
+
         self.settings = settings
 
-    async def on_submit(self, i: Interaction) -> None:
-        raw = self.seconds.component.value.strip()
-
-        guild_settings, _ = await GuildSettings.get_or_create(id=self.settings.id)
-
+    @staticmethod
+    def _parse_seconds(raw: str) -> int | None:
+        """Parse a seconds field. Returns None for empty input, raises ValueError if invalid."""
+        raw = raw.strip()
         if not raw:
-            guild_settings.remove_delete_reaction_after = None
-            await guild_settings.save(update_fields=("remove_delete_reaction_after",))
-            await i.response.send_message(
-                content=translator.translate(
-                    "remove_delete_reaction_after_disabled", lang=self.lang
-                ),
-                ephemeral=True,
-            )
-            return
+            return None
+        seconds = int(raw)
+        if seconds < MIN_SECONDS or seconds > MAX_SECONDS:
+            raise ValueError
+        return seconds
 
+    async def on_submit(self, i: Interaction) -> None:
         try:
-            seconds = int(raw)
+            delete_after = self._parse_seconds(self.delete_seconds.component.value)
+            rotate_after = self._parse_seconds(self.rotate_seconds.component.value)
         except ValueError:
             await i.response.send_message(
                 content=translator.translate(
@@ -147,24 +151,27 @@ class RemoveDeleteReactionAfterModal(ui.Modal):
             )
             return
 
-        if seconds < MIN_SECONDS or seconds > MAX_SECONDS:
-            await i.response.send_message(
-                content=translator.translate(
-                    "invalid_seconds", lang=self.lang, min=MIN_SECONDS, max=MAX_SECONDS
-                ),
-                ephemeral=True,
-            )
-            return
-
-        guild_settings.remove_delete_reaction_after = seconds
-        await guild_settings.save(update_fields=("remove_delete_reaction_after",))
+        guild_settings, _ = await GuildSettings.get_or_create(id=self.settings.id)
+        guild_settings.remove_delete_reaction_after = delete_after
+        guild_settings.remove_rotate_reaction_after = rotate_after
+        await guild_settings.save(
+            update_fields=("remove_delete_reaction_after", "remove_rotate_reaction_after")
+        )
 
         await i.response.send_message(
             content=translator.translate(
-                "remove_delete_reaction_after_changed", lang=self.lang, seconds=seconds
+                "remove_reactions_after_changed",
+                lang=self.lang,
+                delete=self._format_seconds(delete_after),
+                rotate=self._format_seconds(rotate_after),
             ),
             ephemeral=True,
         )
+
+    def _format_seconds(self, seconds: int | None) -> str:
+        if seconds is None:
+            return translator.translate("reaction_removal_disabled", lang=self.lang)
+        return translator.translate("reaction_removed_after", lang=self.lang, seconds=seconds)
 
 
 class GuildSettingsView(ui.LayoutView):
