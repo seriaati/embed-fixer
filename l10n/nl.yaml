@@ -75,12 +75,14 @@ fix_url_param: link
 fix_url_param_desc: De URL om te fixen
 fix_url_extract_media_param: media-extraheren
 fix_url_extract_media_param_desc: "Of media uit de URL moet worden geëxtraheerd (standaard: False)."
-remove_delete_reaction_after: Remove Delete Reaction After
-remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
-seconds: Seconds
-remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
-remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
-invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
-seconds_placeholder: "{min} - {max} (leave empty to disable)"
+remove_reactions_after: Verwijder Reacties Na
+remove_reactions_after_desc: "Stel het aantal seconden in waarna de verwijder- en wissel-fix-reacties automatisch worden verwijderd. Laat een veld leeg om uit te schakelen."
+delete_reaction_seconds: Verwijder Reactie (Seconden)
+rotate_reaction_seconds: Wissel Fix Reactie (Seconden)
+remove_reactions_after_changed: "Verwijder reactie: {delete}\nWissel fix reactie: {rotate}"
+reaction_removed_after: "wordt verwijderd na {seconds} seconde(n)"
+reaction_removal_disabled: "automatisch verwijderen uitgeschakeld"
+invalid_seconds: "Ongeldige waarde. Voer een geheel getal in tussen {min} en {max}."
+seconds_placeholder: "{min} - {max} (laat leeg om uit te schakelen)"
 disable_embed_suppression: Onderdrukken van Originele Embeds Uitschakelen
 disable_embed_suppression_desc: 'Bij de fixmodi "reply" en "resend as bot" onderdrukt de bot de embeds van het originele bericht. Indien ingeschakeld blijven de originele embeds behouden en wordt het verwijderen ervan overgelaten aan gebruikers en moderators.'

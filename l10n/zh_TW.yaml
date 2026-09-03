@@ -81,12 +81,14 @@ notify_on_react_msg: "{user}對你的訊息反應了{emoji} ({message_link})"
 user_settings_cmd_desc: 變更你在機器人的個人設置
 reply_instead_of_delete: 以回覆代替刪除
 reply_instead_of_delete_desc: "若啟用，機器人將在修復訊息時回覆你的訊息，而非刪除訊息並通過 webhook 重新發送修復。"
-remove_delete_reaction_after: Remove Delete Reaction After
-remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
-seconds: Seconds
-remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
-remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
-invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
-seconds_placeholder: "{min} - {max} (leave empty to disable)"
+remove_reactions_after: 自動移除反應的時間
+remove_reactions_after_desc: "設定多少秒後自動移除刪除反應與切換修復反應。留空則停用。"
+delete_reaction_seconds: 刪除反應（秒）
+rotate_reaction_seconds: 切換修復反應（秒）
+remove_reactions_after_changed: "刪除反應：{delete}\n切換修復反應：{rotate}"
+reaction_removed_after: "{seconds} 秒後移除"
+reaction_removal_disabled: "已停用自動移除"
+invalid_seconds: "無效的值，請輸入 {min} 到 {max} 之間的整數。"
+seconds_placeholder: "{min} - {max}（留空則停用）"
 disable_embed_suppression: 停用隱藏原訊息預覽
 disable_embed_suppression_desc: "在「回覆」與「以機器人身分重新傳送」修復模式下，機器人會隱藏原訊息的連結預覽。啟用後將保留原訊息的預覽，是否移除交由使用者與管理員自行決定。"

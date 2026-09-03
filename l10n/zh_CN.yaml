@@ -80,12 +80,14 @@ notify_on_react_msg: "{user}对你的消息反应了{emoji} ({message_link})"
 user_settings_cmd_desc: 更改你的Embed Fixer个性设置
 reply_instead_of_delete: 转换时以回复替代删除
 reply_instead_of_delete_desc: "该功能启用时，Embed Fixer将不会删除原始消息，通过Webhook重发，而是通过对你的原始消息回复并预览嵌入。"
-remove_delete_reaction_after: Remove Delete Reaction After
-remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
-seconds: Seconds
-remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
-remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
-invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
-seconds_placeholder: "{min} - {max} (leave empty to disable)"
+remove_reactions_after: 自动移除反应的时间
+remove_reactions_after_desc: "设置多少秒后自动移除删除反应和切换修复反应。留空则停用。"
+delete_reaction_seconds: 删除反应（秒）
+rotate_reaction_seconds: 切换修复反应（秒）
+remove_reactions_after_changed: "删除反应：{delete}\n切换修复反应：{rotate}"
+reaction_removed_after: "{seconds} 秒后移除"
+reaction_removal_disabled: "已停用自动移除"
+invalid_seconds: "无效的值，请输入 {min} 到 {max} 之间的整数。"
+seconds_placeholder: "{min} - {max}（留空则停用）"
 disable_embed_suppression: 停用隐藏原消息预览
 disable_embed_suppression_desc: "在“回复”与“以机器人身份重新发送”修复模式下，机器人会隐藏原消息的链接预览。启用后将保留原消息的预览，是否移除交由用户与管理员自行决定。"

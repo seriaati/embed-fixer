@@ -75,12 +75,14 @@ fix_url_param: liên-kết
 fix_url_param_desc: URL cần sửa
 fix_url_extract_media_param: trích-xuất-phương-tiện
 fix_url_extract_media_param_desc: "Có trích xuất phương tiện từ URL hay không (mặc định: False)"
-remove_delete_reaction_after: Remove Delete Reaction After
-remove_delete_reaction_after_desc: "Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable."
-seconds: Seconds
-remove_delete_reaction_after_changed: "Delete reaction will be removed after {seconds} second(s)."
-remove_delete_reaction_after_disabled: "Delete reaction auto-removal has been disabled."
-invalid_seconds: "Invalid value. Please enter a whole number between {min} and {max}."
-seconds_placeholder: "{min} - {max} (leave empty to disable)"
+remove_reactions_after: Xóa Biểu Cảm Sau
+remove_reactions_after_desc: "Đặt số giây sau đó biểu cảm xóa và biểu cảm đổi cách sửa sẽ tự động bị gỡ. Để trống một ô để tắt."
+delete_reaction_seconds: Biểu Cảm Xóa (Giây)
+rotate_reaction_seconds: Biểu Cảm Đổi Cách Sửa (Giây)
+remove_reactions_after_changed: "Biểu cảm xóa: {delete}\nBiểu cảm đổi cách sửa: {rotate}"
+reaction_removed_after: "gỡ sau {seconds} giây"
+reaction_removal_disabled: "đã tắt tự động gỡ"
+invalid_seconds: "Giá trị không hợp lệ. Vui lòng nhập một số nguyên từ {min} đến {max}."
+seconds_placeholder: "{min} - {max} (để trống để tắt)"
 disable_embed_suppression: Tắt Ẩn Nhúng Của Tin Nhắn Gốc
 disable_embed_suppression_desc: 'Ở chế độ sửa "trả lời" và "gửi lại bằng bot", bot sẽ ẩn nhúng của tin nhắn gốc. Khi bật, nhúng của tin nhắn gốc sẽ được giữ lại, và việc xóa chúng do người dùng và quản trị viên tự quyết định.'
