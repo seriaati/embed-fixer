@@ -195,6 +195,17 @@ class PostInfoFetcher:
 
         return urls
 
+    async def instagram(self, url: str) -> list[str]:
+        async with self.session.get(
+            "https://fxig.seria.moe/api/media", params={"url": url}
+        ) as resp:
+            if resp.status != 200:
+                logger.warning(f"vxinstagram returned {resp.status} for {url}")
+                return []
+            data = await resp.json()
+
+        return [media["url"] for media in data["media"]]
+
 
 class UgoiraFrame(BaseModel):
     file: str

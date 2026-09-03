@@ -44,7 +44,6 @@ USERNAME_SUFFIX: Final[str] = " (Embed Fixer)"
 ERROR_MSG_DELETE_AFTER: Final[int] = 10
 DEFAULT_FILESIZE_LIMIT: Final[int] = 10 * 1024 * 1024  # 10 MB
 ROTATE_FIX_EMOJI: Final[str] = "🔄"
-DISCORDBOT_UA: Final[str] = "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"
 FIXED_MESSAGE_RETENTION_DAYS: Final[int] = 90
 
 type SendType = Literal["webhook", "reply", "channel", "resend", "interaction"]
@@ -565,14 +564,7 @@ class FixerCog(commands.Cog):
             elif domain_id is DomainId.KEMONO:
                 media_urls = await self.fetch_info.kemono(url)
             elif domain_id is DomainId.INSTAGRAM:
-                # oginstagram's Cloudflare blocks server-side requests, so download via
-                # kkinstagram, which redirects Discordbot requests to the raw media file
-                media_urls = [
-                    replace_domain(
-                        remove_query_params(url).rstrip("/"), "instagram.com", "kkinstagram.com"
-                    )
-                ]
-                headers = {"User-Agent": DISCORDBOT_UA}
+                media_urls = await self.fetch_info.instagram(remove_query_params(url))
             else:
                 return PostExtractionResult(medias=[], content="", author_md="")
         except Exception:
