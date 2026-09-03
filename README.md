@@ -153,7 +153,7 @@ Below are settings you can change with the `/settings` command:
 - **Original Link Button**: Show a button linking to the original post in fixed embed messages.
 - **Delete Original Messages in Threads**: Because threads can't have webhooks, the original message is kept to know who sent it. When enabled, the original message in threads will be deleted after sending the fixed embed.
 - **Fix Mode**: How fixed embeds are sent.
-- **Remove Delete Reaction After**: Set the number of seconds after which the delete reaction emoji is automatically removed. Leave empty to disable.
+- **Remove Reactions After**: Set the number of seconds after which the delete and switch fix reaction emojis are automatically removed. Leave a field empty to disable.
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
 - **Disable Original Embed Suppression**: For the "reply" and "resend as bot" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators.
 
