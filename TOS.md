@@ -35,7 +35,7 @@ Embed Fixer is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 
 ## 8. **Data Collection and Privacy**
 
-- The only data collected by Embed Fixer are the settings of the bot for individual Discord guilds (servers). A more specific list of the data collected can be found in the `models.py` file of the source code.
+- Embed Fixer collects the bot's settings for Discord guilds (servers) and users, the user IDs of users who opted out with `/ignore-me`, and records of the messages it sends as fixes. The content of your messages is not stored in the bot's database. A full description of the data collected, how it is used, and how long it is kept can be found in the [Privacy Policy](https://github.com/seriaati/embed-fixer/blob/main/PRIVACY.md).
 - If you wish to have your data removed from the bot's database, please contact me using the contact details provided below.
 
 ## 9. **Support and Contact Information**
