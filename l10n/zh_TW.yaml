@@ -5,7 +5,7 @@ disable_fixes_desc: 停用特定網站的連結預覽修復。[YouTube 預設為
 lang: 語言
 lang_desc: 更改機器人的語言。
 extract_media_channels: 媒體提取頻道
-extract_media_channels_desc: 在這些頻道中發送的 Twitter/X/Pixiv 鏈接的圖片/影片將被提取。
+extract_media_channels_desc: 在這些頻道中發送的 Twitter/X/Pixiv/Instagram/Bluesky/Kemono 鏈接的圖片/影片將被提取。
 disable_fix_channels: 連結預覽修復頻道黑名單
 disable_fix_channels_desc: "這裡的頻道將不會接收連結預覽修復，白名單優先於黑名單。"
 enable_fix_channels: 連結預覽修復頻道白名單

@@ -5,7 +5,7 @@ disable_fixes_desc: "Disable embed fixes for specific websites. [YouTube is disa
 lang: Language
 lang_desc: Change the language of the bot.
 extract_media_channels: Media Extraction Channels
-extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
+extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv/Instagram/Bluesky/Kemono links sent in these channels will be extracted.
 disable_fix_channels: Embed Fix Channel Blacklist
 disable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist."
 enable_fix_channels: Embed Fix Channel Whitelist

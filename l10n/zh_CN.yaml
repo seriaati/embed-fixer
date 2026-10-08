@@ -5,7 +5,7 @@ disable_fixes_desc: 关闭特定网站的预览嵌入。[YouTube 默认处于关
 lang: 语言
 lang_desc: 更改机器人的语言。
 extract_media_channels: 媒体提取频道
-extract_media_channels_desc: 在这个频道里发送的 Twitter/X/Pixiv 链接的图片/视频都会被提取。
+extract_media_channels_desc: 在这个频道里发送的 Twitter/X/Pixiv/Instagram/Bluesky/Kemono 链接的图片/视频都会被提取。
 disable_fix_channels: 预览嵌入频道黑名单
 disable_fix_channels_desc: "这里的频道将不会接收预览嵌入，白名单优先于黑名单。"
 enable_fix_channels: 预览嵌入频道白名单
