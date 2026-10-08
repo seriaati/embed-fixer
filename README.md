@@ -138,7 +138,8 @@ Below are settings you can change with the `/settings` command:
 
 - **Language**: Change the language of the bot.
 - **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
-- **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv links sent in these channels will be extracted.
+- **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv/Instagram/Bluesky/Kemono links sent in these channels will be extracted.
+- **Disable Media Extraction for Websites**: Links from websites selected here will not have their media extracted in media extraction channels.
 - **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist.
 - **Embed Fix Channel Whitelist**: Only channels set here will receive embed fixes, whitelist has priority over blacklist.
 - **Disable Webhook Reply**: Disable the ping to the original author when replying to a webhook.
