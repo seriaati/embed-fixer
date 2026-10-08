@@ -1,4 +1,4 @@
-![Embed Fixer](https://i.imgur.com/919Gum1.png)
+![Embed Fixer](https://ef.seria.moe/og-image.png)
 
 ![GitHub issues](https://img.shields.io/github/issues/seriaati/embed-fixer)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/seriaati/embed-fixer)
