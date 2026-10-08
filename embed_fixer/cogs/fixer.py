@@ -564,7 +564,9 @@ class FixerCog(commands.Cog):
             elif domain_id is DomainId.KEMONO:
                 media_urls = await self.fetch_info.kemono(url)
             elif domain_id is DomainId.INSTAGRAM:
-                media_urls = await self.fetch_info.instagram(remove_query_params(url))
+                info = await self.fetch_info.instagram(remove_query_params(url))
+                content = "" if info is None else info.caption or ""
+                media_urls = [] if info is None else [media.url for media in info.media]
             else:
                 return PostExtractionResult(medias=[], content="", author_md="")
         except Exception:

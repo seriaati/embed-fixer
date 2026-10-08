@@ -195,16 +195,16 @@ class PostInfoFetcher:
 
         return urls
 
-    async def instagram(self, url: str) -> list[str]:
+    async def instagram(self, url: str) -> InstagramPost | None:
         async with self.session.get(
             "https://fxig.seria.moe/api/media", params={"url": url}
         ) as resp:
             if resp.status != 200:
                 logger.warning(f"vxinstagram returned {resp.status} for {url}")
-                return []
+                return None
             data = await resp.json()
 
-        return [media["url"] for media in data["media"]]
+        return InstagramPost(**data)
 
 
 class UgoiraFrame(BaseModel):
@@ -352,3 +352,33 @@ class BskyPost(BaseModel):
             urls.append(uri)
 
         return urls
+
+
+class InstagramPostMedia(BaseModel):
+    type: str
+    url: str
+
+
+class InstagramPostAuthor(BaseModel):
+    username: str
+    name: str | None = None
+
+
+class InstagramPost(BaseModel):
+    media: list[InstagramPostMedia]
+    caption: str | None = None
+    author: InstagramPostAuthor | None = None
+
+    @field_validator("caption", mode="after")
+    @classmethod
+    def __normalize_newlines(cls, v: str | None) -> str | None:
+        # Some older posts use bare \r as line breaks
+        return None if v is None else v.replace("\r\n", "\n").replace("\r", "\n")
+
+    @property
+    def author_md(self) -> str:
+        if self.author is None:
+            return ""
+
+        name = self.author.name or self.author.username
+        return f"[{name} (@{self.author.username})](<https://www.instagram.com/{self.author.username}/>)"
