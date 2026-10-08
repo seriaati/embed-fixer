@@ -5,6 +5,7 @@ class GuildSetting(StrEnum):
     LANG = "lang"
     DISABLE_FIXES = "disable_fixes"
     EXTRACT_MEDIA_CHANNELS = "extract_media_channels"
+    DISABLE_EXTRACT_MEDIA_DOMAINS = "disable_extract_media_domains"
     DISABLE_FIX_CHANNELS = "disable_fix_channels"
     ENABLE_FIX_CHANNELS = "enable_fix_channels"
     DISABLE_WEBHOOK_REPLY = "disable_webhook_reply"

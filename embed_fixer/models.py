@@ -138,6 +138,7 @@ class GuildSettings(BaseSettings):
     disable_fix_channels: list[int] = pydantic.Field(default_factory=list)
     enable_fix_channels: list[int] = pydantic.Field(default_factory=list)
     extract_media_channels: list[int] = pydantic.Field(default_factory=list)
+    disable_extract_media_domains: list[int] = pydantic.Field(default_factory=list)
     disable_image_spoilers: list[int] = pydantic.Field(default_factory=list)
     show_post_content_channels: list[int] = pydantic.Field(default_factory=list)
     disable_delete_reaction: bool = False

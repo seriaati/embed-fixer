@@ -29,6 +29,16 @@ class DomainId(IntEnum):
     YOUTUBE = 19
 
 
+EXTRACTABLE_DOMAIN_IDS: Final[tuple[DomainId, ...]] = (
+    DomainId.TWITTER,
+    DomainId.PIXIV,
+    DomainId.INSTAGRAM,
+    DomainId.BLUESKY,
+    DomainId.KEMONO,
+)
+"""Domains supported by media extraction."""
+
+
 @dataclass(kw_only=True)
 class ReplaceFix:
     old_domain: str

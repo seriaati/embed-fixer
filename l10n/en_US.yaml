@@ -6,6 +6,8 @@ lang: Language
 lang_desc: Change the language of the bot.
 extract_media_channels: Media Extraction Channels
 extract_media_channels_desc: Images/Videos from Twitter/X/Pixiv/Instagram/Bluesky/Kemono links sent in these channels will be extracted.
+disable_extract_media_domains: Disable Media Extraction for Websites
+disable_extract_media_domains_desc: "Links from websites selected here will not have their media extracted in media extraction channels."
 disable_fix_channels: Embed Fix Channel Blacklist
 disable_fix_channels_desc: "Channels here will not receive embed fixes, whitelist has priority over blacklist."
 enable_fix_channels: Embed Fix Channel Whitelist

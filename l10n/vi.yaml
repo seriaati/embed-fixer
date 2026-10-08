@@ -6,6 +6,8 @@ lang: Ngôn Ngữ
 lang_desc: Thay đổi ngôn ngữ của bot.
 extract_media_channels: Kênh Trích Xuất Phương Tiện
 extract_media_channels_desc: Hình ảnh/Video từ các liên kết Twitter/X/Pixiv/Instagram/Bluesky/Kemono được gửi trong các kênh này sẽ được trích xuất.
+disable_extract_media_domains: Tắt Trích Xuất Phương Tiện Cho Các Trang Web
+disable_extract_media_domains_desc: "Liên kết từ các trang web được chọn ở đây sẽ không được trích xuất phương tiện trong các kênh trích xuất phương tiện."
 disable_fix_channels: Danh Sách Đen Kênh Nhúng Sửa
 disable_fix_channels_desc: "Chỉ các kênh được đặt ở đây sẽ không nhận được Nhúng Sửa, danh sách trắng được ưu tiên hơn danh sách đen."
 enable_fix_channels: Danh Sách Trắng Kênh Nhúng Sửa

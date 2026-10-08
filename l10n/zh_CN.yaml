@@ -6,6 +6,8 @@ lang: 语言
 lang_desc: 更改机器人的语言。
 extract_media_channels: 媒体提取频道
 extract_media_channels_desc: 在这个频道里发送的 Twitter/X/Pixiv/Instagram/Bluesky/Kemono 链接的图片/视频都会被提取。
+disable_extract_media_domains: 关闭网站的媒体提取
+disable_extract_media_domains_desc: "在媒体提取频道中，来自这里所选网站的链接将不会被提取媒体。"
 disable_fix_channels: 预览嵌入频道黑名单
 disable_fix_channels_desc: "这里的频道将不会接收预览嵌入，白名单优先于黑名单。"
 enable_fix_channels: 预览嵌入频道白名单

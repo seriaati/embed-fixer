@@ -431,7 +431,9 @@ class FixerCog(commands.Cog):
                 continue
 
             if extract_media or (
-                settings is not None and channel_id in settings.extract_media_channels
+                settings is not None
+                and channel_id in settings.extract_media_channels
+                and domain.id.value not in settings.disable_extract_media_domains
             ):
                 if not is_ctx_menu and isinstance(message, discord.Message):
                     asyncio.create_task(add_reaction_safe(message, "⌛"))

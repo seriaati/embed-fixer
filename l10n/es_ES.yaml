@@ -6,6 +6,8 @@ lang: Idioma
 lang_desc: Cambiar el idioma del bot.
 extract_media_channels: Canales Con Extracción Multimedia
 extract_media_channels_desc: La extracción de multimedia para los enlaces de Twitter/X/Pixiv/Instagram/Bluesky/Kemono está habilitada para los siguientes canales.
+disable_extract_media_domains: Deshabilitar Extracción Multimedia Para Sitios Web
+disable_extract_media_domains_desc: "Los enlaces de los sitios web seleccionados aquí no tendrán su multimedia extraída en los canales con extracción multimedia."
 disable_fix_channels: Ajustar Canales No Permitidos Para Embed Fixer
 disable_fix_channels_desc: "Embed Fixer no corregirá en los canales de la lista de no permitidos. No tiene prioridad sobre la lista de permitidos."
 enable_fix_channels: Ajustar Canales Permitidos Para Embed Fixer
