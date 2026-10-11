@@ -45,6 +45,7 @@ using_fix_service: "Actualmente usando {service}"
 fix_embed: Fix Embed
 extract_medias: Extraer multimedia
 no_fixes_found: No se encontró ningún fixes/multimedia para este mensaje
+nsfw_link_skipped: Este enlace está marcado como sensible y solo puede corregirse en canales con restricción de edad
 bot_visibility: Visibilidad Hacia Otros Bots
 bot_visibility_desc: "Embed Fixer actuará sobre otros bots si está habilitado. Si no lo está, solo actuará sobre los usuarios."
 funnel_target_channel: Canal de Destino Para Redirecciones

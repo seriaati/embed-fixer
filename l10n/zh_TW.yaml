@@ -45,6 +45,7 @@ using_fix_service: "正在使用 {service}"
 fix_embed: 修復連結預覽
 extract_medias: 提取媒體
 no_fixes_found: 找不到此訊息的連結預覽修復/媒體
+nsfw_link_skipped: 此連結被標記為敏感內容，只能在年齡限制頻道中修復
 bot_visibility: 機器人能見度
 bot_visibility_desc: "啟用後，Embed Fixer 會修復來自其他機器人的連結預覽。如果停用，它將只修復來自使用者的連結預覽。"
 funnel_target_channel: 引流目標頻道

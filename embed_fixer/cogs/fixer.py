@@ -95,6 +95,7 @@ class FindFixResult(BaseModel):
     content: str
     author_md: str
     urls: list[str]
+    nsfw_skipped: bool = False
 
 
 def _parse_new_domain_parts(new_domain: str) -> tuple[str, str]:
@@ -397,6 +398,7 @@ class FixerCog(commands.Cog):
         sauces: list[str] = []
         content = ""
         author_md = ""
+        nsfw_skipped = False
 
         is_nsfw_channel = (
             is_ctx_menu
@@ -428,6 +430,7 @@ class FixerCog(commands.Cog):
             logger.debug(f"Matched domain {domain.id!r} for URL: {clean_url}")
 
             if await self._nsfw_skip(url, domain, is_nsfw_channel=is_nsfw_channel):
+                nsfw_skipped = True
                 continue
 
             if extract_media or (
@@ -521,6 +524,7 @@ class FixerCog(commands.Cog):
             content=content,
             author_md=author_md,
             urls=[url for url, _ in urls],
+            nsfw_skipped=nsfw_skipped,
         )
 
     async def _extract_post_info(
@@ -1569,9 +1573,11 @@ class FixerCog(commands.Cog):
                 await i.followup.send(response_content)
         else:
             guild_lang = await translator.get_guild_lang(i.guild)
-            await i.followup.send(
-                translator.translate("no_fixes_found", lang=guild_lang, url=link), ephemeral=True
-            )
+            key = "nsfw_link_skipped" if result.nsfw_skipped else "no_fixes_found"
+            # The deferred response is public, so the first followup would inherit that;
+            # delete it so the followup is sent as a new ephemeral message.
+            await i.delete_original_response()
+            await i.followup.send(translator.translate(key, lang=guild_lang), ephemeral=True)
 
 
 async def setup(bot: EmbedFixer) -> None:

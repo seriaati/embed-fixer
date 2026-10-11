@@ -45,6 +45,7 @@ using_fix_service: "Gebruik van {service}"
 fix_embed: Fix Embed
 extract_medias: Media Extraheren
 no_fixes_found: Er zijn geen fixes/media gevonden voor dit bericht
+nsfw_link_skipped: Deze link is gemarkeerd als gevoelig en kan alleen worden gerepareerd in kanalen met leeftijdsbeperking
 bot_visibility: Bot Zichtbaarheid
 bot_visibility_desc: "Indien ingeschakeld, repareert Embed Fixer embeds die door andere bots zijn verzonden. Indien uitgeschakeld, worden alleen embeds hersteld die door gebruikers zijn verzonden."
 funnel_target_channel: Stuur Alles Naar Doel Kanaal

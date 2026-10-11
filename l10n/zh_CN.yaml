@@ -44,6 +44,7 @@ using_fix_service: "正在使用 {service}"
 fix_embed: 预览嵌入
 extract_medias: 提取媒体
 no_fixes_found: 未发现嵌入/媒体于此消息
+nsfw_link_skipped: 此链接被标记为敏感内容，只能在年龄限制频道中修复
 bot_visibility: 机器人能见度
 bot_visibility_desc: "开启后， Embed Fixer 将会对来自其他机器人链接进行预览嵌入。关闭后，将只会对来自用户的链接进行预览嵌入。"
 funnel_target_channel: 引流目标频道

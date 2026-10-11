@@ -45,6 +45,7 @@ using_fix_service: "Đang sử dụng {service}"
 fix_embed: Sữa Nhúng
 extract_medias: Xuất Phương tiện
 no_fixes_found: Không tìm thấy nhúng sửa/phương tiện nào cho tin nhắn này
+nsfw_link_skipped: Liên kết này được đánh dấu là nhạy cảm và chỉ có thể được sửa trong các kênh giới hạn độ tuổi
 bot_visibility: Hiển Thị Của Bot
 bot_visibility_desc: "Nếu được bật, Embed Fixer sẽ sửa các bản nhúng do bot khác gửi. Nếu bị tắt, nó sẽ chỉ sửa các bản nhúng do người dùng gửi."
 funnel_target_channel: Phễu Đến Kênh Mục Tiêu
