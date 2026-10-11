@@ -401,7 +401,8 @@ class FixerCog(commands.Cog):
         nsfw_skipped = False
 
         is_nsfw_channel = (
-            is_ctx_menu
+            # DMs, or guilds the bot isn't in (user-installed commands)
+            message.guild is None
             # Text or Voice channel is nsfw
             or (
                 isinstance(message.channel, (discord.TextChannel, discord.VoiceChannel))
@@ -1494,13 +1495,12 @@ class FixerCog(commands.Cog):
             except discord.Forbidden:
                 logger.warning(f"Failed to send fixes in {i.channel_id=} in {i.guild_id=}")
         else:
-            await i.followup.send(
-                translator.translate(
-                    "no_fixes_found",
-                    lang=await translator.get_guild_lang(i.guild),
-                    url=message.jump_url,
-                )
-            )
+            guild_lang = await translator.get_guild_lang(i.guild)
+            key = "nsfw_link_skipped" if result.nsfw_skipped else "no_fixes_found"
+            # The deferred response is public, so the first followup would inherit that;
+            # delete it so the followup is sent as a new ephemeral message.
+            await i.delete_original_response()
+            await i.followup.send(translator.translate(key, lang=guild_lang), ephemeral=True)
 
     async def fix_embed(self, i: Interaction, message: discord.Message) -> None:
         await self.base_ctx_menu(i, message, extract_media=False)
@@ -1524,25 +1524,11 @@ class FixerCog(commands.Cog):
 
         mock_message = MockMessage(content=link, channel=i.channel, guild=i.guild, author=i.user)
 
-        is_nsfw_channel = (
-            i.guild is None
-            or (
-                isinstance(i.channel, (discord.TextChannel, discord.VoiceChannel))
-                and i.channel.nsfw
-            )
-            or (
-                isinstance(i.channel, discord.Thread)
-                and i.channel.parent is not None
-                and i.channel.parent.nsfw
-            )
-        )
-
         result = await self._find_fixes(
             mock_message,
             settings=None,
             filesize_limit=DEFAULT_FILESIZE_LIMIT if i.guild is None else i.guild.filesize_limit,
             extract_media=extract_media,
-            is_ctx_menu=is_nsfw_channel,
         )
 
         if result.fix_found:
