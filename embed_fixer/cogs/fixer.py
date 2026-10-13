@@ -848,8 +848,11 @@ class FixerCog(commands.Cog):
 
             if webhook is not None:
                 try:
+                    thread = (
+                        webhook_channel if isinstance(webhook_channel, discord.Thread) else None
+                    )
                     return await self._send_webhook(
-                        message, webhook, files=files, **kwargs
+                        message, webhook, files=files, thread=thread, **kwargs
                     ), "webhook"
                 except Exception as e:
                     err_message = translator.translate(
@@ -1051,6 +1054,7 @@ class FixerCog(commands.Cog):
         message: discord.Message,
         webhook: discord.Webhook,
         files: list[discord.File] | None = None,
+        thread: discord.Thread | None = None,
         **kwargs: Any,
     ) -> discord.Message:
         files = files or []
@@ -1062,6 +1066,7 @@ class FixerCog(commands.Cog):
             wait=True,
             files=files,
             silent=True,
+            thread=thread or discord.utils.MISSING,
             **kwargs,
         )
 
@@ -1072,25 +1077,29 @@ class FixerCog(commands.Cog):
         | discord.abc.PrivateChannel,
         guild: discord.Guild | None,
     ) -> discord.Webhook | None:
-        if not isinstance(channel, discord.TextChannel):
+        # Threads can't own webhooks, but their parent's webhook can post into them
+        parent = channel.parent if isinstance(channel, discord.Thread) else channel
+        if not isinstance(parent, discord.TextChannel | discord.ForumChannel):
             return None
 
         try:
-            webhooks = await channel.webhooks()
+            webhooks = await parent.webhooks()
         except discord.Forbidden:
-            with contextlib.suppress(discord.Forbidden):
-                await channel.send(
-                    translator.translate(
-                        "no_perms_to_manage_webhooks", lang=await translator.get_guild_lang(guild)
-                    ),
-                    delete_after=ERROR_MSG_DELETE_AFTER,
-                )
+            if isinstance(channel, discord.Thread | discord.TextChannel):
+                with contextlib.suppress(discord.Forbidden):
+                    await channel.send(
+                        translator.translate(
+                            "no_perms_to_manage_webhooks",
+                            lang=await translator.get_guild_lang(guild),
+                        ),
+                        delete_after=ERROR_MSG_DELETE_AFTER,
+                    )
             return None
 
         webhook_name = self.bot.user.name
         webhook = discord.utils.get(webhooks, name=webhook_name)
         if webhook is None:
-            webhook = await channel.create_webhook(
+            webhook = await parent.create_webhook(
                 name=webhook_name, avatar=await self.bot.user.display_avatar.read()
             )
 
@@ -1331,7 +1340,12 @@ class FixerCog(commands.Cog):
                 webhook = await self._get_or_create_webhook(message.channel, guild)
                 if webhook is None:
                     return
-                await webhook.edit_message(message.id, content=new_content)
+                thread = (
+                    message.channel
+                    if isinstance(message.channel, discord.Thread)
+                    else discord.utils.MISSING
+                )
+                await webhook.edit_message(message.id, content=new_content, thread=thread)
             else:
                 await message.edit(
                     content=new_content,
