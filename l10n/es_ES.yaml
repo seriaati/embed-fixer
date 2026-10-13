@@ -71,8 +71,6 @@ recommend_original_link_btn: Se recomienda habilitar el "Botón de Enlace origin
 ignore_me_enabled: Ahora el bot te está ignorando. Tus embeds no serán corregidos.
 ignore_me_disabled: El bot ya no te está ignorando. Tus embeds serán corregidos.
 ignore_me_cmd_desc: Habilitar/Deshabilitar si Embed Fixer debe ignorar tus mensajes
-delete_original_message_in_threads: Borrar Mensaje Original en Hilos
-delete_original_message_in_threads_desc: "Por limitaciones técnicas, los hilos no soportan webhooks; por lo tanto el mensaje original se mantendrá. Al activar esta opción, el mensaje original será eliminado tras publicar el enlace corregido."
 fix_url_command_desc: Corregir una URL y obtener la versión compatible con embeds
 fix_url_param: enlace
 fix_url_param_desc: La URL a corregir

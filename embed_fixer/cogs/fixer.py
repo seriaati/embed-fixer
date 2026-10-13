@@ -46,7 +46,7 @@ DEFAULT_FILESIZE_LIMIT: Final[int] = 10 * 1024 * 1024  # 10 MB
 ROTATE_FIX_EMOJI: Final[str] = "🔄"
 FIXED_MESSAGE_RETENTION_DAYS: Final[int] = 90
 
-type SendType = Literal["webhook", "reply", "channel", "resend", "interaction"]
+type SendType = Literal["webhook", "reply", "resend", "interaction"]
 
 
 class MockMessage:
@@ -831,7 +831,6 @@ class FixerCog(commands.Cog):
         | discord.abc.MessageableChannel
         | discord.abc.PrivateChannel,
         files: list[discord.File],
-        guild_settings: GuildSettings | None,
         *,
         fix_mode: FixMode = FixMode.DELETE_AND_RESEND,
         **kwargs: Any,
@@ -863,13 +862,6 @@ class FixerCog(commands.Cog):
                         f"{err_message}\n\n{e}", delete_after=ERROR_MSG_DELETE_AFTER
                     )
                     raise
-            elif guild_settings is not None and guild_settings.delete_original_message_in_threads:
-                return (
-                    await message.channel.send(
-                        message.content, tts=message.tts, files=files, **kwargs
-                    ),
-                    "channel",
-                )
 
         # fix_mode is REPLY, or no webhook is available
         return await message.reply(
@@ -947,12 +939,7 @@ class FixerCog(commands.Cog):
             try:
                 webhook_channel = await self._get_target_channel(message, funnel_target_channel)
                 fix_message, send_type = await self._send_via_fix_mode(
-                    message,
-                    webhook_channel,
-                    files,
-                    guild_settings=guild_settings,
-                    fix_mode=fix_mode,
-                    **kwargs,
+                    message, webhook_channel, files, fix_mode=fix_mode, **kwargs
                 )
             except discord.HTTPException as e:
                 await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
@@ -1421,9 +1408,7 @@ class FixerCog(commands.Cog):
                 capture_exception(e)
                 return
 
-            if send_type in {"webhook", "channel"}:
-                # send_type is only "channel" when delete_original_message_in_threads is enabled
-                # this is checked in _send_via_fix_mode.
+            if send_type == "webhook":
                 await self.delete_message_safe(message, channel, guild)
             elif send_type in {"reply", "resend"}:
                 if not guild_settings.disable_embed_suppression:

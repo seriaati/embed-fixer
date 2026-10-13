@@ -38,7 +38,6 @@ NO_HEADER_SETTINGS = {
     GuildSetting.DISABLE_DELETE_REACTION,
     GuildSetting.BOT_VISIBILITY,
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON,
-    GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS,
     GuildSetting.ROTATE_FIX_REACTION,
     GuildSetting.DISABLE_EMBED_SUPPRESSION,
 }
@@ -64,7 +63,6 @@ TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
     GuildSetting.DISABLE_DELETE_REACTION: "disable_delete_reaction",
     GuildSetting.BOT_VISIBILITY: "bot_visibility",
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON: "show_original_link_btn",
-    GuildSetting.DELETE_ORIGINAL_MESSAGE_IN_THREADS: "delete_original_message_in_threads",
     GuildSetting.ROTATE_FIX_REACTION: "rotate_fix_reaction",
     GuildSetting.DISABLE_EMBED_SUPPRESSION: "disable_embed_suppression",
 }

@@ -71,8 +71,6 @@ recommend_original_link_btn: 推薦在 /settings 中啟用「原連結按鈕」�
 ignore_me_enabled: 從現在起，機器人將不再忽略你的訊息，你的連結預覽將會被修復。
 ignore_me_disabled: 從現在起，機器人將忽略你的訊息，你的連結預覽將不會被修復。
 ignore_me_cmd_desc: 開關 Embed Fixer 是否要忽略你的訊息
-delete_original_message_in_threads: 刪除討論串中的原訊息
-delete_original_message_in_threads_desc: "由於討論串中不能有 Webhook，原訊息將被保留，以用於展示誰傳送了原本的訊息。啟用後將在討論串中修復連結預覽後刪除原訊息。"
 fix_url_command_desc: 修復一個連結的連結預覽
 fix_url_param: 連結
 fix_url_param_desc: 要修復的連結
