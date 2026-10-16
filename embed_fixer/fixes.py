@@ -149,7 +149,7 @@ DOMAINS: Final[list[Domain]] = [
         id=DomainId.TIKTOK,
         name="TikTok",
         websites=[
-            Website(r"https://(www.)?tiktok.com/(t/\w+|@[\w.]+/video/\d+)/?"),
+            Website(r"https://(www.)?tiktok.com/(t/\w+|@[\w.]+/(video|photo)/\d+)/?"),
             Website(r"https://vm.tiktok.com/\w+/?"),
             Website(r"https://vt.tiktok.com/\w+/?"),
         ],
