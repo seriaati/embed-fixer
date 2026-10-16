@@ -26,4 +26,4 @@ class Settings(BaseSettings):
 
 
 load_dotenv()
-settings = Settings()  # pyright: ignore[reportCallIssue]
+settings = Settings()

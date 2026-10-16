@@ -32,21 +32,28 @@ version = "1.9.7"
 [project.optional-dependencies]
 asyncpg = ["asyncpg>=0.31.0"]
 
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-enableTypeIgnoreComments = false
-reportIncompatibleMethodOverride = false
-reportIncompatibleVariableOverride = false
-reportUnnecessaryComparison = true
-reportUnnecessaryContains = true
-reportUnnecessaryIsInstance = true
-reportUnnecessaryTypeIgnoreComment = true
-typeCheckingMode = "standard"
-exclude = ["migrations", "**/node_modules", "**/__pycache__", "**/.*", ".venv"]
+[tool.pyrefly]
+project-excludes = ["migrations", "**/node_modules", "**/__pycache__", "**/.*", ".venv"]
+infer-with-first-use = false
+enabled-ignores = ["pyrefly"]
+
+[tool.pyrefly.errors]
+unnecessary-comparison = "error"
+incompatible-comparison = "error"
+bad-override = "ignore"
+redundant-condition = "error"
+unused-ignore = "error"
+
+[[tool.pyrefly.sub-config]]
+matches = "embed_fixer/models.py"
+errors = { bad-assignment = "ignore" }
 
 [dependency-groups]
-dev = ["asyncpg>=0.31.0"]
+dev = [
+    "asyncpg>=0.31.0",
+    "types-aiofiles>=25.1.0.20260518",
+    "types-pyyaml>=6.0.12.20260906",
+]
 
 [tool.tortoise]
 tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"

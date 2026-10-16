@@ -1,4 +1,4 @@
-name: Pyright
+name: Pyrefly
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
       - ci.py
       - pyproject.toml
       - uv.lock
-      - .github/workflows/pyright.yml
+      - .github/workflows/pyrefly.yml
   pull_request:
     branches:
       - main
@@ -21,10 +21,10 @@ on:
       - ci.py
       - pyproject.toml
       - uv.lock
-      - .github/workflows/pyright.yml
+      - .github/workflows/pyrefly.yml
 
 jobs:
-  pyright:
+  pyrefly:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -33,7 +33,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.0.1
 
       - name: Install Project
-        run: uv sync --frozen --no-dev && uv pip install pyright[nodejs]
+        run: uv sync --frozen && uv pip install pyrefly
 
-      - name: Run Pyright
-        run: uv run pyright embed_fixer
+      - name: Run Pyrefly
+        run: uv run pyrefly check --output-format full-text-with-github

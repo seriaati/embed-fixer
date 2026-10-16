@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 uv run run.py       # Start the bot
 ruff check --fix .  # Lint with auto-fix
 ruff format .       # Format
-pyright             # Type check
+pyrefly check       # Type check
 ```
 
 No automated test suite — test manually in a Discord server. There is no way to run a single test.

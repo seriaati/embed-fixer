@@ -1,5 +1,3 @@
-# pyright: reportAssignmentType=false, reportArgumentType=false
-
 from tortoise import migrations
 from tortoise.migrations import operations as ops
 import functools

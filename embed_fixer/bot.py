@@ -49,6 +49,8 @@ allowed_contexts = discord.app_commands.AppCommandContext(
 
 
 class EmbedFixer(commands.AutoShardedBot):
+    user: discord.ClientUser
+
     def __init__(self, *, session: ClientSession, env: str) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned,
@@ -67,7 +69,6 @@ class EmbedFixer(commands.AutoShardedBot):
 
         self.session = session
         self.env = env
-        self.user: discord.ClientUser
         self.app_emojis: dict[str, discord.Emoji] = {}
 
     async def setup_hook(self) -> None:

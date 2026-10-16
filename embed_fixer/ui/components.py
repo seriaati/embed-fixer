@@ -39,7 +39,7 @@ class ViewMixin:
 
     def get_item(self, item_id: str) -> ui.Item | None:
         for item in self.children:
-            if item.custom_id == item_id:  # pyright: ignore[reportAttributeAccessIssue]
+            if item.custom_id == item_id:  # pyrefly: ignore[missing-attribute]
                 return item
         return None
 

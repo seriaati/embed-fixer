@@ -139,7 +139,7 @@ class SettingsToggleButton(discord.ui.Button):
         await i.response.defer()
         settings_cls = GuildSettings if self.settings_type == "guild" else UserSettings
         settings, _ = await settings_cls.get_or_create(
-            id=i.user.id if self.settings_type == "user" else i.guild_id  # pyright: ignore[reportArgumentType]
+            id=i.user.id if self.settings_type == "user" else i.guild_id  # pyrefly: ignore[bad-argument-type]
         )
         self.value = not self.value
         self.update_style()
