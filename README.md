@@ -156,6 +156,8 @@ Below are settings you can change with the `/settings` command:
 - **Remove Reactions After**: Set the number of seconds after which the delete and switch fix reaction emojis are automatically removed. Leave a field empty to disable.
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
 - **Disable Original Embed Suppression**: For the "reply" and "resend as bot" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators.
+- **Hide Webhook Username Suffix**: When enabled, messages resent through webhooks show the original author's name without the " (Embed Fixer)" suffix.
+💎 Sponsor-only: at least one administrator of this server must be a sponsor.
 
 ## Post Content Translation
 
