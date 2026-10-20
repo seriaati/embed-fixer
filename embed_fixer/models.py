@@ -165,6 +165,7 @@ class GuildSettings(BaseSettings):
     remove_rotate_reaction_after: int | None = None
     rotate_fix_reaction: bool = False
     disable_embed_suppression: bool = False
+    hide_webhook_suffix: bool = False
 
     @pydantic.model_validator(mode="before")
     @classmethod

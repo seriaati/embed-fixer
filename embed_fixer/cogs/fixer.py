@@ -32,6 +32,7 @@ from embed_fixer.utils.misc import (
     sanitize_username,
     unsanitize_username,
 )
+from embed_fixer.utils.sponsors import sponsors
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -836,6 +837,7 @@ class FixerCog(commands.Cog):
         files: list[discord.File],
         *,
         fix_mode: FixMode = FixMode.DELETE_AND_RESEND,
+        hide_username_suffix: bool = False,
         **kwargs: Any,
     ) -> tuple[discord.Message | None, SendType]:
         """Send message via webhook, reply, or plain resend depending on the fix mode."""
@@ -854,7 +856,12 @@ class FixerCog(commands.Cog):
                         webhook_channel if isinstance(webhook_channel, discord.Thread) else None
                     )
                     return await self._send_webhook(
-                        message, webhook, files=files, thread=thread, **kwargs
+                        message,
+                        webhook,
+                        files=files,
+                        thread=thread,
+                        hide_username_suffix=hide_username_suffix,
+                        **kwargs,
                     ), "webhook"
                 except Exception as e:
                     err_message = translator.translate(
@@ -942,7 +949,14 @@ class FixerCog(commands.Cog):
             try:
                 webhook_channel = await self._get_target_channel(message, funnel_target_channel)
                 fix_message, send_type = await self._send_via_fix_mode(
-                    message, webhook_channel, files, fix_mode=fix_mode, **kwargs
+                    message,
+                    webhook_channel,
+                    files,
+                    fix_mode=fix_mode,
+                    hide_username_suffix=guild_settings is not None
+                    and guild_settings.hide_webhook_suffix
+                    and await sponsors.is_guild_unlocked(guild_settings.id),
+                    **kwargs,
                 )
             except discord.HTTPException as e:
                 await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
@@ -1045,12 +1059,15 @@ class FixerCog(commands.Cog):
         webhook: discord.Webhook,
         files: list[discord.File] | None = None,
         thread: discord.Thread | None = None,
+        *,
+        hide_username_suffix: bool = False,
         **kwargs: Any,
     ) -> discord.Message:
         files = files or []
+        suffix = "" if hide_username_suffix else USERNAME_SUFFIX
         return await webhook.send(
             message.content,
-            username=f"{sanitize_username(message.author.display_name)}{USERNAME_SUFFIX}",
+            username=f"{sanitize_username(message.author.display_name)}{suffix}",
             avatar_url=message.author.display_avatar.url,
             tts=message.tts,
             wait=True,

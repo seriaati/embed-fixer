@@ -132,11 +132,22 @@ class SettingsToggleButton(discord.ui.Button):
         else:
             self.label = "ON" if self.value else "OFF"
 
+    async def before_toggle(self, i: Interaction, *, value: bool) -> bool:  # ruff: ignore[unused-method-argument]
+        """Called after deferring and before the setting is changed to `value`.
+
+        Returns:
+            Whether to change the setting.
+        """
+        return True
+
     async def callback(self, i: Interaction) -> None:
         if self.settings_type == "guild" and i.guild_id is None:
             return
 
         await i.response.defer()
+        if not await self.before_toggle(i, value=not self.value):
+            return
+
         settings_cls = GuildSettings if self.settings_type == "guild" else UserSettings
         settings, _ = await settings_cls.get_or_create(
             id=i.user.id if self.settings_type == "user" else i.guild_id  # pyrefly: ignore[bad-argument-type]
@@ -158,12 +169,13 @@ class SettingsSection(discord.ui.Section):
         value: bool,
         settings_key: str,
         settings_type: Literal["guild", "user"],
+        button_cls: type[SettingsToggleButton] = SettingsToggleButton,
     ) -> None:
         heading_level = 1 if settings_type == "guild" else 2
         heading_md = "#" * heading_level
         super().__init__(
             discord.ui.TextDisplay(f"{heading_md} {title}\n{description}"),
-            accessory=SettingsToggleButton(
+            accessory=button_cls(
                 value=value,
                 app_emojis=app_emojis,
                 settings_key=settings_key,

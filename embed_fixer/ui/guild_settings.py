@@ -10,7 +10,8 @@ from embed_fixer.core.translator import DEFAULT_LANG, translator
 from embed_fixer.fixes import DOMAINS, EXTRACTABLE_DOMAIN_IDS, DomainId
 from embed_fixer.models import GuildFixMethod, GuildSettings
 from embed_fixer.settings import GuildSetting
-from embed_fixer.ui.common import FixModeSelector, SettingsSection
+from embed_fixer.ui.common import FixModeSelector, SettingsSection, SettingsToggleButton
+from embed_fixer.utils.sponsors import sponsors
 
 from . import components as ui
 
@@ -40,6 +41,7 @@ NO_HEADER_SETTINGS = {
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON,
     GuildSetting.ROTATE_FIX_REACTION,
     GuildSetting.DISABLE_EMBED_SUPPRESSION,
+    GuildSetting.HIDE_WEBHOOK_SUFFIX,
 }
 
 MULTI_CHANNEL_SETTING_ATTRS: dict[GuildSetting, str] = {
@@ -65,7 +67,10 @@ TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
     GuildSetting.SHOW_ORIGINAL_LINK_BUTTON: "show_original_link_btn",
     GuildSetting.ROTATE_FIX_REACTION: "rotate_fix_reaction",
     GuildSetting.DISABLE_EMBED_SUPPRESSION: "disable_embed_suppression",
+    GuildSetting.HIDE_WEBHOOK_SUFFIX: "hide_webhook_suffix",
 }
+
+SPONSOR_ONLY_SETTINGS = {GuildSetting.HIDE_WEBHOOK_SUFFIX}
 
 
 class DeleteMsgEmojiModal(ui.Modal):
@@ -346,6 +351,9 @@ class GuildSettingsView(ui.LayoutView):
             value=cast("bool", getattr(guild_settings, settings_attr)),
             settings_key=settings_attr,
             settings_type="guild",
+            button_cls=SponsorToggleButton
+            if setting in SPONSOR_ONLY_SETTINGS
+            else SettingsToggleButton,
         )
         container.add_item(section)
 
@@ -483,6 +491,27 @@ class GuildSettingsView(ui.LayoutView):
         self.add_item(container)
         await i.followup.send(view=self, ephemeral=True)
         self.message = await i.original_response()
+
+
+class SponsorToggleButton(SettingsToggleButton):
+    """Toggle for a sponsor-only setting, which requires an administrator of the guild to be a sponsor."""
+
+    async def before_toggle(self, i: Interaction, *, value: bool) -> bool:
+        if i.guild is None:
+            return False
+
+        if not value:
+            await sponsors.remove_guild(i.guild.id)
+            return True
+
+        if await sponsors.unlock_guild(i.guild):
+            return True
+
+        lang = await translator.get_guild_lang(i.guild)
+        await i.followup.send(
+            translator.translate("sponsor_only_feature", lang=lang), ephemeral=True
+        )
+        return False
 
 
 class DisableDomainSelect(ui.Select[GuildSettingsView]):

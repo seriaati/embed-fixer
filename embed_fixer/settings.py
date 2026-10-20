@@ -22,6 +22,7 @@ class GuildSetting(StrEnum):
     REMOVE_REACTIONS_AFTER = "remove_reactions_after"
     ROTATE_FIX_REACTION = "rotate_fix_reaction"
     DISABLE_EMBED_SUPPRESSION = "disable_embed_suppression"
+    HIDE_WEBHOOK_SUFFIX = "hide_webhook_suffix"
 
 
 class UserSetting(StrEnum):

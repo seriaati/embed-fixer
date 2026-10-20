@@ -109,3 +109,6 @@ rotate_fix_reaction: Rotate Fix Reaction
 rotate_fix_reaction_desc: "When enabled, the bot adds a \U0001F504 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service."
 disable_embed_suppression: Disable Original Embed Suppression
 disable_embed_suppression_desc: "For the \"reply\" and \"resend as bot\" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators."
+hide_webhook_suffix: Hide Webhook Username Suffix
+hide_webhook_suffix_desc: "When enabled, messages resent through webhooks show the original author's name without the \" (Embed Fixer)\" suffix.\n💎 Sponsor-only: at least one administrator of this server must be a sponsor."
+sponsor_only_feature: "💎 **This is a sponsor-only feature.**\n\nTo unlock it for this server, at least one of its administrators needs to be a sponsor.\n1. [Donate here](<https://link.seria.moe/donate>)\n2. Contact [Seria on Discord](<https://discord.com/users/410036441129943050>) to activate\n\nOnce unlocked, any administrator can change this setting."
