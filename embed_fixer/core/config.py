@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     proxy_url: str | None = None
     heartbeat_url: str | None = None
     pixiv_session_id: str | None = None
+    sponsors_api_key: str | None = None
 
     @property
     def pixiv_headers(self) -> dict[str, str]:

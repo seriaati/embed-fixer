@@ -101,6 +101,17 @@ class FixedMessage(Model):
         table = "fixed_messages"
 
 
+class SponsoredGuild(Model):
+    """A guild with a sponsor-only feature enabled, and the administrator sponsor unlocking it."""
+
+    id = fields.BigIntField(pk=True, generated=False)
+    sponsor_id: fields.Field[int | None] = fields.BigIntField(null=True)
+    """`None` means no administrator of the guild is currently a sponsor."""
+
+    class Meta:
+        table = "sponsored_guilds"
+
+
 class GuildSettingsTable(SettingsTable):
     class Meta:
         table = "guild_settings_v2"

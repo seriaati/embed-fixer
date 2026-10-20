@@ -19,6 +19,7 @@ No automated test suite — test manually in a Discord server. There is no way t
 - `DB_URI` — defaults to `sqlite://embed_fixer.db` (PostgreSQL supported via `asyncpg` optional dep)
 - `ENV` — `dev` or `prod` (health cog skipped in `dev`)
 - `REDIS_URL`, `SENTRY_DSN`, `PROXY_URL`, `HEARTBEAT_URL` — optional
+- `SPONSORS_API_KEY` — optional; key for `api.seria.moe/sponsors`. When unset (self-hosted), sponsor-only features are unlocked for every guild
 
 ## Architecture
 
