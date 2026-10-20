@@ -210,6 +210,9 @@ class FixerCog(commands.Cog):
         self.extract_medias_ctx = app_commands.ContextMenu(
             name=app_commands.locale_str("extract_medias"), callback=self.extract_medias
         )
+        # Webhooks this bot sends through, registered before each send so the bot can
+        # recognize its own webhook messages even when they don't have the username suffix
+        self._own_webhook_ids: set[int] = set()
 
     async def cog_load(self) -> None:
         self.bot.tree.add_command(self.fix_embed_ctx)
@@ -1090,6 +1093,7 @@ class FixerCog(commands.Cog):
                 name=webhook_name, avatar=await self.bot.user.display_avatar.read()
             )
 
+        self._own_webhook_ids.add(webhook.id)
         return webhook
 
     async def _handle_reply(self, message: discord.Message, resolved_ref: discord.Message) -> None:
@@ -1363,7 +1367,8 @@ class FixerCog(commands.Cog):
         channel, guild, author = message.channel, message.guild, message.author
 
         if (
-            self._is_fixed_webhook_message(message)
+            message.webhook_id in self._own_webhook_ids
+            or self._is_fixed_webhook_message(message)
             or self.bot.user.id == author.id
             or guild is None
             or await IgnoreMe.contains(author.id)
