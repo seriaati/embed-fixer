@@ -351,6 +351,7 @@ DOMAINS: Final[list[Domain]] = [
             Website(r"https://(www.|web.)?facebook.com/share/r/[\w]+/?"),
             Website(r"https://(www.|web.)?facebook.com/reel/\d+/?"),
             Website(r"https://(www.|web.)?facebook.com/share/v/[\w]+/?"),
+            Website(r"https://(www.|web.)?facebook.com/marketplace/", skip_method_ids=[15, 25]),
             Website(r"https://(www.|web.)?facebook.com/(.*)", skip_method_ids=[15]),
         ],
         fix_methods=[
