@@ -41,7 +41,6 @@ class SponsorManager:
             ) as resp:
                 resp.raise_for_status()
                 sponsors: list[dict[str, str]] = await resp.json()
-                sponsors = []
         except Exception as e:
             capture_exception(e)
             return
