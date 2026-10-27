@@ -89,6 +89,13 @@ fix_mode_reply_desc: "Reply to the original message with the fix, keeping the or
 fix_mode_resend: Resend as Bot
 fix_mode_resend_desc: "Send the fix as the bot itself, keeping the original message."
 fix_mode_follow_server: Follow Server Setting
+proxy_tags: Proxy Tags
+proxy_tags_desc: "If you use a proxy bot like Tupperbox, add your characters' tags here so Embed Fixer leaves your tagged messages to it. The proxied message is still fixed if the server has Bot Visibility enabled. Update these whenever you add a character or change its tags."
+proxy_tags_modal_desc: "One tag per line, with \"text\" where your message goes, e.g. \":cgg text\" or \"[text]\"."
+edit: Edit
+invalid_proxy_tag: "Invalid tag {tag}: it must contain \"text\" with a prefix and/or suffix around it, e.g. \":cgg text\" or \"[text]\"."
+too_many_proxy_tags: "You can save at most {max} tags."
+proxy_tags_saved: Proxy tags saved.
 remove_reactions_after: Remove Reactions After
 remove_reactions_after_desc: "Set the number of seconds after which the delete and switch fix reaction emojis are automatically removed. Leave a field empty to disable."
 delete_reaction_seconds: Delete Reaction (Seconds)

@@ -122,6 +122,33 @@ class UserSettingsTable(SettingsTable):
         table = "user_settings"
 
 
+class ProxyTag(pydantic.BaseModel):
+    """A proxy bot (e.g. Tupperbox) tag, written as `prefix text suffix`."""
+
+    prefix: str
+    suffix: str
+
+    @classmethod
+    def from_line(cls, line: str) -> Self:
+        """Parse a tag like `:cgg text` or `[text]`.
+
+        Raises:
+            ValueError: If the line has no `text` placeholder, or no prefix and suffix.
+        """
+        prefix, sep, suffix = line.rpartition("text")
+        prefix, suffix = prefix.strip(), suffix.strip()
+        if not sep or not (prefix or suffix):
+            raise ValueError(line)
+        return cls(prefix=prefix, suffix=suffix)
+
+    def to_line(self) -> str:
+        return " ".join(part for part in (self.prefix, "text", self.suffix) if part)
+
+    def matches(self, content: str) -> bool:
+        content = content.strip()
+        return content.startswith(self.prefix) and content.endswith(self.suffix)
+
+
 class UserSettings(BaseSettings):
     _table_class = UserSettingsTable
 
@@ -129,6 +156,8 @@ class UserSettings(BaseSettings):
     lang: str | None = None
     fix_mode: FixMode | None = None
     """Fix mode forced by the user, `None` means follow the guild's setting."""
+    proxy_tags: list[ProxyTag] = pydantic.Field(default_factory=list)
+    """Messages matching any of these are sent by a proxy bot, so they're ignored."""
 
     @pydantic.model_validator(mode="before")
     @classmethod

@@ -1376,6 +1376,20 @@ class FixerCog(commands.Cog):
     ) -> None:
         await FixedMessage.filter(id__in=payload.message_ids).delete()
 
+    @staticmethod
+    async def _is_proxy_trigger(message: discord.Message) -> bool:
+        """Whether this message matches one of its author's proxy tags.
+
+        Such messages are left to the proxy bot (e.g. Tupperbox), whose own message is fixed
+        instead if bot visibility is on.
+        """
+        if message.author.bot:
+            return False
+        user_settings = await UserSettings.get_or_none(id=message.author.id)
+        return user_settings is not None and any(
+            tag.matches(message.content) for tag in user_settings.proxy_tags
+        )
+
     @commands.Cog.listener("on_message")
     async def embed_fixer(self, message: discord.Message) -> None:
         if message.content.startswith(f"{self.bot.user.mention} jsk py"):
@@ -1402,6 +1416,7 @@ class FixerCog(commands.Cog):
             self._skip_channel(guild_settings, channel.id)
             or (not guild_settings.bot_visibility and author.bot)
             or whitelist_role_skip
+            or await self._is_proxy_trigger(message)
         ):
             return
 
