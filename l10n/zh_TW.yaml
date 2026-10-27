@@ -93,3 +93,10 @@ invalid_seconds: "無效的值，請輸入 {min} 到 {max} 之間的整數。"
 seconds_placeholder: "{min} - {max}（留空則停用）"
 disable_embed_suppression: 停用隱藏原訊息預覽
 disable_embed_suppression_desc: "在「回覆」與「以機器人身分重新傳送」修復模式下，機器人會隱藏原訊息的連結預覽。啟用後將保留原訊息的預覽，是否移除交由使用者與管理員自行決定。"
+proxy_tags: 代理標籤
+proxy_tags_desc: "如果你在用 Tupperbox 等代理機器人，請在這裡加入你角色的標籤，Embed Fixer 就不會處理帶有這些標籤的訊息，而是交給代理機器人。伺服器啟用「機器人能見度」後，代理機器人發出的訊息仍會被修復。每次新增角色或更改標籤後，記得同步更新這裡。"
+proxy_tags_modal_desc: "每行一個標籤，用「text」代表訊息內容的位置，例如「:cgg text」或「[text]」。"
+edit: 編輯
+invalid_proxy_tag: "無效的標籤 {tag}：標籤必須包含「text」，且前後至少要有前綴或後綴，例如「:cgg text」或「[text]」。"
+too_many_proxy_tags: "最多只能儲存 {max} 個標籤。"
+proxy_tags_saved: 代理標籤已儲存。

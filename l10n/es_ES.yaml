@@ -87,3 +87,10 @@ invalid_seconds: "Valor no válido. Introduce un número entero entre {min} y {m
 seconds_placeholder: "{min} - {max} (deja vacío para desactivar)"
 disable_embed_suppression: Deshabilitar Ocultación de Embeds Originales
 disable_embed_suppression_desc: 'En los modos de corrección "responder" y "reenviar como bot", el bot oculta los embeds del mensaje original. Al activar esta opción, los embeds originales se mantendrán, y su eliminación quedará a cargo de los usuarios y moderadores.'
+proxy_tags: Etiquetas de Proxy
+proxy_tags_desc: 'Si usas un bot de proxy como Tupperbox, añade aquí las etiquetas de tus personajes para que Embed Fixer deje en sus manos tus mensajes con esas etiquetas. El mensaje que envía el bot de proxy se seguirá corrigiendo si el servidor tiene activada la opción "Visibilidad Hacia Otros Bots". Actualízalas cada vez que añadas un personaje o cambies sus etiquetas.'
+proxy_tags_modal_desc: 'Una etiqueta por línea, con "text" donde va tu mensaje, p. ej. ":cgg text" o "[text]".'
+edit: Editar
+invalid_proxy_tag: 'Etiqueta no válida {tag}: debe contener "text" con un prefijo, un sufijo o ambos alrededor, p. ej. ":cgg text" o "[text]".'
+too_many_proxy_tags: "Puedes guardar como máximo {max} etiquetas."
+proxy_tags_saved: Etiquetas de proxy guardadas.

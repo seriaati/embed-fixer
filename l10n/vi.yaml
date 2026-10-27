@@ -87,3 +87,10 @@ invalid_seconds: "Giá trị không hợp lệ. Vui lòng nhập một số nguy
 seconds_placeholder: "{min} - {max} (để trống để tắt)"
 disable_embed_suppression: Tắt Ẩn Nhúng Của Tin Nhắn Gốc
 disable_embed_suppression_desc: 'Ở chế độ sửa "trả lời" và "gửi lại bằng bot", bot sẽ ẩn nhúng của tin nhắn gốc. Khi bật, nhúng của tin nhắn gốc sẽ được giữ lại, và việc xóa chúng do người dùng và quản trị viên tự quyết định.'
+proxy_tags: Thẻ Proxy
+proxy_tags_desc: 'Nếu bạn dùng bot proxy như Tupperbox, hãy thêm thẻ của các nhân vật vào đây để Embed Fixer nhường các tin nhắn có thẻ đó cho bot ấy xử lý. Tin nhắn do bot proxy gửi vẫn sẽ được sửa nếu máy chủ bật "Hiển Thị Của Bot". Hãy cập nhật lại mỗi khi bạn thêm nhân vật hoặc đổi thẻ của nhân vật.'
+proxy_tags_modal_desc: 'Mỗi dòng một thẻ, dùng "text" ở vị trí tin nhắn của bạn, ví dụ ":cgg text" hoặc "[text]".'
+edit: Chỉnh sửa
+invalid_proxy_tag: 'Thẻ {tag} không hợp lệ: thẻ phải chứa "text" cùng tiền tố và/hoặc hậu tố bao quanh, ví dụ ":cgg text" hoặc "[text]".'
+too_many_proxy_tags: "Bạn chỉ có thể lưu tối đa {max} thẻ."
+proxy_tags_saved: Đã lưu thẻ proxy.

@@ -87,3 +87,10 @@ invalid_seconds: "Ongeldige waarde. Voer een geheel getal in tussen {min} en {ma
 seconds_placeholder: "{min} - {max} (laat leeg om uit te schakelen)"
 disable_embed_suppression: Onderdrukken van Originele Embeds Uitschakelen
 disable_embed_suppression_desc: 'Bij de fixmodi "reply" en "resend as bot" onderdrukt de bot de embeds van het originele bericht. Indien ingeschakeld blijven de originele embeds behouden en wordt het verwijderen ervan overgelaten aan gebruikers en moderators.'
+proxy_tags: Proxy-tags
+proxy_tags_desc: 'Gebruik je een proxybot zoals Tupperbox? Voeg hier de tags van je personages toe, dan laat Embed Fixer je berichten met die tags aan die bot over. Het bericht van de proxybot wordt nog steeds gefixt als de server "Bot Zichtbaarheid" heeft ingeschakeld. Werk de tags bij wanneer je een personage toevoegt of de tags ervan wijzigt.'
+proxy_tags_modal_desc: 'Eén tag per regel, met "text" waar je bericht komt, bijv. ":cgg text" of "[text]".'
+edit: Bewerken
+invalid_proxy_tag: 'Ongeldige tag {tag}: deze moet "text" bevatten met een prefix en/of suffix eromheen, bijv. ":cgg text" of "[text]".'
+too_many_proxy_tags: "Je kunt maximaal {max} tags opslaan."
+proxy_tags_saved: Proxy-tags opgeslagen.

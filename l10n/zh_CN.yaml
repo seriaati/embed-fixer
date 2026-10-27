@@ -92,3 +92,10 @@ invalid_seconds: "无效的值，请输入 {min} 到 {max} 之间的整数。"
 seconds_placeholder: "{min} - {max}（留空则停用）"
 disable_embed_suppression: 停用隐藏原消息预览
 disable_embed_suppression_desc: "在“回复”与“以机器人身份重新发送”修复模式下，机器人会隐藏原消息的链接预览。启用后将保留原消息的预览，是否移除交由用户与管理员自行决定。"
+proxy_tags: 代理标签
+proxy_tags_desc: "如果你在用 Tupperbox 等代理机器人，请在这里添加你角色的标签，Embed Fixer 就不会处理带有这些标签的消息，而是交给代理机器人。服务器开启“机器人能见度”后，代理机器人发出的消息仍会被修复。每次添加角色或更改标签后，记得同步更新这里。"
+proxy_tags_modal_desc: "每行一个标签，用“text”表示消息内容的位置，例如“:cgg text”或“[text]”。"
+edit: 编辑
+invalid_proxy_tag: "无效的标签 {tag}：标签必须包含“text”，且前后至少要有前缀或后缀，例如“:cgg text”或“[text]”。"
+too_many_proxy_tags: "最多只能保存 {max} 个标签。"
+proxy_tags_saved: 代理标签已保存。
