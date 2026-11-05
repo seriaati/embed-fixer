@@ -54,6 +54,11 @@ class View(ui.View, ViewMixin):
         self.message: discord.Message | None = None
         self.lang = lang
 
+    async def on_error(
+        self, i: discord.Interaction[Any], error: Exception, _item: ui.Item[Any]
+    ) -> None:
+        await ViewMixin.on_error(self, i, error, _item)
+
     async def on_timeout(self) -> None:
         if self.message is None:
             return
@@ -73,12 +78,20 @@ class LayoutView(ui.LayoutView, ViewMixin):
         self.message: discord.Message | None = None
         self.lang = lang
 
+    async def on_error(
+        self, i: discord.Interaction[Any], error: Exception, _item: ui.Item[Any]
+    ) -> None:
+        await ViewMixin.on_error(self, i, error, _item)
+
     async def on_timeout(self) -> None:
         if self.message is None:
             return
 
-        for child in self.children:
-            if isinstance(child, ui.Select) or (isinstance(child, ui.Button) and child.url is None):
+        for child in self.walk_children():
+            if isinstance(
+                child,
+                (ui.Select, ui.ChannelSelect, ui.RoleSelect, ui.UserSelect, ui.MentionableSelect),
+            ) or (isinstance(child, ui.Button) and child.url is None):
                 child.disabled = True
 
         with contextlib.suppress(discord.NotFound, discord.HTTPException):

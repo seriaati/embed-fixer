@@ -51,9 +51,30 @@ errors = { bad-assignment = "ignore" }
 [dependency-groups]
 dev = [
     "asyncpg>=0.31.0",
+    "pytest>=9.2.0",
+    "pytest-aiohttp>=1.1.1",
+    "pytest-asyncio>=1.4.1.post1",
+    "pytest-cov>=7.1.0",
+    "pytest-socket>=0.8.1",
     "types-aiofiles>=25.1.0.20260518",
     "types-pyyaml>=6.0.12.20260906",
+    "uvloop>=0.22.1 ; sys_platform == 'darwin'",
 ]
 
 [tool.tortoise]
 tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--strict-markers --strict-config --disable-socket --allow-unix-socket --allow-hosts=127.0.0.1,::1"
+
+[tool.coverage.run]
+branch = true
+source = ["embed_fixer", "run", "ci"]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true
+skip_covered = true

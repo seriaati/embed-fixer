@@ -5,11 +5,13 @@ import io
 import pathlib
 import tempfile
 import zipfile
+import zlib
 from typing import TYPE_CHECKING
 
 import aiohttp
 import discord
 import ffmpeg
+from aiohttp_client_cache import CachedSession
 from loguru import logger
 
 if TYPE_CHECKING:
@@ -61,8 +63,12 @@ class MediaDownloader:
 
         with tempfile.TemporaryDirectory() as tmp:
             tmp_dir = pathlib.Path(tmp)
-            with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
-                zf.extractall(tmp_dir)
+            try:
+                with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+                    zf.extractall(tmp_dir)
+            except (zipfile.BadZipFile, zlib.error) as e:
+                logger.warning(f"Failed to extract ugoira ZIP: {e}")
+                return None
 
             # ffmpeg concat demuxer: each frame held for its delay, last frame repeated so
             # its duration is honored.
@@ -148,9 +154,15 @@ class MediaDownloader:
         timeout = aiohttp.ClientTimeout(total=10)
 
         try:
-            async with self.session.get(
-                url, timeout=timeout, headers=self.headers, proxy=self.proxy
-            ) as resp:
+            if isinstance(self.session, CachedSession):
+                request = self.session.get(
+                    url, timeout=timeout, headers=self.headers, proxy=self.proxy, expire_after=0
+                )
+            else:
+                request = self.session.get(
+                    url, timeout=timeout, headers=self.headers, proxy=self.proxy
+                )
+            async with request as resp:
                 if resp.status != 200:
                     logger.warning(f"Failed to fetch {url}, status: {resp.status}")
                     return None
@@ -159,7 +171,13 @@ class MediaDownloader:
                 if content_length is not None and int(content_length) > filesize_limit:
                     return None
 
-                data = await resp.read()
+                data = bytearray()
+                while chunk := await resp.content.read(
+                    min(64 * 1024, filesize_limit - len(data) + 1)
+                ):
+                    if len(data) + len(chunk) > filesize_limit:
+                        return None
+                    data.extend(chunk)
 
                 media_type = resp.headers.get("Content-Type")
         except TimeoutError:

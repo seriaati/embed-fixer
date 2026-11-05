@@ -3,6 +3,7 @@ pull_request_rules:
     conditions:
       - author=pre-commit-ci[bot]
       - check-success=pre-commit.ci - pr
+      - check-success=@github-actions/tests
     actions:
       merge:
         method: squash
