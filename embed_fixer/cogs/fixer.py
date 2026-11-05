@@ -799,21 +799,21 @@ class FixerCog(commands.Cog):
         )
 
         if interaction.response.is_done():
-            await interaction.followup.send(
+            return await interaction.followup.send(
                 message.content,
                 tts=message.tts,
                 files=files,
                 allowed_mentions=allowed_mentions,
+                wait=True,
                 **kwargs,
             )
-        else:
-            await interaction.response.send_message(
-                message.content,
-                tts=message.tts,
-                files=files,
-                allowed_mentions=allowed_mentions,
-                **kwargs,
-            )
+        await interaction.response.send_message(
+            message.content,
+            tts=message.tts,
+            files=files,
+            allowed_mentions=allowed_mentions,
+            **kwargs,
+        )
 
         return await interaction.original_response()
 

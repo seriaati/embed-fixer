@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+      - name: Install media tools
+        run: sudo apt-get update && sudo apt-get install --yes ffmpeg
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Verify media tools
+        run: |
+          ffmpeg -version
+          ffprobe -version
+      - name: Run unit and regression tests
+        run: uv run --locked pytest --cov --cov-report=term-missing --cov-report=xml

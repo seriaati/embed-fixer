@@ -11,7 +11,18 @@ ruff format .       # Format
 pyrefly check       # Type check
 ```
 
-No automated test suite — test manually in a Discord server. There is no way to run a single test.
+Run `uv run pytest` for unit and regression tests, `uv run pytest tests/test_models.py` for one
+file, or `uv run pytest --cov` for branch coverage with a 95% minimum. Install development
+dependencies with `uv sync --locked`. Install ffmpeg and ffprobe to run the real media conversion
+test. Tests use isolated SQLite databases and loopback HTTP servers, block external sockets, and
+replace live Discord transports. See [docs/testing.md](docs/testing.md) for scope and known failures.
+
+Tests mirror the application in `tests/core`, `tests/cogs`, `tests/ui`, and `tests/utils`, with
+fixer scenarios under `tests/cogs/fixer`, database migrations under `tests/migrations`, and shared
+factories under `tests/support`. Run a subsystem with `uv run pytest tests/cogs/fixer`.
+
+Enable local checks with `pre-commit install`. The hook runs the full test suite with coverage
+once per commit. GitHub Actions runs the same gate for PRs and pushes to `main`, including merges.
 
 ## Environment Variables (`.env`)
 

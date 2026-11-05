@@ -27,8 +27,11 @@ class LangSelector(ui.Select):
         self.settings_type: Literal["guild", "user"] = settings_type
 
     async def callback(self, i: Interaction) -> None:
+        settings_id = i.guild_id if self.settings_type == "guild" else i.user.id
+        if settings_id is None:
+            return
         settings_cls = GuildSettings if self.settings_type == "guild" else UserSettings
-        settings, _ = await settings_cls.get_or_create(id=i.user.id)
+        settings, _ = await settings_cls.get_or_create(id=settings_id)
         settings.lang = self.values[0]
         await settings.save()
 
