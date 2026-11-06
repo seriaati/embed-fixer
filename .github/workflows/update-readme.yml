@@ -9,11 +9,13 @@ on:
       - ci.py
       - embed_fixer/fixes.py
       - embed_fixer/settings.py
-      - .github/workflows/update_readme.yml
+      - .github/workflows/update-readme.yml
 
 jobs:
   update-readme:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -32,4 +34,7 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "docs: Update README" && git push)
+          if ! git diff --cached --quiet -- README.md; then
+            git commit -m "docs: Update README"
+            git push
+          fi

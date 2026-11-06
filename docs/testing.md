@@ -35,8 +35,10 @@ Install the local hook with `uv run --locked pre-commit install`. Run it without
 `uv run --locked pre-commit run --all-files`. Its test hook runs the whole suite with coverage
 once, regardless of the number of changed files. The GitHub Actions Checks workflow runs lint,
 format, type, and coverage checks on Linux ARM64 and native macOS ARM64.
-The Docker Build workflow calls those checks for pull requests, main pushes, release tags,
-and manual runs, then builds images after both platforms pass.
+The Docker Build workflow calls those checks for pull requests and main pushes that change
+runtime code, translations, migrations, dependencies, Docker definitions, or its build/check
+workflows. Release tags and manual runs also trigger it. Images build after both platforms pass.
+Documentation-only and test-only changes skip Docker builds; the dedicated Tests workflow still runs.
 
 The Ruff hooks use their pinned isolated environment. Pyrefly and pytest use the project's locked
 environment. pre-commit.ci runs Ruff and skips the local project and Docker hooks because it
