@@ -1,105 +1,116 @@
 # Testing
 
-Install the locked development dependencies and run the suite from the repository root:
+Use Python 3.15, matching `.python-version`, package metadata, Ruff, Pyrefly, CI, and Docker.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and the locked dependencies:
 
 ```sh
 uv sync --locked
-uv run pytest
-uv run pytest --cov
-uv run pytest tests/test_models.py
-uv run pytest tests/cogs/fixer
-uv run pytest tests/ui
-uv run pytest -k proxy
 ```
 
-The interpreter remains the repository's pinned Python 3.12. Install ffmpeg and ffprobe for the
-real animation conversion test. macOS development dependencies also include uvloop so the optional
-startup import resolves during type checking. That single test skips when ffmpeg is unavailable;
-CI installs it and checks both binaries before running tests.
-Encoder error handling and concat generation have separate tests that do not require the binary.
+Install ffmpeg and ffprobe before running the suite. On macOS, use `brew install ffmpeg`.
+On Debian or Ubuntu, use `apt-get install ffmpeg`. The ffmpeg package supplies ffprobe.
+CI installs these tools before running checks.
+The media conversion test creates real image frames, writes a ZIP, converts it with ffmpeg,
+and checks the resulting video with ffprobe.
 
-## Layout
-
-Tests follow the application package: `core/`, `cogs/`, `ui/`, and `utils/`. The large fixer cog
-has its own `cogs/fixer/` directory split by URLs, delivery, events, extraction, and regressions.
-Database migration tests live in `migrations/`. Top-level modules and scripts keep their tests at
-the root. Reusable factories live in `support/`; shared database and translation fixtures remain
-in the root `conftest.py`.
-
-## Commit and CI checks
-
-Install the pre-commit CLI, then enable the Git hook for each clone:
+## Commands
 
 ```sh
-pre-commit install
-pre-commit run --all-files
+uv run --locked pytest
+uv run --locked pytest tests/test_models.py
+uv run --locked pytest tests/cogs/fixer
+uv run --locked pytest --cov
+uv run --locked ruff check .
+uv run --locked ruff format --check .
+uv run --locked pyrefly check
+uv run --locked pre-commit validate-config
+docker buildx bake --file docker-bake.hcl
 ```
 
-The local hook runs Ruff and the complete test suite with coverage before each commit. The pytest
-hook runs once without receiving staged filenames, including for commits that only change config
-or translations. It uses `uv run --locked` and the same 95% coverage gate as GitHub Actions. A test
-failure or insufficient coverage blocks the commit.
+Coverage measures statements and branches across `embed_fixer`, `run.py`, `ci.py`, and migrations.
+The coverage command fails below 95%. Tests do not exclude application error paths or optional
+integrations from the report. Run `uv run --locked pytest --cov --cov-report=html` to inspect gaps.
 
-The `Tests` workflow runs on pull requests targeting `main`, every push to `main` including merges,
-and merge-queue check requests targeting `main`. It installs the locked dependencies and media
-tools, then runs the full suite. Its job ID and check name are `tests`. The existing Mergify rule
-for automatic pre-commit updates also requires this GitHub Actions check before merging.
+Install the local hook with `uv run --locked pre-commit install`. Run it without committing using
+`uv run --locked pre-commit run --all-files`. Its test hook runs the whole suite with coverage
+once, regardless of the number of changed files. The GitHub Actions Checks workflow runs lint,
+format, type, and coverage checks on Linux ARM64 and native macOS ARM64.
+The Docker Build workflow calls those checks for pull requests, main pushes, release tags,
+and manual runs, then builds images after both platforms pass.
 
-The pytest hook is skipped only by the separate pre-commit.ci service: it needs the project's
-environment and media tools, which the GitHub Actions test job prepares. pre-commit.ci continues
-to run the Ruff hooks. GitHub repository rules must require the `tests` check to block manual
-merges when testing fails; those remote rules are not configured by these files.
+The Ruff hooks use their pinned isolated environment. Pyrefly and pytest use the project's locked
+environment. pre-commit.ci runs Ruff and skips the local project and Docker hooks because it
+cannot install their dependencies at hook runtime; GitHub Actions runs the complete gate.
 
-## Coverage and isolation
+The dedicated `Tests` workflow also keeps the existing `tests` check on Linux ARM64 for pull
+requests, main pushes, and merge-queue requests. The Mergify rule continues to require that check.
 
-Coverage includes every module in `embed_fixer`, plus `run.py` and `ci.py`, and measures branches.
-The coverage command fails below 95% combined statement and branch coverage. Coverage measures
-execution, so assertions also check observable payloads, persisted values, error handling, and
-authorization decisions.
+## Container builds
 
-| Area | Coverage approach |
+`docker-bake.hcl` defines the default and PostgreSQL (`asyncpg`) variants, both targeting
+`linux/arm64`. The pre-commit `docker-build` hook runs `docker buildx bake --file docker-bake.hcl`
+once per commit using the selected Buildx builder. Run that command directly or use
+`uv run --locked pre-commit run docker-build --all-files` to run only the build hook.
+
+Local builds require a running ARM64 Docker engine with Buildx, such as Docker Desktop on
+Apple silicon. The first run downloads base images and dependencies; later runs reuse the
+builder cache. CI builds both variants on native Linux ARM64 runners after checks pass.
+
+| Runner | Native platform | Checks |
+| --- | --- | --- |
+| `ubuntu-24.04-arm` | Linux ARM64 | Tests, lint, types, both Docker variants |
+| `macos-26` | macOS ARM64 | Tests, lint, types |
+
+These use the [documented runner architectures](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+macOS tests run directly on Apple silicon; container images always use Linux.
+
+Local and PR builds retain results in the build cache without publishing or loading images into
+the Docker image store. PRs do not log in to GHCR. Main and `v*` release builds publish each
+ARM64 variant directly to its image tags after both platforms' checks pass.
+Manual runs publish only when run on main or a `v*` tag. Existing image tag suffixes are preserved.
+
+## Layout and isolation
+
+| Location | Behavior covered |
 | --- | --- |
-| URLs and domain registry | Supported platforms, fix selection and rotation, tracking cleanup, spoilers, sensitive content, allow/deny lists, stable IDs |
-| Persistence and migrations | Real isolated SQLite, settings JSON round trips, defaults, legacy settings, fresh databases, baseline detection, repeat startup |
-| Metadata and media | Real loopback HTTP, response validation, source fallbacks, download errors, upload limits, ZIP/image fixtures, real H.264 encode and full decode |
-| Message and reaction flows | Discord transport mocks, original author identity, all delivery modes, preferences, permissions, notifications, deletion, rotation and retention |
-| Settings UI and commands | Real Discord UI objects, all settings routes, paging, validation, translations, import/export, reset, sponsorship and user controls |
-| Runtime and maintenance | Bot startup order and shutdown, health HTTP, heartbeat, sponsors, logging, Sentry filtering, task factory and README generation |
+| `tests/core` | Configuration, translation, command errors |
+| `tests/cogs/fixer` | Tracking cleanup, discovery, extraction, delivery, reactions, author lookup, commands |
+| `tests/cogs` | Settings, administration, information, sponsors, heartbeat |
+| `tests/ui` | Real Discord controls, callbacks, persisted settings, pagination, error handling |
+| `tests/utils` | URL handling, provider HTTP contracts, downloads, conversion, sponsor checks, logging |
+| `tests/migrations` | Real SQLite migration chains, legacy baselines, repeated startup |
+| `tests/test_*.py` | Models, registry, bot lifecycle, health endpoint, executable startup |
+| `tests/support` | Shared Discord transport factories |
 
-`tests/conftest.py` supplies a fake Discord token and isolated database URI before application
-imports. It clears optional service credentials and disables dotenv loading while importing modules
-that load environment files. The socket guard permits only loopback IPs and Unix sockets. HTTP
-fixtures redirect upstream requests to local aiohttp servers. No live Discord, social platform,
-Redis, or PostgreSQL service is required.
+The root fixtures load test configuration before application imports. Each database fixture
+creates and closes an isolated in-memory SQLite database; migration tests use temporary files.
+No test connects to the configured application database.
 
-Each database test receives a fresh context and database. Migrations additionally run against
-temporary SQLite files. Mocks and settings changes are restored by pytest fixtures. Assertions for
-representative URL, migration, media, UI and README regressions were also checked against temporary
-in-memory mutations of the relevant production functions.
+Pytest blocks external sockets and allows only loopback hosts and local Unix sockets. HTTP
+fixtures serve real responses on an ephemeral loopback port. Provider tests route requests to
+those servers while checking the original URL, request headers, and response parsing. Discord
+transport calls use test doubles; UI components and settings persistence remain real.
 
-## Regression guarantees
+## Tracking cleanup regressions
 
-The formerly expected failures are now ordinary passing tests. These regressions cover:
-
-- Upload limits enforced while reading response bytes, including headerless and chunked media.
-  File downloads bypass response caching so the production cached client cannot preload oversized
-  bodies; unrelated metadata requests retain their cache.
-- Corrupt Ugoira ZIPs, CRC failures, and invalid compressed blocks returning no conversion and
-  allowing source fallback.
-- Each interaction media batch tracking its own delivered message ID.
-- Both custom view classes capturing errors and sending ephemeral error responses.
-- Layout timeouts disabling nested controls while preserving usable link buttons.
-- Guild language selection persisting under the guild ID and ignoring missing guild context.
-
-There are no expected-failure markers accepting these defects. A recurrence fails the full-suite
-commit hook and GitHub Actions gate.
+Tests cover platform-specific and global trackers, encoded names, repeated fields, exact retained
+encoding, fragments, timestamps, playlists, selected images, and idempotence. Fixer cases cover
+the default setting, persisted opt-out, source/original buttons, nested provider URLs, rotation,
+spoilers, invalid URLs, and URLs opted out with `$` or angle brackets.
 
 ## Limits
 
-These tests do not establish live Discord delivery, current upstream API availability, Redis
-integration, PostgreSQL migration compatibility, deployed container health, or Python 3.15 runtime
-compatibility. Discord and Redis client boundaries are mocked. SQLite migration success does not
-prove PostgreSQL behavior. Use a Discord test server and the intended database backend for those
-integration checks.
+Live Discord permissions, webhook delivery, provider uptime, and actual Discord embed rendering
+still require server testing. The suite checks the bot's transport payloads and provider contracts.
+PostgreSQL migration execution, real Redis and Sentry services, and the Linux container image
+require separate environment checks; the local suite does not claim to exercise them.
 
-Existing third-party deprecation warnings from AnyIO, discord.py and Tortoise remain visible.
+Current dependencies emit deprecation warnings for Tortoise primary-key aliases,
+discord.py's `asyncio.iscoroutinefunction`, and the AnyIO pytest plugin's `CallSpec2` import.
+These warnings remain visible. An empty coverage branch in fix rotation is also visible because
+the loop assigns its first domain and immediately exits.
+
+The Docker images use the Python 3.15 Trixie tags listed in the
+[official uv Docker guide](https://docs.astral.sh/uv/guides/integration/docker/).
+The Linux event-loop dependency requires the Python 3.15 wheels introduced in
+[uvloop 0.23.0](https://github.com/MagicStack/uvloop/releases/tag/v0.23.0).

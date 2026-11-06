@@ -1,41 +1,42 @@
 name: Docker Build
 
 permissions:
-  packages: write
+  contents: read
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
     tags:
       - "v*"
-    paths:
-      - "embed_fixer/**.py"
-      - "l10n/*.yaml"
-      - "run.py"
-      - "pyproject.toml"
-      - "uv.lock"
-      - "Dockerfile"
-      - ".dockerignore"
-      - ".github/workflows/docker-build.yml"
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  checks:
+    uses: ./.github/workflows/pyrefly.yml
+
   docker-build:
-    runs-on: ubuntu-latest
+    needs: checks
+    name: Build ARM64 (${{ matrix.variant.target }})
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+      packages: write
     strategy:
+      fail-fast: false
       matrix:
         variant:
-          - name: ""
+          - target: bot
             suffix: ""
-            extra_dependencies: ""
-          - name: "asyncpg"
+          - target: bot-asyncpg
             suffix: "-asyncpg"
-            extra_dependencies: "asyncpg"
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -45,38 +46,36 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: suffix=${{ matrix.variant.suffix }},onlatest=true
           tags: |
             type=ref,event=branch,suffix=${{ matrix.variant.suffix }}
             type=ref,event=pr,suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{version}},suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{major}},suffix=${{ matrix.variant.suffix }}
-            type=sha,prefix={{branch}}-,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_type == 'branch' }}
-            type=raw,value=latest${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+            type=sha,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_type == 'branch' }}
+            type=raw,value=latest,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
 
       - name: Set up Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v4
-        with:
-          install: true
 
       - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v7
+      - name: Build ARM64 image
+        uses: docker/bake-action@v7
         with:
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          platforms: linux/amd64,linux/arm64
-          build-args: |
-            EXTRA_DEPENDENCIES=${{ matrix.variant.extra_dependencies }}
-          cache-from: type=gha,scope=${{ github.workflow }}-${{ matrix.variant.name }}
-          cache-to: type=gha,mode=max,scope=${{ github.workflow }}-${{ matrix.variant.name }}
+          source: .
+          files: |
+            ./docker-bake.hcl
+            cwd://${{ steps.meta.outputs.bake-file }}
+          targets: ${{ matrix.variant.target }}
+          set: |
+            *.output=${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) && 'type=registry' || 'type=cacheonly' }}
+            *.cache-from=type=gha,scope=${{ matrix.variant.target }}-arm64
+            *.cache-to=type=gha,mode=max,scope=${{ matrix.variant.target }}-arm64

@@ -1,41 +1,49 @@
-name: Pyrefly
+name: Checks
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - embed_fixer/**.py
-      - tests/**.py
-      - run.py
-      - ci.py
-      - pyproject.toml
-      - uv.lock
-      - .github/workflows/pyrefly.yml
-  pull_request:
-    branches:
-      - main
-    paths:
-      - embed_fixer/**.py
-      - tests/**.py
-      - run.py
-      - ci.py
-      - pyproject.toml
-      - uv.lock
-      - .github/workflows/pyrefly.yml
+  workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
-  pyrefly:
-    runs-on: ubuntu-latest
+  checks:
+    name: Checks (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04-arm, macos-26]
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v7
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
+        with:
+          python-version: "3.15"
+
+      - name: Install media tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install media tools on macOS
+        if: runner.os == 'macOS'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: brew install ffmpeg
 
       - name: Install Project
-        run: uv sync --frozen && uv pip install pyrefly
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run --locked ruff check .
+
+      - name: Check formatting
+        run: uv run --locked ruff format --check .
 
       - name: Run Pyrefly
-        run: uv run pyrefly check --output-format full-text-with-github
+        run: uv run --locked pyrefly check --output-format full-text-with-github
+
+      - name: Test with branch coverage
+        run: uv run --locked pytest --cov

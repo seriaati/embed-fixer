@@ -244,7 +244,7 @@ class SettingsCog(commands.Cog):
             fix_methods = {
                 (DomainId(fm["domain_id"]), int(fm["fix_id"])) for fm in data.get("fix_methods", [])
             }
-        except (ValueError, TypeError, KeyError):
+        except ValueError, TypeError, KeyError:
             await i.followup.send(
                 translator.translate("import_invalid_file", lang=lang), ephemeral=True
             )

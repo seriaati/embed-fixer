@@ -1,5 +1,5 @@
 line-length = 100
-target-version = "py312"
+target-version = "py315"
 
 [lint]
 future-annotations = true
@@ -56,7 +56,7 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"tests/**/*.py" = ["hardcoded-password-string", "hardcoded-password-func-arg", "import-private-name"]
+"tests/**/*.py" = ["hardcoded-password-string", "hardcoded-password-func-arg", "import-private-name", "ARG", "too-many-arguments", "too-many-positional-arguments"]
 "**/__init__.py" = ["undefined-local-with-import-star", "unused-import"] # Wildcard imports used
 "test.py" = ["ALL"]
 "migrations/*.py" = ["ALL"]

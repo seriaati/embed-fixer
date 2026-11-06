@@ -42,6 +42,7 @@ NO_HEADER_SETTINGS = {
     GuildSetting.ROTATE_FIX_REACTION,
     GuildSetting.DISABLE_EMBED_SUPPRESSION,
     GuildSetting.HIDE_WEBHOOK_SUFFIX,
+    GuildSetting.STRIP_TRACKING_PARAMS,
 }
 
 MULTI_CHANNEL_SETTING_ATTRS: dict[GuildSetting, str] = {
@@ -68,6 +69,7 @@ TOGGLE_SETTING_ATTRS: dict[GuildSetting, str] = {
     GuildSetting.ROTATE_FIX_REACTION: "rotate_fix_reaction",
     GuildSetting.DISABLE_EMBED_SUPPRESSION: "disable_embed_suppression",
     GuildSetting.HIDE_WEBHOOK_SUFFIX: "hide_webhook_suffix",
+    GuildSetting.STRIP_TRACKING_PARAMS: "strip_tracking_params",
 }
 
 SPONSOR_ONLY_SETTINGS = {GuildSetting.HIDE_WEBHOOK_SUFFIX}
@@ -207,7 +209,7 @@ class GuildSettingsView(ui.LayoutView):
 
     @property
     def page_item_ids(self) -> tuple[int, ...]:
-        batched = list(itertools.batched(self.item_ids, ITEM_IDS_PER_PAGE))
+        batched = list(itertools.batched(self.item_ids, ITEM_IDS_PER_PAGE, strict=False))
         if not batched:
             return ()
         self.page = max(min(self.page, len(batched) - 1), 0)

@@ -92,6 +92,13 @@ EmbedEZ is a service that covers many platforms for embed fixing; however, it is
 
 YouTube embed fixing (using [Koutube](https://github.com/iGerman00/koutube)) is disabled by default. Despite having ads and a shitty player, YouTube's embed is guaranteed to work all of the time, while Koutube's embed, at least at the time of testing, sometimes doesn't get generated, or if it does, sometimes doesn't contain the video. If you want to enable it, use `/settings` and go to "Disable Embed Fixes for Websites" and uncheck YouTube.
 
+### Link Tracking Cleanup
+
+Known tracking parameters are removed before fixing links by default. Original-link
+and media-source buttons also use the cleaned URL. Timestamps, content selections,
+and unknown query parameters are preserved. Server administrators can disable
+**Remove Link Tracking** in `/settings`.
+
 ### Opt Out of Embed Fixing
 
 Use the `/ignore-me` command.
@@ -152,6 +159,7 @@ Below are settings you can change with the `/settings` command:
 - **Funnel to Target Channel**: If set, all fixed embeds and extract medias will be sent to the target channel instead of the original channel.
 - **Whitelist Roles**: If set, only users that have one of these roles will have their embeds fixed. Leave empty to disable.
 - **Original Link Button**: Show a button linking to the original post in fixed embed messages.
+- **Remove Link Tracking**: Remove known tracking query parameters from fixed links and source buttons. Enabled by default; timestamps and content selections are preserved.
 - **Fix Mode**: How fixed embeds are sent.
 - **Remove Reactions After**: Set the number of seconds after which the delete and switch fix reaction emojis are automatically removed. Leave a field empty to disable.
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
@@ -169,6 +177,8 @@ Currently only supports Twitter/X, and only when fix provider is [FxEmbed](https
 Use `/translang` to set the target language, choose "Disable" to disable.
 
 # Self Hosting
+
+Running from source requires Python 3.15. See [the testing guide](docs/testing.md) for development setup and checks.
 
 1. Create a [Discord application](https://discord.com/developers/applications)
 1. On the **Bot** page, generate a token and save it for later

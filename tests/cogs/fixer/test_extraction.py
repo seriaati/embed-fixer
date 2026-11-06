@@ -70,7 +70,7 @@ async def test_extraction_builds_downloads_and_falls_back_to_media_urls(
             "https://cdn.test/1": "https://cdn.test/small"
         }
     if domain_id is DomainId.INSTAGRAM:
-        fetch.assert_awaited_once_with("https://original.test/post")
+        fetch.assert_awaited_once_with("https://original.test/post?tracking=1")
 
 
 @pytest.mark.parametrize(

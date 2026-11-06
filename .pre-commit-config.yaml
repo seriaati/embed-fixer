@@ -6,15 +6,28 @@ repos:
       - id: ruff-format
   - repo: local
     hooks:
+      - id: pyrefly
+        name: Pyrefly
+        entry: uv run --locked pyrefly check
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: pytest
-        name: unit and regression tests with coverage
-        entry: uv run --locked pytest --cov --cov-report=term-missing
+        name: Tests with branch coverage
+        entry: uv run --locked pytest --cov
         language: system
         pass_filenames: false
         always_run: true
         require_serial: true
         stages: [pre-commit]
+      - id: docker-build
+        name: Docker builds (ARM64, both variants)
+        entry: docker buildx bake --file docker-bake.hcl
+        language: system
+        pass_filenames: false
+        always_run: true
+        require_serial: true
 ci:
-  skip: [pytest]
+  skip: [pyrefly, pytest, docker-build]
   autoupdate_commit_msg: "ci: update pre-commit hooks"
   autofix_commit_msg: "fix: auto-fix from pre-commit hooks"

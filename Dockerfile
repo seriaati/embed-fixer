@@ -1,5 +1,5 @@
 # First, build the application in the `/app` directory.
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
+FROM ghcr.io/astral-sh/uv:python3.15-trixie-slim AS builder
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 
 # Disable Python downloads to use the system interpreter across both images
@@ -28,7 +28,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev ${EXTRA_DEPENDENCIES:+--extra} ${EXTRA_DEPENDENCIES}
 
 # Then, use a final image without uv
-FROM python:3.12-slim-bookworm
+FROM python:3.15-slim-trixie
 
 # Install curl for healthcheck and ffmpeg for pixiv ugoira (animation) conversion
 RUN apt-get update && apt-get install -y --no-install-recommends curl ffmpeg \
@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ffmpeg \
 WORKDIR /app
 
 # Copy the application from the builder
-COPY --from=builder --chown=app:app /app /app
+COPY --from=builder /app /app
 
 # Place executables in the environment at the front of the path, set env var defaults
 ENV PATH="/app/.venv/bin:$PATH" \

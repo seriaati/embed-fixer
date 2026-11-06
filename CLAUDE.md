@@ -5,24 +5,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-uv run run.py       # Start the bot
-ruff check --fix .  # Lint with auto-fix
-ruff format .       # Format
-pyrefly check       # Type check
+uv run run.py                  # Start the bot
+uv run ruff check --fix .       # Lint with auto-fix
+uv run ruff format .            # Format
+uv run pyrefly check            # Type check
 ```
 
 Run `uv run pytest` for unit and regression tests, `uv run pytest tests/test_models.py` for one
 file, or `uv run pytest --cov` for branch coverage with a 95% minimum. Install development
 dependencies with `uv sync --locked`. Install ffmpeg and ffprobe to run the real media conversion
 test. Tests use isolated SQLite databases and loopback HTTP servers, block external sockets, and
-replace live Discord transports. See [docs/testing.md](docs/testing.md) for scope and known failures.
+replace live Discord transports. See [docs/testing.md](docs/testing.md) for scope and limitations.
 
 Tests mirror the application in `tests/core`, `tests/cogs`, `tests/ui`, and `tests/utils`, with
 fixer scenarios under `tests/cogs/fixer`, database migrations under `tests/migrations`, and shared
 factories under `tests/support`. Run a subsystem with `uv run pytest tests/cogs/fixer`.
 
-Enable local checks with `pre-commit install`. The hook runs the full test suite with coverage
-once per commit. GitHub Actions runs the same gate for PRs and pushes to `main`, including merges.
+Enable local checks with `uv run pre-commit install`. The hook runs the full test suite with
+coverage and builds both Docker variants for Linux ARM64 once per commit.
+An ARM64 Docker engine with Buildx, such as Docker Desktop on Apple silicon, must be running.
+Run `docker buildx bake --file docker-bake.hcl` for builds only. This configuration is shared with CI.
+GitHub Actions checks Linux ARM64 and native macOS ARM64 before building images on Linux ARM64.
+Main and release builds publish each variant directly. PR builds do not publish images.
 
 ## Environment Variables (`.env`)
 
@@ -34,7 +38,7 @@ once per commit. GitHub Actions runs the same gate for PRs and pushes to `main`,
 
 ## Architecture
 
-A Python 3.12 Discord bot (`discord.py` `AutoShardedBot`) with Tortoise ORM, Pydantic v2, `loguru`, and Sentry.
+A Python 3.15 Discord bot (`discord.py` `AutoShardedBot`) with Tortoise ORM, Pydantic v2, `loguru`, and Sentry.
 
 **`embed_fixer/`**
 
@@ -68,7 +72,7 @@ A Python 3.12 Discord bot (`discord.py` `AutoShardedBot`) with Tortoise ORM, Pyd
 
 **`l10n/`** — YAML translation files; `en_US.yaml` is the source of truth for all translation keys
 
-**`migrations/embed_fixer/`** — Aerich migration files (PostgreSQL only; SQLite requires manual migration)
+**`migrations/`**: Native Tortoise migrations, applied during bot startup for SQLite and PostgreSQL.
 
 ## Critical Patterns
 
@@ -116,15 +120,16 @@ Webhook usernames must use `sanitize_username()` to replace "discord" with "disc
 
 ### Database Migrations
 
-- SQLite: manual migration only
-- PostgreSQL: `aerich upgrade`
+- Startup applies native Tortoise migrations and baselines databases that predate migration history.
+- Regression tests execute fresh and existing-database migration paths on real SQLite.
+- PostgreSQL migration execution requires a separate PostgreSQL environment.
 - `GuildSettingsOld` in `embed_fixer/models.py` is the legacy schema — do NOT add new fields there; add to `GuildSettings` (Pydantic model) only
 
 ## Code Style
 
 - `from __future__ import annotations` at the top of every file
 - `TYPE_CHECKING` guard for import-only types
-- `type Alias = ...` syntax (Python 3.12) for type aliases
+- `type Alias = ...` syntax for type aliases
 - Google docstring convention (enforced by ruff)
 - Line length 100, `skip-magic-trailing-comma = true`
 - Pydantic base classes are runtime-evaluated (configured in `ruff.toml` under `[lint.flake8-type-checking]`)
