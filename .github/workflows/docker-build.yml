@@ -8,9 +8,35 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - .dockerignore
+      - .github/workflows/docker-build.yml
+      - .github/workflows/pyrefly.yml
+      - Dockerfile
+      - docker-bake.hcl
+      - embed_fixer/**
+      - entrypoint.sh
+      - l10n/**
+      - migrations/**
+      - pyproject.toml
+      - run.py
+      - uv.lock
   push:
     branches:
       - main
+    paths:
+      - .dockerignore
+      - .github/workflows/docker-build.yml
+      - .github/workflows/pyrefly.yml
+      - Dockerfile
+      - docker-bake.hcl
+      - embed_fixer/**
+      - entrypoint.sh
+      - l10n/**
+      - migrations/**
+      - pyproject.toml
+      - run.py
+      - uv.lock
     tags:
       - "v*"
 
