@@ -46,14 +46,15 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: suffix=${{ matrix.variant.suffix }},onlatest=true
           tags: |
             type=ref,event=branch,suffix=${{ matrix.variant.suffix }}
             type=ref,event=pr,suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{version}},suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.variant.suffix }}
             type=semver,pattern={{major}},suffix=${{ matrix.variant.suffix }}
-            type=sha,prefix={{branch}}-,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_type == 'branch' }}
-            type=raw,value=latest${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
+            type=sha,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_type == 'branch' }}
+            type=raw,value=latest,suffix=${{ matrix.variant.suffix }},enable=${{ github.ref_name == 'main' }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
