@@ -6,10 +6,10 @@ dependencies = [
   "python-dotenv>=1.0.1",
   "pyyaml>=6.0.2",
   "tortoise-orm>=0.21.6",
-  "uvloop>=0.20.0; platform_system == 'Linux'",
+  "uvloop>=0.23.0; platform_system == 'Linux'",
   "discord-py>=2.4.0",
   "loguru>=0.7.2",
-  "pydantic>=2.10.4",
+  "pydantic>=2.14.2",
   "redis[hiredis]>=6.2.0",
   "aiohttp-client-cache>=0.13.0",
   "aiosqlite==0.22.1",
@@ -26,13 +26,14 @@ description = "Discord bot that fixes social media embeds"
 license = { file = "LICENSE" }
 name = "embed-fixer"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.15"
 version = "1.9.8"
 
 [project.optional-dependencies]
-asyncpg = ["asyncpg>=0.31.0"]
+asyncpg = ["asyncpg>=0.32.0"]
 
 [tool.pyrefly]
+python-version = "3.15"
 project-excludes = ["migrations", "**/node_modules", "**/__pycache__", "**/.*", ".venv"]
 infer-with-first-use = false
 enabled-ignores = ["pyrefly"]
@@ -50,31 +51,34 @@ errors = { bad-assignment = "ignore" }
 
 [dependency-groups]
 dev = [
-    "asyncpg>=0.31.0",
+    "asyncpg>=0.32.0",
+    "types-aiofiles>=25.1.0.20260518",
+    "types-pyyaml>=6.0.12.20260906",
     "pytest>=9.2.0",
     "pytest-aiohttp>=1.1.1",
     "pytest-asyncio>=1.4.1.post1",
     "pytest-cov>=7.1.0",
     "pytest-socket>=0.8.1",
-    "types-aiofiles>=25.1.0.20260518",
-    "types-pyyaml>=6.0.12.20260906",
-    "uvloop>=0.22.1 ; sys_platform == 'darwin'",
+    "pyrefly>=1.4.1",
+    "ruff==0.17.3",
+    "pre-commit>=4.0",
+    "uvloop>=0.23.0; sys_platform == 'darwin'",
 ]
-
-[tool.tortoise]
-tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "--strict-config --strict-markers --disable-socket --allow-hosts=127.0.0.1,::1 --allow-unix-socket"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-addopts = "--strict-markers --strict-config --disable-socket --allow-unix-socket --allow-hosts=127.0.0.1,::1"
+asyncio_default_test_loop_scope = "function"
 
 [tool.coverage.run]
 branch = true
-source = ["embed_fixer", "run", "ci"]
+source = ["embed_fixer", "run", "ci", "migrations"]
 
 [tool.coverage.report]
 fail_under = 95
 show_missing = true
-skip_covered = true
+
+[tool.tortoise]
+tortoise_orm = "embed_fixer.core.db_config.TORTOISE_ORM"

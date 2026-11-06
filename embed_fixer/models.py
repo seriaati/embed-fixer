@@ -189,6 +189,7 @@ class GuildSettings(BaseSettings):
     whitelist_role_ids: list[int] = pydantic.Field(default_factory=list)
     translate_target_lang: str | None = None
     show_original_link_btn: bool = True
+    strip_tracking_params: bool = True
     fix_mode: FixMode = FixMode.DELETE_AND_RESEND
     remove_delete_reaction_after: int | None = None
     remove_rotate_reaction_after: int | None = None

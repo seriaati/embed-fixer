@@ -118,7 +118,7 @@ def test_fix_rotation_wraps_and_rejects_unknown_method() -> None:
             AppendURLFix(domain="proxy.test"),
             "https://facebook.com/v/123",
             DomainId.FACEBOOK,
-            "https://proxy.test?url=https://facebook.com/r/123",
+            "https://proxy.test?url=https%3A%2F%2Ffacebook.com%2Fr%2F123",
         ),
     ],
 )
@@ -202,11 +202,12 @@ async def test_find_fixes_rewrites_text_preserves_spoilers_and_cleans_tracking()
     result = await cog._find_fixes(message, settings=settings, filesize_limit=1024)
     assert result.fix_found
     assert message.content == "hello ||https://fixupx.com/alice/status/123/ja||"
-    assert result.urls == ["https://www.x.com/alice/status/123?utm_source=test"]
+    assert result.urls == ["https://www.x.com/alice/status/123"]
     assert not result.medias
 
 
 @pytest.mark.parametrize("content", ["plain text", "https://unknown.test/a", "https://[broken/"])
+@pytest.mark.usefixtures("db")
 async def test_find_fixes_ignores_unknown_and_invalid_urls(content: str) -> None:
     message = make_message(content)
     result = await make_cog(message)._find_fixes(message, settings=None, filesize_limit=1024)
@@ -214,6 +215,7 @@ async def test_find_fixes_ignores_unknown_and_invalid_urls(content: str) -> None
     assert message.content == content
 
 
+@pytest.mark.usefixtures("db")
 async def test_find_fixes_reports_sensitive_url_skip() -> None:
     message = make_message("https://x.com/alice/status/123")
     cog = make_cog(message)
@@ -224,6 +226,7 @@ async def test_find_fixes_reports_sensitive_url_skip() -> None:
     assert message.content == "https://x.com/alice/status/123"
 
 
+@pytest.mark.usefixtures("db")
 async def test_media_extraction_strips_source_and_falls_back_for_oversized_files() -> None:
     message = make_message("hello ||https://x.com/alice/status/123||")
     cog = make_cog(message)
@@ -280,6 +283,7 @@ def test_disabled_by_default_domains_require_explicit_enable(disabled: bool) -> 
     ) == (None, None)
 
 
+@pytest.mark.usefixtures("db")
 async def test_skip_method_and_append_fix_paths(monkeypatch: pytest.MonkeyPatch) -> None:
     method = FixMethod(id=1000, name="proxy", fixes=[AppendURLFix(domain="proxy.test")])
     website = Website(r"https://facebook.com/", skip_method_ids=[1000])
@@ -290,7 +294,7 @@ async def test_skip_method_and_append_fix_paths(monkeypatch: pytest.MonkeyPatch)
     assert not (await cog._find_fixes(message, settings=None, filesize_limit=1024)).fix_found
     website.skip_method_ids = None
     assert (await cog._find_fixes(message, settings=None, filesize_limit=1024)).fix_found
-    assert message.content == "https://proxy.test?url=https://facebook.com/r/123"
+    assert message.content == "https://proxy.test?url=https%3A%2F%2Ffacebook.com%2Fr%2F123"
 
 
 def test_slash_message_starts_with_independent_attachment_lists() -> None:

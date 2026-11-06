@@ -4,7 +4,7 @@ import asyncio
 import contextlib
 import datetime
 from typing import TYPE_CHECKING, Any, Final, Literal
-from urllib.parse import parse_qs, urlparse, urlunparse
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import discord
 import emoji
@@ -25,7 +25,7 @@ from embed_fixer.utils.misc import (
     append_path_to_url,
     capture_exception,
     domain_in_url,
-    extract_urls,
+    extract_url_matches,
     get_filesize,
     remove_query_params,
     replace_domain,
@@ -33,6 +33,7 @@ from embed_fixer.utils.misc import (
     unsanitize_username,
 )
 from embed_fixer.utils.sponsors import sponsors
+from embed_fixer.utils.tracking import remove_tracking_params
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -167,10 +168,9 @@ def _apply_fix_to_url(original_url: str, fix_method: FixMethod, domain_id: Domai
     """Apply a FixMethod to original_url, returning the new fixed URL."""
     for fix in fix_method.fixes:
         if isinstance(fix, AppendURLFix):
-            new_url = f"https://{fix.domain}?url={original_url}"
             if domain_id == DomainId.FACEBOOK:
-                new_url = new_url.replace("/v/", "/r/")
-            return new_url
+                original_url = original_url.replace("/v/", "/r/")
+            return f"https://{fix.domain}?{urlencode({'url': original_url})}"
         if not domain_in_url(original_url, fix.old_domain):
             continue
         return replace_domain(original_url, fix.old_domain, fix.new_domain)
@@ -386,7 +386,7 @@ class FixerCog(commands.Cog):
         # See https://github.com/FxEmbed/FxEmbed#translate-posts-xtwitter for more info
         return append_path_to_url(url, f"/{translang}")
 
-    async def _find_fixes(  # ruff: ignore[complex-structure, too-many-branches, too-many-locals, too-many-statements]
+    async def _find_fixes(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements]
         self,
         message: discord.Message | MockMessage,
         *,
@@ -403,6 +403,14 @@ class FixerCog(commands.Cog):
         content = ""
         author_md = ""
         nsfw_skipped = False
+        original_urls: list[str] = []
+        replacements: list[tuple[int, int, str]] = []
+        recommendations: list[str] = []
+
+        tracking_settings = settings
+        if tracking_settings is None and message.guild is not None:
+            tracking_settings = await GuildSettings.get_or_none(id=message.guild.id)
+        strip_tracking = tracking_settings is None or tracking_settings.strip_tracking_params
 
         is_nsfw_channel = (
             # DMs, or guilds the bot isn't in (user-installed commands)
@@ -419,22 +427,24 @@ class FixerCog(commands.Cog):
                 and message.channel.parent.nsfw
             )
         )
-        urls = extract_urls(message.content)
+        urls = extract_url_matches(message.content)
 
-        for url, spoilered in urls:
+        for match, spoilered in urls:
+            url = match[1]
             try:
-                clean_url = remove_query_params(url).replace("www.", "")
+                match_url = remove_query_params(url).replace("www.", "")
             except ValueError:
                 logger.warning(f"Invalid URL found: {url}")
                 continue
 
-            domain, website = self._get_matching_domain_website(settings, clean_url)
+            domain, website = self._get_matching_domain_website(settings, match_url)
 
             if domain is None or website is None:
                 continue
+            clean_url = remove_tracking_params(url) if strip_tracking else url
             logger.debug(f"Matched domain {domain.id!r} for URL: {clean_url}")
 
-            if await self._nsfw_skip(url, domain, is_nsfw_channel=is_nsfw_channel):
+            if await self._nsfw_skip(clean_url, domain, is_nsfw_channel=is_nsfw_channel):
                 nsfw_skipped = True
                 continue
 
@@ -451,7 +461,7 @@ class FixerCog(commands.Cog):
                     and (settings is not None and channel_id not in settings.disable_image_spoilers)
                 )
                 result = await self._extract_post_info(
-                    domain.id, url, spoiler=spoiler, filesize_limit=filesize_limit
+                    domain.id, clean_url, spoiler=spoiler, filesize_limit=filesize_limit
                 )
                 medias.extend(
                     Media(url=media.url)
@@ -462,14 +472,13 @@ class FixerCog(commands.Cog):
                 content, author_md = result.content, result.author_md
                 logger.debug(f"Extracted {len(result.medias)} media files from {url}")
 
-                if medias:
+                if result.medias:
                     fix_found = True
-                    if spoilered:
-                        message.content = message.content.replace(f"||{url}||", "")
-                    else:
-                        message.content = message.content.replace(url, "")
+                    start, end = match.span() if spoilered else match.span(1)
+                    replacements.append((start, end, ""))
 
                     sauces.append(clean_url)
+                    original_urls.append(clean_url)
                     continue
 
             if extract_media:
@@ -484,43 +493,29 @@ class FixerCog(commands.Cog):
                 logger.debug(f"No valid fix method for domain {domain.id!r} and URL: {clean_url}")
                 continue
 
-            for fix in fix_method.fixes:
-                if isinstance(fix, AppendURLFix):
-                    new_url = f"https://{fix.domain}?url={clean_url}"
-                    if domain.id == DomainId.FACEBOOK:
-                        # For facebook, replace /v/ with /r/, found by @zzxc.
-                        new_url = new_url.replace("/v/", "/r/")
-                else:
-                    if not domain_in_url(clean_url, fix.old_domain):
-                        continue
+            new_url = _apply_fix_to_url(clean_url, fix_method, domain.id)
+            if new_url is None:
+                continue
+            if fix_method.id == 1 and settings is not None and settings.translate_target_lang:
+                new_url = self._apply_fxembed_translation(
+                    new_url, translang=settings.translate_target_lang
+                )
 
-                    new_url = replace_domain(clean_url, fix.old_domain, fix.new_domain)
-                    logger.debug(f"Replaced domain {fix.old_domain} with {fix.new_domain}")
+            if fix_method.has_ads and settings is not None and not settings.show_original_link_btn:
+                guild_lang = await translator.get_guild_lang(message.guild)
+                recommend_msg = translator.translate("recommend_original_link_btn", lang=guild_lang)
+                recommendations.append(recommend_msg)
 
-                    if (
-                        fix_method.id == 1
-                        and settings is not None
-                        and settings.translate_target_lang
-                    ):  # FxEmbed
-                        new_url = self._apply_fxembed_translation(
-                            new_url, translang=settings.translate_target_lang
-                        )
+            fix_found = True
+            original_urls.append(clean_url)
+            replacements.append((*match.span(1), new_url))
 
-                if fix_method.has_ads and (
-                    settings is not None and not settings.show_original_link_btn
-                ):
-                    # If the fix method has ads and the guild hasn't enabled
-                    # "Show Original Link Button", recommend enabling it.
-                    guild_lang = await translator.get_guild_lang(message.guild)
-                    recommend_msg = translator.translate(
-                        "recommend_original_link_btn", lang=guild_lang
-                    )
-                    message.content = f"-# {recommend_msg}\n{message.content}"
-
-                fix_found = True
-                message.content = message.content.replace(url, new_url)
-
-                break
+        for start, end, replacement in sorted(replacements, reverse=True):
+            message.content = message.content[:start] + replacement + message.content[end:]
+        message.content = (
+            "".join(f"-# {recommend_msg}\n" for recommend_msg in reversed(recommendations))
+            + message.content
+        )
 
         return FindFixResult(
             fix_found=fix_found,
@@ -528,7 +523,7 @@ class FixerCog(commands.Cog):
             sauces=sauces,
             content=content,
             author_md=author_md,
-            urls=[url for url, _ in urls],
+            urls=original_urls,
             nsfw_skipped=nsfw_skipped,
         )
 
@@ -575,7 +570,7 @@ class FixerCog(commands.Cog):
             elif domain_id is DomainId.KEMONO:
                 media_urls = await self.fetch_info.kemono(url)
             elif domain_id is DomainId.INSTAGRAM:
-                info = await self.fetch_info.instagram(remove_query_params(url))
+                info = await self.fetch_info.instagram(url)
                 content = "" if info is None else info.caption or ""
                 media_urls = [] if info is None else [media.url for media in info.media]
             else:
@@ -885,13 +880,12 @@ class FixerCog(commands.Cog):
         medias: Sequence[Media],
         guild_settings: GuildSettings | None,
         **kwargs: Any,
-    ) -> None:
+    ) -> SendType | None:
         """Handle HTTP exceptions during message sending."""
         if e.code == 40005:  # Request entity too large
             message.content += "\n".join(media.url for media in medias)
-            await self._send_message(message, guild_settings=guild_settings, **kwargs)
-        else:
-            raise e
+            return await self._send_message(message, guild_settings=guild_settings, **kwargs)
+        raise e
 
     async def _send_message(
         self,
@@ -959,8 +953,9 @@ class FixerCog(commands.Cog):
                     **kwargs,
                 )
             except discord.HTTPException as e:
-                await self._handle_http_exception(e, message, medias, guild_settings, **kwargs)
-                return None
+                return await self._handle_http_exception(
+                    e, message, medias, guild_settings, **kwargs
+                )
 
         if fix_message is not None and message.guild is not None:
             await FixedMessage.create(
@@ -1300,11 +1295,12 @@ class FixerCog(commands.Cog):
             return
 
         # Find the first domain that has a next fix method to rotate to
-        urls = extract_urls(message.content)
+        urls = extract_url_matches(message.content)
         first_domain: Domain | None = None
         next_fix: FixMethod | None = None
 
-        for url, _ in urls:
+        for match, _ in urls:
+            url = match[1]
             parsed_result = _reverse_parse_fixed_url(url)
             if parsed_result is None:
                 continue
@@ -1321,7 +1317,9 @@ class FixerCog(commands.Cog):
 
         # Replace every URL that belongs to the same domain with the new fix applied
         new_content = message.content
-        for url, _ in urls:
+        replacements: list[tuple[int, int, str]] = []
+        for match, _ in urls:
+            url = match[1]
             parsed_result = _reverse_parse_fixed_url(url)
             if parsed_result is None:
                 continue
@@ -1329,6 +1327,8 @@ class FixerCog(commands.Cog):
             if domain.id != first_domain.id:
                 continue
 
+            if settings.strip_tracking_params:
+                original_url = remove_tracking_params(original_url)
             new_url = _apply_fix_to_url(original_url, next_fix, domain.id)
             if new_url is None:
                 continue
@@ -1338,10 +1338,21 @@ class FixerCog(commands.Cog):
                     new_url, translang=settings.translate_target_lang
                 )
 
-            new_content = new_content.replace(url, new_url)
+            replacements.append((*match.span(1), new_url))
+
+        for start, end, replacement in sorted(replacements, reverse=True):
+            new_content = new_content[:start] + replacement + new_content[end:]
 
         if new_content == message.content:
             return
+
+        edit_kwargs: dict[str, Any] = {"content": new_content}
+        if settings.strip_tracking_params and message.components:
+            view = discord.ui.View.from_message(message)
+            for item in view.walk_children():
+                if isinstance(item, discord.ui.Button) and item.url is not None:
+                    item.url = remove_tracking_params(item.url)
+            edit_kwargs["view"] = view
 
         try:
             if send_type == "webhook":
@@ -1353,11 +1364,10 @@ class FixerCog(commands.Cog):
                     if isinstance(message.channel, discord.Thread)
                     else discord.utils.MISSING
                 )
-                await webhook.edit_message(message.id, content=new_content, thread=thread)
+                await webhook.edit_message(message.id, thread=thread, **edit_kwargs)
             else:
                 await message.edit(
-                    content=new_content,
-                    allowed_mentions=discord.AllowedMentions(replied_user=False),
+                    allowed_mentions=discord.AllowedMentions(replied_user=False), **edit_kwargs
                 )
         except (discord.Forbidden, discord.HTTPException) as e:
             logger.warning(f"Failed to edit message for fix rotation in {guild.id=}: {e}")

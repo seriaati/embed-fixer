@@ -22,16 +22,20 @@ def remove_html_tags(input_string: str) -> str:
     return re.sub(r"<[^>]*>", "", input_string)
 
 
-def extract_urls(text: str) -> list[tuple[str, bool]]:
+def extract_url_matches(text: str) -> list[tuple[re.Match[str], bool]]:
     spoiler_pattern = r"\|\|(https?://[^\s|]+)\|\|"
     regular_pattern = r"(?<!\$)(?<!<)(https?://[^\s>]+)(?!>)"
 
-    spoiler_urls = [(match, True) for match in re.findall(spoiler_pattern, text)]
+    spoiler_urls = [(match, True) for match in re.finditer(spoiler_pattern, text)]
 
-    text_without_spoilers = re.sub(spoiler_pattern, "", text)
-    regular_urls = [(match, False) for match in re.findall(regular_pattern, text_without_spoilers)]
+    text_without_spoilers = re.sub(spoiler_pattern, lambda match: " " * len(match[0]), text)
+    regular_urls = [(match, False) for match in re.finditer(regular_pattern, text_without_spoilers)]
 
     return spoiler_urls + regular_urls
+
+
+def extract_urls(text: str) -> list[tuple[str, bool]]:
+    return [(match[1], spoilered) for match, spoilered in extract_url_matches(text)]
 
 
 def get_filesize(fp: io.BufferedIOBase) -> int:
@@ -118,7 +122,7 @@ def get_project_version() -> str:
             if version != "unknown":
                 return f"v{version}"
             return version
-    except (FileNotFoundError, tomli.TOMLDecodeError):
+    except FileNotFoundError, tomli.TOMLDecodeError:
         return "unknown"
 
 

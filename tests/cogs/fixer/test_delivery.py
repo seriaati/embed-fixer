@@ -265,7 +265,7 @@ async def test_large_upload_retries_as_urls_without_files() -> None:
     cog._send_via_fix_mode = AsyncMock(side_effect=[http_error(code=40005), (None, "reply")])
     cog._add_delete_reaction = AsyncMock()
     media = make_media(3)
-    assert await cog._send_message(message, guild_settings=None, medias=[media]) is None
+    assert await cog._send_message(message, guild_settings=None, medias=[media]) == "reply"
     assert cog._send_via_fix_mode.await_count == 2
     assert cog._send_via_fix_mode.await_args is not None
     assert cog._send_via_fix_mode.await_args.args[2] == []

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import importlib
 import logging
 import sys
 from typing import TYPE_CHECKING
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     logger.info(f"Starting EmbedFixer {get_project_version()} in {settings.env!r} environment.")
 
     try:
-        import uvloop
+        uvloop = importlib.import_module("uvloop")
     except ImportError:
         asyncio.run(main())
     else:

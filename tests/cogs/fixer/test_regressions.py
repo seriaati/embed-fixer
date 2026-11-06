@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 from types import SimpleNamespace
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock
@@ -7,12 +8,62 @@ from unittest.mock import AsyncMock, MagicMock
 import discord
 import pytest
 
-from embed_fixer.cogs.fixer import Media
+from embed_fixer.cogs.fixer import Media, PostExtractionResult
 from embed_fixer.models import FixedMessage, GuildSettings, GuildSettingsTable, UserSettingsTable
 from embed_fixer.settings import FixMode
 from tests.support.fixer import fix_result, http_error, make_cog, make_interaction, make_message
 
 pytestmark = pytest.mark.usefixtures("db")
+
+
+async def test_empty_extraction_keeps_link_after_previous_post_has_media() -> None:
+    message = make_message("https://instagram.com/p/ONE/ https://instagram.com/p/TWO/")
+    cog = make_cog(message)
+    cog._extract_post_info = AsyncMock(
+        side_effect=[
+            PostExtractionResult(
+                medias=[Media(url="https://cdn.test/one.png")], content="", author_md=""
+            ),
+            PostExtractionResult(medias=[], content="", author_md=""),
+        ]
+    )
+    result = await cog._find_fixes(
+        message, settings=None, filesize_limit=1024, extract_media=True, is_ctx_menu=True
+    )
+    assert result.sauces == ["https://instagram.com/p/ONE/"]
+    assert message.content.strip() == "https://instagram.com/p/TWO/"
+
+
+@pytest.mark.parametrize(
+    ("mode", "send_type"), [(FixMode.REPLY, "reply"), (FixMode.RESEND, "resend")]
+)
+async def test_successful_upload_retry_still_cleans_up_original(
+    mode: FixMode, send_type: str
+) -> None:
+    message = make_message()
+    cog = make_cog(message)
+    settings = await GuildSettings.create(1)
+    settings.fix_mode = mode
+    await settings.save()
+    message.attachments = [
+        SimpleNamespace(
+            url="https://cdn.test/attachment.png",
+            to_file=AsyncMock(
+                return_value=discord.File(io.BytesIO(b"image"), filename="image.png")
+            ),
+        )
+    ]
+    cog._find_fixes = AsyncMock(return_value=fix_result())
+    sent = make_message()
+    sent.id = 200
+    transport = message.reply if mode == FixMode.REPLY else message.channel.send
+    transport.side_effect = [http_error(code=40005), sent]
+    await cog.embed_fixer(message)
+    assert transport.await_args.kwargs["files"] == []
+    assert "https://cdn.test/attachment.png" in transport.await_args.args[0]
+    message.edit.assert_awaited_once_with(suppress=True)
+    message.remove_reaction.assert_awaited_once_with("⌛", message.guild.me)
+    assert (await FixedMessage.get(id=200)).send_type == send_type
 
 
 def make_reaction(*, user_id: int = 10, emoji: str = "🔄") -> discord.RawReactionActionEvent:

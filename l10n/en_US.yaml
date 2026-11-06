@@ -67,6 +67,8 @@ reset_done: All settings have been reset to default values
 original_link: Original link
 show_original_link_btn: Original Link Button
 show_original_link_btn_desc: "Show a button linking to the original post in fixed embed messages."
+strip_tracking_params: Remove Link Tracking
+strip_tracking_params_desc: "Remove known tracking parameters before fixing links, including original-link and media-source buttons. Timestamps, content selections, and unknown parameters are kept. Enabled by default."
 recommend_original_link_btn: It is recommended to enable "Original Link Button" in /settings for this fix because it has ads.
 ignore_me_enabled: You are now ignored by the bot. Your embeds will not be fixed.
 ignore_me_disabled: You are no longer ignored by the bot. Your embeds will be fixed.
