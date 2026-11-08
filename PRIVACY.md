@@ -1,10 +1,12 @@
 # **Privacy Policy**
 
-**Effective Date:** 7th October 2026
+**Effective Date:** 7th November 2026
 
 ## 1. **Introduction**
 
 This Privacy Policy outlines how Embed Fixer collects, uses, stores, and protects data related to its operation as a Discord bot. By using Embed Fixer, you agree to the collection and use of information in accordance with this policy.
+
+This document describes dededecline's fork. Each instance is operated independently; its operator is responsible for its hosting, configuration, and handling of data requests.
 
 ## 2. **Data Collection**
 
@@ -18,7 +20,7 @@ At the time of writing, Embed Fixer stores the following data in its database:
 Embed Fixer does not store the content of your messages in its database. Message content is read only to find supported links, rewrite them, and resend the message with the fixed links. However, message content may temporarily appear in the following places:
 
 - **Log Files:** URLs found in messages may be written to the bot's log files for debugging.
-- **Error Reports:** When an error occurs while processing a message, an error report is sent to [Sentry](https://sentry.io), which may include parts of the message being processed, such as its content or URLs.
+- **Error Reports:** If the instance operator configures [Sentry](https://sentry.io), errors are reported there and may include parts of the message being processed, such as its content or URLs.
 - **Request Cache:** Responses from third-party services (see Section 5) for links found in messages are cached.
 
 ## 3. **Data Usage**
@@ -27,8 +29,8 @@ The data collected by Embed Fixer is used to provide and customize the bot's fea
 
 ## 4. **Data Storage**
 
-- The collected data is stored in a PostgreSQL database hosted on a server maintained by the developer, powered by Hetzner. Log files and the request cache are stored on the same server.
-- The data is securely stored with password protection. However, please note that the data itself is not encrypted.
+- The instance operator controls where data is stored. The bot supports SQLite and PostgreSQL databases, local log files, and SQLite or Redis request caching.
+- Access controls, hosting providers, and encryption depend on the operator's configuration. Contact the operator for details about the instance you use.
 
 ## 5. **Data Sharing**
 
@@ -36,11 +38,11 @@ Embed Fixer does not sell or share the collected data with third parties, except
 
 - **Embed Fix Services:** Links found in messages are rewritten to point to third-party embed fix services (e.g. FxEmbed, Phixiv), which Discord then contacts to generate the embed.
 - **Post Information:** To extract media, show post content, and check whether a post is NSFW, the bot requests post information for the links from third-party services, such as the website's own API (e.g. Pixiv, Bluesky, Kemono) or an embed fix service's API (e.g. FxEmbed).
-- **Error Reporting:** Error reports are sent to Sentry, as described in Section 2.
+- **Error Reporting:** If configured by the instance operator, error reports are sent to Sentry, as described in Section 2.
 
 ## 6. **Data Retention**
 
-- **Guild Settings, User Settings, and the Opt-Out List** are retained indefinitely unless a guild owner, authorized representative, or user requests their deletion. You can remove yourself from the opt-out list by running `/ignore-me` again. Requests for data removal can be made by contacting the developer directly (see Section 9 for contact information).
+- **Guild Settings, User Settings, and the Opt-Out List** are retained indefinitely unless a guild owner, authorized representative, or user requests their deletion. You can remove yourself from the opt-out list by running `/ignore-me` again. Requests for data removal can be made by contacting the instance operator (see Section 9).
 - **Fixed Message Records** are deleted automatically after 90 days, or immediately when the fixed message is deleted.
 - **Log Files** are deleted automatically after 2 weeks.
 - **Request Cache** entries are deleted automatically after 10 minutes.
@@ -48,21 +50,19 @@ Embed Fixer does not sell or share the collected data with third parties, except
 
 ## 7. **Security Measures**
 
-- The server and database hosting the collected data are password protected to prevent unauthorized access.
-- While measures are in place to protect the data, it is important to note that the data itself is not encrypted.
+- The instance operator is responsible for securing the server, database, logs, and cache. This repository does not guarantee a particular deployment's access controls or encryption.
 
 ## 8. **User Rights**
 
-Guild owners, their authorized representatives, and users can request access to, modification, or deletion of their data. To make such a request, please contact the developer using the contact information provided below.
+Guild owners, their authorized representatives, and users can request access to, modification, or deletion of their data. To make such a request, contact the operator of the instance you use.
 
 Users can opt out of having their messages processed by Embed Fixer at any time with the `/ignore-me` command. A single link can also be skipped by adding `$` at the beginning of the link or wrapping it with `<>`.
 
 ## 9. **Contact Information**
 
-If you have any questions, concerns, or requests regarding this Privacy Policy or the data collected by Embed Fixer, you can contact the developer:
+For data access, deletion, or questions about a running instance, contact its operator. Your Discord server administrators can help identify who operates the bot.
 
-- **Email:** <seria.ati@gmail.com>
-- **Discord:** @seria_ati
+For questions or bugs in this fork's software or documentation, [open a GitHub issue](https://github.com/dededecline/embed-fixer/issues). Do not include private data in public issues.
 
 Please note that while contact options are provided, there is no guarantee that every issue or request will be addressed.
 

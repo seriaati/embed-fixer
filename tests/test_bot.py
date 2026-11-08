@@ -33,6 +33,8 @@ def test_bot_configuration_supports_fixing_and_user_installs(bot: EmbedFixer) ->
     assert bot.allowed_mentions is not None
     assert bot.allowed_mentions.everyone is False
     assert bot.help_command is None
+    assert bot.activity is not None
+    assert "github.com/dededecline/embed-fixer" in bot.activity.to_dict()["state"]
     assert bot.app_emojis == {}
     assert bot_module.permissions.manage_webhooks
     assert bot_module.permissions.manage_messages

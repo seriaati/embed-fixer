@@ -3,7 +3,7 @@ name: New embed fix request
 about: Request support for a new embed fix service or domain
 title: ''
 labels: enhancement
-assignees: seriaati
+assignees: dededecline
 
 ---
 

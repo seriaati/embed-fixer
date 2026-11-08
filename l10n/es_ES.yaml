@@ -1,7 +1,7 @@
 name: Español
 replying_to: "⬅️ En respuesta a {user} ({url})"
 disable_fixes: Deshabilitar Embed Fixer Para Sitios Web
-disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos. [YouTube está desactivado por defecto](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
+disable_fixes_desc: Deshabilitar Embed Fixer para sitios web específicos. [YouTube está desactivado por defecto](https://github.com/dededecline/embed-fixer#about-youtube-embed-fixing).
 lang: Idioma
 lang_desc: Cambiar el idioma del bot.
 extract_media_channels: Canales Con Extracción Multimedia
@@ -22,9 +22,10 @@ setting_param: ajustes
 setting_param_desc: Ajustes para cambiar
 info_cmd_desc: Obtener información sobre el bot
 info_embed_desc: |
-  Este bot está hecho por [@seria_ati](<discord://-/users/410036441129943050>) y es de código abierto en [GitHub](https://github.com/seriaati/embed-fixer).
-  Para preguntas o problemas con este bot, MD en Discord o abre un PR en GitHub.
-  Para contribuir (como traducciones), MD en Discord o abre un PR en GitHub.
+  Esta bifurcación es mantenida por dededecline. Embed Fixer fue creado originalmente por seriaati.
+  [Código fuente](https://github.com/dededecline/embed-fixer) | [Preguntas e informes de errores](https://github.com/dededecline/embed-fixer/issues)
+  Las contribuciones, incluidas las traducciones, se reciben mediante pull requests a esta bifurcación.
+  Puedes modificar y redistribuir este software bajo [AGPL-3.0](https://github.com/dededecline/embed-fixer/blob/main/LICENSE). Se proporciona sin garantía.
 selected_channels: Canales seleccionados
 disable_delete_reaction: Deshabilitar Reacción Para Eliminar Mensajes
 disable_delete_reaction_desc: "Deshabilitar las reacciones a los mensajes del webhook que permiten al autor original eliminarlos."

@@ -74,6 +74,8 @@ async def test_ci_updates_all_real_settings_and_domain_bullets(
         assert f"**{domain.name}**:" in content
     assert "Media extraction only, no embed fixing" in content
     assert "([disabled by default](#about-youtube-embed-fixing))" in content
+    assert "https://github.com/dededecline/embed-fixer#about-youtube-embed-fixing" in content
+    assert "github.com/seriaati/embed-fixer" not in content
     assert content.endswith("footer\n")
 
 

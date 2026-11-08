@@ -1,7 +1,7 @@
 name: English
 replying_to: "⬅️ Replying to {user} ({url})"
 disable_fixes: Disable Embed Fixes for Websites
-disable_fixes_desc: "Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing)."
+disable_fixes_desc: "Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/dededecline/embed-fixer#about-youtube-embed-fixing)."
 lang: Language
 lang_desc: Change the language of the bot.
 extract_media_channels: Media Extraction Channels
@@ -22,9 +22,10 @@ setting_param: setting
 setting_param_desc: Setting to change
 info_cmd_desc: Get information about the bot
 info_embed_desc: |
-  This bot is made by [@seria_ati](<discord://-/users/410036441129943050>) and is open-source on [GitHub](https://github.com/seriaati/embed-fixer).
-  For questions or issues with this bot, DM me on Discord or open an issue on GitHub.
-  To contribute (such as translations), DM me or open a PR on GitHub.
+  This fork is maintained by dededecline. Embed Fixer was originally created by seriaati.
+  [Source code](https://github.com/dededecline/embed-fixer) | [Questions and bug reports](https://github.com/dededecline/embed-fixer/issues)
+  Contributions, including translations, are welcome through pull requests to this fork.
+  You may modify and redistribute this software under [AGPL-3.0](https://github.com/dededecline/embed-fixer/blob/main/LICENSE). Provided without warranty.
 selected_channels: Selected channels
 disable_delete_reaction: Disable Delete Message Reaction
 disable_delete_reaction_desc: "Disable the emoji reaction on webhook messages that lets the original author delete them by reacting."
@@ -119,5 +120,5 @@ rotate_fix_reaction_desc: "When enabled, the bot adds a \U0001F504 reaction to f
 disable_embed_suppression: Disable Original Embed Suppression
 disable_embed_suppression_desc: "For the \"reply\" and \"resend as bot\" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators."
 hide_webhook_suffix: Hide Webhook Username Suffix
-hide_webhook_suffix_desc: "When enabled, messages resent through webhooks show the original author's name without the \" (Embed Fixer)\" suffix.\n\U0001F48E Sponsor-only: at least one administrator of this server must be a sponsor."
-sponsor_only_feature: "\U0001F48E **This is a sponsor-only feature.**\n\nTo unlock it for this server, at least one of its administrators needs to be a sponsor.\n1. [Donate here](<https://link.seria.moe/donate>)\n2. Contact [Seria on Discord](<https://discord.com/users/410036441129943050>) to activate\n\nOnce unlocked, any administrator can change this setting."
+hide_webhook_suffix_desc: "When enabled, messages resent through webhooks show the original author's name without the \" (Embed Fixer)\" suffix. Available by default on self-hosted instances; instances with sponsorship enabled require an administrator to be a sponsor."
+sponsor_only_feature: "This instance requires an administrator to be a sponsor to unlock this feature. Contact the bot operator for access. For questions or bugs, [open an issue](https://github.com/dededecline/embed-fixer/issues)."
