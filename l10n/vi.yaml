@@ -1,7 +1,7 @@
 name: Tiếng Việt
 replying_to: "⬅️ Đang trả lời {user} ({url})"
 disable_fixes: Tắt Sửa Nhúng Cho Các Trang Web
-disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể. [YouTube bị tắt theo mặc định](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
+disable_fixes_desc: Tắt Nhúng Sửa cho các trang web cụ thể. [YouTube bị tắt theo mặc định](https://github.com/dededecline/embed-fixer#about-youtube-embed-fixing).
 lang: Ngôn Ngữ
 lang_desc: Thay đổi ngôn ngữ của bot.
 extract_media_channels: Kênh Trích Xuất Phương Tiện
@@ -22,9 +22,10 @@ setting_param: cài-đặt
 setting_param_desc: Cài đặt để thay đổi
 info_cmd_desc: Lấy thông tin về bot này
 info_embed_desc: |
-  Bot này được làm bởi [@seria_ati](<discord://-/users/410036441129943050>) và là mã nguồn mở trên [GitHub](https://github.com/seriaati/embed-fixer).
-  Nếu có thắc mắc hoặc vấn đề với bot này, hãy nhắn tin trực tiếp cho tôi trên Discord hoặc mở một vấn đề trên GitHub.
-  Để đóng góp (chẳng hạn như bản dịch), hãy nhắn tin trực tiếp cho tôi hoặc mở một PR trên GitHub.
+  Bản fork này được duy trì bởi dededecline. Embed Fixer ban đầu được tạo bởi seriaati.
+  [Mã nguồn](https://github.com/dededecline/embed-fixer) | [Câu hỏi và báo lỗi](https://github.com/dededecline/embed-fixer/issues)
+  Các đóng góp, bao gồm bản dịch, được hoan nghênh thông qua pull request gửi đến bản fork này.
+  Bạn có thể sửa đổi và phân phối lại phần mềm này theo [AGPL-3.0](https://github.com/dededecline/embed-fixer/blob/main/LICENSE). Phần mềm được cung cấp không kèm bảo hành.
 selected_channels: Kênh được chọn
 disable_delete_reaction: Tắt Biểu Cảm Xóa Tin Nhắn
 disable_delete_reaction_desc: "Tắt biểu cảm trên tin nhắn webhook để tác giả gốc không thể xóa chúng bằng biểu cảm."

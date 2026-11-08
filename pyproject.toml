@@ -1,5 +1,6 @@
 [project]
-authors = [{ name = "seriaati", email = "seria.ati@gmail.com" }]
+authors = [{ name = "seriaati" }]
+maintainers = [{ name = "dededecline" }]
 dependencies = [
   "aiofiles>=24.1.0",
   "jishaku>=2.5.2",
@@ -28,6 +29,10 @@ name = "embed-fixer"
 readme = "README.md"
 requires-python = ">=3.15"
 version = "1.9.8"
+
+[project.urls]
+Repository = "https://github.com/dededecline/embed-fixer"
+Issues = "https://github.com/dededecline/embed-fixer/issues"
 
 [project.optional-dependencies]
 asyncpg = ["asyncpg>=0.32.0"]

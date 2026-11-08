@@ -1,33 +1,32 @@
-![Embed Fixer](https://ef.seria.moe/og-image.png)
-
-![GitHub issues](https://img.shields.io/github/issues/seriaati/embed-fixer)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/seriaati/embed-fixer)
-![GitHub Repo stars](https://img.shields.io/github/stars/seriaati/embed-fixer)
-![GitHub forks](https://img.shields.io/github/forks/seriaati/embed-fixer)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/seriaati/embed-fixer)
-![Lines of code](https://tokei.queeniemella.cc/b1/github/seriaati/embed-fixer?style=flat&category=code&type=Python)
-![GitHub](https://img.shields.io/github/license/seriaati/embed-fixer)
-![Discord](https://img.shields.io/discord/1000727526194298910?label=Support%20Server&color=5865F2)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-
 # Embed Fixer
 
-Official website: <https://ef.seria.moe>
+![GitHub issues](https://img.shields.io/github/issues/dededecline/embed-fixer)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/dededecline/embed-fixer)
+![GitHub Repo stars](https://img.shields.io/github/stars/dededecline/embed-fixer)
+![GitHub forks](https://img.shields.io/github/forks/dededecline/embed-fixer)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dededecline/embed-fixer)
+![Lines of code](https://tokei.queeniemella.cc/b1/github/dededecline/embed-fixer?style=flat&category=code&type=Python)
+![GitHub](https://img.shields.io/github/license/dededecline/embed-fixer)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+This is [dededecline's independently maintained fork](https://github.com/dededecline/embed-fixer)
+of Embed Fixer, originally created by seriaati. Modified on 2026-11-07 to use this fork's
+support and distribution links. Licensed under [AGPL-3.0](LICENSE), without warranty.
 
 ## Add Bot
 
-[**Bot invitation link**](https://discord.com/oauth2/authorize?client_id=770144963735453696)
+[Self-host this fork](#self-hosting), then use the invitation link printed in your bot's logs.
 
 Available as both a user and server app.  
 When installed as a user app, you can right click a message to fix its embed or extract its media.
 
 ## Support
 
-- [Request new fix](https://github.com/seriaati/embed-fixer/issues/new?template=new-embed-fix-request.md)
-- [Report a bug](https://github.com/seriaati/embed-fixer/issues/new?template=bug_report.md)
-- [Request a new feature](https://github.com/seriaati/embed-fixer/issues/new?template=feature_request.md)
-- [Contribute to translations](https://app.transifex.com/seria/embed-fixer/)
-- [Contact me on Discord](https://discord.com/invite/b22kMKuwbS) (my username is @seria_ati)
+- [Request new fix](https://github.com/dededecline/embed-fixer/issues/new?template=new-embed-fix-request.md)
+- [Report a bug](https://github.com/dededecline/embed-fixer/issues/new?template=bug_report.md)
+- [Request a new feature](https://github.com/dededecline/embed-fixer/issues/new?template=feature_request.md)
+- Contribute translations by editing [the locale files](https://github.com/dededecline/embed-fixer/tree/main/l10n) and opening a pull request to this fork.
+- [Ask a question](https://github.com/dededecline/embed-fixer/issues)
 
 ## Motive
 
@@ -86,7 +85,7 @@ For Pixiv and Twitter/X links, the bot checks if the artwork/post is marked as N
 
 Turn on "Show original link button" in `/settings` when using EmbedEZ fixes if you want to go to the original post without seeing the ads.
 
-EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. I originally made a [proxy](https://github.com/seriaati/embedez) to it to bypass the ads, but it stopped working after the site owner changed some stuff.
+EmbedEZ is a service that covers many platforms for embed fixing; however, it is closed-source and has ads. A [proxy by seriaati](https://github.com/seriaati/embedez) previously bypassed the ads, but stopped working after changes to the service.
 
 ### About YouTube Embed Fixing
 
@@ -144,7 +143,7 @@ All settings are unique to each server, you can use `/reset` to reset them to de
 Below are settings you can change with the `/settings` command:
 
 - **Language**: Change the language of the bot.
-- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
+- **Disable Embed Fixes for Websites**: Disable embed fixes for specific websites. [YouTube is disabled by default](https://github.com/dededecline/embed-fixer#about-youtube-embed-fixing).
 - **Media Extraction Channels**: Images/Videos from Twitter/X/Pixiv/Instagram/Bluesky/Kemono links sent in these channels will be extracted.
 - **Disable Media Extraction for Websites**: Links from websites selected here will not have their media extracted in media extraction channels.
 - **Embed Fix Channel Blacklist**: Channels here will not receive embed fixes, whitelist has priority over blacklist.
@@ -163,11 +162,8 @@ Below are settings you can change with the `/settings` command:
 - **Remove Reactions After**: Set the number of seconds after which the delete and switch fix reaction emojis are automatically removed. Leave a field empty to disable.
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
 - **Disable Original Embed Suppression**: For the "reply" and "resend as bot" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators.
-- **Hide Webhook Username Suffix**: When enabled, messages resent through webhooks show the original author's name without the " (Embed Fixer)" suffix.
-💎 Sponsor-only: at least one administrator of this server must be a sponsor.
+- **Hide Webhook Username Suffix**: When enabled, messages resent through webhooks show the original author's name without the " (Embed Fixer)" suffix. Available by default on self-hosted instances; instances with sponsorship enabled require an administrator to be a sponsor.
 - **Remove Link Tracking**: Remove known tracking parameters before fixing links, including original-link and media-source buttons. Timestamps, content selections, and unknown parameters are kept. Enabled by default.
-💎 Sponsor-only: at least one administrator of this server must be a sponsor.
-💎 Sponsor-only: at least one administrator of this server must be a sponsor.
 
 ## Post Content Translation
 
@@ -196,22 +192,22 @@ Run `@Embed Fixer sync` to sync the commands, you need to restart your client to
 ## Database Migrations
 
 Changes to the database schema can be found in `/migrations`.  
-Migrations are applied automatically on startup for both SQLite and PostgreSQL, no manual steps are needed — including when upgrading an instance created before the migration system existed.
+Migrations are applied automatically on startup for both SQLite and PostgreSQL, including when upgrading an instance created before the migration system existed.
 
-If an upgrade ever goes wrong, pin your Docker image to the previous release tag (e.g. `ghcr.io/seriaati/embed-fixer:1.9.0`), then use `/export` and `/import` to move your settings to a fresh instance.
+If an upgrade ever goes wrong, pin `ghcr.io/dededecline/embed-fixer` to a previously working tag or digest from this fork, then use `/export` and `/import` to move your settings to a fresh instance.
 
 ## Docker
 
 With SQLite:
 
 ```sh
-docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN ghcr.io/seriaati/embed-fixer:latest
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN ghcr.io/dededecline/embed-fixer:latest
 ```
 
 With PostgreSQL:
 
 ```sh
-docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN -e DB_URI=postgres://USERNAME:PASSWORD@DBHOST:PORT/DBNAME ghcr.io/seriaati/embed-fixer:latest-asyncpg
+docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN -e DB_URI=postgres://USERNAME:PASSWORD@DBHOST:PORT/DBNAME ghcr.io/dededecline/embed-fixer:latest-asyncpg
 ```
 
 ### Volumes
@@ -230,7 +226,7 @@ docker run -v /my/mnt/logs:/app/logs -v /my/mnt/data:/data -e DISCORD_TOKEN=YOUR
 ## Local
 
 1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
-1. Clone the repository
+1. Clone this fork: `git clone https://github.com/dededecline/embed-fixer.git`
 1. Create a `.env` file:
 
 ```env

@@ -3,7 +3,7 @@ name: Bug report
 about: Report an issue with the bot
 title: ''
 labels: bug
-assignees: seriaati
+assignees: dededecline
 
 ---
 

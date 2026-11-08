@@ -1,7 +1,7 @@
 name: Nederlands
 replying_to: "⬅️ Reageert op {user} ({url})"
 disable_fixes: Schakel Embed Fixes Voor Websites Uit
-disable_fixes_desc: Schakel Embed Fixes uit voor specifieke websites. [YouTube is standaard uitgeschakeld](https://github.com/seriaati/embed-fixer#about-youtube-embed-fixing).
+disable_fixes_desc: Schakel Embed Fixes uit voor specifieke websites. [YouTube is standaard uitgeschakeld](https://github.com/dededecline/embed-fixer#about-youtube-embed-fixing).
 lang: Taal
 lang_desc: Verander de taal van de bot.
 extract_media_channels: Media Extractie Kanalen
@@ -22,9 +22,10 @@ setting_param: instelling
 setting_param_desc: Instelling om te veranderen
 info_cmd_desc: Krijg informatie over de bot
 info_embed_desc: |
-  Deze bot is gemaakt door [@seria_ati](<discord://-/users/410036441129943050>) en is open source op [GitHub](https://github.com/seriaati/embed-fixer).
-  Voor vragen of problemen met deze bot kun je mij een DM sturen op Discord of een issue openen op GitHub.
-  Om te bijdrage (zoals vertalingen), stuur mij een DM of open een PR op GitHub.
+  Deze fork wordt onderhouden door dededecline. Embed Fixer is oorspronkelijk gemaakt door seriaati.
+  [Broncode](https://github.com/dededecline/embed-fixer) | [Vragen en bugmeldingen](https://github.com/dededecline/embed-fixer/issues)
+  Bijdragen, waaronder vertalingen, zijn welkom via pull requests naar deze fork.
+  Je mag deze software wijzigen en verspreiden onder [AGPL-3.0](https://github.com/dededecline/embed-fixer/blob/main/LICENSE). Geleverd zonder garantie.
 selected_channels: Geselecteerde kanalen
 disable_delete_reaction: Schakel Bericht Verwijder Reactie Uit
 disable_delete_reaction_desc: "Schakel de emoji reactie op webhookberichten uit zodat de oorspronkelijke auteur deze niet kan verwijderen door te reageren."
