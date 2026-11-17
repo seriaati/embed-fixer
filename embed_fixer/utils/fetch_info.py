@@ -293,7 +293,7 @@ class TwitterPost(BaseModel):
 class BskyPostAuthor(BaseModel):
     did: str
     handle: str
-    name: str = Field(alias="displayName")
+    name: str | None = Field(alias="displayName", default=None)
     avatar_url: str | None = Field(alias="avatar", default=None)
 
 
@@ -324,7 +324,8 @@ class BskyPost(BaseModel):
 
     @property
     def author_md(self) -> str:
-        return f"[{self.author.name} (@{self.author.handle})](<https://bsky.app/profile/{self.author.handle}>)"
+        name = self.author.name or self.author.handle
+        return f"[{name} (@{self.author.handle})](<https://bsky.app/profile/{self.author.handle}>)"
 
     @property
     def video_url(self) -> str | None:
