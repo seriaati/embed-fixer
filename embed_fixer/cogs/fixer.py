@@ -1486,7 +1486,7 @@ class FixerCog(commands.Cog):
             await message.delete()
         except discord.Forbidden:
             logger.warning(f"Failed to delete message in {channel.id=} in {guild.id=}")
-            with contextlib.suppress(discord.Forbidden):
+            with contextlib.suppress(discord.HTTPException):
                 await message.reply(
                     translator.translate(
                         "no_perms_to_delete_msg", lang=await translator.get_guild_lang(guild)
