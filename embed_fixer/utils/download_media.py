@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
     from embed_fixer.utils.fetch_info import UgoiraFrame, UgoiraMeta
 
+MAX_CONCURRENT_DOWNLOADS = 10
+
 
 class MediaDownloader:
     def __init__(  # ruff: ignore[too-many-arguments]
@@ -37,6 +39,8 @@ class MediaDownloader:
         self.ugoira_meta = ugoira_meta
         self.ugoira_file: discord.File | None = None
         self.fallback_urls = fallback_urls or {}
+        # Each request holds a cache (Redis) connection, unbounded galleries exhaust the pool
+        self._semaphore = asyncio.Semaphore(MAX_CONCURRENT_DOWNLOADS)
 
     async def _fetch_bytes(self, url: str) -> bytes | None:
         timeout = aiohttp.ClientTimeout(total=30)
@@ -134,13 +138,14 @@ class MediaDownloader:
         if fallback := self.fallback_urls.get(url):
             candidates.append(fallback)
 
-        for candidate in candidates:
-            file_ = await self._fetch_file(
-                candidate, spoiler=spoiler, filesize_limit=filesize_limit
-            )
-            if file_ is not None:
-                self.files[url] = file_
-                return
+        async with self._semaphore:
+            for candidate in candidates:
+                file_ = await self._fetch_file(
+                    candidate, spoiler=spoiler, filesize_limit=filesize_limit
+                )
+                if file_ is not None:
+                    self.files[url] = file_
+                    return
 
     async def _fetch_file(
         self, url: str, *, spoiler: bool, filesize_limit: int
