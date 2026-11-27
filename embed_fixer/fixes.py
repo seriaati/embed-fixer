@@ -27,6 +27,7 @@ class DomainId(IntEnum):
     BILIBILI_OPUS = 17
     PINTEREST = 18
     YOUTUBE = 19
+    HOYOLAB = 20
 
 
 EXTRACTABLE_DOMAIN_IDS: Final[tuple[DomainId, ...]] = (
@@ -545,5 +546,26 @@ DOMAINS: Final[list[Domain]] = [
             )
         ],
         enabled_by_default=False,
+    ),
+    Domain(
+        id=DomainId.HOYOLAB,
+        name="HoYoLAB",
+        websites=[
+            Website(r"https://(www.)?hoyolab.com/article/\d+/?"),
+            Website(r"https://(www.)?hoyolab.com/article_pre/[\w-]+/?"),
+            Website(r"https://([a-zA-Z0-9-]+.)?hoyo.link/[\w-]+/?"),
+        ],
+        fix_methods=[
+            FixMethod(
+                id=40,
+                name="fxhoyo",
+                fixes=[
+                    ReplaceFix(old_domain="hoyolab.com", new_domain="hoyo.studiobutter.io.vn"),
+                    ReplaceFix(old_domain="hoyo.link", new_domain="hoyo.studiobutter.io.vn"),
+                ],
+                repo_url="https://github.com/studiobutter/fxhoyo",
+                default=True,
+            )
+        ],
     ),
 ]
