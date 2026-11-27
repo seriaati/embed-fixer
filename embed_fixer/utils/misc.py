@@ -76,6 +76,21 @@ def domain_in_url(url: str, domain: str) -> bool:
     return parsed_url.netloc == domain or parsed_url.netloc.endswith(f".{domain}")
 
 
+def hoyolab_mobile_to_desktop_url(url: str) -> str:
+    # Mobile HoYoLAB routes live in the fragment (#/article/<id>), which browsers never send
+    # to servers, so fix services can only work with the desktop path form.
+    parsed_url = urlparse(url)
+    if not domain_in_url(url, "m.hoyolab.com") or not parsed_url.fragment.startswith("/"):
+        return url
+
+    route = urlparse(parsed_url.fragment)
+    return urlunparse(
+        parsed_url._replace(
+            netloc="www.hoyolab.com", path=route.path, query=route.query, fragment=""
+        )
+    )
+
+
 def replace_domain(url: str, old_domain: str, new_domain: str) -> str:
     parsed_url = urlparse(url)
     if domain_in_url(url, old_domain):

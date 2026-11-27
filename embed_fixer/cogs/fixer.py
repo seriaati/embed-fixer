@@ -27,6 +27,7 @@ from embed_fixer.utils.misc import (
     domain_in_url,
     extract_urls,
     get_filesize,
+    hoyolab_mobile_to_desktop_url,
     remove_query_params,
     replace_domain,
     sanitize_username,
@@ -423,7 +424,9 @@ class FixerCog(commands.Cog):
 
         for url, spoilered in urls:
             try:
-                clean_url = remove_query_params(url).replace("www.", "")
+                clean_url = remove_query_params(hoyolab_mobile_to_desktop_url(url)).replace(
+                    "www.", ""
+                )
             except ValueError:
                 logger.warning(f"Invalid URL found: {url}")
                 continue
