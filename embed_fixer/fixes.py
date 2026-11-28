@@ -574,6 +574,7 @@ DOMAINS: Final[list[Domain]] = [
         name="rednote",
         websites=[
             Website(r"https://(www.)?xiaohongshu.com/(explore|discovery/item)/[0-9a-f]{24}/?"),
+            Website(r"https://(www.)?rednote.com/(explore|discovery/item)/[0-9a-f]{24}/?"),
             Website(r"https?://xhslink.com/[a-z]/\w+/?"),
         ],
         fix_methods=[
@@ -583,6 +584,7 @@ DOMAINS: Final[list[Domain]] = [
                 fixes=[
                     ReplaceFix(old_domain="xiaohongshu.com", new_domain="fxrednote.seria.moe"),
                     ReplaceFix(old_domain="xhslink.com", new_domain="fxrednote.seria.moe"),
+                    ReplaceFix(old_domain="rednote.com", new_domain="fxrednote.seria.moe"),
                 ],
                 repo_url="https://github.com/seriaati/fxrednote",
                 default=True,

@@ -48,6 +48,7 @@ KEEP_QUERY_PARAMS: Final[dict[str, set[str]]] = {
     "hoyolab.com": {"lang"},
     "hoyo.link": {"q"},
     "xiaohongshu.com": {"xsec_token"},
+    "rednote.com": {"xsec_token"},
 }
 
 
