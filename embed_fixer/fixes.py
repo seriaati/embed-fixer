@@ -28,6 +28,7 @@ class DomainId(IntEnum):
     PINTEREST = 18
     YOUTUBE = 19
     HOYOLAB = 20
+    REDNOTE = 21
 
 
 EXTRACTABLE_DOMAIN_IDS: Final[tuple[DomainId, ...]] = (
@@ -564,6 +565,26 @@ DOMAINS: Final[list[Domain]] = [
                     ReplaceFix(old_domain="hoyo.link", new_domain="hoyo.studiobutter.io.vn"),
                 ],
                 repo_url="https://github.com/studiobutter/fxhoyo",
+                default=True,
+            )
+        ],
+    ),
+    Domain(
+        id=DomainId.REDNOTE,
+        name="rednote",
+        websites=[
+            Website(r"https://(www.)?xiaohongshu.com/(explore|discovery/item)/[0-9a-f]{24}/?"),
+            Website(r"https?://xhslink.com/[a-z]/\w+/?"),
+        ],
+        fix_methods=[
+            FixMethod(
+                id=41,
+                name="fxrednote",
+                fixes=[
+                    ReplaceFix(old_domain="xiaohongshu.com", new_domain="fxrednote.seria.moe"),
+                    ReplaceFix(old_domain="xhslink.com", new_domain="fxrednote.seria.moe"),
+                ],
+                repo_url="https://github.com/seriaati/fxrednote",
                 default=True,
             )
         ],
