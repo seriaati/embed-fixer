@@ -56,8 +56,11 @@ async def run_ci() -> None:
     translator = Translator()
     await translator.load()
 
+    # Descriptions may contain line breaks for Discord, but the list parser above ends the list at
+    # the first line that isn't a bullet, so each setting must stay on one README line
     updated_settings = [
-        f"**{translator.translate(s.value, lang=LANG)}**: {translator.translate(f'{s.value}_desc', lang=LANG)}"
+        f"**{translator.translate(s.value, lang=LANG)}**: "
+        + translator.translate(f"{s.value}_desc", lang=LANG).replace("\n", " ")
         for s in GuildSetting
     ]
     update_readme_bullet_points(
