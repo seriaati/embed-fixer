@@ -69,6 +69,7 @@ Fixings are currently available for:
 - **Pinterest**: [EmbedEZ](https://embedez.com)
 - **YouTube**: [Koutube](https://github.com/iGerman00/koutube) ([disabled by default](#about-youtube-embed-fixing))
 - **HoYoLAB**: [fxhoyo](https://github.com/studiobutter/fxhoyo)
+- **rednote**: [fxrednote](https://github.com/seriaati/fxrednote)
 
 If your message contains link(s) that are of any of the social medias above, it gets deleted and resent using a webhook with your name and avatar containing the fix. You can customize this behavior to reply instead of delete with `/settings`.
 
@@ -158,6 +159,7 @@ Below are settings you can change with the `/settings` command:
 - **Rotate Fix Reaction**: When enabled, the bot adds a 🔄 reaction to fixed messages. The original author can click it to cycle to the next available embed fix service.
 - **Disable Original Embed Suppression**: For the "reply" and "resend as bot" fix modes, the bot suppresses the embeds of the original message. When enabled, the original embeds are kept instead, and removing them is left to users and moderators.
 - **Hide Webhook Username Suffix**: When enabled, messages resent through webhooks show the original author's name without the " (Embed Fixer)" suffix.
+💎 Sponsor-only: at least one administrator of this server must be a sponsor.
 💎 Sponsor-only: at least one administrator of this server must be a sponsor.
 💎 Sponsor-only: at least one administrator of this server must be a sponsor.
 💎 Sponsor-only: at least one administrator of this server must be a sponsor.
